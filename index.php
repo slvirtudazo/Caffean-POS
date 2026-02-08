@@ -1,16 +1,15 @@
 <?php
 /**
  * Purge Coffee Shop - Homepage
- * This is the main landing page that welcomes visitors with an elegant presentation
- * of the coffee shop's offerings, including hero section, best seller products, and special offers.
- * Best Sellers are calculated dynamically based on favorites, cart additions, and orders.
+ * Main landing page with hero section, best seller products, and special offers
+ * Best Sellers display 4 products in a grid layout based on user interactions
  */
 
 // Include database configuration
 require_once 'php/config.php';
 
-// Fetch best seller products based on user interactions
-// Products are ranked by: orders (weight 3), cart additions (weight 2), and favorites (weight 1)
+// Fetch top 4 best seller products based on user interactions
+// Ranking: orders (weight 3), cart additions (weight 2), favorites (weight 1)
 $bestsellers_query = "SELECT 
     p.product_id,
     p.name,
@@ -36,26 +35,26 @@ LIMIT 4";
 
 $bestsellers_result = mysqli_query($conn, $bestsellers_query);
 
-// If no best sellers yet (new system), show sample products: 1 coffee and 1 pastry
+// If no best sellers yet, show 4 sample products (2 coffee, 2 pastry)
 $show_samples = false;
 if (mysqli_num_rows($bestsellers_result) == 0) {
     $show_samples = true;
-    // Get 1 coffee product (categories 1, 2, or 4)
+    // Get 2 coffee products
     $sample_coffee_query = "SELECT p.*, c.name as category_name 
                             FROM products p 
                             JOIN categories c ON p.category_id = c.category_id 
                             WHERE p.category_id IN (1, 2, 4) AND p.status = 1 
                             ORDER BY p.created_at DESC 
-                            LIMIT 1";
+                            LIMIT 2";
     $coffee_result = mysqli_query($conn, $sample_coffee_query);
     
-    // Get 1 pastry product (category 3)
+    // Get 2 pastry products
     $sample_pastry_query = "SELECT p.*, c.name as category_name 
                             FROM products p 
                             JOIN categories c ON p.category_id = c.category_id 
                             WHERE p.category_id = 3 AND p.status = 1 
                             ORDER BY p.created_at DESC 
-                            LIMIT 1";
+                            LIMIT 2";
     $pastry_result = mysqli_query($conn, $sample_pastry_query);
 }
 ?>
@@ -76,16 +75,22 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
+    
+    <!-- Homepage Best Sellers specific styling -->
+    <link rel="stylesheet" href="css/home-bestsellers.css?v=<?php echo time(); ?>">
+    
+    <!-- Footer section styling -->
+    <link rel="stylesheet" href="css/footer-section.css?v=<?php echo time(); ?>">
 </head>
 <body>
     
-    <!-- Top Banner -->
+    <!-- Top banner showing shipping availability -->
     <div class="top-banner">
         Shipping Nationwide
     </div>
 
-    <!-- Navigation Bar -->
+    <!-- Main navigation bar with logo and menu links -->
     <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="index.php">
@@ -135,7 +140,7 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Hero section with welcome message and call-to-action -->
     <section class="hero-section">
         <div class="container">
             <div class="row align-items-center">
@@ -154,36 +159,41 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
         </div>
     </section>
 
-    <!-- Best Sellers Section - Dynamic based on user interactions -->
-    <section class="menu-section">
+    <!-- Best Sellers section displaying 4 products in a grid -->
+    <section class="home-bestsellers-section">
         <div class="container">
+            <!-- Section header with centered title and decorative divider -->
             <div class="section-header">
                 <h2 class="section-title">Best Sellers</h2>
                 <div class="section-divider"></div>
-                <p style="text-align: center; color: var(--dark-brown); margin-top: var(--spacing-md);">
-                    Our customers' favorites - tried, loved, and highly recommended!
-                </p>
             </div>
 
+            <!-- Product grid - displays 4 products in a row -->
             <div class="product-grid">
                 <?php 
                 if ($show_samples):
-                    // Display sample products (1 coffee, 1 pastry) for new systems
-                    if (mysqli_num_rows($coffee_result) > 0):
-                        $product = mysqli_fetch_assoc($coffee_result);
+                    // Display sample products when no best sellers exist yet
+                    
+                    // Show coffee products first
+                    while($product = mysqli_fetch_assoc($coffee_result)): 
                 ?>
                     <div class="product-card" data-product-id="<?php echo $product['product_id']; ?>">
+                        <!-- Product image with favorite button -->
                         <div class="product-image-wrapper">
                             <div class="favorite-icon" onclick="toggleFavorite(<?php echo $product['product_id']; ?>, this.querySelector('i'))">
                                 <i class="far fa-heart"></i>
                             </div>
                             <img src="images/coffee.png" alt="<?php echo htmlspecialchars($product['name']); ?>" class="product-image">
                         </div>
+                        
+                        <!-- Product details: name, description, price -->
                         <div class="product-info">
                             <h3 class="product-name"><?php echo htmlspecialchars($product['name']); ?></h3>
                             <p class="product-description">
-                                <?php echo htmlspecialchars(substr($product['description'], 0, 60)) . '...'; ?>
+                                <?php echo htmlspecialchars($product['description']); ?>
                             </p>
+                            
+                            <!-- Price and order button -->
                             <div class="product-footer">
                                 <span class="product-price">₱ <?php echo number_format($product['price'], 2); ?></span>
                                 <button class="btn-order" onclick="addToCart(<?php echo $product['product_id']; ?>)">
@@ -193,10 +203,10 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
                         </div>
                     </div>
                 <?php 
-                    endif;
+                    endwhile;
                     
-                    if (mysqli_num_rows($pastry_result) > 0):
-                        $product = mysqli_fetch_assoc($pastry_result);
+                    // Show pastry products next
+                    while($product = mysqli_fetch_assoc($pastry_result)): 
                 ?>
                     <div class="product-card" data-product-id="<?php echo $product['product_id']; ?>">
                         <div class="product-image-wrapper">
@@ -208,7 +218,7 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
                         <div class="product-info">
                             <h3 class="product-name"><?php echo htmlspecialchars($product['name']); ?></h3>
                             <p class="product-description">
-                                <?php echo htmlspecialchars(substr($product['description'], 0, 60)) . '...'; ?>
+                                <?php echo htmlspecialchars($product['description']); ?>
                             </p>
                             <div class="product-footer">
                                 <span class="product-price">₱ <?php echo number_format($product['price'], 2); ?></span>
@@ -219,10 +229,11 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
                         </div>
                     </div>
                 <?php 
-                    endif;
+                    endwhile;
                 else:
-                    // Display actual best sellers based on interactions
+                    // Display actual best sellers based on user interactions
                     while($product = mysqli_fetch_assoc($bestsellers_result)): 
+                        // Select appropriate image based on product category
                         $image_path = 'images/coffee.png';
                         if($product['category_id'] == 3) {
                             $image_path = 'images/pastry.png';
@@ -238,7 +249,7 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
                         <div class="product-info">
                             <h3 class="product-name"><?php echo htmlspecialchars($product['name']); ?></h3>
                             <p class="product-description">
-                                <?php echo htmlspecialchars(substr($product['description'], 0, 60)) . '...'; ?>
+                                <?php echo htmlspecialchars($product['description']); ?>
                             </p>
                             <div class="product-footer">
                                 <span class="product-price">₱ <?php echo number_format($product['price'], 2); ?></span>
@@ -251,21 +262,17 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
                 <?php 
                     endwhile;
                 endif;
-                
-                // If no products at all
-                if ($show_samples && mysqli_num_rows($coffee_result) == 0 && mysqli_num_rows($pastry_result) == 0):
                 ?>
-                    <p class="text-center">No products available at the moment.</p>
-                <?php endif; ?>
             </div>
 
-            <div class="text-center mt-4">
-                <a href="coffee.php" class="btn-secondary">View Full Menu</a>
+            <!-- View Full Menu button centered below products -->
+            <div class="view-menu-container">
+                <a href="coffee.php" class="btn-view-menu">View Full Menu</a>
             </div>
         </div>
     </section>
 
-    <!-- What We Offer Section -->
+    <!-- What We Offer section showing product categories -->
     <section class="offers-section">
         <div class="container">
             <div class="section-header">
@@ -273,6 +280,7 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
                 <div class="section-divider"></div>
             </div>
 
+            <!-- Grid of offer cards with images and titles -->
             <div class="offers-grid">
                 <div class="offer-card">
                     <img src="images/coffee_beans_offer.png" alt="Coffee Beans" class="offer-image">
@@ -296,14 +304,13 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- Footer with contact info and links -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
                     <div class="footer-brand">
-                        <img src="images/coffee_beans_logo.png" alt="Purge Coffee">
-                        <span class="footer-brand-name">purge coffee</span>
+                        <span class="footer-brand-name">PURGE COFFEE</span>
                     </div>
                     <div class="footer-contact">
                         <p><i class="fas fa-phone"></i> 0960 315 0070</p>
@@ -312,7 +319,7 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
                 </div>
 
                 <div class="footer-section">
-                    <h3>Our Policies</h3>
+                    <h3>OUR POLICIES</h3>
                     <ul class="footer-links">
                         <li><a href="#">Privacy</a></li>
                         <li><a href="#">Terms Of Use</a></li>
@@ -321,7 +328,7 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
                 </div>
 
                 <div class="footer-section">
-                    <h3>Social Media</h3>
+                    <h3>SOCIAL MEDIA</h3>
                     <div class="social-icons">
                         <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
                         <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
@@ -338,10 +345,10 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
+    <!-- Bootstrap JavaScript for interactive components -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Custom JavaScript -->
+    <!-- Custom JavaScript for cart and favorites functionality -->
     <script src="js/main.js"></script>
     
 </body>

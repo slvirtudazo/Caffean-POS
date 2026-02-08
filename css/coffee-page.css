@@ -1,0 +1,241 @@
+/**
+ * Coffee Page Specific Styles
+ * Extends the main style.css with coffee menu page customizations
+ */
+
+/* ===== COFFEE MENU SECTION ===== */
+/* Main container for coffee products display */
+.menu-section {
+    padding: var(--spacing-xxl) 0;
+    background-color: var(--warm-sand);
+    min-height: calc(100vh - 150px);
+}
+
+/* ===== PRODUCT GRID LAYOUT ===== */
+/* Grid system for displaying coffee products - matches home page */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ===== PRODUCT CARD ===== */
+/* Individual product card container - matches home page size */
+.product-card {
+    background-color: var(--light-beige);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: var(--transition-normal);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    max-width: 450px;
+}
+
+/* Hover effect for product cards */
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ===== PRODUCT IMAGE CONTAINER ===== */
+/* Wrapper for product image with fixed aspect ratio */
+.product-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    overflow: hidden;
+    background-color: var(--warm-sand);
+}
+
+/* Product image styling */
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition-slow);
+}
+
+/* Image zoom effect on hover */
+.product-card:hover .product-image {
+    transform: scale(1.1);
+}
+
+/* ===== FAVORITE ICON ===== */
+/* Heart icon for marking favorites */
+.favorite-icon {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    width: 45px;
+    height: 45px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    z-index: 10;
+}
+
+/* Favorite icon hover effect */
+.favorite-icon:hover {
+    background-color: var(--burgundy-wine);
+    color: white;
+    transform: scale(1.1);
+}
+
+/* ===== PRODUCT INFORMATION ===== */
+/* Container for product details */
+.product-info {
+    padding: var(--spacing-lg);
+}
+
+/* Product name/title */
+.product-name {
+    font-family: var(--font-subheading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--deep-maroon);
+    margin-bottom: var(--spacing-sm);
+}
+
+/* Product description text */
+.product-description {
+    color: var(--dark-brown);
+    font-size: 0.95rem;
+    margin-bottom: var(--spacing-md);
+    line-height: 1.6;
+    min-height: 60px;
+}
+
+/* ===== PRODUCT FOOTER ===== */
+/* Bottom section with price and order button */
+.product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--spacing-md);
+}
+
+/* Product price display */
+.product-price {
+    font-family: var(--font-subheading);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--burgundy-wine);
+}
+
+/* Order button styling */
+.btn-order {
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: var(--font-subheading);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+/* Order button hover effect */
+.btn-order:hover {
+    background-color: var(--burgundy-wine);
+    transform: scale(1.05);
+}
+
+/* ===== PAGINATION CONTROLS ===== */
+/* Container for page navigation */
+.carousel-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xl);
+    padding-bottom: var(--spacing-xl);
+}
+
+/* Previous/Next arrow buttons */
+.carousel-arrow {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-fast);
+    text-decoration: none;
+}
+
+/* Arrow button hover effect */
+.carousel-arrow:hover {
+    background-color: var(--burgundy-wine);
+    transform: scale(1.1);
+}
+
+/* ===== PAGE DOTS ===== */
+/* Container for pagination dots */
+.pagination-dots {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+/* Individual page number button */
+.pagination-dot {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid var(--deep-maroon);
+    background-color: transparent;
+    color: var(--deep-maroon);
+    font-family: var(--font-subheading);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+/* Active page dot styling */
+.pagination-dot.active {
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+}
+
+/* Page dot hover effect */
+.pagination-dot:hover {
+    background-color: var(--burgundy-wine);
+    border-color: var(--burgundy-wine);
+    color: var(--ivory-cream);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+/* Tablet view - 2 columns */
+@media (max-width: 1024px) {
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile view - 1 column */
+@media (max-width: 768px) {
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .product-card {
+        max-width: 100%;
+    }
+}

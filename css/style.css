@@ -55,6 +55,7 @@
     box-sizing: border-box;
 }
 
+/* Base body styling with brand colors and fonts */
 body {
     font-family: var(--font-body);
     background-color: var(--ivory-cream);
@@ -64,11 +65,13 @@ body {
     font-size: 16px;
 }
 
+/* Smooth scrolling for anchor links */
 html {
     scroll-behavior: smooth;
 }
 
 /* ===== TYPOGRAPHY ===== */
+/* Heading elements with consistent font family */
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     font-weight: 700;
@@ -76,28 +79,33 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: var(--spacing-md);
 }
 
+/* Main page title - largest heading */
 h1 {
     font-size: clamp(3rem, 5vw, 5rem);
     color: var(--deep-maroon);
 }
 
+/* Section titles - secondary heading */
 h2 {
     font-size: clamp(2rem, 3.5vw, 3rem);
     color: var(--deep-maroon);
 }
 
+/* Subsection titles - tertiary heading */
 h3 {
     font-family: var(--font-subheading);
     font-size: clamp(1.25rem, 2vw, 1.75rem);
     font-weight: 600;
 }
 
+/* Paragraph text with responsive sizing */
 p {
     margin-bottom: var(--spacing-sm);
     font-size: clamp(0.9rem, 1.5vw, 1rem);
 }
 
 /* ===== TOP BANNER ===== */
+/* Full-width announcement banner at top of page */
 .top-banner {
     background-color: var(--deep-maroon);
     color: var(--ivory-cream);
@@ -111,6 +119,7 @@ p {
 }
 
 /* ===== NAVIGATION ===== */
+/* Sticky navigation bar with shadow */
 .navbar {
     background-color: var(--ivory-cream);
     padding: var(--spacing-sm) 0;
@@ -121,6 +130,7 @@ p {
     transition: var(--transition-normal);
 }
 
+/* Brand logo and name container */
 .navbar-brand {
     display: flex;
     align-items: center;
@@ -132,6 +142,7 @@ p {
     transition: var(--transition-fast);
 }
 
+/* Logo image - original size for brand visibility */
 .navbar-brand img {
     width: 45px;
     height: 45px;
@@ -139,15 +150,18 @@ p {
     background: transparent;
 }
 
+/* Hover effect for brand logo */
 .navbar-brand:hover {
     opacity: 0.8;
-    transform: translateY(-2px);
+    transform: translateY(1px);
 }
 
+/* Navigation menu spacing */
 .navbar-nav {
     gap: var(--spacing-lg);
 }
 
+/* Individual navigation link styling */
 .nav-link {
     font-family: var(--font-subheading);
     font-size: 1rem;
@@ -161,6 +175,7 @@ p {
     transition: var(--transition-fast);
 }
 
+/* Animated underline for navigation links */
 .nav-link::after {
     content: '';
     position: absolute;
@@ -173,23 +188,27 @@ p {
     transition: var(--transition-normal);
 }
 
+/* Hover and active state for navigation links */
 .nav-link:hover,
 .nav-link.active {
     color: var(--burgundy-wine);
 }
 
+/* Show underline on hover and active state */
 .nav-link:hover::after,
 .nav-link.active::after {
     width: 100%;
 }
 
 /* Navigation Icons */
+/* Container for search, cart, and user icons */
 .nav-icons {
     display: flex;
     gap: var(--spacing-md);
     align-items: center;
 }
 
+/* Individual icon styling in navigation */
 .nav-icon {
     color: var(--deep-maroon);
     font-size: 1.25rem;
@@ -197,26 +216,33 @@ p {
     transition: var(--transition-fast);
 }
 
+/* Icon hover effect with color change and scale */
 .nav-icon:hover {
     color: var(--burgundy-wine);
     transform: scale(1.1);
 }
 
 /* ===== HERO SECTION ===== */
+/* Main landing section with fixed height */
 .hero-section {
     background-color: var(--ivory-cream);
-    min-height: 650px;
+    height: 650px;
     display: flex;
+    align-items: center;
     padding: var(--spacing-xl) 0;
     position: relative;
     overflow: hidden;
 }
 
+/* Hero text content container with animation */
 .hero-content {
     z-index: 2;
     animation: fadeInUp 1s ease-out;
+    padding-top: 20px;
+    padding-bottom: 50px;
 }
 
+/* Small label above hero title */
 .hero-label {
     font-family: var(--font-subheading);
     font-size: 0.875rem;
@@ -227,6 +253,7 @@ p {
     font-weight: 600;
 }
 
+/* Main hero heading with responsive sizing */
 .hero-title {
     font-family: var(--font-heading);
     font-size: clamp(2.5rem, 6vw, 5rem);
@@ -235,6 +262,7 @@ p {
     margin-bottom: var(--spacing-md);
 }
 
+/* Hero description text */
 .hero-description {
     color: var(--dark-brown);
     font-size: 1.125rem;
@@ -243,12 +271,14 @@ p {
     line-height: 1.8;
 }
 
+/* Hero image container with floating animation */
 .hero-image {
     position: relative;
     z-index: 1;
     animation: floatAnimation 3s ease-in-out infinite;
 }
 
+/* Hero image with shadow effect */
 .hero-image img {
     width: auto;
     max-width: 600px;
@@ -257,8 +287,9 @@ p {
 }
 
 /* ===== BUTTONS ===== */
+/* Primary call-to-action button */
 .btn-primary {
-    background-color: var(--deep-maroon);
+    background-color: var(--burgundy-wine);
     color: var(--ivory-cream);
     padding: var(--spacing-md) var(--spacing-xl);
     border: none;
@@ -273,15 +304,17 @@ p {
     display: inline-block;
 }
 
+/* Primary button hover effect with lift */
 .btn-primary:hover {
-    background-color: var(--burgundy-wine);
+    background-color: var(--deep-maroon);
     transform: translateY(-3px);
     box-shadow: var(--shadow-lg);
 }
 
+/* Secondary outlined button */
 .btn-secondary {
     background-color: transparent;
-    color: var(--deep-maroon);
+    color: var(--burgundy-wine);
     border: 2px solid var(--deep-maroon);
     padding: calc(var(--spacing-md) - 2px) calc(var(--spacing-xl) - 2px);
     border-radius: var(--radius-xl);
@@ -292,6 +325,7 @@ p {
     transition: var(--transition-normal);
 }
 
+/* Secondary button hover effect - fills with color */
 .btn-secondary:hover {
     background-color: var(--deep-maroon);
     color: var(--ivory-cream);
@@ -299,38 +333,44 @@ p {
 }
 
 /* ===== MENU SECTIONS ===== */
+/* General menu section container */
 .menu-section {
-    padding: var(--spacing-xxl) 0;
-    background-color: var(--warm-sand);
+    padding: var(--spacing-xl) 0;
+    background-color: var(--ivory-cream);
     min-height: 700px;
     display: flex;
     align-items: center;
 }
 
+/* Section header with centered title */
 .section-header {
     text-align: center;
     margin-bottom: var(--spacing-xxl);
     position: relative;
 }
 
+/* Center align section titles */
 .section-header .section-title {
     text-align: center;
 }
 
+/* Left align paragraphs within section header */
 .section-header > p {
     text-align: left;
     margin: 0 auto;
 }
 
+/* Main section title typography */
 .section-title {
     font-family: var(--font-heading);
-    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    font-size: 50px;
     color: var(--deep-maroon);
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     margin-bottom: var(--spacing-md);
 }
 
+/* Decorative divider line under section titles */
 .section-divider {
     width: 100px;
     height: 3px;
@@ -339,6 +379,7 @@ p {
     position: relative;
 }
 
+/* Coffee bean icon centered on divider */
 .section-divider::before {
     content: '';
     position: absolute;
@@ -354,6 +395,7 @@ p {
 }
 
 /* ===== PRODUCT CARDS ===== */
+/* Responsive grid layout for product cards */
 .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -361,7 +403,10 @@ p {
     margin-bottom: var(--spacing-xl);
 }
 
+/* Individual product card container */
 .product-card {
+    max-width: 50%;
+    max-height: fit-content;
     background-color: var(--light-beige);
     border-radius: var(--radius-lg);
     overflow: hidden;
@@ -370,30 +415,35 @@ p {
     position: relative;
 }
 
+/* Card lift effect on hover */
 .product-card:hover {
     transform: translateY(-8px);
     box-shadow: var(--shadow-lg);
 }
 
+/* Product image wrapper with background */
 .product-image-wrapper {
     position: relative;
-    width: 100%;
-    height: 280px;
+    width: fit-content;
+    height: fit-content;
     overflow: hidden;
     background-color: var(--warm-sand);
 }
 
+/* Product image with smooth transition */
 .product-image {
-    width: 50%;
-    height: 80%;
+    width: 100%;
+    height: fit-content;
     object-fit: cover;
     transition: var(--transition-slow);
 }
 
+/* Image zoom effect on card hover */
 .product-card:hover .product-image {
     transform: scale(1.1);
 }
 
+/* Favorite heart icon button */
 .favorite-icon {
     position: absolute;
     top: var(--spacing-md);
@@ -410,16 +460,19 @@ p {
     z-index: 10;
 }
 
+/* Favorite icon hover effect */
 .favorite-icon:hover {
     background-color: var(--burgundy-wine);
     color: white;
     transform: scale(1.1);
 }
 
+/* Product information container */
 .product-info {
     padding: var(--spacing-md);
 }
 
+/* Product name styling */
 .product-name {
     font-family: var(--font-subheading);
     font-size: 1.5rem;
@@ -428,6 +481,7 @@ p {
     margin-bottom: var(--spacing-xs);
 }
 
+/* Product description text */
 .product-description {
     color: var(--dark-brown);
     font-size: 0.9rem;
@@ -435,12 +489,14 @@ p {
     line-height: 1.6;
 }
 
+/* Footer section of product card */
 .product-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
+/* Product price display */
 .product-price {
     font-family: var(--font-subheading);
     font-size: 1.25rem;
@@ -448,8 +504,9 @@ p {
     color: var(--burgundy-wine);
 }
 
+/* Order button on product card */
 .btn-order {
-    background-color: var(--deep-maroon);
+    background-color: var(--burgundy-wine);
     color: var(--ivory-cream);
     padding: var(--spacing-sm) var(--spacing-md);
     border: none;
@@ -461,12 +518,14 @@ p {
     transition: var(--transition-fast);
 }
 
+/* Order button hover effect */
 .btn-order:hover {
-    background-color: var(--burgundy-wine);
+    background-color: var(--deep-maroon);
     transform: scale(1.05);
 }
 
 /* ===== CAROUSEL/PAGINATION ===== */
+/* Carousel navigation controls container */
 .carousel-controls {
     display: flex;
     justify-content: center;
@@ -475,6 +534,7 @@ p {
     margin-top: var(--spacing-xl);
 }
 
+/* Circular carousel arrow buttons */
 .carousel-arrow {
     width: 50px;
     height: 50px;
@@ -489,16 +549,19 @@ p {
     transition: var(--transition-fast);
 }
 
+/* Arrow button hover effect */
 .carousel-arrow:hover {
     background-color: var(--burgundy-wine);
     transform: scale(1.1);
 }
 
+/* Pagination dots container */
 .pagination-dots {
     display: flex;
     gap: var(--spacing-sm);
 }
 
+/* Individual pagination dot */
 .pagination-dot {
     width: 45px;
     height: 45px;
@@ -515,32 +578,77 @@ p {
     justify-content: center;
 }
 
+/* Active pagination dot - filled */
 .pagination-dot.active {
     background-color: var(--deep-maroon);
     color: var(--ivory-cream);
 }
 
+/* Pagination dot hover effect */
 .pagination-dot:hover {
     background-color: var(--burgundy-wine);
     border-color: var(--burgundy-wine);
     color: var(--ivory-cream);
 }
 
-/* ===== OFFERS SECTION ===== */
+/* ===== WHAT WE OFFER SECTION ===== */
+/* Main container - matches Best Sellers section spacing with margin before footer */
 .offers-section {
     padding: var(--spacing-xxl) 0;
     background-color: var(--ivory-cream);
-    min-height: 930px;
-    display: flex;
-    align-items: center;
+    margin-bottom: var(--spacing-xl);
 }
 
+/* Section header container - centered with bottom margin */
+.offers-section .section-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Section title - matches Best Sellers typography */
+.offers-section .section-title {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    color: var(--deep-maroon);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: var(--spacing-md);
+}
+
+/* Decorative divider with coffee bean icon - matches Best Sellers */
+.offers-section .section-divider {
+    width: 200px;
+    height: 2px;
+    background-color: var(--deep-maroon);
+    margin: 0 auto;
+    position: relative;
+}
+
+/* Coffee bean icon centered on divider */
+.offers-section .section-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    background-image: url('../images/coffee_beans_logo.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: var(--ivory-cream);
+    padding: 0 5px;
+}
+
+/* Grid layout for offer cards - 3 columns */
 .offers-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: var(--spacing-xl);
 }
 
+/* Individual offer card with image overlay */
 .offer-card {
     position: relative;
     border-radius: var(--radius-lg);
@@ -550,11 +658,13 @@ p {
     transition: var(--transition-normal);
 }
 
+/* Lift effect on hover */
 .offer-card:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow-lg);
 }
 
+/* Full-width offer image */
 .offer-image {
     width: 100%;
     height: 100%;
@@ -562,10 +672,12 @@ p {
     transition: var(--transition-slow);
 }
 
+/* Zoom effect on image when hovering card */
 .offer-card:hover .offer-image {
     transform: scale(1.05);
 }
 
+/* Dark gradient overlay at bottom of card */
 .offer-overlay {
     position: absolute;
     bottom: 0;
@@ -576,139 +688,23 @@ p {
     color: var(--ivory-cream);
 }
 
+/* Category title on offer card - uses subheading font */
 .offer-title {
-    font-family: var(--font-heading);
+    font-family: var(--font-subheading);
     font-size: 2rem;
     color: var(--ivory-cream);
     margin: 0;
     text-align: center;
 }
 
+/* Additional text in overlay */
 .offer-overlay > p {
     text-align: left;
     margin-top: var(--spacing-sm);
 }
 
-/* ===== FOOTER ===== */
-.footer {
-    background-color: var(--deep-maroon);
-    color: var(--ivory-cream);
-    padding: var(--spacing-xxl) 0 var(--spacing-md);
-    min-height: 400px;
-    display: flex;
-    align-items: center;
-}
-
-.footer-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--spacing-xl);
-    margin-bottom: var(--spacing-xl);
-}
-
-.footer-brand {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-md);
-}
-
-.footer-brand img {
-    width: 40px;
-    height: 40px;
-}
-
-.footer-brand-name {
-    font-family: var(--font-main);
-    font-size: 1.75rem;
-    color: var(--ivory-cream);
-}
-
-.footer-contact p {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-sm);
-    font-family: var(--font-subheading);
-}
-
-.footer-section h3 {
-    font-family: var(--font-heading);
-    font-size: 1.25rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: var(--spacing-md);
-    color: var(--ivory-cream);
-}
-
-.footer-links {
-    list-style: none;
-}
-
-.footer-links li {
-    margin-bottom: var(--spacing-xs);
-}
-
-.footer-links a {
-    color: var(--ivory-cream);
-    text-decoration: none;
-    transition: var(--transition-fast);
-    opacity: 0.8;
-    font-family: var(--font-subheading);
-}
-
-.footer-links a:hover {
-    opacity: 1;
-    padding-left: 5px;
-}
-
-.social-icons {
-    display: flex;
-    gap: var(--spacing-md);
-}
-
-.social-icon {
-    color: var(--ivory-cream);
-    font-size: 1.5rem;
-    transition: var(--transition-fast);
-}
-
-.social-icon:hover {
-    color: var(--deep-maroon);
-    transform: translateY(-3px);
-}
-
-.footer-bottom {
-    border-top: 1px solid rgba(245, 241, 232, 0.2);
-    padding-top: var(--spacing-md);
-    text-align: center;
-    opacity: 0.8;
-}
-
-.footer-divider {
-    width: 80px;
-    height: 2px;
-    background-color: var(--ivory-cream);
-    margin: var(--spacing-lg) auto;
-    position: relative;
-}
-
-.footer-divider::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 25px;
-    height: 25px;
-    background-image: url('../images/coffee_beans_logo.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    filter: brightness(0) invert(1);
-}
-
 /* ===== ANIMATIONS ===== */
+/* Fade in from bottom animation for hero content */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -720,6 +716,7 @@ p {
     }
 }
 
+/* Floating animation for hero image */
 @keyframes floatAnimation {
     0%, 100% {
         transform: translateY(0px);
@@ -730,44 +727,54 @@ p {
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
+/* Mobile and tablet layout adjustments */
 @media (max-width: 768px) {
+    /* Center hero content on mobile */
     .hero-section {
         text-align: center;
         padding: var(--spacing-xl) 0;
     }
     
+    /* Add spacing for hero image on mobile */
     .hero-image {
         margin-top: var(--spacing-xl);
     }
     
+    /* Single column product grid */
     .product-grid {
         grid-template-columns: 1fr;
     }
     
+    /* Single column offers grid */
     .offers-grid {
         grid-template-columns: 1fr;
     }
     
+    /* Reduce navigation spacing */
     .navbar-nav {
         gap: var(--spacing-md);
     }
 }
 
 /* ===== UTILITY CLASSES ===== */
+/* Maximum width container with auto margins */
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--spacing-md);
 }
 
+/* Center text alignment utility */
 .text-center {
     text-align: center;
 }
 
+/* Top margin utility */
 .mt-4 {
     margin-top: var(--spacing-xl);
 }
 
+/* Bottom margin utility */
 .mb-4 {
     margin-bottom: var(--spacing-xl);
 }

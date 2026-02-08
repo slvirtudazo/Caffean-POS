@@ -1,0 +1,260 @@
+/**
+ * Home Page - Best Sellers Section Specific Styles
+ * Overrides default product grid styling for the homepage Best Sellers section
+ * Creates a 4-column layout matching the reference design
+ */
+
+/* ===== HOMEPAGE BEST SELLERS SECTION ===== */
+/* Main container for Best Sellers on homepage only */
+.home-bestsellers-section {
+    padding: var(--spacing-xxl) 0;
+    background-color: var(--ivory-cream);
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Section header styling - centered title with decorative divider */
+.home-bestsellers-section .section-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Best Sellers title typography */
+.home-bestsellers-section .section-title {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    color: var(--deep-maroon);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: var(--spacing-md);
+}
+
+/* Decorative divider line with coffee bean icon */
+.home-bestsellers-section .section-divider {
+    width: 200px;
+    height: 2px;
+    background-color: var(--deep-maroon);
+    margin: 0 auto;
+    position: relative;
+}
+
+/* Coffee bean icon in the center of divider */
+.home-bestsellers-section .section-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    background-image: url('../images/coffee_beans_logo.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: var(--ivory-cream);
+    padding: 0 5px;
+}
+
+/* ===== PRODUCT GRID - 4 COLUMNS ===== */
+/* Grid layout specifically for homepage - displays 4 products in a row */
+.home-bestsellers-section .product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ===== PRODUCT CARD - COMPACT DESIGN ===== */
+/* Individual product card container with rounded corners */
+.home-bestsellers-section .product-card {
+    background-color: var(--light-beige);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: var(--transition-normal);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    max-width: 100%;
+}
+
+/* Subtle lift effect on hover */
+.home-bestsellers-section .product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ===== PRODUCT IMAGE SECTION ===== */
+/* Image wrapper with fixed aspect ratio for consistency */
+.home-bestsellers-section .product-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    overflow: hidden;
+    background-color: var(--warm-sand);
+}
+
+/* Product image fills container and maintains aspect ratio */
+.home-bestsellers-section .product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition-slow);
+}
+
+/* Zoom effect on product image when hovering card */
+.home-bestsellers-section .product-card:hover .product-image {
+    transform: scale(1.1);
+}
+
+/* ===== FAVORITE HEART ICON ===== */
+/* Circular favorite button positioned at top-right of image */
+.home-bestsellers-section .favorite-icon {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    z-index: 10;
+}
+
+/* Heart icon hover effect - changes color and scales up */
+.home-bestsellers-section .favorite-icon:hover {
+    background-color: var(--burgundy-wine);
+    color: white;
+    transform: scale(1.1);
+}
+
+/* ===== PRODUCT INFORMATION SECTION ===== */
+/* Container for product details below the image */
+.home-bestsellers-section .product-info {
+    padding: var(--spacing-lg);
+}
+
+/* Product name/title styling */
+.home-bestsellers-section .product-name {
+    font-family: var(--font-subheading);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--deep-maroon);
+    margin-bottom: var(--spacing-sm);
+}
+
+/* Product description text - compact for 4-column layout */
+.home-bestsellers-section .product-description {
+    color: var(--dark-brown);
+    font-size: 0.875rem;
+    margin-bottom: var(--spacing-md);
+    line-height: 1.5;
+    min-height: 42px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ===== PRODUCT FOOTER - PRICE AND BUTTON ===== */
+/* Bottom section containing price and order button */
+.home-bestsellers-section .product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--spacing-sm);
+}
+
+/* Product price display */
+.home-bestsellers-section .product-price {
+    font-family: var(--font-subheading);
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--deep-maroon);
+}
+
+/* Order button styling */
+.home-bestsellers-section .btn-order {
+    background-color: var(--burgundy-wine);
+    color: var(--ivory-cream);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: var(--font-subheading);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+/* Order button hover effect */
+.home-bestsellers-section .btn-order:hover {
+    background-color: var(--deep-maroon);
+    transform: scale(1.05);
+}
+
+/* ===== VIEW FULL MENU BUTTON ===== */
+/* Container for centered button below product grid - matches spacing to next section */
+.home-bestsellers-section .view-menu-container {
+    text-align: center;
+    margin-top: var(--spacing-xl);
+}
+
+/* Outlined button style for secondary action */
+.home-bestsellers-section .btn-view-menu {
+    background-color: var(--burgundy-wine);
+    color: var(--ivory-cream);
+    padding: var(--spacing-md) var(--spacing-xl);
+    border: none;
+    border-radius: var(--radius-xl);
+    font-family: var(--font-subheading);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-normal);
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* View menu button hover effect */
+.home-bestsellers-section .btn-view-menu:hover {
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+/* Tablet view - 3 columns */
+@media (max-width: 1200px) {
+    .home-bestsellers-section .product-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Small tablet view - 2 columns */
+@media (max-width: 768px) {
+    .home-bestsellers-section .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+    }
+    
+    .home-bestsellers-section .section-title {
+        font-size: 2rem;
+    }
+}
+
+/* Mobile view - 1 column */
+@media (max-width: 480px) {
+    .home-bestsellers-section .product-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .home-bestsellers-section .product-image-wrapper {
+        height: 250px;
+    }
+}

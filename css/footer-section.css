@@ -1,0 +1,181 @@
+/* ===== FOOTER SECTION - UPDATED LAYOUT ===== */
+/* Main footer container with dark maroon background */
+.footer {
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+    padding: var(--spacing-xxl) 0 var(--spacing-lg);
+}
+
+/* Footer content wrapper - centers all three sections horizontally */
+.footer-content {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 6rem;
+    margin-bottom: var(--spacing-xl);
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Individual footer section - left-aligned text within each column */
+.footer-section {
+    text-align: left;
+}
+
+/* All three sections have equal minimum width for consistency */
+.footer-section:first-child {
+    min-width: 250px;
+}
+
+/* Brand section - now text-only without logo */
+.footer-brand {
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Brand name styled as section heading - matches OUR POLICIES and SOCIAL MEDIA */
+.footer-brand-name {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: var(--spacing-md);
+    color: var(--ivory-cream);
+    font-weight: 600;
+    display: block;
+}
+
+/* Contact information container - matches policy links styling */
+.footer-contact {
+    margin-top: 0;
+}
+
+/* Contact information paragraphs */
+.footer-contact p {
+    font-family: var(--font-subheading);
+    font-size: 0.95rem;
+    color: var(--ivory-cream);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-xs);
+}
+
+/* Contact icons styling */
+.footer-contact p i {
+    width: 20px;
+    font-size: 1rem;
+}
+
+/* Section headings - OUR POLICIES and SOCIAL MEDIA */
+.footer-section h3 {
+    font-weight: 600;
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    color: var(--ivory-cream);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: var(--spacing-md);
+}
+
+/* Policy links list - no bullets, left-aligned */
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+/* Individual policy link items - matches contact spacing */
+.footer-links li {
+    margin-bottom: var(--spacing-xs);
+}
+
+/* Policy link text styling with hover effect */
+.footer-links a {
+    color: var(--ivory-cream);
+    text-decoration: none;
+    transition: var(--transition-fast);
+    opacity: 1;
+    font-family: var(--font-subheading);
+    font-size: 0.95rem;
+}
+
+/* Link hover effect - increases opacity and slight indent */
+.footer-links a:hover {
+    opacity: 0.80;
+    padding-left: 5px;
+}
+
+/* Social media icons container - horizontal layout */
+.social-icons {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+/* Individual social media icon styling */
+.social-icon {
+    color: var(--ivory-cream);
+    font-size: 1.5rem;
+    transition: var(--transition-fast);
+    opacity: 1;
+}
+
+/* Social icon hover effect - slight upward movement */
+.social-icon:hover {
+    opacity: 0.80;
+    transform: translateY(0.5px);
+}
+
+/* Decorative divider line - no coffee bean icon */
+.footer-divider {
+    width: 100%;
+    max-width: 1200px;
+    height: 1px;
+    background-color: rgba(245, 241, 232, 0.3);
+    margin: var(--spacing-xl) auto var(--spacing-lg);
+}
+
+/* Copyright text at bottom - centered */
+.footer-bottom {
+    text-align: center;
+    font-size: 0.9rem;
+    opacity: 0.80;
+    font-family: var(--font-subheading);
+    color: var(--ivory-cream);
+}
+
+/* ===== RESPONSIVE DESIGN FOR FOOTER ===== */
+/* Tablet and smaller - stack sections vertically */
+@media (max-width: 768px) {
+    /* Stack footer sections vertically on mobile */
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-xl);
+        text-align: center;
+    }
+    
+    /* Center all sections on mobile */
+    .footer-section {
+        text-align: center;
+    }
+    
+    /* Center brand name on mobile */
+    .footer-brand {
+        text-align: center;
+    }
+    
+    /* Center contact info on mobile */
+    .footer-contact p {
+        justify-content: center;
+    }
+    
+    /* Center policy links on mobile */
+    .footer-links {
+        text-align: center;
+    }
+    
+    /* Center social icons on mobile */
+    .social-icons {
+        justify-content: center;
+    }
+}
