@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 07, 2026 at 06:04 PM
+-- Generation Time: Feb 08, 2026 at 10:54 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -130,6 +130,16 @@ CREATE TABLE `product_interactions` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Tracks user interactions for Best Sellers calculation';
 
+--
+-- Dumping data for table `product_interactions`
+--
+
+INSERT INTO `product_interactions` (`interaction_id`, `product_id`, `interaction_type`, `interaction_count`, `last_interaction`, `created_at`) VALUES
+(1, 1, 'add_to_cart', 2, '2026-02-08 15:42:26', '2026-02-08 07:23:06'),
+(2, 10, 'add_to_cart', 1, '2026-02-08 15:23:08', '2026-02-08 07:23:08'),
+(3, 14, 'add_to_cart', 2, '2026-02-08 15:42:10', '2026-02-08 07:42:09'),
+(4, 12, 'add_to_cart', 4, '2026-02-08 15:42:14', '2026-02-08 07:42:12');
+
 -- --------------------------------------------------------
 
 --
@@ -239,7 +249,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `product_interactions`
 --
 ALTER TABLE `product_interactions`
-  MODIFY `interaction_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `interaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
