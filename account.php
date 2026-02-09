@@ -316,16 +316,16 @@ mysqli_stmt_close($stmt);
                         <a class="nav-link" href="index.php">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="coffee.php">Coffee</a>
+                        <a class="nav-link" href="menu.php">Menu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="pastry.php">Pastry</a>
+                        <a class="nav-link" href="menu.php">Menu</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="offers.php">Offers</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="contact.php">Contact</a>
+                        <a class="nav-link" href="about.php">About</a>
                     </li>
                 </ul>
             </div>
@@ -378,7 +378,7 @@ mysqli_stmt_close($stmt);
                     <div class="stat-icon">
                         <i class="fas fa-peso-sign"></i>
                     </div>
-                    <div class="stat-value">₱<?php echo number_format($stats['total_spent'] ?? 0, 2); ?></div>
+                    <div class="stat-value">â‚±<?php echo number_format($stats['total_spent'] ?? 0, 2); ?></div>
                     <div class="stat-label">Total Spent</div>
                 </div>
 
@@ -420,7 +420,7 @@ mysqli_stmt_close($stmt);
                                 
                                 <div class="order-detail-item">
                                     <span class="detail-label">Total Amount</span>
-                                    <span class="detail-value">₱<?php echo number_format($order['total_amount'], 2); ?></span>
+                                    <span class="detail-value">â‚±<?php echo number_format($order['total_amount'], 2); ?></span>
                                 </div>
                                 
                                 <div class="order-detail-item">

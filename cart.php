@@ -253,16 +253,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <a class="nav-link" href="index.php">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="coffee.php">Coffee</a>
+                        <a class="nav-link" href="menu.php">Menu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="pastry.php">Pastry</a>
+                        <a class="nav-link" href="menu.php">Menu</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="offers.php">Offers</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="contact.php">Contact</a>
+                        <a class="nav-link" href="about.php">About</a>
                     </li>
                 </ul>
             </div>
@@ -320,7 +320,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <!-- Product information and controls -->
                                 <div class="cart-item-info">
                                     <h3><?php echo htmlspecialchars($item['name']); ?></h3>
-                                    <div class="cart-item-price">₱<?php echo number_format($item['price'], 2); ?></div>
+                                    <div class="cart-item-price">â‚±<?php echo number_format($item['price'], 2); ?></div>
                                     
                                     <!-- Quantity adjustment controls -->
                                     <form method="POST" class="quantity-control">
@@ -344,7 +344,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     </form>
                                     
                                     <div style="margin-top: var(--spacing-xs); font-weight: 600; color: var(--dark-brown);">
-                                        Item Total: ₱<?php echo number_format($item['item_total'], 2); ?>
+                                        Item Total: â‚±<?php echo number_format($item['item_total'], 2); ?>
                                     </div>
                                 </div>
                                 
@@ -369,17 +369,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             
                             <div class="summary-row">
                                 <span>Subtotal</span>
-                                <span>₱<?php echo number_format($subtotal, 2); ?></span>
+                                <span>â‚±<?php echo number_format($subtotal, 2); ?></span>
                             </div>
                             
                             <div class="summary-row">
                                 <span>Shipping</span>
-                                <span>₱<?php echo number_format($shipping, 2); ?></span>
+                                <span>â‚±<?php echo number_format($shipping, 2); ?></span>
                             </div>
                             
                             <div class="summary-row">
                                 <span>Total</span>
-                                <span>₱<?php echo number_format($total, 2); ?></span>
+                                <span>â‚±<?php echo number_format($total, 2); ?></span>
                             </div>
                             
                             <?php if(isset($_SESSION['user_id'])): ?>
@@ -401,48 +401,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <?php endif; ?>
         </div>
     </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="footer-brand">
-                        <img src="images/coffee_beans_logo.png" alt="Purge Coffee">
-                        <span class="footer-brand-name">purge coffee</span>
-                    </div>
-                    <div class="footer-contact">
-                        <p><i class="fas fa-phone"></i> 0960 315 0070</p>
-                        <p><i class="fas fa-envelope"></i> purgecoffee@gmail.com</p>
-                    </div>
-                </div>
-
-                <div class="footer-section">
-                    <h3>Our Policies</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">Privacy</a></li>
-                        <li><a href="#">Terms Of Use</a></li>
-                        <li><a href="#">Shipping & Delivery</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-section">
-                    <h3>Social Media</h3>
-                    <div class="social-icons">
-                        <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="footer-divider"></div>
-
-            <div class="footer-bottom">
-                <p>&copy; 2026 Purge Coffee | All Rights Reserved</p>
-            </div>
-        </div>
-    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/main.js"></script>

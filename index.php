@@ -2,14 +2,11 @@
 /**
  * Purge Coffee Shop - Homepage
  * Main landing page with hero section, best seller products, and special offers
- * Best Sellers display 4 products in a grid layout based on user interactions
  */
 
-// Include database configuration
 require_once 'php/config.php';
 
-// Fetch top 4 best seller products based on user interactions
-// Ranking: orders (weight 3), cart additions (weight 2), favorites (weight 1)
+// Fetch top 4 best seller products
 $bestsellers_query = "SELECT 
     p.product_id,
     p.name,
@@ -35,11 +32,10 @@ LIMIT 4";
 
 $bestsellers_result = mysqli_query($conn, $bestsellers_query);
 
-// If no best sellers yet, show 4 sample products (2 coffee, 2 pastry)
+// If no best sellers yet, show 4 sample products
 $show_samples = false;
 if (mysqli_num_rows($bestsellers_result) == 0) {
     $show_samples = true;
-    // Get 2 coffee products
     $sample_coffee_query = "SELECT p.*, c.name as category_name 
                             FROM products p 
                             JOIN categories c ON p.category_id = c.category_id 
@@ -48,11 +44,10 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
                             LIMIT 2";
     $coffee_result = mysqli_query($conn, $sample_coffee_query);
     
-    // Get 2 pastry products
     $sample_pastry_query = "SELECT p.*, c.name as category_name 
                             FROM products p 
                             JOIN categories c ON p.category_id = c.category_id 
-                            WHERE p.category_id = 3 AND p.status = 1 
+                            WHERE p.category_id = 7 AND p.status = 1 
                             ORDER BY p.created_at DESC 
                             LIMIT 2";
     $pastry_result = mysqli_query($conn, $sample_pastry_query);
@@ -65,32 +60,17 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Purge Coffee - The Richest Coffee in the City</title>
     
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
-    
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
-    
-    <!-- Homepage Best Sellers specific styling -->
-    <link rel="stylesheet" href="css/home-bestsellers.css?v=<?php echo time(); ?>">
-    
-    <!-- Footer section styling -->
-    <link rel="stylesheet" href="css/footer-section.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/home-bestsellers.css">
+    <link rel="stylesheet" href="css/footer-section.css">
 </head>
 <body>
     
-    <!-- Top banner showing shipping availability -->
-    <div class="top-banner">
-        Shipping Nationwide
-    </div>
+    <div class="top-banner">Shipping Nationwide</div>
 
-    <!-- Main navigation bar with logo and menu links -->
     <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="index.php">
@@ -108,16 +88,13 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
                         <a class="nav-link active" href="index.php">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="coffee.php">Coffee</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="pastry.php">Pastry</a>
+                        <a class="nav-link" href="menu.php">Menu</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="offers.php">Offers</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="contact.php">Contact</a>
+                        <a class="nav-link" href="about.php">About</a>
                     </li>
                 </ul>
             </div>
@@ -140,7 +117,7 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
         </div>
     </nav>
 
-    <!-- Hero section with welcome message and call-to-action -->
+    <!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
             <div class="row align-items-center">
@@ -150,7 +127,7 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
                     <p class="hero-description">
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
                     </p>
-                    <a href="coffee.php" class="btn-primary">Order Now</a>
+                    <a href="menu.php" class="btn-primary">Order Now</a>
                 </div>
                 <div class="col-lg-6 hero-image">
                     <img src="images/coffee_mug.png" alt="Premium Coffee">
@@ -159,41 +136,29 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
         </div>
     </section>
 
-    <!-- Best Sellers section displaying 4 products in a grid -->
+    <!-- Best Sellers Section -->
     <section class="home-bestsellers-section">
         <div class="container">
-            <!-- Section header with centered title and decorative divider -->
             <div class="section-header">
                 <h2 class="section-title">Best Sellers</h2>
                 <div class="section-divider"></div>
             </div>
 
-            <!-- Product grid - displays 4 products in a row -->
             <div class="product-grid">
                 <?php 
                 if ($show_samples):
-                    // Display sample products when no best sellers exist yet
-                    
-                    // Show coffee products first
                     while($product = mysqli_fetch_assoc($coffee_result)): 
                 ?>
                     <div class="product-card" data-product-id="<?php echo $product['product_id']; ?>">
-                        <!-- Product image with favorite button -->
                         <div class="product-image-wrapper">
                             <div class="favorite-icon" onclick="toggleFavorite(<?php echo $product['product_id']; ?>, this.querySelector('i'))">
                                 <i class="far fa-heart"></i>
                             </div>
                             <img src="images/coffee.png" alt="<?php echo htmlspecialchars($product['name']); ?>" class="product-image">
                         </div>
-                        
-                        <!-- Product details: name, description, price -->
                         <div class="product-info">
                             <h3 class="product-name"><?php echo htmlspecialchars($product['name']); ?></h3>
-                            <p class="product-description">
-                                <?php echo htmlspecialchars($product['description']); ?>
-                            </p>
-                            
-                            <!-- Price and order button -->
+                            <p class="product-description"><?php echo htmlspecialchars($product['description']); ?></p>
                             <div class="product-footer">
                                 <span class="product-price">₱ <?php echo number_format($product['price'], 2); ?></span>
                                 <button class="btn-order" onclick="addToCart(<?php echo $product['product_id']; ?>)">
@@ -204,8 +169,6 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
                     </div>
                 <?php 
                     endwhile;
-                    
-                    // Show pastry products next
                     while($product = mysqli_fetch_assoc($pastry_result)): 
                 ?>
                     <div class="product-card" data-product-id="<?php echo $product['product_id']; ?>">
@@ -217,9 +180,7 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
                         </div>
                         <div class="product-info">
                             <h3 class="product-name"><?php echo htmlspecialchars($product['name']); ?></h3>
-                            <p class="product-description">
-                                <?php echo htmlspecialchars($product['description']); ?>
-                            </p>
+                            <p class="product-description"><?php echo htmlspecialchars($product['description']); ?></p>
                             <div class="product-footer">
                                 <span class="product-price">₱ <?php echo number_format($product['price'], 2); ?></span>
                                 <button class="btn-order" onclick="addToCart(<?php echo $product['product_id']; ?>)">
@@ -231,11 +192,9 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
                 <?php 
                     endwhile;
                 else:
-                    // Display actual best sellers based on user interactions
                     while($product = mysqli_fetch_assoc($bestsellers_result)): 
-                        // Select appropriate image based on product category
                         $image_path = 'images/coffee.png';
-                        if($product['category_id'] == 3) {
+                        if($product['category_id'] == 7) {
                             $image_path = 'images/pastry.png';
                         }
                 ?>
@@ -248,9 +207,7 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
                         </div>
                         <div class="product-info">
                             <h3 class="product-name"><?php echo htmlspecialchars($product['name']); ?></h3>
-                            <p class="product-description">
-                                <?php echo htmlspecialchars($product['description']); ?>
-                            </p>
+                            <p class="product-description"><?php echo htmlspecialchars($product['description']); ?></p>
                             <div class="product-footer">
                                 <span class="product-price">₱ <?php echo number_format($product['price'], 2); ?></span>
                                 <button class="btn-order" onclick="addToCart(<?php echo $product['product_id']; ?>)">
@@ -265,14 +222,13 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
                 ?>
             </div>
 
-            <!-- View Full Menu button centered below products -->
             <div class="view-menu-container">
-                <a href="coffee.php" class="btn-view-menu">View Full Menu</a>
+                <a href="menu.php" class="btn-view-menu">View Full Menu</a>
             </div>
         </div>
     </section>
 
-    <!-- What We Offer section showing product categories -->
+    <!-- What We Offer Section - Matching Offers Page Design -->
     <section class="offers-section">
         <div class="container">
             <div class="section-header">
@@ -280,31 +236,42 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
                 <div class="section-divider"></div>
             </div>
 
-            <!-- Grid of offer cards with images and titles -->
             <div class="offers-grid">
                 <div class="offer-card">
                     <img src="images/coffee_beans_offer.png" alt="Coffee Beans" class="offer-image">
                     <div class="offer-overlay">
                         <h3 class="offer-title">Coffee Beans</h3>
+                        <p style="margin: 0; font-size: 0.9rem;">
+                            Sourced from the finest coffee-growing regions, our premium beans are carefully 
+                            roasted to perfection for an exceptional brewing experience at home.
+                        </p>
                     </div>
                 </div>
                 <div class="offer-card">
                     <img src="images/milk_creamer_offer.png" alt="Milk & Creamers" class="offer-image">
                     <div class="offer-overlay">
                         <h3 class="offer-title">Milk & Creamers</h3>
+                        <p style="margin: 0; font-size: 0.9rem;">
+                            Complete your coffee with our selection of premium dairy and plant-based options, 
+                            each chosen to complement the rich flavors of our signature roasts.
+                        </p>
                     </div>
                 </div>
                 <div class="offer-card">
                     <img src="images/equipment_offer.png" alt="Brewing Equipment" class="offer-image">
                     <div class="offer-overlay">
                         <h3 class="offer-title">Brewing Equipment</h3>
+                        <p style="margin: 0; font-size: 0.9rem;">
+                            Professional-grade espresso machines, grinders, and brewing tools that bring 
+                            the artisan café experience into your own kitchen.
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer with contact info and links -->
+    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
@@ -345,10 +312,7 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
         </div>
     </footer>
 
-    <!-- Bootstrap JavaScript for interactive components -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Custom JavaScript for cart and favorites functionality -->
     <script src="js/main.js"></script>
     
 </body>

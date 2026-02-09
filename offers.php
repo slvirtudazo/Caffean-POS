@@ -2,7 +2,6 @@
 /**
  * Purge Coffee Shop - Offers Page
  * This page showcases the three main product categories: Coffee Beans, Milk & Creamers, and Brewing Equipment.
- * It provides an elegant visual presentation of what the coffee shop offers beyond regular menu items.
  */
 
 require_once 'php/config.php';
@@ -21,10 +20,10 @@ require_once 'php/config.php';
 </head>
 <body>
     
-    <!-- Top banner displaying shipping information -->
+    <!-- Top banner -->
     <div class="top-banner">Shipping Nationwide</div>
 
-    <!-- Main navigation bar with branding and menu links -->
+    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="index.php">
@@ -42,16 +41,13 @@ require_once 'php/config.php';
                         <a class="nav-link" href="index.php">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="coffee.php">Coffee</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="pastry.php">Pastry</a>
+                        <a class="nav-link" href="menu.php">Menu</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="offers.php">Offers</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="contact.php">Contact</a>
+                        <a class="nav-link" href="about.php">About</a>
                     </li>
                 </ul>
             </div>
@@ -74,7 +70,7 @@ require_once 'php/config.php';
         </div>
     </nav>
 
-    <!-- Main offers section displaying three product categories -->
+    <!-- Main offers section -->
     <section class="offers-section">
         <div class="container">
             <div class="section-header">
@@ -134,52 +130,10 @@ require_once 'php/config.php';
                     Visit our café or contact us to learn more about our premium products and services. 
                     Our knowledgeable staff is here to help you find exactly what you need.
                 </p>
-                <a href="contact.php" class="btn-primary">Get In Touch</a>
+                <a href="about.php" class="btn-primary">Get In Touch</a>
             </div>
         </div>
     </section>
-
-    <!-- Footer section with company information and links -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="footer-brand">
-                        <img src="images/coffee_beans_logo.png" alt="Purge Coffee">
-                        <span class="footer-brand-name">purge coffee</span>
-                    </div>
-                    <div class="footer-contact">
-                        <p><i class="fas fa-phone"></i> 0960 315 0070</p>
-                        <p><i class="fas fa-envelope"></i> purgecoffee@gmail.com</p>
-                    </div>
-                </div>
-
-                <div class="footer-section">
-                    <h3>Our Policies</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">Privacy</a></li>
-                        <li><a href="#">Terms Of Use</a></li>
-                        <li><a href="#">Shipping & Delivery</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-section">
-                    <h3>Social Media</h3>
-                    <div class="social-icons">
-                        <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="footer-divider"></div>
-
-            <div class="footer-bottom">
-                <p>&copy; 2026 Purge Coffee | All Rights Reserved</p>
-            </div>
-        </div>
-    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/main.js"></script>
