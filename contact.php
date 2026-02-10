@@ -5,7 +5,7 @@
  * including a contact form, phone number, email, and physical location information.
  */
 
-require_once 'php/config.php';
+require_once 'php/db_connection.php';
 
 $success = '';
 $error = '';

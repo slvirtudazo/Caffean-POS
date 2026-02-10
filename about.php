@@ -5,7 +5,7 @@
  * mission, and values. Replaces the Contact page in navigation.
  */
 
-require_once 'php/config.php';
+require_once 'php/db_connection.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,6 +38,7 @@ require_once 'php/config.php';
         .about-hero h1 {
             font-family: var(--font-heading);
             font-size: 3rem;
+            color: var(--ivory-cream);
             margin-bottom: var(--spacing-md);
         }
         

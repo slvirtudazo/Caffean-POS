@@ -5,7 +5,7 @@
  * including statistics on products, orders, and users. Only accessible to admin users.
  */
 
-require_once '../php/config.php';
+require_once '../php/db_connection.php';
 
 // Check if user is logged in and is an admin
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {

@@ -5,7 +5,7 @@
  * It can be called via AJAX for seamless cart updates without page reload.
  */
 
-require_once 'config.php';
+require_once 'db_connection.php';
 
 // Initialize cart in session if not exists
 if (!isset($_SESSION['cart'])) {

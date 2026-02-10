@@ -6,7 +6,7 @@
  * and creates appropriate session variables upon successful authentication.
  */
 
-require_once 'php/config.php';
+require_once 'php/db_connection.php';
 
 $error = '';
 $success = '';

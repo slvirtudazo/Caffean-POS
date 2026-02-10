@@ -5,7 +5,7 @@
  * customers to manage their profile settings.
  */
 
-require_once 'php/config.php';
+require_once 'php/db_connection.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {

@@ -5,7 +5,7 @@
  * Customers can browse through different pastry offerings and add items to their cart.
  */
 
-require_once 'php/config.php';
+require_once 'php/db_connection.php';
 
 // Set up pagination - showing 4 products per page
 $items_per_page = 4;

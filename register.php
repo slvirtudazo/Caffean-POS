@@ -4,7 +4,7 @@
  * This page handles new customer registration with validation and password hashing
  */
 
-require_once 'php/config.php';
+require_once 'php/db_connection.php';
 
 $error = '';
 $success = '';

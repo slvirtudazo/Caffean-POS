@@ -5,7 +5,7 @@
  * price sorting, and best sellers highlighting
  */
 
-require_once 'php/config.php';
+require_once 'php/db_connection.php';
 
 // Get filter parameters from URL
 $category_filter = isset($_GET['category']) ? intval($_GET['category']) : 0;

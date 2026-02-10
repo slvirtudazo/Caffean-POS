@@ -5,7 +5,7 @@
  * price calculations, and checkout functionality. Uses session storage for cart management.
  */
 
-require_once 'php/config.php';
+require_once 'php/db_connection.php';
 
 // Initialize cart in session if not exists
 if (!isset($_SESSION['cart'])) {

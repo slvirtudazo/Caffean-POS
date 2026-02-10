@@ -5,7 +5,7 @@
  * to dynamically calculate and display best seller products.
  */
 
-require_once 'config.php';
+require_once 'db_connection.php';
 
 // Only process POST requests
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
