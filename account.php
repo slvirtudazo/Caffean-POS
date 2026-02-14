@@ -59,7 +59,7 @@ mysqli_stmt_close($stmt);
     <title>My Account - Purge Coffee</title>
     
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     
@@ -314,9 +314,6 @@ mysqli_stmt_close($stmt);
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" href="index.php">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="menu.php">Menu</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="menu.php">Menu</a>

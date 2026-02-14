@@ -1,329 +1,620 @@
 /**
  * Purge Coffee Shop - Main Stylesheet
- * Comprehensive CSS with variables, global styles, and component definitions
- * Color Palette: Elegant cream, white, and rich brown tones
+ * An elegant, modern coffee shop design with warm color palette
+ * Color Scheme: Ivory Cream, Warm Sand, Deep Maroon, Burgundy Wine
  */
 
-/* ===== CSS VARIABLES - DESIGN SYSTEM ===== */
-:root {
-    /* Color Palette - Elegant Coffee Shop Theme */
-    --deep-maroon: #2A0000;           /* Primary dark - headers, text */
-    --burgundy-wine: #5C2E2E;          /* Secondary - buttons, accents */
-    --saddle-brown: #8B4513;           /* Tertiary brown */
-    --dark-brown: #3B1F1F;             /* Text color */
-    --ivory-cream: #F5F1E8;            /* Main background */
-    --light-beige: #EDE8DC;            /* Card backgrounds */
-    --warm-sand: #E2D9C8;              /* Alternate backgrounds */
-    --white: #FFFFFF;                  /* Pure white */
+/* ===== GOOGLE FONTS IMPORT ===== */
+@import url('https://fonts.googleapis.com/css2?family=Oleo+Script:wght@400;700&family=EB+Garamond:wght@400;700&family=Outfit:wght@400;700&family=Inter:wght@400;700&display=swap');
+
+/* ===== CSS VARIABLES FOR CONSISTENT THEMING ===== */
+:root { 
+    /* Primary Color Palette - Based on design specifications */
+    --ivory-cream: #F5F1E8;
+    --warm-sand: #E2D9C8;
+    --deep-maroon: #2A0000;
+    --burgundy-wine: #5B1312;
+    --light-beige: #EDE8DC;
+    --dark-brown: #3C1518;
     
-    /* Typography */
-    --font-heading: 'Playfair Display', serif;      /* Elegant headings */
-    --font-subheading: 'Outfit', sans-serif;        /* Modern subheadings */
-    --font-body: 'Inter', sans-serif;               /* Readable body text */
+    /* Typography Hierarchy */
+    --font-main: 'Oleo Script';
+    --font-heading: 'EB Garamond', serif;
+    --font-subheading: 'Outfit', sans-serif;
+    --font-body: 'Inter', sans-serif;
     
-    /* Spacing Scale */
-    --spacing-xs: 0.25rem;    /* 4px */
-    --spacing-sm: 0.5rem;     /* 8px */
-    --spacing-md: 1rem;       /* 16px */
-    --spacing-lg: 1.5rem;     /* 24px */
-    --spacing-xl: 2rem;       /* 32px */
-    --spacing-xxl: 3rem;      /* 48px */
-    --spacing-xxxl: 4rem;     /* 64px */
+    /* Spacing System */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+    --spacing-xxl: 4rem;
     
     /* Border Radius */
-    --radius-sm: 4px;
-    --radius-md: 8px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
     --radius-lg: 16px;
     --radius-xl: 24px;
-    --radius-full: 9999px;
     
     /* Shadows */
-    --shadow-sm: 0 2px 4px rgba(42, 0, 0, 0.1);
-    --shadow-md: 0 4px 8px rgba(42, 0, 0, 0.15);
-    --shadow-lg: 0 8px 16px rgba(42, 0, 0, 0.2);
-    --shadow-xl: 0 12px 24px rgba(42, 0, 0, 0.25);
+    --shadow-sm: 0 2px 8px rgba(42, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(42, 0, 0, 0.12);
+    --shadow-lg: 0 8px 32px rgba(42, 0, 0, 0.16);
     
     /* Transitions */
-    --transition-fast: all 0.2s ease;
-    --transition-normal: all 0.3s ease;
-    --transition-slow: all 0.5s ease;
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
 }
 
-/* ===== GLOBAL STYLES ===== */
+/* ===== RESET & BASE STYLES ===== */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* Base body styling with brand colors and fonts */
 body {
     font-family: var(--font-body);
     background-color: var(--ivory-cream);
     color: var(--dark-brown);
     line-height: 1.6;
     overflow-x: hidden;
+    font-size: 16px;
 }
 
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+/* Smooth scrolling for anchor links */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ===== TYPOGRAPHY ===== */
+/* Heading elements with consistent font family */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: var(--spacing-md);
+}
+
+/* Main page title - largest heading */
+h1 {
+    font-size: clamp(3rem, 5vw, 5rem);
+    color: var(--deep-maroon);
+}
+
+/* Section titles - secondary heading */
+h2 {
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    color: var(--deep-maroon);
+}
+
+/* Subsection titles - tertiary heading */
+h3 {
+    font-family: var(--font-subheading);
+    font-size: clamp(1.25rem, 2vw, 1.75rem);
+    font-weight: 600;
+}
+
+/* Paragraph text with responsive sizing */
+p {
+    margin-bottom: var(--spacing-sm);
+    font-size: clamp(0.9rem, 1.5vw, 1rem);
+}
 
 /* ===== TOP BANNER ===== */
+/* Full-width announcement banner at top of page */
 .top-banner {
     background-color: var(--deep-maroon);
     color: var(--ivory-cream);
     text-align: center;
-    padding: var(--spacing-sm) 0;
+    padding: var(--spacing-xs) 0;
+    font-family: var(--font-heading);
     font-size: 0.875rem;
-    font-weight: 500;
-    letter-spacing: 2px;
+    letter-spacing: 0.5rem;
     text-transform: uppercase;
+    font-weight: 500;
 }
 
-/* ===== NAVIGATION BAR ===== */
+/* ===== NAVIGATION ===== */
+/* Sticky navigation bar with shadow */
 .navbar {
     background-color: var(--ivory-cream);
-    padding: var(--spacing-md) 0;
-    border-bottom: 1px solid rgba(42, 0, 0, 0.1);
+    padding: var(--spacing-sm) 0;
+    box-shadow: var(--shadow-sm);
     position: sticky;
     top: 0;
     z-index: 1000;
-    box-shadow: var(--shadow-sm);
+    transition: var(--transition-normal);
 }
 
+/* Brand logo and name container */
 .navbar-brand {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
+    font-family: var(--font-main);
+    font-size: 1.75rem;
+    color: var(--deep-maroon);
     text-decoration: none;
-    color: var(--deep-maroon);
+    transition: var(--transition-fast);
 }
 
+/* Logo image - transparent background */
 .navbar-brand img {
-    width: 35px;
-    height: 35px;
+    width: 45px;
+    height: 45px;
     object-fit: contain;
+    background: transparent;
 }
 
-.navbar-brand span {
-    font-family: var(--font-subheading);
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--deep-maroon);
+/* Hover effect for brand logo */
+.navbar-brand:hover {
+    opacity: 0.8;
+    transform: translateY(-2px);
 }
 
+/* Navigation menu spacing */
 .navbar-nav {
-    gap: var(--spacing-xl);
+    gap: var(--spacing-lg);
 }
 
+/* Individual navigation link styling */
 .nav-link {
     font-family: var(--font-subheading);
     font-size: 1rem;
     font-weight: 500;
-    color: var(--dark-brown) !important;
+    color: var(--dark-brown);
+    text-decoration: none;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    padding: var(--spacing-sm) 0 !important;
+    letter-spacing: 0.5px;
+    padding: var(--spacing-xs) 0;
     position: relative;
     transition: var(--transition-fast);
 }
 
+/* Animated underline for navigation links */
 .nav-link::after {
     content: '';
     position: absolute;
     bottom: 0;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: 0;
     height: 2px;
     background-color: var(--burgundy-wine);
-    transition: var(--transition-fast);
+    transition: var(--transition-normal);
 }
 
+/* Hover and active state for navigation links */
+.nav-link:hover,
+.nav-link.active {
+    color: var(--burgundy-wine);
+}
+
+/* Show underline on hover and active state */
 .nav-link:hover::after,
 .nav-link.active::after {
     width: 100%;
 }
 
-.nav-link.active {
-    color: var(--burgundy-wine) !important;
-}
-
+/* Navigation Icons */
+/* Container for search, cart, and user icons */
 .nav-icons {
     display: flex;
-    align-items: center;
     gap: var(--spacing-md);
+    align-items: center;
 }
 
+/* Individual icon styling in navigation */
 .nav-icon {
+    color: var(--deep-maroon);
     font-size: 1.25rem;
-    color: var(--dark-brown);
     cursor: pointer;
     transition: var(--transition-fast);
 }
 
+/* Icon hover effect with color change and scale */
 .nav-icon:hover {
     color: var(--burgundy-wine);
     transform: scale(1.1);
 }
 
 /* ===== HERO SECTION ===== */
+/* Main landing section with fixed height */
 .hero-section {
     background-color: var(--ivory-cream);
-    padding: var(--spacing-xxxl) 0;
-    min-height: 85vh;
+    height: 650px;
     display: flex;
     align-items: center;
+    padding: var(--spacing-xl) 0;
+    position: relative;
+    overflow: hidden;
 }
 
+/* Hero text content container with animation */
 .hero-content {
-    padding-right: var(--spacing-xl);
+    z-index: 2;
+    animation: fadeInUp 1s ease-out;
+    padding-top: 20px;
+    padding-bottom: 50px;
 }
 
+/* Small label above hero title */
 .hero-label {
     font-family: var(--font-subheading);
-    font-size: 1rem;
+    font-size: 0.875rem;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--dark-brown);
+    letter-spacing: 3px;
+    color: var(--burgundy-wine);
     margin-bottom: var(--spacing-sm);
+    font-weight: 600;
 }
 
+/* Main hero heading with responsive sizing */
 .hero-title {
     font-family: var(--font-heading);
-    font-size: 3.5rem;
-    font-weight: 700;
-    line-height: 1.2;
+    font-size: clamp(2.5rem, 6vw, 5rem);
     color: var(--deep-maroon);
-    margin-bottom: var(--spacing-lg);
+    line-height: 1.1;
+    margin-bottom: var(--spacing-md);
 }
 
+/* Hero description text */
 .hero-description {
-    font-size: 1.1rem;
     color: var(--dark-brown);
+    font-size: 1.125rem;
+    max-width: 500px;
     margin-bottom: var(--spacing-xl);
     line-height: 1.8;
 }
 
-.hero-image img {
-    width: 100%;
-    max-width: 600px;
-    height: auto;
-    object-fit: contain;
-    animation: float 3s ease-in-out infinite;
+/* Hero image container with floating animation */
+.hero-image {
+    position: relative;
+    z-index: 1;
+    animation: floatAnimation 3s ease-in-out infinite;
 }
 
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
+/* Hero image with shadow effect */
+.hero-image img {
+    width: auto;
+    max-width: 600px;
+    height: auto;
+    filter: drop-shadow(0 20px 40px rgba(42, 0, 0, 0.15));
 }
 
 /* ===== BUTTONS ===== */
+/* Primary call-to-action button */
 .btn-primary {
-    display: inline-block;
-    background-color: var(--deep-maroon);
+    background-color: var(--burgundy-wine);
     color: var(--ivory-cream);
-    padding: var(--spacing-md) var(--spacing-xxl);
+    padding: var(--spacing-md) var(--spacing-xl);
+    border: none;
     border-radius: var(--radius-xl);
     font-family: var(--font-subheading);
     font-size: 1rem;
     font-weight: 600;
-    text-decoration: none;
     text-transform: capitalize;
-    transition: var(--transition-normal);
-    border: none;
     cursor: pointer;
-    box-shadow: var(--shadow-md);
+    transition: var(--transition-normal);
+    text-decoration: none;
+    display: inline-block;
 }
 
+/* Primary button hover effect with lift */
 .btn-primary:hover {
-    background-color: var(--burgundy-wine);
-    color: var(--ivory-cream);
+    background-color: var(--deep-maroon);
     transform: translateY(-3px);
     box-shadow: var(--shadow-lg);
 }
 
+/* Secondary outlined button */
 .btn-secondary {
-    display: inline-block;
     background-color: transparent;
-    color: var(--deep-maroon);
-    padding: var(--spacing-md) var(--spacing-xxl);
-    border-radius: var(--radius-xl);
+    color: var(--burgundy-wine);
     border: 2px solid var(--deep-maroon);
+    padding: calc(var(--spacing-md) - 2px) calc(var(--spacing-xl) - 2px);
+    border-radius: var(--radius-xl);
     font-family: var(--font-subheading);
     font-size: 1rem;
     font-weight: 600;
-    text-decoration: none;
-    transition: var(--transition-normal);
     cursor: pointer;
+    transition: var(--transition-normal);
 }
 
+/* Secondary button hover effect - fills with color */
 .btn-secondary:hover {
     background-color: var(--deep-maroon);
     color: var(--ivory-cream);
+    transform: translateY(-3px);
 }
 
-/* ===== SECTION HEADERS ===== */
+/* ===== MENU SECTIONS ===== */
+/* General menu section container */
+.menu-section {
+    padding: var(--spacing-xl) 0;
+    background-color: var(--ivory-cream);
+    min-height: 700px;
+    display: flex;
+    align-items: center;
+}
+
+/* Section header with centered title */
 .section-header {
     text-align: center;
-    margin-bottom: var(--spacing-xl);
+    margin-bottom: var(--spacing-xxl);
+    position: relative;
 }
 
+/* Center align section titles */
+.section-header .section-title {
+    text-align: center;
+}
+
+/* Left align paragraphs within section header */
+.section-header > p {
+    text-align: left;
+    margin: 0 auto;
+}
+
+/* Main section title typography */
 .section-title {
     font-family: var(--font-heading);
-    font-size: 2.5rem;
+    font-size: 50px;
     color: var(--deep-maroon);
     text-transform: uppercase;
     letter-spacing: 3px;
     margin-bottom: var(--spacing-md);
-    position: relative;
-    display: inline-block;
 }
 
+/* Decorative divider line under section titles */
 .section-divider {
-    width: 200px;
-    height: 2px;
+    width: 100px;
+    height: 3px;
     background-color: var(--burgundy-wine);
-    margin: var(--spacing-md) auto;
+    margin: 0 auto var(--spacing-sm);
     position: relative;
 }
 
+/* Coffee bean icon centered on divider */
 .section-divider::before {
-    content: '\2615';  /* Coffee cup icon */
+    content: '';
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: var(--ivory-cream);
-    color: var(--burgundy-wine);
-    font-size: 1.5rem;
-    padding: 0 var(--spacing-sm);
+    width: 30px;
+    height: 30px;
+    background-image: url('../images/coffee_beans_logo.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
-/* ===== CARDS ===== */
-.card {
+/* ===== PRODUCT CARDS ===== */
+/* Responsive grid layout for product cards */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Individual product card container */
+.product-card {
+    max-width: 50%;
+    max-height: fit-content;
     background-color: var(--light-beige);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: var(--shadow-sm);
     transition: var(--transition-normal);
+    box-shadow: var(--shadow-sm);
+    position: relative;
 }
 
-.card:hover {
+/* Card lift effect on hover */
+.product-card:hover {
     transform: translateY(-8px);
     box-shadow: var(--shadow-lg);
 }
 
+/* Product image wrapper with background */
+.product-image-wrapper {
+    position: relative;
+    width: fit-content;
+    height: fit-content;
+    overflow: hidden;
+    background-color: var(--warm-sand);
+}
+
+/* Product image with smooth transition */
+.product-image {
+    width: 100%;
+    height: fit-content;
+    object-fit: cover;
+    transition: var(--transition-slow);
+}
+
+/* Image zoom effect on card hover */
+.product-card:hover .product-image {
+    transform: scale(1.1);
+}
+
+/* Favorite heart icon button */
+.favorite-icon {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    z-index: 10;
+}
+
+/* Favorite icon hover effect */
+.favorite-icon:hover {
+    background-color: var(--burgundy-wine);
+    color: white;
+    transform: scale(1.1);
+}
+
+/* Product information container */
+.product-info {
+    padding: var(--spacing-md);
+}
+
+/* Product name styling */
+.product-name {
+    font-family: var(--font-subheading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--deep-maroon);
+    margin-bottom: var(--spacing-xs);
+}
+
+/* Product description text */
+.product-description {
+    color: var(--dark-brown);
+    font-size: 0.9rem;
+    margin-bottom: var(--spacing-md);
+    line-height: 1.6;
+}
+
+/* Footer section of product card */
+.product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Product price display */
+.product-price {
+    font-family: var(--font-subheading);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--burgundy-wine);
+}
+
+/* Order button on product card */
+.btn-order {
+    background-color: var(--burgundy-wine);
+    color: var(--ivory-cream);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: var(--font-subheading);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+/* Order button hover effect */
+.btn-order:hover {
+    background-color: var(--deep-maroon);
+    transform: scale(1.05);
+}
+
+/* ===== CAROUSEL/PAGINATION ===== */
+/* Carousel navigation controls container */
+.carousel-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-xl);
+}
+
+/* Circular carousel arrow buttons */
+.carousel-arrow {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-fast);
+}
+
+/* Arrow button hover effect */
+.carousel-arrow:hover {
+    background-color: var(--burgundy-wine);
+    transform: scale(1.1);
+}
+
+/* Pagination dots container */
+.pagination-dots {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+/* Individual pagination dot */
+.pagination-dot {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid var(--deep-maroon);
+    background-color: transparent;
+    color: var(--deep-maroon);
+    font-family: var(--font-subheading);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Active pagination dot - filled */
+.pagination-dot.active {
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+}
+
+/* Pagination dot hover effect */
+.pagination-dot:hover {
+    background-color: var(--burgundy-wine);
+    border-color: var(--burgundy-wine);
+    color: var(--ivory-cream);
+}
+
 /* ===== WHAT WE OFFER SECTION ===== */
+/**
+ * Main container for the What We Offer section
+ * Purpose: Creates consistent spacing and background matching Best Sellers section
+ */
 .offers-section {
     padding: var(--spacing-xxl) 0;
     background-color: var(--ivory-cream);
     margin-bottom: var(--spacing-xl);
 }
 
+/**
+ * Section header container
+ * Purpose: Centers the title and provides bottom spacing before content
+ */
 .offers-section .section-header {
     text-align: center;
     margin-bottom: var(--spacing-xl);
 }
 
+/**
+ * Section title typography
+ * Purpose: Large, prominent heading consistent with other sections
+ */
 .offers-section .section-title {
     font-family: var(--font-heading);
     font-size: 2.5rem;
@@ -333,26 +624,57 @@ body {
     margin-bottom: var(--spacing-md);
 }
 
+/**
+ * REMOVED: Decorative divider with coffee bean icon
+ * The section divider and coffee bean logo have been removed
+ * This creates a cleaner, more modern look matching the updated Best Sellers section
+ * 
+ * Previously included:
+ * - .offers-section .section-divider (horizontal line)
+ * - .offers-section .section-divider::before (coffee bean icon)
+ * 
+ * Removed for:
+ * - Cleaner visual design
+ * - Reduced visual clutter
+ * - Consistency across sections
+ */
+
+/**
+ * Grid layout for offer cards
+ * Purpose: Displays three category cards in a responsive grid
+ */
 .offers-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: var(--spacing-xl);
 }
 
+/**
+ * Individual offer card with image overlay
+ * Purpose: Creates clickable category cards with images and text overlays
+ */
 .offer-card {
     position: relative;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    height: 400px;
+    height: 350px;
     cursor: pointer;
     transition: var(--transition-normal);
 }
 
+/**
+ * Card lift effect on hover
+ * Purpose: Provides visual feedback when user hovers over category
+ */
 .offer-card:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow-lg);
 }
 
+/**
+ * Full-width offer image
+ * Purpose: Displays category image filling the entire card
+ */
 .offer-image {
     width: 100%;
     height: 100%;
@@ -360,91 +682,121 @@ body {
     transition: var(--transition-slow);
 }
 
+/**
+ * Image zoom effect on hover
+ * Purpose: Creates engaging visual effect when hovering over card
+ */
 .offer-card:hover .offer-image {
     transform: scale(1.05);
 }
 
+/**
+ * Dark gradient overlay at bottom
+ * Purpose: Ensures text readability over image by darkening bottom area
+ */
 .offer-overlay {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(to top, rgba(42, 0, 0, 0.95), rgba(42, 0, 0, 0.7), transparent);
-    padding: var(--spacing-xxl) var(--spacing-lg);
+    background: linear-gradient(to top, rgba(42, 0, 0, 0.9), transparent);
+    padding: var(--spacing-xl) var(--spacing-md);
     color: var(--ivory-cream);
 }
 
+/**
+ * Category title on offer card
+ * Purpose: Large, readable category name using subheading font
+ */
 .offer-title {
     font-family: var(--font-subheading);
     font-size: 2rem;
     color: var(--ivory-cream);
-    margin: 0 0 var(--spacing-md) 0;
+    margin: 0;
     text-align: center;
 }
 
-.offer-description {
+/**
+ * Additional overlay text styling
+ * Purpose: Ensures paragraph text in overlay is left-aligned and properly spaced
+ */
+.offer-overlay > p {
     text-align: left;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: var(--ivory-cream);
-    margin: 0;
+    margin-top: var(--spacing-sm);
+}
+
+/* ===== ANIMATIONS ===== */
+/* Fade in from bottom animation for hero content */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Floating animation for hero image */
+@keyframes floatAnimation {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
-@media (max-width: 1024px) {
-    .hero-title {
-        font-size: 2.5rem;
-    }
-    
-    .section-title {
-        font-size: 2rem;
-    }
-}
-
+/* Mobile and tablet layout adjustments */
 @media (max-width: 768px) {
+    /* Center hero content on mobile */
     .hero-section {
+        text-align: center;
         padding: var(--spacing-xl) 0;
-        min-height: auto;
     }
     
-    .hero-title {
-        font-size: 2rem;
+    /* Add spacing for hero image on mobile */
+    .hero-image {
+        margin-top: var(--spacing-xl);
     }
     
-    .hero-description {
-        font-size: 1rem;
+    /* Single column product grid */
+    .product-grid {
+        grid-template-columns: 1fr;
     }
     
-    .section-title {
-        font-size: 1.75rem;
+    /* Single column offers grid */
+    .offers-grid {
+        grid-template-columns: 1fr;
     }
     
-    .offer-card {
-        height: 350px;
-    }
-    
-    .nav-icons {
-        gap: var(--spacing-sm);
+    /* Reduce navigation spacing */
+    .navbar-nav {
+        gap: var(--spacing-md);
     }
 }
 
 /* ===== UTILITY CLASSES ===== */
-.text-center { text-align: center; }
-.text-left { text-align: left; }
-.text-right { text-align: right; }
-
-.mt-1 { margin-top: var(--spacing-sm); }
-.mt-2 { margin-top: var(--spacing-md); }
-.mt-3 { margin-top: var(--spacing-lg); }
-.mt-4 { margin-top: var(--spacing-xl); }
-
-.mb-1 { margin-bottom: var(--spacing-sm); }
-.mb-2 { margin-bottom: var(--spacing-md); }
-.mb-3 { margin-bottom: var(--spacing-lg); }
-.mb-4 { margin-bottom: var(--spacing-xl); }
-
+/* Maximum width container with auto margins */
 .container {
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 0 var(--spacing-lg);
+    padding: 0 var(--spacing-md);
+}
+
+/* Center text alignment utility */
+.text-center {
+    text-align: center;
+}
+
+/* Top margin utility */
+.mt-4 {
+    margin-top: var(--spacing-xl);
+}
+
+/* Bottom margin utility */
+.mb-4 {
+    margin-bottom: var(--spacing-xl);
 }

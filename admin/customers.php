@@ -43,7 +43,7 @@ $stats = mysqli_fetch_assoc($stats_result);
     <title>Customers Management - Purge Coffee Admin</title>
     
     <link rel="icon" type="image/png" href="../images/coffee_beans_logo.png">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>

@@ -1,7 +1,8 @@
 <?php
 /**
  * Purge Coffee Shop - About Page
- * Coffee shop background story and mission
+ * This page provides information about the coffee shop, its story,
+ * mission, and values. Replaces the Contact page in navigation.
  */
 
 require_once 'php/db_connection.php';
@@ -16,13 +17,171 @@ require_once 'php/db_connection.php';
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="css/about-page.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/footer-section.css">
+    
+    <style>
+        /* About page specific styles */
+        .about-section {
+            padding: var(--spacing-xxl) 0;
+            background-color: var(--ivory-cream);
+        }
+        
+        .about-hero {
+            background: linear-gradient(135deg, var(--deep-maroon) 0%, var(--burgundy-wine) 100%);
+            color: var(--ivory-cream);
+            padding: var(--spacing-xxl) 0;
+            text-align: center;
+            margin-bottom: var(--spacing-xxl);
+        }
+        
+        .about-hero h1 {
+            font-family: var(--font-heading);
+            font-size: 3rem;
+            color: var(--ivory-cream);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .about-hero p {
+            font-size: 1.25rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.95;
+        }
+        
+        .about-content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .about-card {
+            background: white;
+            padding: var(--spacing-xxl);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .about-card h2 {
+            font-family: var(--font-heading);
+            color: var(--deep-maroon);
+            font-size: 2rem;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .about-card p {
+            color: var(--dark-brown);
+            line-height: 1.8;
+            font-size: 1.05rem;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-xl);
+        }
+        
+        .value-item {
+            text-align: center;
+            padding: var(--spacing-lg);
+            background: var(--warm-sand);
+            border-radius: var(--radius-lg);
+            transition: var(--transition-normal);
+        }
+        
+        .value-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .value-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--deep-maroon);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin: 0 auto var(--spacing-md);
+        }
+        
+        .value-item h3 {
+            font-family: var(--font-subheading);
+            color: var(--deep-maroon);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .value-item p {
+            color: var(--dark-brown);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+        
+        .contact-cta {
+            background: var(--deep-maroon);
+            color: white;
+            padding: var(--spacing-xxl);
+            border-radius: var(--radius-xl);
+            text-align: center;
+            margin-top: var(--spacing-xxl);
+        }
+        
+        .contact-cta h2 {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .contact-cta p {
+            font-size: 1.125rem;
+            margin-bottom: var(--spacing-lg);
+            opacity: 0.95;
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-xxl);
+            flex-wrap: wrap;
+            margin-top: var(--spacing-lg);
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .contact-item i {
+            font-size: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .about-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .about-card {
+                padding: var(--spacing-lg);
+            }
+            
+            .contact-info {
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+        }
+    </style>
 </head>
 <body>
     
+    <!-- Top banner -->
     <div class="top-banner">Shipping Nationwide</div>
 
+    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="index.php">
@@ -48,9 +207,6 @@ require_once 'php/db_connection.php';
                     <li class="nav-item">
                         <a class="nav-link active" href="about.php">About</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="contact.php">Contact</a>
-                    </li>
                 </ul>
             </div>
             
@@ -72,91 +228,161 @@ require_once 'php/db_connection.php';
         </div>
     </nav>
 
-    <!-- About Section -->
-    <section class="about-section">
+    <!-- Hero Section -->
+    <div class="about-hero">
         <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">About Purge Coffee</h2>
-                <div class="section-divider"></div>
+            <h1>About Purge Coffee</h1>
+            <p>Crafting exceptional coffee experiences since 2020. We believe every cup tells a story.</p>
+        </div>
+    </div>
+
+    <!-- Main About Content -->
+    <section class="about-section">
+        <div class="container about-content">
+            
+            <!-- Our Story -->
+            <div class="about-card">
+                <h2>Our Story</h2>
+                <p>
+                    Purge Coffee was born from a simple passion: to serve the richest, most flavorful coffee 
+                    in the city. What started as a small café in Davao City has grown into a beloved community 
+                    gathering place where friends meet, ideas flourish, and every cup is crafted with care.
+                </p>
+                <p>
+                    Our journey began with sourcing the finest coffee beans from local and international growers, 
+                    building relationships with farmers who share our commitment to quality and sustainability. 
+                    Today, we continue that tradition, bringing you exceptional coffee experiences every single day.
+                </p>
             </div>
 
-            <div class="about-content">
-                <div class="row align-items-center mb-5">
-                    <div class="col-lg-6">
-                        <div class="about-image-wrapper">
-                            <img src="images/coffee_mug.png" alt="Purge Coffee" class="about-image">
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <h3 class="about-subtitle">Our Story</h3>
-                        <p class="about-text">
-                            Founded in 2020, Purge Coffee was born from a simple passion: to serve the richest, 
-                            most exceptional coffee in the city. What started as a small neighborhood café has 
-                            grown into a beloved destination for coffee enthusiasts who appreciate quality, 
-                            craftsmanship, and community.
-                        </p>
-                        <p class="about-text">
-                            Our name "Purge" represents our commitment to pure, unadulterated coffee excellence—
-                            purging the ordinary to deliver the extraordinary. Every cup we serve is a testament 
-                            to this philosophy, crafted with precision and served with pride.
-                        </p>
-                    </div>
-                </div>
+            <!-- Our Mission -->
+            <div class="about-card">
+                <h2>Our Mission</h2>
+                <p>
+                    At Purge Coffee, we're more than just a café—we're a community hub dedicated to bringing people 
+                    together over exceptional coffee. Our mission is to create memorable moments, one cup at a time, 
+                    while supporting sustainable practices and celebrating the artistry of coffee making.
+                </p>
+                <p>
+                    We strive to provide not just great coffee, but an experience that uplifts your day, sparks 
+                    conversation, and creates lasting memories.
+                </p>
+            </div>
 
-                <div class="row align-items-center mb-5">
-                    <div class="col-lg-6 order-lg-2">
-                        <div class="about-image-wrapper">
-                            <img src="images/coffee_beans_offer.png" alt="Our Coffee" class="about-image">
+            <!-- Our Values -->
+            <div class="about-card">
+                <h2>Our Values</h2>
+                <div class="values-grid">
+                    
+                    <!-- Quality -->
+                    <div class="value-item">
+                        <div class="value-icon">
+                            <i class="fas fa-award"></i>
                         </div>
+                        <h3>Quality First</h3>
+                        <p>We source only the finest beans and ingredients, ensuring every product meets our high standards.</p>
                     </div>
-                    <div class="col-lg-6 order-lg-1">
-                        <h3 class="about-subtitle">Our Mission</h3>
-                        <p class="about-text">
-                            At Purge Coffee, we believe that every cup should be an experience. Our mission is 
-                            to source the finest beans from ethical farms around the world, roast them to 
-                            perfection, and serve them in an atmosphere that feels like home.
-                        </p>
-                        <p class="about-text">
-                            We're more than just a coffee shop—we're a gathering place where friendships are 
-                            formed, ideas are shared, and memories are made. Whether you're grabbing your morning 
-                            espresso or settling in for an afternoon with friends, we're here to make every visit 
-                            special.
-                        </p>
+                    
+                    <!-- Community -->
+                    <div class="value-item">
+                        <div class="value-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Community</h3>
+                        <p>We're committed to building connections and creating a welcoming space for everyone.</p>
                     </div>
-                </div>
-
-                <div class="values-section">
-                    <h3 class="about-subtitle text-center mb-4">Our Values</h3>
-                    <div class="row g-4">
-                        <div class="col-md-4">
-                            <div class="value-card">
-                                <i class="fas fa-award value-icon"></i>
-                                <h4>Quality First</h4>
-                                <p>We never compromise on the quality of our beans, equipment, or service. 
-                                   Excellence is our standard.</p>
-                            </div>
+                    
+                    <!-- Sustainability -->
+                    <div class="value-item">
+                        <div class="value-icon">
+                            <i class="fas fa-leaf"></i>
                         </div>
-                        <div class="col-md-4">
-                            <div class="value-card">
-                                <i class="fas fa-leaf value-icon"></i>
-                                <h4>Sustainability</h4>
-                                <p>We partner with ethical farms and use eco-friendly practices to protect 
-                                   our planet for future generations.</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="value-card">
-                                <i class="fas fa-heart value-icon"></i>
-                                <h4>Community</h4>
-                                <p>We're proud to be part of this neighborhood, supporting local businesses 
-                                   and giving back to our community.</p>
-                            </div>
-                        </div>
+                        <h3>Sustainability</h3>
+                        <p>We practice environmentally conscious operations and support ethical sourcing.</p>
                     </div>
+                    
+                    <!-- Craftsmanship -->
+                    <div class="value-item">
+                        <div class="value-icon">
+                            <i class="fas fa-coffee"></i>
+                        </div>
+                        <h3>Craftsmanship</h3>
+                        <p>Every drink is carefully crafted by our skilled baristas with attention to detail.</p>
+                    </div>
+                    
                 </div>
             </div>
+
+            <!-- Contact Call to Action -->
+            <div class="contact-cta">
+                <h2>Get In Touch</h2>
+                <p>Have questions or want to learn more? We'd love to hear from you!</p>
+                
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>0960 315 0070</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>purgecoffee@gmail.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Davao City, Philippines</span>
+                    </div>
+                </div>
+                
+                <div style="margin-top: var(--spacing-xl);">
+                    <a href="menu.php" class="btn-primary" style="background: white; color: var(--deep-maroon);">
+                        Explore Our Menu
+                    </a>
+                </div>
+            </div>
+
         </div>
     </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-brand">
+                        <span class="footer-brand-name">PURGE COFFEE</span>
+                    </div>
+                    <div class="footer-contact">
+                        <p><i class="fas fa-phone"></i> 0960 315 0070</p>
+                        <p><i class="fas fa-envelope"></i> purgecoffee@gmail.com</p>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>OUR POLICIES</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Privacy</a></li>
+                        <li><a href="#">Terms Of Use</a></li>
+                        <li><a href="#">Shipping & Delivery</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>SOCIAL MEDIA</h3>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-divider"></div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 Purge Coffee | All Rights Reserved</p>
+            </div>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/main.js"></script>

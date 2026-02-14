@@ -1,0 +1,255 @@
+body {
+    font-family: var(--font-body);
+    background: var(--light-beige);
+    min-height: 100vh; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    margin: 0;
+}
+
+.register-container {
+    background: var(--ivory-cream);
+    border-radius: 30px;
+    padding: 40px; 
+    margin: 0 auto;
+    max-width: 600px;
+    width: 100%;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.back-home {
+    position: absolute;
+    top: 35px;
+    left: 40px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--burgundy-wine);
+    font-size: 15px;
+    font-weight: 500;
+    transition: transform 0.2s;
+    z-index: 10;
+}
+
+.back-home:hover {
+    transform: translateY(-1px);
+    color: var(--deep-maroon);
+}
+
+.logo {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    width: 30px;
+    height: 30px;
+}
+
+.register-header {
+    text-align: center;
+    margin-top: 60px;
+    margin-bottom: 30px;
+}
+
+.register-title {
+    font-family: var(--font-main);
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--deep-maroon);
+    margin-bottom: 5px;
+    line-height: 1.2;
+}
+
+.register-subtitle {
+    font-family: var(--font-subheading);
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--deep-maroon);
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+/* Side-by-side inputs for names */
+.form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.form-row .form-group {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.form-label {
+    display: block;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 14px 20px;
+    border: 2px solid var(--deep-maroon);
+    border-radius: 15px;
+    font-size: 15px;
+    color: #333;
+    background: var(--ivory-cream);
+    transition: all 0.3s;
+}
+
+.form-control::placeholder {
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: #999;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--burgundy-wine);
+    background: var(--light-beige);
+}
+
+.btn-register {
+    width: 100%;
+    padding: 14px;
+    margin-top: 5px;
+    background: var(--burgundy-wine);
+    color: var(--ivory-cream);
+    border: none;
+    border-radius: 15px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-register:hover {
+    background: var(--deep-maroon);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(61, 20, 16, 0.3);
+}
+
+/* Updated Auth Link Styling - Matching Login */
+.auth-link {
+    display: block;
+    text-align: center;
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--deep-maroon);
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.auth-link:hover {
+    color: var(--burgundy-wine);
+    transform: translateY(-1px);
+}
+
+/* Target the span for bold & underline */
+.auth-link span {
+    font-family: var(--font-body);
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.alert {
+    padding: 12px 18px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.alert-danger {
+    background-color: #fee;
+    color: #c33;
+    border: 1px solid #fcc;
+}
+
+.alert-success {
+    background-color: #efe;
+    color: #3c3;
+    border: 1px solid #cfc;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .register-container {
+        padding: 35px 25px; 
+    }
+    
+    .back-home {
+        top: 25px;
+        left: 25px;
+        font-size: 14px;
+    }
+    
+    .logo {
+        top: 22px;
+        right: 25px;
+        width: 28px;
+        height: 28px;
+    }
+    
+    .register-header {
+        margin-top: 50px; 
+        margin-bottom: 25px;
+    }
+    
+    .register-title {
+        font-size: 26px;
+    }
+    
+    .register-subtitle {
+        font-size: 14px;
+    }
+
+    /* Stack names on mobile */
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .form-row .form-group {
+        margin-bottom: 18px;
+    }
+    
+    .form-group {
+        margin-bottom: 16px;
+    }
+}
+
+@media (max-height: 750px) {
+    .register-container {
+        padding: 30px;
+    }
+    
+    .register-header {
+        margin-top: 50px;
+        margin-bottom: 20px;
+    }
+    
+    .register-title {
+        font-size: 28px;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-row {
+        margin-bottom: 15px;
+    }
+}

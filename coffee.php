@@ -5,7 +5,7 @@
  * different coffee offerings including hot coffee, iced coffee, and special drinks.
  */
 
-require_once 'php/db_connection.php';
+require_once 'php/config.php';
 
 // Pagination configuration
 $items_per_page = 4;
@@ -37,7 +37,7 @@ $products_result = mysqli_query($conn, $products_query);
     <title>Coffee Menu - Purge Coffee</title>
     
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/coffee-page.css">

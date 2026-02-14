@@ -1,7 +1,8 @@
 <?php
 /**
  * Purge Coffee Shop - Offers Page
- * Display coffee beans, milk & creamers, and brewing equipment with descriptions
+ * This page showcases the three main product categories: Coffee Beans, Milk & Creamers, and Brewing Equipment.
+ * Updated to remove decorative coffee bean logo for cleaner design
  */
 
 require_once 'php/db_connection.php';
@@ -11,28 +12,40 @@ require_once 'php/db_connection.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Offers - Purge Coffee</title>
+    <title>Our Offers - Purge Coffee</title>
     
+    <!-- Favicon - Site icon displayed in browser tab -->
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
+    
+    <!-- Bootstrap CSS - Responsive grid and component framework -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome - Icon library for UI elements -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
+    
+    <!-- Base styles - Core CSS variables and global styles -->
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     
+    <!-- Top promotional banner - Displays shipping information -->
     <div class="top-banner">Shipping Nationwide</div>
 
+    <!-- Main navigation bar - Site-wide navigation menu -->
     <nav class="navbar navbar-expand-lg">
         <div class="container">
+            <!-- Brand logo and name - Links to homepage -->
             <a class="navbar-brand" href="index.php">
                 <img src="images/coffee_beans_logo.png" alt="Purge Coffee Logo">
                 <span>purge coffee</span>
             </a>
             
+            <!-- Mobile menu toggle button - Visible on small screens -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             
+            <!-- Navigation links - Main menu items -->
             <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
@@ -47,12 +60,10 @@ require_once 'php/db_connection.php';
                     <li class="nav-item">
                         <a class="nav-link" href="about.php">About</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="contact.php">Contact</a>
-                    </li>
                 </ul>
             </div>
             
+            <!-- Navigation icons - Search, cart, and user account -->
             <div class="nav-icons">
                 <i class="fas fa-search nav-icon"></i>
                 <a href="cart.php" class="text-decoration-none">
@@ -71,64 +82,82 @@ require_once 'php/db_connection.php';
         </div>
     </nav>
 
-    <!-- What We Offer Section -->
+    <!-- Main offers section - Product categories showcase -->
     <section class="offers-section">
         <div class="container">
+            <!-- Section header - Title without decorative coffee bean logo -->
             <div class="section-header">
                 <h2 class="section-title">What We Offer</h2>
-                <div class="section-divider"></div>
+                <!-- REMOVED: Coffee bean logo divider for cleaner, modern look -->
+                
+                <!-- Introductory description text -->
+                <p class="text-center" style="max-width: 600px; margin: 0 auto; color: var(--dark-brown);">
+                    Beyond our exceptional menu of coffee and pastries, we offer premium products 
+                    for coffee enthusiasts who want to create café-quality beverages at home.
+                </p>
             </div>
 
+            <!-- Grid displaying three main product categories -->
             <div class="offers-grid">
-                <!-- Coffee Beans -->
-                <div class="offer-card" data-testid="offer-coffee-beans">
-                    <img src="images/coffee_beans_offer.png" alt="Coffee Beans" class="offer-image">
+                <!-- Coffee Beans category card - Premium beans offering -->
+                <div class="offer-card">
+                    <!-- Category image - Background for the card -->
+                    <img src="images/coffee_beans_offer.png" alt="Premium Coffee Beans" class="offer-image">
+                    
+                    <!-- Overlay with gradient background - Contains category information -->
                     <div class="offer-overlay">
                         <h3 class="offer-title">Coffee Beans</h3>
-                        <p class="offer-description">
-                            Sourced from the finest coffee-growing regions around the world, our premium beans 
-                            are carefully roasted to perfection. Each batch is crafted to bring out unique flavor 
-                            profiles, from bold and robust to smooth and mellow. Whether you prefer a dark roast 
-                            for its rich intensity or a light roast for its delicate notes, our selection offers 
-                            an exceptional brewing experience at home.
+                        <p style="margin: 0; font-size: 0.9rem;">
+                            Sourced from the finest coffee-growing regions, our premium beans are carefully 
+                            roasted to perfection for an exceptional brewing experience at home.
                         </p>
                     </div>
                 </div>
-                
-                <!-- Milk & Creamers -->
-                <div class="offer-card" data-testid="offer-milk-creamers">
+
+                <!-- Milk & Creamers category card - Dairy and alternatives -->
+                <div class="offer-card">
                     <img src="images/milk_creamer_offer.png" alt="Milk & Creamers" class="offer-image">
                     <div class="offer-overlay">
                         <h3 class="offer-title">Milk & Creamers</h3>
-                        <p class="offer-description">
-                            Complete your coffee with our selection of premium dairy and plant-based options. 
-                            From whole milk and half-and-half to oat, almond, and soy alternatives, each choice 
-                            is carefully selected to complement the rich flavors of our signature roasts. Our 
-                            creamers add the perfect touch of sweetness and texture, creating a barista-quality 
-                            experience in every cup.
+                        <p style="margin: 0; font-size: 0.9rem;">
+                            Complete your coffee with our selection of premium dairy and plant-based options, 
+                            each chosen to complement the rich flavors of our signature roasts.
                         </p>
                     </div>
                 </div>
-                
-                <!-- Brewing Equipment -->
-                <div class="offer-card" data-testid="offer-brewing-equipment">
+
+                <!-- Brewing Equipment category card - Professional tools -->
+                <div class="offer-card">
                     <img src="images/equipment_offer.png" alt="Brewing Equipment" class="offer-image">
                     <div class="offer-overlay">
                         <h3 class="offer-title">Brewing Equipment</h3>
-                        <p class="offer-description">
-                            Professional-grade espresso machines, precision grinders, and artisan brewing tools 
-                            that bring the authentic café experience into your own kitchen. Our equipment range 
-                            includes everything from manual pour-over sets for the traditional enthusiast to 
-                            automated espresso machines for convenient luxury. Each piece is selected for its 
-                            quality, durability, and ability to extract the perfect cup every time.
+                        <p style="margin: 0; font-size: 0.9rem;">
+                            Professional-grade espresso machines, grinders, and brewing tools that bring 
+                            the artisan café experience into your own kitchen.
                         </p>
                     </div>
                 </div>
+            </div>
+
+            <!-- Call to action section - Encourages visitor engagement -->
+            <div class="text-center mt-5">
+                <h3 style="font-family: var(--font-heading); color: var(--deep-maroon); margin-bottom: var(--spacing-md);">
+                    Ready to elevate your coffee experience?
+                </h3>
+                <p style="color: var(--dark-brown); margin-bottom: var(--spacing-lg); max-width: 500px; margin-left: auto; margin-right: auto;">
+                    Visit our café or contact us to learn more about our premium products and services. 
+                    Our knowledgeable staff is here to help you find exactly what you need.
+                </p>
+                <!-- CTA button - Links to About page with contact information -->
+                <a href="about.php" class="btn-primary">Get In Touch</a>
             </div>
         </div>
     </section>
 
+    <!-- Bootstrap JavaScript - Required for responsive components -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Main JavaScript - Core functionality for cart, favorites, and interactions -->
     <script src="js/main.js"></script>
     
 </body>
