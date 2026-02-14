@@ -1,27 +1,329 @@
-/* ===== WHAT WE OFFER SECTION ===== */
 /**
- * Main container for the What We Offer section
- * Purpose: Creates consistent spacing and background matching Best Sellers section
+ * Purge Coffee Shop - Main Stylesheet
+ * Comprehensive CSS with variables, global styles, and component definitions
+ * Color Palette: Elegant cream, white, and rich brown tones
  */
+
+/* ===== CSS VARIABLES - DESIGN SYSTEM ===== */
+:root {
+    /* Color Palette - Elegant Coffee Shop Theme */
+    --deep-maroon: #2A0000;           /* Primary dark - headers, text */
+    --burgundy-wine: #5C2E2E;          /* Secondary - buttons, accents */
+    --saddle-brown: #8B4513;           /* Tertiary brown */
+    --dark-brown: #3B1F1F;             /* Text color */
+    --ivory-cream: #F5F1E8;            /* Main background */
+    --light-beige: #EDE8DC;            /* Card backgrounds */
+    --warm-sand: #E2D9C8;              /* Alternate backgrounds */
+    --white: #FFFFFF;                  /* Pure white */
+    
+    /* Typography */
+    --font-heading: 'Playfair Display', serif;      /* Elegant headings */
+    --font-subheading: 'Outfit', sans-serif;        /* Modern subheadings */
+    --font-body: 'Inter', sans-serif;               /* Readable body text */
+    
+    /* Spacing Scale */
+    --spacing-xs: 0.25rem;    /* 4px */
+    --spacing-sm: 0.5rem;     /* 8px */
+    --spacing-md: 1rem;       /* 16px */
+    --spacing-lg: 1.5rem;     /* 24px */
+    --spacing-xl: 2rem;       /* 32px */
+    --spacing-xxl: 3rem;      /* 48px */
+    --spacing-xxxl: 4rem;     /* 64px */
+    
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 4px rgba(42, 0, 0, 0.1);
+    --shadow-md: 0 4px 8px rgba(42, 0, 0, 0.15);
+    --shadow-lg: 0 8px 16px rgba(42, 0, 0, 0.2);
+    --shadow-xl: 0 12px 24px rgba(42, 0, 0, 0.25);
+    
+    /* Transitions */
+    --transition-fast: all 0.2s ease;
+    --transition-normal: all 0.3s ease;
+    --transition-slow: all 0.5s ease;
+}
+
+/* ===== GLOBAL STYLES ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--ivory-cream);
+    color: var(--dark-brown);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ===== TOP BANNER ===== */
+.top-banner {
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+    text-align: center;
+    padding: var(--spacing-sm) 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* ===== NAVIGATION BAR ===== */
+.navbar {
+    background-color: var(--ivory-cream);
+    padding: var(--spacing-md) 0;
+    border-bottom: 1px solid rgba(42, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--shadow-sm);
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    text-decoration: none;
+    color: var(--deep-maroon);
+}
+
+.navbar-brand img {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+}
+
+.navbar-brand span {
+    font-family: var(--font-subheading);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--deep-maroon);
+}
+
+.navbar-nav {
+    gap: var(--spacing-xl);
+}
+
+.nav-link {
+    font-family: var(--font-subheading);
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--dark-brown) !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: var(--spacing-sm) 0 !important;
+    position: relative;
+    transition: var(--transition-fast);
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--burgundy-wine);
+    transition: var(--transition-fast);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 100%;
+}
+
+.nav-link.active {
+    color: var(--burgundy-wine) !important;
+}
+
+.nav-icons {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.nav-icon {
+    font-size: 1.25rem;
+    color: var(--dark-brown);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.nav-icon:hover {
+    color: var(--burgundy-wine);
+    transform: scale(1.1);
+}
+
+/* ===== HERO SECTION ===== */
+.hero-section {
+    background-color: var(--ivory-cream);
+    padding: var(--spacing-xxxl) 0;
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+}
+
+.hero-content {
+    padding-right: var(--spacing-xl);
+}
+
+.hero-label {
+    font-family: var(--font-subheading);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--dark-brown);
+    margin-bottom: var(--spacing-sm);
+}
+
+.hero-title {
+    font-family: var(--font-heading);
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--deep-maroon);
+    margin-bottom: var(--spacing-lg);
+}
+
+.hero-description {
+    font-size: 1.1rem;
+    color: var(--dark-brown);
+    margin-bottom: var(--spacing-xl);
+    line-height: 1.8;
+}
+
+.hero-image img {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    object-fit: contain;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+/* ===== BUTTONS ===== */
+.btn-primary {
+    display: inline-block;
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+    padding: var(--spacing-md) var(--spacing-xxl);
+    border-radius: var(--radius-xl);
+    font-family: var(--font-subheading);
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-transform: capitalize;
+    transition: var(--transition-normal);
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+    background-color: var(--burgundy-wine);
+    color: var(--ivory-cream);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-secondary {
+    display: inline-block;
+    background-color: transparent;
+    color: var(--deep-maroon);
+    padding: var(--spacing-md) var(--spacing-xxl);
+    border-radius: var(--radius-xl);
+    border: 2px solid var(--deep-maroon);
+    font-family: var(--font-subheading);
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition-normal);
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+}
+
+/* ===== SECTION HEADERS ===== */
+.section-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.section-title {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    color: var(--deep-maroon);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: var(--spacing-md);
+    position: relative;
+    display: inline-block;
+}
+
+.section-divider {
+    width: 200px;
+    height: 2px;
+    background-color: var(--burgundy-wine);
+    margin: var(--spacing-md) auto;
+    position: relative;
+}
+
+.section-divider::before {
+    content: '\2615';  /* Coffee cup icon */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--ivory-cream);
+    color: var(--burgundy-wine);
+    font-size: 1.5rem;
+    padding: 0 var(--spacing-sm);
+}
+
+/* ===== CARDS ===== */
+.card {
+    background-color: var(--light-beige);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-normal);
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ===== WHAT WE OFFER SECTION ===== */
 .offers-section {
     padding: var(--spacing-xxl) 0;
     background-color: var(--ivory-cream);
     margin-bottom: var(--spacing-xl);
 }
 
-/**
- * Section header container
- * Purpose: Centers the title and provides bottom spacing before content
- */
 .offers-section .section-header {
     text-align: center;
     margin-bottom: var(--spacing-xl);
 }
 
-/**
- * Section title typography
- * Purpose: Large, prominent heading consistent with other sections
- */
 .offers-section .section-title {
     font-family: var(--font-heading);
     font-size: 2.5rem;
@@ -31,57 +333,26 @@
     margin-bottom: var(--spacing-md);
 }
 
-/**
- * REMOVED: Decorative divider with coffee bean icon
- * The section divider and coffee bean logo have been removed
- * This creates a cleaner, more modern look matching the updated Best Sellers section
- * 
- * Previously included:
- * - .offers-section .section-divider (horizontal line)
- * - .offers-section .section-divider::before (coffee bean icon)
- * 
- * Removed for:
- * - Cleaner visual design
- * - Reduced visual clutter
- * - Consistency across sections
- */
-
-/**
- * Grid layout for offer cards
- * Purpose: Displays three category cards in a responsive grid
- */
 .offers-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: var(--spacing-xl);
 }
 
-/**
- * Individual offer card with image overlay
- * Purpose: Creates clickable category cards with images and text overlays
- */
 .offer-card {
     position: relative;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    height: 350px;
+    height: 400px;
     cursor: pointer;
     transition: var(--transition-normal);
 }
 
-/**
- * Card lift effect on hover
- * Purpose: Provides visual feedback when user hovers over category
- */
 .offer-card:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow-lg);
 }
 
-/**
- * Full-width offer image
- * Purpose: Displays category image filling the entire card
- */
 .offer-image {
     width: 100%;
     height: 100%;
@@ -89,45 +360,91 @@
     transition: var(--transition-slow);
 }
 
-/**
- * Image zoom effect on hover
- * Purpose: Creates engaging visual effect when hovering over card
- */
 .offer-card:hover .offer-image {
     transform: scale(1.05);
 }
 
-/**
- * Dark gradient overlay at bottom
- * Purpose: Ensures text readability over image by darkening bottom area
- */
 .offer-overlay {
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(to top, rgba(42, 0, 0, 0.9), transparent);
-    padding: var(--spacing-xl) var(--spacing-md);
+    background: linear-gradient(to top, rgba(42, 0, 0, 0.95), rgba(42, 0, 0, 0.7), transparent);
+    padding: var(--spacing-xxl) var(--spacing-lg);
     color: var(--ivory-cream);
 }
 
-/**
- * Category title on offer card
- * Purpose: Large, readable category name using subheading font
- */
 .offer-title {
     font-family: var(--font-subheading);
     font-size: 2rem;
     color: var(--ivory-cream);
-    margin: 0;
+    margin: 0 0 var(--spacing-md) 0;
     text-align: center;
 }
 
-/**
- * Additional overlay text styling
- * Purpose: Ensures paragraph text in overlay is left-aligned and properly spaced
- */
-.offer-overlay > p {
+.offer-description {
     text-align: left;
-    margin-top: var(--spacing-sm);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--ivory-cream);
+    margin: 0;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 1024px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: var(--spacing-xl) 0;
+        min-height: auto;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-description {
+        font-size: 1rem;
+    }
+    
+    .section-title {
+        font-size: 1.75rem;
+    }
+    
+    .offer-card {
+        height: 350px;
+    }
+    
+    .nav-icons {
+        gap: var(--spacing-sm);
+    }
+}
+
+/* ===== UTILITY CLASSES ===== */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.mt-1 { margin-top: var(--spacing-sm); }
+.mt-2 { margin-top: var(--spacing-md); }
+.mt-3 { margin-top: var(--spacing-lg); }
+.mt-4 { margin-top: var(--spacing-xl); }
+
+.mb-1 { margin-bottom: var(--spacing-sm); }
+.mb-2 { margin-bottom: var(--spacing-md); }
+.mb-3 { margin-bottom: var(--spacing-lg); }
+.mb-4 { margin-bottom: var(--spacing-xl); }
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-lg);
 }

@@ -213,11 +213,57 @@
  * Best Sellers section shows only image, name, and description
  */
 
+/* ===== PRODUCT FOOTER - Price and Button ===== */
+/**
+ * Product footer with price and order button - COPIED FROM menu-page.css
+ */
+.home-bestsellers-section .product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--spacing-md);
+}
+
+/**
+ * Product price display
+ */
+.home-bestsellers-section .product-price {
+    font-family: var(--font-subheading);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--burgundy-wine);
+}
+
+/**
+ * Order button styling
+ */
+.home-bestsellers-section .btn-order {
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: var(--font-subheading);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+/**
+ * Order button hover effect
+ */
+.home-bestsellers-section .btn-order:hover {
+    background-color: var(--burgundy-wine);
+    transform: scale(1.05);
+}
+
 /* ===== VIEW ALL MENU BUTTON ===== */
 /**
  * Button container
  * Purpose: Centers the "View All Menu" button below products
  */
+
 .home-bestsellers-section .view-menu-container {
     text-align: center;
     margin-top: var(--spacing-xl);
@@ -274,12 +320,12 @@
     .home-bestsellers-section .product-grid {
         grid-template-columns: 1fr;
     }
-    
+
     /* Full width cards on mobile */
     .home-bestsellers-section .product-card {
         max-width: 100%;
     }
-    
+
     /* Reduce title size */
     .home-bestsellers-section .section-title {
         font-size: 2rem;
