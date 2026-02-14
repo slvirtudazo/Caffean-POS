@@ -131,7 +131,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                        placeholder="Confirm your password">
             </div>
             
-            <button type="submit" class="btn-register">Create Account</button>
+            <button type="submit" class="btn-register">Register</button>
         </form>
         
         <a href="login.php" class="auth-link">
