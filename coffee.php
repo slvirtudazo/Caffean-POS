@@ -5,7 +5,7 @@
  * different coffee offerings including hot coffee, iced coffee, and special drinks.
  */
 
-require_once 'php/config.php';
+require_once 'php/db_connection.php';
 
 // Pagination configuration
 $items_per_page = 4;

@@ -88,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         <div class="login-header">
             <h1 class="login-title">Welcome back to Purge Coffee!</h1>
-            <p class="login-subtitle">Log in to access your favorites and recent orders</p>
+            <p class="login-subtitle">Access your favorites and recent orders</p>
         </div>
         
         <?php if(!empty($error)): ?>

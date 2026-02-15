@@ -1,0 +1,268 @@
+/**
+ * Purge Coffee - Standardized Button Styles
+ * All buttons standardized to match "Order Now" button design
+ * LOGIN and REGISTER buttons excluded from standardization
+ */
+
+/* ===== PRIMARY BUTTONS - "ORDER NOW" STYLE ===== */
+.btn-primary,
+.btn-order,
+.btn-add-to-cart,
+.btn-start-shopping,
+.btn-checkout,
+.btn-logout,
+.btn-admin,
+.btn-view-menu,
+.btn-explore-menu,
+.btn-clear-filters,
+.btn-save,
+.btn-update,
+.btn-submit,
+.btn-confirm,
+.btn-delete,
+.btn-cancel,
+.btn-view,
+.btn-edit,
+.btn-toggle,
+.qty-btn {
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: var(--font-subheading);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+/* All primary button hover effects */
+.btn-primary:hover,
+.btn-order:hover,
+.btn-add-to-cart:hover,
+.btn-start-shopping:hover,
+.btn-checkout:hover,
+.btn-logout:hover,
+.btn-admin:hover,
+.btn-view-menu:hover,
+.btn-explore-menu:hover,
+.btn-clear-filters:hover,
+.btn-save:hover,
+.btn-update:hover,
+.btn-submit:hover,
+.btn-confirm:hover,
+.btn-delete:hover,
+.btn-cancel:hover,
+.btn-view:hover,
+.btn-edit:hover,
+.btn-toggle:hover,
+.qty-btn:hover {
+    background-color: var(--burgundy-wine);
+    color: var(--ivory-cream);
+    transform: scale(1.05);
+}
+
+/* ===== BOOTSTRAP BUTTON OVERRIDES ===== */
+/* Apply standard styling to Bootstrap buttons (except login/register) */
+.btn.btn-sm:not(.btn-login):not(.btn-register),
+.btn.btn-primary:not(.btn-login):not(.btn-register),
+.btn.btn-success:not(.btn-login):not(.btn-register),
+.btn.btn-warning:not(.btn-login):not(.btn-register),
+.btn.btn-danger:not(.btn-login):not(.btn-register),
+.btn.btn-info:not(.btn-login):not(.btn-register) {
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: var(--font-subheading);
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: var(--transition-fast);
+}
+
+.btn.btn-sm:not(.btn-login):not(.btn-register):hover,
+.btn.btn-primary:not(.btn-login):not(.btn-register):hover,
+.btn.btn-success:not(.btn-login):not(.btn-register):hover,
+.btn.btn-warning:not(.btn-login):not(.btn-register):hover,
+.btn.btn-danger:not(.btn-login):not(.btn-register):hover,
+.btn.btn-info:not(.btn-login):not(.btn-register):hover {
+    background-color: var(--burgundy-wine);
+    transform: scale(1.05);
+}
+
+/* Small button sizing */
+.btn.btn-sm {
+    padding: 0.5rem 1.5rem;
+    font-size: 0.875rem;
+}
+
+/* ===== SECONDARY BUTTON STYLE (White background) ===== */
+.btn-secondary {
+    background-color: white;
+    color: var(--deep-maroon);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: 2px solid var(--deep-maroon);
+    border-radius: var(--radius-md);
+    font-family: var(--font-subheading);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-secondary:hover {
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+    transform: scale(1.05);
+}
+
+/* Keep Bootstrap's secondary button style for modals */
+.modal .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+}
+
+.modal .btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+/* ===== QUANTITY BUTTONS ===== */
+.qty-btn {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+}
+
+/* ===== FULL WIDTH VARIATION ===== */
+.btn-full-width {
+    width: 100%;
+    display: block;
+}
+
+/* ===== LARGE BUTTON VARIATION ===== */
+.btn-large {
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: 1.125rem;
+}
+
+/* ===== SMALL BUTTON VARIATION ===== */
+.btn-small {
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: 0.875rem;
+}
+
+/* ===== BUTTON WITH ICON ===== */
+.btn-primary i,
+.btn-order i,
+.btn-add-to-cart i,
+.btn-secondary i {
+    margin-right: var(--spacing-xs);
+}
+
+/* ===== DISABLED STATE ===== */
+.btn-primary:disabled,
+.btn-secondary:disabled,
+.btn-order:disabled,
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* ===== BUTTON GROUP ===== */
+.button-group {
+    display: flex;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.button-group .btn-primary,
+.button-group .btn-secondary {
+    flex: 1;
+    min-width: 150px;
+}
+
+/* ===== REMOVE BUTTON STYLING ===== */
+.remove-btn {
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: var(--font-subheading);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.remove-btn:hover {
+    background-color: var(--burgundy-wine);
+    transform: scale(1.05);
+}
+
+/* ===== CAROUSEL ARROWS ===== */
+.carousel-arrow {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-fast);
+    text-decoration: none;
+}
+
+.carousel-arrow:hover {
+    background-color: var(--burgundy-wine);
+    transform: scale(1.1);
+    color: var(--ivory-cream);
+}
+
+/* ===== PAGINATION DOTS ===== */
+.pagination-dot {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid var(--deep-maroon);
+    background-color: transparent;
+    color: var(--deep-maroon);
+    font-family: var(--font-subheading);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.pagination-dot.active {
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+}
+
+.pagination-dot:hover {
+    background-color: var(--burgundy-wine);
+    border-color: var(--burgundy-wine);
+    color: var(--ivory-cream);
+}

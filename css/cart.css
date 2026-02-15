@@ -1,0 +1,351 @@
+/**
+ * Cart Page Specific Styles
+ * Updated with standardized button styling matching "Order Now" button
+ */
+
+/* ===== MAIN CART SECTION ===== */
+.cart-section {
+    padding: var(--spacing-xxl) 0;
+    background-color: var(--ivory-cream);
+    min-height: calc(100vh - 150px);
+}
+
+/* ===== SECTION HEADER ===== */
+.section-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.section-title {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    color: var(--deep-maroon);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 0;
+}
+
+/* ===== EMPTY CART STATE ===== */
+.empty-cart {
+    text-align: center;
+    padding: var(--spacing-xxl) 0;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.empty-cart i {
+    font-size: 6rem;
+    color: var(--warm-sand);
+    margin-bottom: var(--spacing-lg);
+}
+
+.empty-cart h3 {
+    font-family: var(--font-subheading);
+    font-size: 1.75rem;
+    color: var(--deep-maroon);
+    margin-bottom: var(--spacing-md);
+}
+
+.empty-cart p {
+    color: var(--dark-brown);
+    font-size: 1.05rem;
+    margin-bottom: var(--spacing-xl);
+}
+
+/* UPDATED: Start Shopping Button - Order Now Style */
+.btn-start-shopping {
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: var(--font-subheading);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-start-shopping:hover {
+    background-color: var(--burgundy-wine);
+    color: var(--ivory-cream);
+    transform: scale(1.05);
+}
+
+/* ===== CART ITEMS LIST ===== */
+.cart-item {
+    display: grid;
+    grid-template-columns: 120px 1fr auto;
+    gap: var(--spacing-lg);
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
+    align-items: center;
+    transition: var(--transition-normal);
+}
+
+.cart-item:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.cart-item-image {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    background: var(--light-beige);
+}
+
+/* ===== CART ITEM INFO ===== */
+.cart-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.cart-item-info h3 {
+    font-family: var(--font-subheading);
+    font-size: 1.35rem;
+    color: var(--deep-maroon);
+    font-weight: 700;
+    margin: 0;
+}
+
+.cart-item-price {
+    font-family: var(--font-subheading);
+    font-size: 1.1rem;
+    color: var(--burgundy-wine);
+    font-weight: 600;
+}
+
+/* ===== QUANTITY CONTROLS ===== */
+.quantity-control {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-xs);
+}
+
+/* UPDATED: Quantity Buttons - Order Now Style */
+.qty-btn {
+    width: 36px;
+    height: 36px;
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-fast);
+    font-size: 0.875rem;
+    font-family: var(--font-subheading);
+    font-weight: 600;
+}
+
+.qty-btn:hover {
+    background-color: var(--burgundy-wine);
+    color: var(--ivory-cream);
+    transform: scale(1.1);
+}
+
+.qty-input {
+    width: 60px;
+    height: 36px;
+    text-align: center;
+    border: 2px solid var(--warm-sand);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-subheading);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--deep-maroon);
+}
+
+/* ===== CART ITEM ACTIONS ===== */
+.cart-item-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--spacing-md);
+}
+
+.item-total {
+    font-family: var(--font-subheading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--burgundy-wine);
+}
+
+/* UPDATED: Remove Button - Order Now Style */
+.remove-btn {
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: var(--font-subheading);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.remove-btn:hover {
+    background-color: var(--burgundy-wine);
+    color: var(--ivory-cream);
+    transform: scale(1.05);
+}
+
+/* ===== CART SUMMARY ===== */
+.cart-summary {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: 100px;
+}
+
+.summary-title {
+    font-family: var(--font-subheading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--deep-maroon);
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 2px solid var(--warm-sand);
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-md);
+    font-family: var(--font-body);
+}
+
+.summary-row span:first-child {
+    color: var(--dark-brown);
+}
+
+.summary-row span:last-child {
+    font-weight: 600;
+    color: var(--deep-maroon);
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    padding-top: var(--spacing-md);
+    border-top: 2px solid var(--deep-maroon);
+    margin-top: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.summary-total span {
+    font-family: var(--font-subheading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--deep-maroon);
+}
+
+/* UPDATED: Checkout Button - Order Now Style */
+.btn-checkout {
+    width: 100%;
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: var(--font-subheading);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    text-decoration: none;
+    text-align: center;
+    display: block;
+}
+
+.btn-checkout:hover {
+    background-color: var(--burgundy-wine);
+    color: var(--ivory-cream);
+    transform: scale(1.05);
+}
+
+/* ===== CONTINUE SHOPPING LINK ===== */
+.continue-shopping {
+    display: block;
+    text-align: center;
+    margin-top: var(--spacing-lg);
+    color: var(--burgundy-wine);
+    text-decoration: none;
+    font-family: var(--font-subheading);
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: var(--transition-fast);
+}
+
+.continue-shopping:hover {
+    color: var(--deep-maroon);
+    transform: translateX(-3px);
+}
+
+.continue-shopping i {
+    margin-right: var(--spacing-xs);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 992px) {
+    .cart-item {
+        grid-template-columns: 100px 1fr auto;
+        gap: var(--spacing-md);
+        padding: var(--spacing-lg);
+    }
+    
+    .cart-item-image {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .cart-summary {
+        position: static;
+        margin-top: var(--spacing-xl);
+    }
+}
+
+@media (max-width: 768px) {
+    .cart-item {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: var(--spacing-md);
+    }
+    
+    .cart-item-image {
+        margin: 0 auto;
+    }
+    
+    .cart-item-info {
+        align-items: center;
+    }
+    
+    .quantity-control {
+        justify-content: center;
+    }
+    
+    .cart-item-actions {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .section-title {
+        font-size: 1.75rem;
+        letter-spacing: 2px;
+    }
+}

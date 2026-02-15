@@ -103,13 +103,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="form-group">
                     <label class="form-label">First Name</label>
                     <input type="text" name="first_name" class="form-control" required 
-                           placeholder="First name">
+                           placeholder="Enter your first name">
                 </div>
                 
                 <div class="form-group">
                     <label class="form-label">Last Name</label>
                     <input type="text" name="last_name" class="form-control" required 
-                           placeholder="Last name">
+                           placeholder="Enter your last name">
                 </div>
             </div>
             
@@ -122,7 +122,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="form-group">
                 <label class="form-label">Password</label>
                 <input type="password" name="password" class="form-control" required 
-                       placeholder="Create a password">
+                       placeholder="Create your password">
             </div>
             
             <div class="form-group">
