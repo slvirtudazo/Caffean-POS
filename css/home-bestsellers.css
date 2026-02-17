@@ -1,53 +1,39 @@
 /**
- * Home Page - Best Sellers Section
- * EXACT COPY of Menu Page layout (menu-page.css)
- * Shows only: product image, name, and description (no price/button)
+ * Home Page - Enhanced Best Sellers Section
+ * Shows product image, name, description, price, and Add to Cart button
+ * Responsive 3-column grid layout with hover effects
  */
 
 /* ===== MAIN SECTION CONTAINER ===== */
-/**
- * Best Sellers section wrapper
- * Purpose: Provides padding and background color for the section
- */
 .home-bestsellers-section {
     padding: var(--spacing-xxl) 0;
+    border: 1px solid var(--burgundy-wine);
     background-color: var(--ivory-cream);
-    margin-bottom: var(--spacing-xl);
 }
 
-/**
- * Section header - title area
- * Purpose: Centers the "BEST SELLERS" title
- */
 .home-bestsellers-section .section-header {
     text-align: center;
     margin-bottom: var(--spacing-xl);
 }
 
-/**
- * Section title styling
- * Purpose: Large heading for the Best Sellers section
- */
 .home-bestsellers-section .section-title {
     font-family: var(--font-heading);
-    font-size: 2.5rem;
+    font-size: 3rem;
     color: var(--deep-maroon);
     text-transform: uppercase;
-    letter-spacing: 3px;
-    margin-bottom: var(--spacing-md);
+    letter-spacing: 2px;
+    margin-bottom: var(--spacing-xs);
+    font-weight: 700;
 }
 
-/* ===== PRODUCT GRID - EXACT MENU PAGE LAYOUT ===== */
-/**
- * Product grid - COPIED FROM menu-page.css line 79-86
- * Purpose: 3-column grid layout matching Menu page exactly
- * 
- * Specifications:
- * - Columns: repeat(3, 1fr) - 3 equal columns
- * - Gap: var(--spacing-xl) - spacing between cards
- * - Max-width: 1400px - container max width
- * - Centered: margin auto
- */
+.home-bestsellers-section .section-subtitle {
+    font-family: var(--font-subheading);
+    font-size: 1.1rem;
+    color: var(--dark-brown);
+    opacity: 0.8;
+}
+
+/* ===== PRODUCT GRID ===== */
 .home-bestsellers-section .product-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -58,58 +44,33 @@
     margin-right: auto;
 }
 
-/* ===== PRODUCT CARD - EXACT MENU PAGE STYLING ===== */
-/**
- * Product card container - COPIED FROM menu-page.css line 91-99
- * Purpose: Individual product card with exact Menu page dimensions
- * 
- * Specifications:
- * - Background: var(--light-beige) - #EDE8DC
- * - Border-radius: var(--radius-lg) - 16px rounded corners
- * - Max-width: 450px - maximum card width
- * - Box-shadow: var(--shadow-sm) - subtle shadow
- */
+/* ===== PRODUCT CARD ===== */
 .home-bestsellers-section .product-card {
     background-color: var(--light-beige);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-xl);
     overflow: hidden;
     transition: var(--transition-normal);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-md);
     position: relative;
-    max-width: 450px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(42, 0, 0, 0.05);
 }
 
-/**
- * Card hover effect - COPIED FROM menu-page.css line 101-104
- * Purpose: Lifts card up when user hovers
- */
 .home-bestsellers-section .product-card:hover {
     transform: translateY(-8px);
     box-shadow: var(--shadow-lg);
 }
 
-/* ===== PRODUCT IMAGE - EXACT MENU PAGE HEIGHT ===== */
-/**
- * Image wrapper - COPIED FROM menu-page.css line 109-115
- * Purpose: Container for product image with fixed height
- * 
- * Specifications:
- * - Height: 320px - EXACT same as Menu page
- * - Width: 100% - fills card width
- * - Background: var(--warm-sand) - #E2D9C8
- */
+/* ===== PRODUCT IMAGE ===== */
 .home-bestsellers-section .product-image-wrapper {
     position: relative;
     width: 100%;
-    height: 320px;
+    height: 280px;
     overflow: hidden;
     background: var(--warm-sand);
 }
 
-/**
- * Product image - COPIED FROM menu-page.css line 117-121
- * Purpose: Actual image element
- */
 .home-bestsellers-section .product-image {
     width: 100%;
     height: 100%;
@@ -117,30 +78,18 @@
     transition: var(--transition-slow);
 }
 
-/**
- * Image zoom on hover - COPIED FROM menu-page.css line 123-125
- * Purpose: Slight zoom effect when hovering over card
- */
 .home-bestsellers-section .product-card:hover .product-image {
     transform: scale(1.1);
 }
 
-/* ===== FAVORITE ICON - EXACT MENU PAGE STYLING ===== */
-/**
- * Favorite heart icon - COPIED FROM menu-page.css line 130-142
- * Purpose: Heart icon button at top-right of image
- * 
- * Specifications:
- * - Size: 45px x 45px circle
- * - Position: top-right corner with var(--spacing-md) offset
- */
+/* ===== FAVORITE ICON ===== */
 .home-bestsellers-section .favorite-icon {
     position: absolute;
     top: var(--spacing-md);
     right: var(--spacing-md);
     width: 45px;
     height: 45px;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -148,91 +97,131 @@
     cursor: pointer;
     transition: var(--transition-fast);
     z-index: 10;
+    box-shadow: var(--shadow-sm);
 }
 
-/**
- * Favorite icon hover - COPIED FROM menu-page.css line 144-148
- * Purpose: Color change on hover
- */
 .home-bestsellers-section .favorite-icon:hover {
     background: var(--burgundy-wine);
-    color: white;
     transform: scale(1.1);
 }
 
-/* ===== PRODUCT INFO - EXACT MENU PAGE SPACING ===== */
-/**
- * Product information container - COPIED FROM menu-page.css line 165-167
- * Purpose: Contains product name and description
- * 
- * Specifications:
- * - Padding: var(--spacing-lg) - consistent spacing around content
- */
-.home-bestsellers-section .product-info {
-    padding: var(--spacing-lg);
+.home-bestsellers-section .favorite-icon:hover i {
+    color: white;
 }
 
-/**
- * Product name - COPIED FROM menu-page.css line 169-174
- * Purpose: Product title/heading
- * 
- * Specifications:
- * - Font: var(--font-subheading) - Outfit font
- * - Size: 1.5rem
- * - Weight: 700 (bold)
- * - Color: var(--deep-maroon) - #2A0000
- */
+.home-bestsellers-section .favorite-icon i {
+    font-size: 1.25rem;
+    color: var(--burgundy-wine);
+    transition: var(--transition-fast);
+}
+
+.home-bestsellers-section .favorite-icon.active {
+    background: var(--burgundy-wine);
+}
+
+.home-bestsellers-section .favorite-icon.active i {
+    color: white;
+}
+
+/* ===== PRODUCT INFO ===== */
+.home-bestsellers-section .product-info {
+    padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
 .home-bestsellers-section .product-name {
     font-family: var(--font-subheading);
-    font-size: 1.5rem;
+    font-size: 25px;
     font-weight: 700;
     color: var(--deep-maroon);
     margin-bottom: var(--spacing-sm);
+    line-height: 1.3;
 }
 
-/**
- * Product description - COPIED FROM menu-page.css line 176-181
- * Purpose: Product details text
- * 
- * Specifications:
- * - Font size: 0.95rem
- * - Line height: 1.6
- * - Min-height: 60px - ensures consistent card heights
- */
 .home-bestsellers-section .product-description {
     color: var(--dark-brown);
-    font-size: 0.95rem;
-    margin-bottom: var(--spacing-md);
-    line-height: 1.6;
-    min-height: 60px;
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: var(--spacing-xs);
+    flex-grow: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-/**
- * NOTE: Price and "Add to Cart" button REMOVED
- * These elements from menu-page.css are intentionally excluded
- * Best Sellers section shows only image, name, and description
- */
+/* ===== PRODUCT FOOTER (Price & Button) ===== */
+.home-bestsellers-section .product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-top: auto;
+    padding-top: var(--spacing-sm);
+}
 
-/* ===== VIEW ALL MENU BUTTON ===== */
-/**
- * Button container
- * Purpose: Centers the "View All Menu" button below products
- */
+.home-bestsellers-section .product-price {
+    font-family: var(--font-subheading);
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--burgundy-wine);
+}
+
+/* ===== ADD TO CART BUTTON ===== */
+.home-bestsellers-section .btn-add-cart {
+    background-color: var(--burgundy-wine);
+    color: var(--ivory-cream);
+    padding: 0.90rem 2rem;
+    border: none;
+    border-radius: var(--radius-xxl);
+    font-family: var(--font-subheading);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-normal);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+}
+
+.home-bestsellers-section .btn-add-cart:hover {
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.home-bestsellers-section .btn-add-cart i {
+    font-size: 0.90rem;
+}
+
+.home-bestsellers-section .btn-add-cart:active {
+    transform: translateY(0);
+}
+
+/* Adding state for button feedback */
+.home-bestsellers-section .btn-add-cart.adding {
+    background-color: var(--deep-maroon);
+    pointer-events: none;
+}
+
+/* ===== VIEW MENU BUTTON ===== */
 .home-bestsellers-section .view-menu-container {
     text-align: center;
     margin-top: var(--spacing-xl);
+    margin-bottom: var(--spacing-xs); /* matched to Special Offers bottom spacing */
 }
 
-/**
- * View All Menu button
- * Purpose: Call-to-action button to navigate to full menu
- */
 .home-bestsellers-section .btn-view-menu {
-    background-color: var(--burgundy-wine);
-    color: var(--ivory-cream);
-    padding: var(--spacing-sm) var(--spacing-xl);
-    border: none;
-    border-radius: var(--radius-xl);
+    background-color: transparent;
+    color: var(--burgundy-wine);
+    border: 2px solid var(--burgundy-wine);
+    padding: 0.75rem 2rem;
+    border-radius: var(--radius-xxl);
     font-family: var(--font-subheading);
     font-size: 1rem;
     font-weight: 600;
@@ -240,48 +229,62 @@
     transition: var(--transition-normal);
     text-decoration: none;
     display: inline-block;
+    box-shadow: var(--shadow-sm);
 }
 
-/**
- * Button hover effect
- * Purpose: Visual feedback on hover
- */
 .home-bestsellers-section .btn-view-menu:hover {
-    background-color: var(--deep-maroon);
+    background-color: var(--burgundy-wine);
     color: var(--ivory-cream);
     transform: translateY(-3px);
     box-shadow: var(--shadow-lg);
 }
 
-/* ===== RESPONSIVE DESIGN - EXACT MENU PAGE BREAKPOINTS ===== */
-/**
- * Tablet layout - COPIED FROM menu-page.css line 245-249
- * Breakpoint: max-width 1024px
- * Purpose: 2 columns for medium screens
- */
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablet - 2 columns */
 @media (max-width: 1024px) {
     .home-bestsellers-section .product-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-lg);
     }
 }
 
-/**
- * Mobile layout - COPIED FROM menu-page.css line 252-264
- * Breakpoint: max-width 768px
- * Purpose: 1 column for small screens
- */
+/* Mobile - 1 column */
 @media (max-width: 768px) {
+    .home-bestsellers-section {
+        padding: var(--spacing-xl) 0;
+    }
+    
     .home-bestsellers-section .product-grid {
         grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
     }
     
-    /* Full width cards on mobile */
-    .home-bestsellers-section .product-card {
-        max-width: 100%;
-    }
-    
-    /* Reduce title size */
     .home-bestsellers-section .section-title {
         font-size: 2rem;
+    }
+    
+    .home-bestsellers-section .product-image-wrapper {
+        height: 240px;
+    }
+    
+    /* Stack price and button on very small screens */
+    @media (max-width: 400px) {
+        .home-bestsellers-section .product-footer {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .home-bestsellers-section .btn-add-cart {
+            justify-content: center;
+            width: 100%;
+        }
+    }
+}
+
+/* Large screens - adjust card max width */
+@media (min-width: 1400px) {
+    .home-bestsellers-section .product-card {
+        max-width: 420px;
     }
 }

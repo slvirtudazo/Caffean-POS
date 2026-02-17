@@ -1,152 +1,201 @@
-/* ===== FOOTER SECTION - UPDATED LAYOUT ===== */
-/* Main footer container with dark maroon background */
+/**
+ * Footer Section - Enhanced Styling
+ * Improved spacing, typography hierarchy, and responsive design
+ */
+
+/* ===== FOOTER MAIN CONTAINER ===== */
 .footer {
     background-color: var(--deep-maroon);
     color: var(--ivory-cream);
-    padding: var(--spacing-xxl) 0 var(--spacing-lg);
+    padding: var(--spacing-xxl);
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
 }
 
-/* Footer content wrapper - centers all three sections horizontally */
+/* Wrapper for all footer content */
+.footer .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+/* ===== FOOTER CONTENT WRAPPER ===== */
 .footer-content {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    gap: 6rem;
-    margin-bottom: var(--spacing-xl);
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
+    gap: 8rem;
+    width: 100%;
+    padding-top: var(--spacing-xs);
 }
 
-/* Individual footer section - left-aligned text within each column */
+/* ===== INDIVIDUAL FOOTER SECTIONS ===== */
 .footer-section {
     text-align: left;
-}
-
-/* All three sections have equal minimum width for consistency */
-.footer-section:first-child {
+    flex: 0 1 auto;
     min-width: 250px;
 }
 
-/* Brand section - now text-only without logo */
+/* Brand Section */
+.footer-section:first-child {
+    max-width: none;
+}
+
 .footer-brand {
     margin-bottom: var(--spacing-lg);
 }
 
-/* Brand name styled as section heading - matches OUR POLICIES and SOCIAL MEDIA */
 .footer-brand-name {
     font-family: var(--font-heading);
-    font-size: 1.1rem;
+    font-size: 20px;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 2px;
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
     color: var(--ivory-cream);
-    font-weight: 600;
     display: block;
 }
 
-/* Contact information container - matches policy links styling */
+/* ===== CONTACT INFORMATION ===== */
 .footer-contact {
     margin-top: 0;
 }
 
-/* Contact information paragraphs */
 .footer-contact p {
     font-family: var(--font-subheading);
-    font-size: 0.95rem;
+    font-size: 15px;
+    font-weight: 400;
     color: var(--ivory-cream);
+    opacity: 0.8;
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
+    line-height: 1.6;
 }
 
-/* Contact icons styling */
 .footer-contact p i {
     width: 20px;
     font-size: 1rem;
+    color: var(--warm-sand);
+    flex-shrink: 0;
 }
 
-/* Section headings - OUR POLICIES and SOCIAL MEDIA */
+/* ===== SECTION HEADINGS ===== */
 .footer-section h3 {
-    font-weight: 600;
     font-family: var(--font-heading);
-    font-size: 1.1rem;
+    font-size: 20px;
+    font-weight: 700;
     color: var(--ivory-cream);
     text-transform: uppercase;
     letter-spacing: 2px;
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
 }
 
-/* Policy links list - no bullets, left-aligned */
+/* ===== POLICY LINKS ===== */
 .footer-links {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
-/* Individual policy link items - matches contact spacing */
 .footer-links li {
-    margin-bottom: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
 }
 
-/* Policy link text styling with hover effect */
 .footer-links a {
     color: var(--ivory-cream);
     text-decoration: none;
     transition: var(--transition-fast);
-    opacity: 1;
     font-family: var(--font-subheading);
-    font-size: 0.95rem;
+    font-size: 15px;
+    font-weight: 400;
+    opacity: 0.8;
+    line-height: 1.6;
+    display: inline-block;
 }
 
-/* Link hover effect - increases opacity and slight indent */
 .footer-links a:hover {
-    opacity: 0.80;
-    padding-left: 5px;
+    color: var(--warm-sand);
+    padding-left: 8px;
 }
 
-/* Social media icons container - horizontal layout */
+/* ===== SOCIAL MEDIA ICONS ===== */
 .social-icons {
     display: flex;
-    gap: var(--spacing-md);
+    gap: var(--spacing-sm);
+    margin-top: 0;
 }
 
-/* Individual social media icon styling */
 .social-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: rgba(245, 241, 232, 0.1);
     color: var(--ivory-cream);
-    font-size: 1.5rem;
-    transition: var(--transition-fast);
-    opacity: 1;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-normal);
+    text-decoration: none;
 }
 
-/* Social icon hover effect - slight upward movement */
 .social-icon:hover {
-    opacity: 0.80;
-    transform: translateY(0.5px);
+    background-color: var(--burgundy-wine);
+    color: var(--ivory-cream);
+    transform: translateY(-3px);
 }
 
-/* Decorative divider line - no coffee bean icon */
-.footer-divider {
+/* ===== FOOTER DIVIDER ===== */
+hr {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1100px;
     height: 1px;
-    background-color: rgba(245, 241, 232, 0.3);
-    margin: var(--spacing-xl) auto var(--spacing-lg);
+    background-color: rgba(245, 241, 232, 0.2);
+    margin-top: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
 }
 
-/* Copyright text at bottom - centered */
+/* ===== COPYRIGHT SECTION ===== */
 .footer-bottom {
     text-align: center;
-    font-size: 0.9rem;
-    opacity: 0.80;
-    font-family: var(--font-subheading);
-    color: var(--ivory-cream);
 }
 
-/* ===== RESPONSIVE DESIGN FOR FOOTER ===== */
-/* Tablet and smaller - stack sections vertically */
+.footer-bottom p {
+    font-size: 0.9rem;
+    color: var(--ivory-cream);
+    opacity: 0.8;
+    font-family: var(--font-subheading);
+    margin: 0;
+    letter-spacing: 0.5px;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablet Layout */
+@media (max-width: 992px) {
+    .footer-content {
+        gap: 3rem;
+    }
+    
+    .footer-section {
+        min-width: 150px;
+    }
+}
+
+/* Mobile Layout */
 @media (max-width: 768px) {
-    /* Stack footer sections vertically on mobile */
+    .footer {
+        padding: var(--spacing-xl);
+        min-height: auto;
+    }
+    
     .footer-content {
         flex-direction: column;
         align-items: center;
@@ -154,28 +203,54 @@
         text-align: center;
     }
     
-    /* Center all sections on mobile */
     .footer-section {
         text-align: center;
+        width: 100%;
+        max-width: 100%;
     }
     
-    /* Center brand name on mobile */
+    .footer-section:first-child {
+        max-width: 100%;
+    }
+    
     .footer-brand {
         text-align: center;
     }
     
-    /* Center contact info on mobile */
     .footer-contact p {
         justify-content: center;
     }
     
-    /* Center policy links on mobile */
     .footer-links {
         text-align: center;
     }
     
-    /* Center social icons on mobile */
     .social-icons {
         justify-content: center;
+    }
+}
+
+/* Extra Small Screens */
+@media (max-width: 480px) {
+    .footer-section h3 {
+        font-size: 17px;
+    }
+    
+    .footer-brand-name {
+        font-size: 17px;
+    }
+    
+    .footer-contact p {
+        font-size: 14px;
+    }
+    
+    .footer-links a {
+        font-size: 14px;
+    }
+    
+    .social-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.125rem;
     }
 }

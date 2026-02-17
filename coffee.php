@@ -69,7 +69,7 @@ $products_result = mysqli_query($conn, $products_query);
                         <a class="nav-link" href="pastry.php">Pastry</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="offers.php">Offers</a>
+                        <a class="nav-link" href="supplies-page.php">Offers</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="contact.php">Contact</a>

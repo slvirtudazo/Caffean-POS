@@ -1,0 +1,168 @@
+/**
+ * Purge Coffee Shop - Offers Page Stylesheet
+ * Styles for the What We Offer section: image cards with overlay,
+ * section layout, and CTA block
+ */
+
+/* ===== OFFERS SECTION CONTAINER ===== */
+.offers-section {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: var(--ivory-cream);
+}
+
+/* ===== SECTION HEADER ===== */
+.offers-section .section-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.offers-section .section-title {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--deep-maroon);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: var(--spacing-xs);
+}
+
+.offers-section .section-header p {
+    font-family: var(--font-subheading);
+    font-size: 1.1rem;
+    color: var(--dark-brown);
+    line-height: 1.8;
+    opacity: 0.8;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ===== OFFER CARDS GRID ===== */
+.offers-section .offers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-xl);
+    max-width: 1200px;
+    margin: 0 auto var(--spacing-xxl);
+}
+
+/* ===== INDIVIDUAL OFFER CARD ===== */
+.offer-card {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    height: 50vh;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition-normal);
+    cursor: pointer;
+}
+
+.offer-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ===== CARD IMAGE ===== */
+.offer-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: var(--transition-slow);
+}
+
+.offer-card:hover .offer-image {
+    transform: scale(1.05);
+}
+
+/* ===== CARD OVERLAY (gradient + text) ===== */
+.offer-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: var(--spacing-xl) var(--spacing-lg) var(--spacing-lg);
+    background: linear-gradient(
+        to top,
+        rgba(42, 0, 0, 0.92) 0%,
+        rgba(42, 0, 0, 0.65) 55%,
+        transparent 100%
+    );
+    color: var(--ivory-cream);
+}
+
+/* ===== OVERLAY TITLE ===== */
+.offer-title {
+    font-family: var(--font-subheading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--ivory-cream);
+    margin-bottom: var(--spacing-xs);
+    line-height: 1.3;
+}
+
+/* ===== OVERLAY DESCRIPTION ===== */
+.offer-overlay p {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--ivory-cream);
+    opacity: 0.9;
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* ===== CTA SECTION ===== */
+.offers-section .cta-block {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+    padding-top: var(--spacing-lg);
+}
+
+.offers-section .cta-block h3 {
+    font-family: var(--font-heading);
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--deep-maroon);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.3;
+}
+
+.offers-section .cta-block p {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--dark-brown);
+    line-height: 1.8;
+    margin-bottom: var(--spacing-lg);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablet - 2 columns */
+@media (max-width: 992px) {
+    .offers-section .offers-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-lg);
+    }
+}
+
+/* Mobile - 1 column */
+@media (max-width: 640px) {
+    .offers-section {
+        padding: var(--spacing-xl) 0;
+    }
+
+    .offers-section .offers-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+    }
+
+    .offer-card {
+        height: 320px;
+    }
+
+    .offers-section .section-title {
+        font-size: 2rem;
+    }
+}

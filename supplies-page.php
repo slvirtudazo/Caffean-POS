@@ -1,8 +1,7 @@
 <?php
 /**
- * Purge Coffee Shop - Offers Page
+ * Purge Coffee Shop - Supplies Page
  * This page showcases the three main product categories: Coffee Beans, Milk & Creamers, and Brewing Equipment.
- * Updated to remove decorative coffee bean logo for cleaner design
  */
 
 require_once 'php/db_connection.php';
@@ -12,40 +11,43 @@ require_once 'php/db_connection.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Offers - Purge Coffee</title>
+    <title>Our Supplies - Purge Coffee</title>
     
-    <!-- Favicon - Site icon displayed in browser tab -->
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
     
-    <!-- Bootstrap CSS - Responsive grid and component framework -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <!-- Font Awesome - Icon library for UI elements -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Base styles - Core CSS variables and global styles -->
-    <link rel="stylesheet" href="css/style.css">
+    <!-- Base styles -->
+    <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
+    
+    <!-- Supplies Page Styles -->
+    <link rel="stylesheet" href="css/supplies-page.css?v=<?php echo time(); ?>">
 </head>
 <body>
-    
-    <!-- Top promotional banner - Displays shipping information -->
+
+    <!-- Top Announcement Banner -->
     <div class="top-banner">Shipping Nationwide</div>
 
-    <!-- Main navigation bar - Site-wide navigation menu -->
-    <nav class="navbar navbar-expand-lg">
+    <!-- Main Navigation Bar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
-            <!-- Brand logo and name - Links to homepage -->
+            <!-- Brand Logo -->
             <a class="navbar-brand" href="index.php">
                 <img src="images/coffee_beans_logo.png" alt="Purge Coffee Logo">
                 <span>purge coffee</span>
             </a>
             
-            <!-- Mobile menu toggle button - Visible on small screens -->
+            <!-- Mobile Menu Toggle -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             
-            <!-- Navigation links - Main menu items -->
+            <!-- Navigation Links -->
             <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
@@ -55,7 +57,7 @@ require_once 'php/db_connection.php';
                         <a class="nav-link" href="menu.php">Menu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="offers.php">Offers</a>
+                        <a class="nav-link active" href="supplies-page.php">Offers</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="about.php">About</a>
@@ -63,7 +65,7 @@ require_once 'php/db_connection.php';
                 </ul>
             </div>
             
-            <!-- Navigation icons - Search, cart, and user account -->
+            <!-- Navigation Icons -->
             <div class="nav-icons">
                 <i class="fas fa-search nav-icon"></i>
                 <a href="cart.php" class="text-decoration-none">
@@ -82,83 +84,77 @@ require_once 'php/db_connection.php';
         </div>
     </nav>
 
-    <!-- Main offers section - Product categories showcase -->
+    <!-- Main Supplies Section -->
     <section class="offers-section">
         <div class="container">
-            <!-- Section header - Title without decorative coffee bean logo -->
+
+            <!-- Section Header -->
             <div class="section-header">
                 <h2 class="section-title">What We Offer</h2>
-                <!-- REMOVED: Coffee bean logo divider for cleaner, modern look -->
-                
-                <!-- Introductory description text -->
-                <p class="text-center" style="max-width: 600px; margin: 0 auto; color: var(--dark-brown);">
-                    Beyond our exceptional menu of coffee and pastries, we offer premium products 
-                    for coffee enthusiasts who want to create café-quality beverages at home.
+                <p>
+                    We provide premium products for café-quality drinks at home.
                 </p>
             </div>
 
-            <!-- Grid displaying three main product categories -->
+            <!-- Offer Cards Grid -->
             <div class="offers-grid">
-                <!-- Coffee Beans category card - Premium beans offering -->
+
+                <!-- Coffee Beans -->
                 <div class="offer-card">
-                    <!-- Category image - Background for the card -->
                     <img src="images/coffee_beans_offer.png" alt="Premium Coffee Beans" class="offer-image">
-                    
-                    <!-- Overlay with gradient background - Contains category information -->
                     <div class="offer-overlay">
                         <h3 class="offer-title">Coffee Beans</h3>
-                        <p style="margin: 0; font-size: 0.9rem;">
+                        <p>
                             Sourced from the finest coffee-growing regions, our premium beans are carefully 
                             roasted to perfection for an exceptional brewing experience at home.
                         </p>
                     </div>
                 </div>
 
-                <!-- Milk & Creamers category card - Dairy and alternatives -->
+                <!-- Milk & Creamers -->
                 <div class="offer-card">
                     <img src="images/milk_creamer_offer.png" alt="Milk & Creamers" class="offer-image">
                     <div class="offer-overlay">
                         <h3 class="offer-title">Milk & Creamers</h3>
-                        <p style="margin: 0; font-size: 0.9rem;">
+                        <p>
                             Complete your coffee with our selection of premium dairy and plant-based options, 
                             each chosen to complement the rich flavors of our signature roasts.
                         </p>
                     </div>
                 </div>
 
-                <!-- Brewing Equipment category card - Professional tools -->
+                <!-- Brewing Equipment -->
                 <div class="offer-card">
                     <img src="images/equipment_offer.png" alt="Brewing Equipment" class="offer-image">
                     <div class="offer-overlay">
                         <h3 class="offer-title">Brewing Equipment</h3>
-                        <p style="margin: 0; font-size: 0.9rem;">
+                        <p>
                             Professional-grade espresso machines, grinders, and brewing tools that bring 
                             the artisan café experience into your own kitchen.
                         </p>
                     </div>
                 </div>
+
             </div>
 
-            <!-- Call to action section - Encourages visitor engagement -->
-            <div class="text-center mt-5">
-                <h3 style="font-family: var(--font-heading); color: var(--deep-maroon); margin-bottom: var(--spacing-md);">
-                    Ready to elevate your coffee experience?
-                </h3>
-                <p style="color: var(--dark-brown); margin-bottom: var(--spacing-lg); max-width: 500px; margin-left: auto; margin-right: auto;">
+            <!-- Call to Action -->
+            <div class="cta-block">
+                <h3>Ready to elevate your coffee experience?</h3>
+                <p>
                     Visit our café or contact us to learn more about our premium products and services. 
                     Our knowledgeable staff is here to help you find exactly what you need.
                 </p>
-                <!-- CTA button - Links to About page with contact information -->
                 <a href="about.php" class="btn-primary">Get In Touch</a>
             </div>
+
         </div>
     </section>
 
-    <!-- Bootstrap JavaScript - Required for responsive components -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Main JavaScript - Core functionality for cart, favorites, and interactions -->
+    <!-- Main JavaScript -->
     <script src="js/main.js"></script>
-    
+
 </body>
 </html>
