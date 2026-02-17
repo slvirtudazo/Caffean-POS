@@ -16,7 +16,7 @@
 }
 
 .filter-panel {
-    background: white;
+    background: var(--light-beige);
     border-radius: var(--radius-lg);
     padding: var(--spacing-lg);
     box-shadow: var(--shadow-sm);

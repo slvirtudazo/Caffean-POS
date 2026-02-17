@@ -79,7 +79,7 @@
     display: grid;
     grid-template-columns: 120px 1fr auto;
     gap: var(--spacing-lg);
-    background: white;
+    background: var(--light-beige);
     border-radius: var(--radius-lg);
     padding: var(--spacing-lg);
     margin-bottom: var(--spacing-md);
@@ -204,7 +204,7 @@
 
 /* ===== CART SUMMARY ===== */
 .cart-summary {
-    background: white;
+    background: var(--light-beige);
     border-radius: var(--radius-lg);
     padding: var(--spacing-xl);
     box-shadow: var(--shadow-md);
