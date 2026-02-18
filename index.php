@@ -13,7 +13,7 @@ $bestsellers_query = "SELECT
     p.name,
     p.description,
     p.price,
-    p.category_id,
+    p.category_id,  
     c.name as category_name,
     (
         COALESCE((SELECT COUNT(*) FROM order_items oi 

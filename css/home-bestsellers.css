@@ -7,7 +7,6 @@
 /* ===== MAIN SECTION CONTAINER ===== */
 .home-bestsellers-section {
     padding: var(--spacing-xxl) 0;
-    border: 1px solid var(--burgundy-wine);
     background-color: var(--ivory-cream);
 }
 

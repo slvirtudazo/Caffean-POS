@@ -8,64 +8,98 @@
 require_once 'php/db_connection.php';
 
 // Get filter parameters from URL
-$category_filter = isset($_GET['category']) ? intval($_GET['category']) : 0;
-$sort_filter = isset($_GET['sort']) ? $_GET['sort'] : 'default';
+$category_filter   = isset($_GET['category'])    ? intval($_GET['category'])   : 0;
+$price_sort        = isset($_GET['price_sort'])  ? $_GET['price_sort']         : '';   // 'low' | 'high'
+$show_popular      = isset($_GET['popular'])     && $_GET['popular']     == '1';
 $best_sellers_only = isset($_GET['bestsellers']) && $_GET['bestsellers'] == '1';
 
-// Build SQL query based on filters
-$where_clauses = array("p.status = 1");
-$order_by = "p.category_id, p.name";
+// Validate price_sort value
+if (!in_array($price_sort, ['low', 'high'])) $price_sort = '';
 
-// Apply category filter if selected
+// Build SQL WHERE clauses
+$where_clauses = ["p.status = 1"];
+
 if ($category_filter > 0) {
     $where_clauses[] = "p.category_id = $category_filter";
 }
 
-// Apply best sellers filter if enabled
 if ($best_sellers_only) {
     $where_clauses[] = "(
-        COALESCE((SELECT COUNT(*) FROM order_items oi 
-                  JOIN orders o ON oi.order_id = o.order_id 
+        COALESCE((SELECT COUNT(*) FROM order_items oi
+                  JOIN orders o ON oi.order_id = o.order_id
                   WHERE oi.product_id = p.product_id AND o.status = 'completed'), 0) * 3 +
-        COALESCE((SELECT SUM(interaction_count) FROM product_interactions 
+        COALESCE((SELECT SUM(interaction_count) FROM product_interactions
                   WHERE product_id = p.product_id AND interaction_type = 'add_to_cart'), 0) * 2 +
-        COALESCE((SELECT SUM(interaction_count) FROM product_interactions 
+        COALESCE((SELECT SUM(interaction_count) FROM product_interactions
                   WHERE product_id = p.product_id AND interaction_type = 'favorite'), 0) * 1
     ) > 0";
 }
 
-// Apply price sorting
-if ($sort_filter == 'price_low') {
+// Build ORDER BY — price_sort takes precedence over popular
+$popularity_expr = "(
+    COALESCE((SELECT COUNT(*) FROM order_items oi
+              JOIN orders o ON oi.order_id = o.order_id
+              WHERE oi.product_id = p.product_id AND o.status = 'completed'), 0) * 3 +
+    COALESCE((SELECT SUM(interaction_count) FROM product_interactions
+              WHERE product_id = p.product_id AND interaction_type = 'add_to_cart'), 0) * 2 +
+    COALESCE((SELECT SUM(interaction_count) FROM product_interactions
+              WHERE product_id = p.product_id AND interaction_type = 'favorite'), 0) * 1
+)";
+
+if ($price_sort === 'low') {
     $order_by = "p.price ASC";
-} elseif ($sort_filter == 'price_high') {
+} elseif ($price_sort === 'high') {
     $order_by = "p.price DESC";
-} elseif ($sort_filter == 'popular') {
-    $order_by = "(
-        COALESCE((SELECT COUNT(*) FROM order_items oi 
-                  JOIN orders o ON oi.order_id = o.order_id 
-                  WHERE oi.product_id = p.product_id AND o.status = 'completed'), 0) * 3 +
-        COALESCE((SELECT SUM(interaction_count) FROM product_interactions 
-                  WHERE product_id = p.product_id AND interaction_type = 'add_to_cart'), 0) * 2 +
-        COALESCE((SELECT SUM(interaction_count) FROM product_interactions 
-                  WHERE product_id = p.product_id AND interaction_type = 'favorite'), 0) * 1
-    ) DESC";
+} elseif ($show_popular) {
+    $order_by = "$popularity_expr DESC";
+} else {
+    $order_by = "p.category_id, p.name";
 }
 
 // Construct final query
-$where_string = implode(" AND ", $where_clauses);
-$products_query = "SELECT p.*, c.name as category_name 
-                   FROM products p 
-                   JOIN categories c ON p.category_id = c.category_id 
-                   WHERE $where_string
-                   ORDER BY $order_by";
+$where_string    = implode(" AND ", $where_clauses);
+$products_query  = "SELECT p.*, c.name as category_name
+                    FROM products p
+                    JOIN categories c ON p.category_id = c.category_id
+                    WHERE $where_string
+                    ORDER BY $order_by";
 $products_result = mysqli_query($conn, $products_query);
 
-// Fetch all categories for filter sidebar
-$categories_query = "SELECT * FROM categories ORDER BY category_id";
+// Fetch categories for sidebar
+$categories_query  = "SELECT * FROM categories ORDER BY category_id";
 $categories_result = mysqli_query($conn, $categories_query);
 
-// Get total product count
+// Total product count
 $total_products = mysqli_num_rows($products_result);
+
+/**
+ * Helper: build a URL preserving current params, with overrides and removals.
+ */
+function buildFilterUrl($overrides = [], $removals = []) {
+    $keys   = ['category', 'price_sort', 'popular', 'bestsellers'];
+    $params = [];
+    foreach ($keys as $k) {
+        if (isset($_GET[$k]) && $_GET[$k] !== '') {
+            $params[$k] = $_GET[$k];
+        }
+    }
+    foreach ($overrides as $k => $v) {
+        $params[$k] = $v;
+    }
+    foreach ($removals as $k) {
+        unset($params[$k]);
+    }
+    return 'menu.php' . (count($params) ? '?' . http_build_query($params) : '');
+}
+
+$has_active_filters = ($category_filter > 0 || $price_sort !== '' || $show_popular || $best_sellers_only);
+
+// Resolve category name
+$cat_name = '';
+if ($category_filter > 0) {
+    $res = mysqli_query($conn, "SELECT name FROM categories WHERE category_id = $category_filter");
+    if ($res) $cat_name = mysqli_fetch_assoc($res)['name'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -73,24 +107,15 @@ $total_products = mysqli_num_rows($products_result);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu - Purge Coffee</title>
-    
-    <!-- Favicon -->
+
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
-    
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Base Styles -->
     <link rel="stylesheet" href="css/style.css">
-    
-    <!-- Menu Page Specific Styles -->
     <link rel="stylesheet" href="css/menu-page.css">
 </head>
 <body>
-    
+
     <!-- Top Banner -->
     <div class="top-banner">Shipping Nationwide</div>
 
@@ -101,34 +126,26 @@ $total_products = mysqli_num_rows($products_result);
                 <img src="images/coffee_beans_logo.png" alt="Purge Coffee Logo">
                 <span>purge coffee</span>
             </a>
-            
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
+
             <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="menu.php">Menu</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="supplies-page.php">Offers</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="about.php">About</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="menu.php">Menu</a></li>
+                    <li class="nav-item"><a class="nav-link" href="supplies-page.php">Offers</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.php">About</a></li>
                 </ul>
             </div>
-            
+
             <div class="nav-icons">
                 <i class="fas fa-search nav-icon"></i>
                 <a href="cart.php" class="text-decoration-none">
                     <i class="fas fa-shopping-cart nav-icon"></i>
                 </a>
-                <?php if(isset($_SESSION['user_id'])): ?>
+                <?php if (isset($_SESSION['user_id'])): ?>
                     <a href="account.php" class="text-decoration-none">
                         <i class="fas fa-user nav-icon"></i>
                     </a>
@@ -145,57 +162,55 @@ $total_products = mysqli_num_rows($products_result);
     <section class="menu-main-section">
         <div class="container-fluid">
             <div class="row">
-                
-                <!-- Sidebar Filter Panel -->
+
+                <!-- ===== SIDEBAR FILTER PANEL (sticky) ===== -->
                 <div class="col-lg-3 col-md-4 menu-sidebar">
-                    <div class="filter-panel">
-                        
-                        <!-- Categories Filter -->
+                    <div class="filter-panel" id="filterPanel">
+
+                        <!-- CATEGORIES (single selection) -->
                         <div class="filter-section">
                             <h3 class="filter-title">
                                 <i class="fas fa-list-ul"></i> Categories
                             </h3>
                             <div class="category-list">
-                                <!-- All Categories Option -->
-                                <a href="menu.php" class="category-item <?php echo $category_filter == 0 ? 'active' : ''; ?>">
+                                <a href="<?php echo buildFilterUrl([], ['category']); ?>"
+                                   class="category-item <?php echo $category_filter == 0 ? 'active' : ''; ?>">
                                     <span class="category-icon"><i class="fas fa-th"></i></span>
                                     <span class="category-name">All Categories</span>
                                     <span class="category-count">
-                                        <?php 
-                                        $all_count_query = "SELECT COUNT(*) as total FROM products WHERE status = 1";
-                                        $all_count = mysqli_fetch_assoc(mysqli_query($conn, $all_count_query))['total'];
+                                        <?php
+                                        $all_count = mysqli_fetch_assoc(
+                                            mysqli_query($conn, "SELECT COUNT(*) as total FROM products WHERE status = 1")
+                                        )['total'];
                                         echo $all_count;
                                         ?>
                                     </span>
                                 </a>
-                                
-                                <!-- Dynamic Category List -->
-                                <?php 
-                                // Icon mapping for categories
-                                $category_icons = array(
-                                    1 => 'fa-mug-hot',      // Hot Coffee
-                                    2 => 'fa-glass-water',  // Iced Coffee
-                                    3 => 'fa-cup-straw',    // Non-Coffee
-                                    4 => 'fa-ice-cream',    // Milkshakes
-                                    5 => 'fa-leaf',         // Tea
-                                    6 => 'fa-cake-candles', // Desserts
-                                    7 => 'fa-bread-slice',  // Pastry
-                                    8 => 'fa-burger',       // Snacks
-                                    9 => 'fa-plus-circle'   // Add Ons
-                                );
-                                
+
+                                <?php
+                                $category_icons = [
+                                    1 => 'fa-mug-hot',
+                                    2 => 'fa-glass-water',
+                                    3 => 'fa-cup-straw',
+                                    4 => 'fa-ice-cream',
+                                    5 => 'fa-leaf',
+                                    6 => 'fa-cake-candles',
+                                    7 => 'fa-bread-slice',
+                                    8 => 'fa-burger',
+                                    9 => 'fa-plus-circle'
+                                ];
+
                                 mysqli_data_seek($categories_result, 0);
-                                while($category = mysqli_fetch_assoc($categories_result)): 
-                                    // Count products in this category
-                                    $cat_id = $category['category_id'];
-                                    $count_query = "SELECT COUNT(*) as count FROM products WHERE category_id = $cat_id AND status = 1";
-                                    $count_result = mysqli_query($conn, $count_query);
-                                    $product_count = mysqli_fetch_assoc($count_result)['count'];
-                                    
-                                    $icon = isset($category_icons[$cat_id]) ? $category_icons[$cat_id] : 'fa-circle';
+                                while ($category = mysqli_fetch_assoc($categories_result)):
+                                    $cat_id        = $category['category_id'];
+                                    $product_count = mysqli_fetch_assoc(
+                                        mysqli_query($conn, "SELECT COUNT(*) as count FROM products WHERE category_id = $cat_id AND status = 1")
+                                    )['count'];
+                                    $icon          = $category_icons[$cat_id] ?? 'fa-circle';
+                                    $cat_url       = buildFilterUrl(['category' => $cat_id], []);
                                 ?>
-                                    <a href="?category=<?php echo $category['category_id']; ?>" 
-                                       class="category-item <?php echo $category_filter == $category['category_id'] ? 'active' : ''; ?>">
+                                    <a href="<?php echo $cat_url; ?>"
+                                       class="category-item <?php echo $category_filter == $cat_id ? 'active' : ''; ?>">
                                         <span class="category-icon"><i class="fas <?php echo $icon; ?>"></i></span>
                                         <span class="category-name"><?php echo htmlspecialchars($category['name']); ?></span>
                                         <span class="category-count"><?php echo $product_count; ?></span>
@@ -204,172 +219,158 @@ $total_products = mysqli_num_rows($products_result);
                             </div>
                         </div>
 
-                        <!-- Price Sorting Filter -->
+                        <!-- SORT BY PRICE (multi-select toggles) -->
                         <div class="filter-section">
                             <h3 class="filter-title">
                                 <i class="fas fa-sort-amount-down"></i> Sort By Price
                             </h3>
                             <div class="sort-options">
-                                <a href="?category=<?php echo $category_filter; ?>&sort=price_low&bestsellers=<?php echo $best_sellers_only ? '1' : '0'; ?>" 
-                                   class="sort-item <?php echo $sort_filter == 'price_low' ? 'active' : ''; ?>">
+                                <div class="sort-item <?php echo $price_sort === 'low' ? 'active' : ''; ?>"
+                                     data-sort-param="price_sort"
+                                     data-sort-value="low"
+                                     data-sort-exclusive="price_sort">
                                     <i class="fas fa-arrow-down"></i> Price: Low to High
-                                </a>
-                                <a href="?category=<?php echo $category_filter; ?>&sort=price_high&bestsellers=<?php echo $best_sellers_only ? '1' : '0'; ?>" 
-                                   class="sort-item <?php echo $sort_filter == 'price_high' ? 'active' : ''; ?>">
+                                </div>
+                                <div class="sort-item <?php echo $price_sort === 'high' ? 'active' : ''; ?>"
+                                     data-sort-param="price_sort"
+                                     data-sort-value="high"
+                                     data-sort-exclusive="price_sort">
                                     <i class="fas fa-arrow-up"></i> Price: High to Low
-                                </a>
-                                <a href="?category=<?php echo $category_filter; ?>&sort=popular&bestsellers=<?php echo $best_sellers_only ? '1' : '0'; ?>" 
-                                   class="sort-item <?php echo $sort_filter == 'popular' ? 'active' : ''; ?>">
+                                </div>
+                                <div class="sort-item <?php echo $show_popular ? 'active' : ''; ?>"
+                                     data-sort-param="popular"
+                                     data-sort-value="1">
                                     <i class="fas fa-fire"></i> Most Popular
-                                </a>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Best Sellers Toggle -->
+                        <!-- BEST SELLERS (independent toggle) -->
                         <div class="filter-section">
                             <h3 class="filter-title">
                                 <i class="fas fa-star"></i> Best Sellers
                             </h3>
-                            <div class="bestseller-toggle">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="bestsellerToggle" 
-                                           <?php echo $best_sellers_only ? 'checked' : ''; ?>
-                                           onchange="toggleBestsellers(this)">
-                                    <span class="toggle-slider"></span>
-                                    <span class="toggle-label">Show Best Sellers Only</span>
-                                </label>
+                            <div class="sort-options">
+                                <div class="sort-item <?php echo $best_sellers_only ? 'active' : ''; ?>"
+                                     data-sort-param="bestsellers"
+                                     data-sort-value="1">
+                                    <i class="fas fa-award"></i> Show Best Sellers Only
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Clear Filters Button -->
+                        <!-- Clear Filters -->
                         <div class="filter-section">
                             <a href="menu.php" class="btn-clear-filters">
                                 <i class="fas fa-times-circle"></i> Clear All Filters
                             </a>
                         </div>
-                        
+
                     </div>
                 </div>
 
-                <!-- Main Products Display Area -->
+                <!-- ===== MAIN PRODUCTS DISPLAY AREA ===== -->
                 <div class="col-lg-9 col-md-8 menu-content">
+
+                    <!-- STICKY HEADER: Active Filters + Results Title — sticks below the navbar -->
+                    <div class="menu-content-sticky-header">
+
+                        <!-- Active Filters (only shown when filters are active) -->
+                        <?php if ($has_active_filters): ?>
+                        <div class="active-filters">
+                            <span class="filter-label">Active Filters:</span>
+
+                            <?php if ($category_filter > 0): ?>
+                                <span class="filter-badge">
+                                    <?php echo htmlspecialchars($cat_name); ?>
+                                    <a href="<?php echo buildFilterUrl([], ['category']); ?>">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                </span>
+                            <?php endif; ?>
+
+                            <?php if ($price_sort === 'low'): ?>
+                                <span class="filter-badge">
+                                    Price: Low to High
+                                    <a href="<?php echo buildFilterUrl([], ['price_sort']); ?>">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                </span>
+                            <?php elseif ($price_sort === 'high'): ?>
+                                <span class="filter-badge">
+                                    Price: High to Low
+                                    <a href="<?php echo buildFilterUrl([], ['price_sort']); ?>">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                </span>
+                            <?php endif; ?>
+
+                            <?php if ($show_popular): ?>
+                                <span class="filter-badge">
+                                    Most Popular
+                                    <a href="<?php echo buildFilterUrl([], ['popular']); ?>">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                </span>
+                            <?php endif; ?>
+
+                            <?php if ($best_sellers_only): ?>
+                                <span class="filter-badge">
+                                    Best Sellers Only
+                                    <a href="<?php echo buildFilterUrl([], ['bestsellers']); ?>">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                </span>
+                            <?php endif; ?>
+                        </div>
+                        <?php endif; ?>
+                    </div>
                     
-                    <!-- Active Filters Display -->
-                    <?php if($category_filter > 0 || $sort_filter != 'default' || $best_sellers_only): ?>
-                    <div class="active-filters">
-                        <span class="filter-label">Active Filters:</span>
-                        
-                        <?php if($category_filter > 0): 
-                            $cat_name_query = "SELECT name FROM categories WHERE category_id = $category_filter";
-                            $cat_name = mysqli_fetch_assoc(mysqli_query($conn, $cat_name_query))['name'];
-                        ?>
-                            <span class="filter-badge">
-                                <?php echo htmlspecialchars($cat_name); ?>
-                                <a href="menu.php"><i class="fas fa-times"></i></a>
-                            </span>
-                        <?php endif; ?>
-                        
-                        <?php if($sort_filter != 'default'): ?>
-                            <span class="filter-badge">
-                                <?php 
-                                $sort_labels = array(
-                                    'price_low' => 'Price: Low to High',
-                                    'price_high' => 'Price: High to Low',
-                                    'popular' => 'Most Popular'
-                                );
-                                echo $sort_labels[$sort_filter];
-                                ?>
-                                <a href="?category=<?php echo $category_filter; ?>"><i class="fas fa-times"></i></a>
-                            </span>
-                        <?php endif; ?>
-                        
-                        <?php if($best_sellers_only): ?>
-                            <span class="filter-badge">
-                                Best Sellers Only
-                                <a href="?category=<?php echo $category_filter; ?>&sort=<?php echo $sort_filter; ?>">
-                                    <i class="fas fa-times"></i>
-                                </a>
-                            </span>
-                        <?php endif; ?>
-                    </div>
-                    <?php endif; ?>
-
-                    <!-- Results Header -->
-                    <div class="results-header">
-                        <h2 class="results-title">
-                            <?php 
-                            if($category_filter > 0) {
-                                echo htmlspecialchars($cat_name);
-                            } elseif($best_sellers_only) {
-                                echo "Best Sellers";
-                            } else {
-                                echo "All Menu Items";
-                            }
-                            ?>
-                        </h2>
-                        <p class="results-count">
-                            Showing <?php echo $total_products; ?> 
-                            <?php echo $total_products == 1 ? 'item' : 'items'; ?>
-                        </p>
-                    </div>
-
                     <!-- Products Grid -->
                     <div class="products-grid">
-                        <?php 
-                        if($total_products > 0):
+                        <?php
+                        if ($total_products > 0):
                             mysqli_data_seek($products_result, 0);
-                            while($product = mysqli_fetch_assoc($products_result)): 
-                                // Determine image based on category
-                                $image_map = array(
-                                    1 => 'coffee.png',     // Hot Coffee
-                                    2 => 'coffee.png',     // Iced Coffee
-                                    3 => 'coffee.png',     // Non-Coffee
-                                    4 => 'coffee.png',     // Milkshakes
-                                    5 => 'coffee.png',     // Tea
-                                    6 => 'pastry.png',     // Desserts
-                                    7 => 'pastry.png',     // Pastry
-                                    8 => 'pastry.png',     // Snacks
-                                    9 => 'coffee.png'      // Add Ons
-                                );
-                                $product_image = isset($image_map[$product['category_id']]) ? $image_map[$product['category_id']] : 'coffee.png';
+                            while ($product = mysqli_fetch_assoc($products_result)):
+                                $image_map = [
+                                    1 => 'coffee.png', 2 => 'coffee.png', 3 => 'coffee.png',
+                                    4 => 'coffee.png', 5 => 'coffee.png', 6 => 'pastry.png',
+                                    7 => 'pastry.png', 8 => 'pastry.png', 9 => 'coffee.png'
+                                ];
+                                $product_image = $image_map[$product['category_id']] ?? 'coffee.png';
                         ?>
                             <div class="product-card" data-product-id="<?php echo $product['product_id']; ?>">
                                 <!-- Product Image Section -->
                                 <div class="product-image-wrapper">
-                                    <!-- Favorite Heart Icon -->
                                     <div class="favorite-icon" onclick="toggleFavorite(<?php echo $product['product_id']; ?>, this.querySelector('i'))">
                                         <i class="far fa-heart"></i>
                                     </div>
-                                    <!-- Category Badge -->
                                     <div class="category-badge">
                                         <?php echo htmlspecialchars($product['category_name']); ?>
                                     </div>
-                                    <img src="images/<?php echo $product_image; ?>" 
-                                         alt="<?php echo htmlspecialchars($product['name']); ?>" 
+                                    <img src="images/<?php echo $product_image; ?>"
+                                         alt="<?php echo htmlspecialchars($product['name']); ?>"
                                          class="product-image">
                                 </div>
-                                
+
                                 <!-- Product Information Section -->
                                 <div class="product-info">
                                     <h3 class="product-name"><?php echo htmlspecialchars($product['name']); ?></h3>
                                     <p class="product-description">
                                         <?php echo htmlspecialchars($product['description']); ?>
                                     </p>
-                                    
-                                    <!-- Product Footer with Price and Button -->
                                     <div class="product-footer">
-                                        <span class="product-price">₱<?php echo number_format($product['price'], 2); ?></span>
+                                        <span class="product-price">&#8369;<?php echo number_format($product['price'], 2); ?></span>
                                         <button class="btn-order" onclick="addToCart(<?php echo $product['product_id']; ?>)">
                                             <i class="fas fa-shopping-cart"></i> Add to Cart
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                        <?php 
+                        <?php
                             endwhile;
-                        else: 
+                        else:
                         ?>
-                            <!-- Empty State when no products match filters -->
                             <div class="empty-state">
                                 <i class="fas fa-search"></i>
                                 <h3>No products found</h3>
@@ -379,20 +380,20 @@ $total_products = mysqli_num_rows($products_result);
                         <?php endif; ?>
                     </div>
 
-                </div>
-                
+                </div><!-- /.menu-content -->
+
             </div>
         </div>
     </section>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <!-- Main JavaScript -->
     <script src="js/main.js"></script>
-    
+
     <!-- Menu Page Specific JavaScript -->
     <script src="js/menu-page.js"></script>
-    
+
 </body>
 </html>

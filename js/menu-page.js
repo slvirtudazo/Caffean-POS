@@ -4,78 +4,103 @@
  */
 
 /**
- * Toggle best sellers filter
- * Updates URL with bestsellers parameter and reloads page
- * @param {HTMLInputElement} checkbox - The bestsellers toggle checkbox element
- */
-function toggleBestsellers(checkbox) {
-    // Get current URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    // Update or remove bestsellers parameter
-    if (checkbox.checked) {
-        urlParams.set('bestsellers', '1');
-    } else {
-        urlParams.delete('bestsellers');
-    }
-    
-    // Reload page with updated parameters
-    window.location.search = urlParams.toString();
-}
-
-/**
  * Initialize menu page functionality when DOM is loaded
  */
-document.addEventListener('DOMContentLoaded', function() {
-    
+document.addEventListener('DOMContentLoaded', function () {
+
     // Load and display saved favorites on product cards
     loadFavoritesForMenu();
-    
+
     // Setup smooth animations for product cards
     setupProductAnimations();
-    
+
     // Setup mobile filter toggle if needed
     setupMobileFilters();
-    
+
+    // Setup multi-select sort item toggles
+    setupSortToggles();
+
     // Track page view for analytics
     trackMenuPageView();
 });
 
 /**
- * Load favorite products from localStorage and mark them visually
- * Updates heart icons on product cards for favorited items
+ * Setup multi-select sort/filter toggles.
+ *
+ * Rules:
+ *  - data-sort-param="price_sort"  + data-sort-exclusive="price_sort"
+ *      → mutually exclusive within the group (selecting one deselects other price options)
+ *  - data-sort-param="popular"     (no exclusive group) → independent toggle
+ *  - data-sort-param="bestsellers" (no exclusive group) → independent toggle
+ *
+ * Clicking an already-active item DESELECTS it (removes the param from URL).
+ * Clicking an inactive item ACTIVATES it (adds/updates the param in URL).
+ */
+function setupSortToggles() {
+    const sortItems = document.querySelectorAll('.sort-item[data-sort-param]');
+
+    sortItems.forEach(function (item) {
+        item.addEventListener('click', function () {
+            const param     = item.dataset.sortParam;
+            const value     = item.dataset.sortValue;
+            const exclusive = item.dataset.sortExclusive || null; // e.g. "price_sort"
+            const isActive  = item.classList.contains('active');
+
+            const urlParams = new URLSearchParams(window.location.search);
+
+            if (isActive) {
+                // Deselect: remove the param entirely
+                urlParams.delete(param);
+            } else {
+                // If this param is part of an exclusive group, deselect others first
+                if (exclusive) {
+                    // Remove existing value for this exclusive group
+                    urlParams.delete(exclusive);
+                }
+                // Activate: set the param
+                urlParams.set(param, value);
+            }
+
+            // Navigate to the new URL
+            const newSearch = urlParams.toString();
+            window.location.href = window.location.pathname + (newSearch ? '?' + newSearch : '');
+        });
+    });
+}
+
+/**
+ * Load favorite products from localStorage and mark them visually.
+ * Updates heart icons on product cards for favorited items.
  */
 function loadFavoritesForMenu() {
     const favorites = JSON.parse(localStorage.getItem('coffeeFavorites')) || [];
-    
-    favorites.forEach(productId => {
+
+    favorites.forEach(function (productId) {
         const productCard = document.querySelector(`.product-card[data-product-id="${productId}"]`);
         if (productCard) {
             const heartIcon = productCard.querySelector('.favorite-icon i');
             if (heartIcon) {
                 heartIcon.classList.remove('far');
                 heartIcon.classList.add('fas');
+                productCard.querySelector('.favorite-icon').classList.add('active');
             }
         }
     });
 }
 
 /**
- * Setup intersection observer for product card animations
- * Adds fade-in animation when cards come into viewport
+ * Setup intersection observer for product card fade-in animations.
  */
 function setupProductAnimations() {
     const productCards = document.querySelectorAll('.product-card');
-    
-    // Configuration for intersection observer
+
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
     };
-    
-    // Create observer to detect when cards enter viewport
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
+
+    const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
             if (entry.isIntersecting) {
                 entry.target.style.opacity = '0';
                 entry.target.style.animation = 'fadeInUp 0.5s ease forwards';
@@ -83,25 +108,21 @@ function setupProductAnimations() {
             }
         });
     }, observerOptions);
-    
-    // Observe each product card
-    productCards.forEach(card => {
+
+    productCards.forEach(function (card) {
         observer.observe(card);
     });
 }
 
 /**
- * Setup mobile filter panel toggle
- * Creates a collapsible filter panel for mobile devices
+ * Setup mobile filter panel toggle.
  */
 function setupMobileFilters() {
-    // Only run on mobile devices
     if (window.innerWidth <= 768) {
         const filterPanel = document.querySelector('.filter-panel');
         const menuContent = document.querySelector('.menu-content');
-        
+
         if (filterPanel && menuContent) {
-            // Create toggle button for filters
             const toggleBtn = document.createElement('button');
             toggleBtn.className = 'mobile-filter-toggle';
             toggleBtn.innerHTML = '<i class="fas fa-filter"></i> Filters';
@@ -122,15 +143,11 @@ function setupMobileFilters() {
                 gap: 0.5rem;
                 cursor: pointer;
             `;
-            
-            // Insert toggle button
+
             document.body.appendChild(toggleBtn);
-            
-            // Initially hide filter panel on mobile
             filterPanel.style.display = 'none';
-            
-            // Toggle filter panel visibility
-            toggleBtn.addEventListener('click', function() {
+
+            toggleBtn.addEventListener('click', function () {
                 if (filterPanel.style.display === 'none') {
                     filterPanel.style.display = 'block';
                     filterPanel.style.position = 'fixed';
@@ -152,58 +169,52 @@ function setupMobileFilters() {
 }
 
 /**
- * Track menu page view for analytics
- * Logs page view with current filter selections
+ * Track menu page view for analytics.
  */
 function trackMenuPageView() {
-    // Get current filter parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const category = urlParams.get('category') || 'all';
-    const sort = urlParams.get('sort') || 'default';
+    const urlParams   = new URLSearchParams(window.location.search);
+    const category    = urlParams.get('category')    || 'all';
+    const priceSort   = urlParams.get('price_sort')  || 'none';
+    const popular     = urlParams.get('popular')     || '0';
     const bestsellers = urlParams.get('bestsellers') || '0';
-    
-    // Log analytics (could be sent to analytics service)
+
     console.log('Menu Page View:', {
-        category: category,
-        sort: sort,
+        category:    category,
+        priceSort:   priceSort,
+        popular:     popular,
         bestsellers: bestsellers,
-        timestamp: new Date().toISOString()
+        timestamp:   new Date().toISOString()
     });
 }
 
 /**
- * Update URL parameters without page reload
- * Useful for future AJAX-based filtering
- * @param {string} param - Parameter name to update
- * @param {string} value - New parameter value
+ * Update URL parameters without page reload (utility).
  */
 function updateURLParameter(param, value) {
     const urlParams = new URLSearchParams(window.location.search);
-    
+
     if (value) {
         urlParams.set(param, value);
     } else {
         urlParams.delete(param);
     }
-    
+
     const newUrl = window.location.pathname + '?' + urlParams.toString();
-    window.history.pushState({path: newUrl}, '', newUrl);
+    window.history.pushState({ path: newUrl }, '', newUrl);
 }
 
 /**
- * Filter products by search term
- * Filters visible products based on name or description match
- * @param {string} searchTerm - Search query string
+ * Filter products by search term (client-side).
  */
 function filterProductsBySearch(searchTerm) {
-    const products = document.querySelectorAll('.product-card');
+    const products    = document.querySelectorAll('.product-card');
     const searchLower = searchTerm.toLowerCase().trim();
-    let visibleCount = 0;
-    
-    products.forEach(product => {
+    let   visibleCount = 0;
+
+    products.forEach(function (product) {
         const productName = product.querySelector('.product-name').textContent.toLowerCase();
         const productDesc = product.querySelector('.product-description').textContent.toLowerCase();
-        
+
         if (searchLower === '' || productName.includes(searchLower) || productDesc.includes(searchLower)) {
             product.style.display = 'flex';
             visibleCount++;
@@ -211,8 +222,7 @@ function filterProductsBySearch(searchTerm) {
             product.style.display = 'none';
         }
     });
-    
-    // Update results count
+
     const resultsCount = document.querySelector('.results-count');
     if (resultsCount) {
         resultsCount.textContent = `Showing ${visibleCount} ${visibleCount === 1 ? 'item' : 'items'}`;
@@ -220,22 +230,17 @@ function filterProductsBySearch(searchTerm) {
 }
 
 /**
- * Smooth scroll to top of products grid
- * Used when changing filters or categories
+ * Smooth scroll to top of products grid.
  */
 function scrollToProducts() {
     const productsGrid = document.querySelector('.products-grid');
     if (productsGrid) {
-        productsGrid.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-        });
+        productsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 }
 
 /**
- * Show loading state on product grid
- * Displays skeleton loading effect while products load
+ * Show loading state on product grid.
  */
 function showLoadingState() {
     const productsGrid = document.querySelector('.products-grid');
@@ -252,16 +257,15 @@ function showLoadingState() {
 }
 
 /**
- * Add keyboard navigation support for filters
- * Allows users to navigate filters using keyboard
+ * Add keyboard navigation support for filters.
  */
 function setupKeyboardNavigation() {
     const filterItems = document.querySelectorAll('.category-item, .sort-item');
-    
-    filterItems.forEach((item, index) => {
+
+    filterItems.forEach(function (item) {
         item.setAttribute('tabindex', '0');
-        
-        item.addEventListener('keydown', function(e) {
+
+        item.addEventListener('keydown', function (e) {
             if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
                 item.click();

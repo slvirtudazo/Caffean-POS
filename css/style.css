@@ -366,7 +366,6 @@ p {
 .special-offers-section {
     padding-top: 75px;
     padding-bottom: 40px;
-    border: 1px solid var(--burgundy-wine);
     background-color: var(--ivory-cream);
 }
 
@@ -461,7 +460,6 @@ p {
 .why-choose-section {
     padding-top: 80px;
     padding-bottom: 80px;
-    border: 1px solid var(--burgundy-wine);
     background-color: var(--ivory-cream);
 }
 
@@ -526,7 +524,6 @@ p {
 .store-location-section {
     padding-top: 70px;
     padding-bottom: 80px;
-    border: 1px solid var(--burgundy-wine);
     background-color: var(--ivory-cream);
 }
 
