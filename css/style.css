@@ -297,8 +297,8 @@ p {
     background-color: transparent;
     color: var(--burgundy-wine);
     border: 2px solid var(--burgundy-wine);
-    padding: 0.75rem 2rem;
     border-radius: var(--radius-xxl);
+    padding: 0.75rem 2rem;
     font-family: var(--font-subheading);
     font-size: 1rem;
     font-weight: 600;
@@ -717,4 +717,87 @@ p {
 
 .mb-4 {
     margin-bottom: var(--spacing-xl);
+}
+
+/* =========================================================
+   CART NOTIFICATION BADGE
+   ========================================================= */
+.nav-icons a[href="cart.php"] {
+    position: relative;
+    display: inline-block;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background-color: var(--burgundy-wine);
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: bold;
+    box-shadow: var(--shadow-sm);
+}
+
+/* =========================================================
+   DYNAMIC POP-UP NOTIFICATIONS
+   ========================================================= */
+.notification {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+    z-index: 10000;
+    animation: slideIn 0.3s ease-out;
+    font-family: var(--font-subheading);
+    font-weight: 500;
+    pointer-events: auto;
+}
+
+/* Theme colors for different notification types */
+.notification-success {
+    background-color: var(--deep-maroon);
+}
+
+.notification-error {
+    background-color: #cc3333; 
+}
+
+.notification-info {
+    background-color: var(--burgundy-wine);
+}
+
+/* Exiting animation triggered by JS */
+.notification.slide-out {
+    animation: slideOut 0.3s ease-out forwards;
+}
+
+/* =========================================================
+   COMPONENT ANIMATIONS (Badges & Notifications)
+   ========================================================= */
+@keyframes slideIn {
+    from { transform: translateX(400px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(400px); opacity: 0; }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+.bounce { 
+    animation: bounce 0.5s ease; 
 }

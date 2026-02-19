@@ -27,6 +27,9 @@ require_once 'php/db_connection.php';
     
     <!-- Supplies Page Styles -->
     <link rel="stylesheet" href="css/supplies-page.css?v=<?php echo time(); ?>">
+    
+    <!-- Search Styles -->
+    <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
 </head>
 <body>
 
@@ -150,11 +153,8 @@ require_once 'php/db_connection.php';
         </div>
     </section>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Main JavaScript -->
     <script src="js/main.js"></script>
-
+    <script src="js/search.js"></script> 
 </body>
 </html>

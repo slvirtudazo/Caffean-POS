@@ -74,6 +74,9 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
     <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/home-bestsellers.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/footer-section.css?v=<?php echo time(); ?>">
+
+    <!-- Search Bar -->
+    <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
 </head>
 <body>
     
@@ -450,11 +453,8 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Main JavaScript -->
     <script src="js/main.js"></script>
-    
+    <script src="js/search.js"></script> 
 </body>
 </html>

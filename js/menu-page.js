@@ -26,15 +26,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 /**
  * Setup multi-select sort/filter toggles.
- *
- * Rules:
- *  - data-sort-param="price_sort"  + data-sort-exclusive="price_sort"
- *      → mutually exclusive within the group (selecting one deselects other price options)
- *  - data-sort-param="popular"     (no exclusive group) → independent toggle
- *  - data-sort-param="bestsellers" (no exclusive group) → independent toggle
- *
- * Clicking an already-active item DESELECTS it (removes the param from URL).
- * Clicking an inactive item ACTIVATES it (adds/updates the param in URL).
+ * * Rules:
+ * - 'price_sort' and 'popular' are mutually exclusive sorts.
+ * - 'bestsellers' is a filter and operates independently.
  */
 function setupSortToggles() {
     const sortItems = document.querySelectorAll('.sort-item[data-sort-param]');
@@ -43,7 +37,6 @@ function setupSortToggles() {
         item.addEventListener('click', function () {
             const param     = item.dataset.sortParam;
             const value     = item.dataset.sortValue;
-            const exclusive = item.dataset.sortExclusive || null; // e.g. "price_sort"
             const isActive  = item.classList.contains('active');
 
             const urlParams = new URLSearchParams(window.location.search);
@@ -52,14 +45,21 @@ function setupSortToggles() {
                 // Deselect: remove the param entirely
                 urlParams.delete(param);
             } else {
-                // If this param is part of an exclusive group, deselect others first
-                if (exclusive) {
-                    // Remove existing value for this exclusive group
-                    urlParams.delete(exclusive);
+                // EXCLUSIVITY RULE: Sorting by Price and Popularity cannot happen simultaneously.
+                // If clicking either one, clear both first to ensure they don't stack.
+                if (param === 'price_sort' || param === 'popular') {
+                    urlParams.delete('price_sort');
+                    urlParams.delete('popular');
                 }
-                // Activate: set the param
+                
+                // Activate: set the new param
                 urlParams.set(param, value);
             }
+
+            // VISUAL FEEDBACK: Instantly dim the clicked item and show a loading cursor 
+            // so the interface feels fast before the PHP page reload completes.
+            item.style.opacity = '0.5';
+            document.body.style.cursor = 'wait';
 
             // Navigate to the new URL
             const newSearch = urlParams.toString();

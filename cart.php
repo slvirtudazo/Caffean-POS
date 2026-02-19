@@ -70,13 +70,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/buttons.css">
     <link rel="stylesheet" href="css/cart.css">
+    <link rel="stylesheet" href="css/search.css">
 </head>
 <body>
     
-    <!-- Top banner -->
     <div class="top-banner">Shipping Nationwide</div>
 
-    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="index.php">
@@ -123,16 +122,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </nav>
 
-    <!-- Cart Section -->
     <section class="cart-section">
         <div class="container">
-            <!-- Page Title (No divider below) -->
             <div class="section-header">
                 <h2 class="section-title">SHOPPING CART</h2>
             </div>
 
             <?php if (empty($cart_items)): ?>
-                <!-- Empty Cart State -->
                 <div class="empty-cart">
                     <i class="fas fa-shopping-cart"></i>
                     <h3>Your cart is empty</h3>
@@ -140,23 +136,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <a href="menu.php" class="btn-start-shopping">Start Shopping</a>
                 </div>
             <?php else: ?>
-                <!-- Cart Items and Summary -->
                 <div class="row">
-                    <!-- Cart Items List -->
                     <div class="col-lg-8">
                         <?php foreach ($cart_items as $item): ?>
                             <div class="cart-item">
-                                <!-- Product Image -->
                                 <img src="images/<?php echo $item['category_id'] == 3 ? 'pastry.png' : ($item['category_id'] == 2 ? 'iced_coffee.png' : 'coffee.png'); ?>" 
                                      alt="<?php echo htmlspecialchars($item['name']); ?>" 
                                      class="cart-item-image">
                                 
-                                <!-- Product Info -->
                                 <div class="cart-item-info">
                                     <h3><?php echo htmlspecialchars($item['name']); ?></h3>
                                     <p class="cart-item-price">₱<?php echo number_format($item['price'], 2); ?></p>
                                     
-                                    <!-- Quantity Controls -->
                                     <form method="POST" class="quantity-form">
                                         <input type="hidden" name="product_id" value="<?php echo $item['product_id']; ?>">
                                         <input type="hidden" name="action" value="update">
@@ -173,7 +164,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     </form>
                                 </div>
                                 
-                                <!-- Item Total & Remove -->
                                 <div class="cart-item-actions">
                                     <div class="item-total">₱<?php echo number_format($item['item_total'], 2); ?></div>
                                     <form method="POST" style="display: inline;">
@@ -188,7 +178,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <?php endforeach; ?>
                     </div>
                     
-                    <!-- Order Summary Sidebar -->
                     <div class="col-lg-4">
                         <div class="cart-summary">
                             <h3>Order Summary</h3>
@@ -227,9 +216,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <?php endif; ?>
         </div>
     </section>
-
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/search.js"></script>
+    
     <script>
         function updateQty(productId, change, currentQty) {
             const newQty = currentQty + change;
@@ -240,6 +231,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 form.submit();
             }
         }
+
+        // --- SYNC SERVER CART WITH JAVASCRIPT ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const serverCart = <?php 
+                $js_cart = [];
+                if(isset($_SESSION['cart'])) {
+                    foreach($_SESSION['cart'] as $id => $qty) {
+                        $js_cart[] = ['id' => $id, 'quantity' => $qty];
+                    }
+                }
+                echo json_encode($js_cart);
+            ?>;
+            
+            // Force local storage to exactly match the database
+            localStorage.setItem('coffeeCart', JSON.stringify(serverCart));
+            
+            // Update the live variable and refresh the badge
+            if (typeof cart !== 'undefined') {
+                cart = serverCart;
+                updateCartCount(); 
+            }
+        });
     </script>
 </body>
 </html>

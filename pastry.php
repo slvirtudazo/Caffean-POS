@@ -40,6 +40,7 @@ $products_result = mysqli_query($conn, $products_query);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/search.css">
     <link rel="stylesheet" href="css/pastry-page.css">
 </head>
 <body>
@@ -107,9 +108,9 @@ $products_result = mysqli_query($conn, $products_query);
                 if(mysqli_num_rows($products_result) > 0):
                     while($product = mysqli_fetch_assoc($products_result)): 
                 ?>
-                    <div class="product-card">
+                    <div class="product-card" data-product-id="<?php echo $product['product_id']; ?>">
                         <div class="product-image-wrapper">
-                            <div class="favorite-icon">
+                            <div class="favorite-icon" onclick="toggleFavorite(<?php echo $product['product_id']; ?>, this.querySelector('i'))">
                                 <i class="far fa-heart"></i>
                             </div>
                             <img src="images/pastry.png" alt="<?php echo htmlspecialchars($product['name']); ?>" class="product-image">
@@ -204,6 +205,6 @@ $products_result = mysqli_query($conn, $products_query);
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/main.js"></script>
-    
+    <script src="js/search.js"></script> 
 </body>
 </html>

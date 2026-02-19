@@ -111,16 +111,15 @@ if ($category_filter > 0) {
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/menu-page.css">
+    <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/menu-page.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
 </head>
 <body>
 
-    <!-- Top Banner -->
     <div class="top-banner">Shipping Nationwide</div>
 
-    <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="index.php">
                 <img src="images/coffee_beans_logo.png" alt="Purge Coffee Logo">
@@ -158,16 +157,13 @@ if ($category_filter > 0) {
         </div>
     </nav>
 
-    <!-- Main Menu Section -->
     <section class="menu-main-section">
         <div class="container-fluid">
             <div class="row">
 
-                <!-- ===== SIDEBAR FILTER PANEL (sticky) ===== -->
                 <div class="col-lg-3 col-md-4 menu-sidebar">
                     <div class="filter-panel" id="filterPanel">
 
-                        <!-- CATEGORIES (single selection) -->
                         <div class="filter-section">
                             <h3 class="filter-title">
                                 <i class="fas fa-list-ul"></i> Categories
@@ -219,7 +215,6 @@ if ($category_filter > 0) {
                             </div>
                         </div>
 
-                        <!-- SORT BY PRICE (multi-select toggles) -->
                         <div class="filter-section">
                             <h3 class="filter-title">
                                 <i class="fas fa-sort-amount-down"></i> Sort By Price
@@ -245,7 +240,6 @@ if ($category_filter > 0) {
                             </div>
                         </div>
 
-                        <!-- BEST SELLERS (independent toggle) -->
                         <div class="filter-section">
                             <h3 class="filter-title">
                                 <i class="fas fa-star"></i> Best Sellers
@@ -259,27 +253,16 @@ if ($category_filter > 0) {
                             </div>
                         </div>
 
-                        <!-- Clear Filters -->
-                        <div class="filter-section">
-                            <a href="menu.php" class="btn-clear-filters">
-                                <i class="fas fa-times-circle"></i> Clear All Filters
-                            </a>
-                        </div>
-
                     </div>
                 </div>
 
-                <!-- ===== MAIN PRODUCTS DISPLAY AREA ===== -->
                 <div class="col-lg-9 col-md-8 menu-content">
-
-                    <!-- STICKY HEADER: Active Filters + Results Title — sticks below the navbar -->
+                    
+                <?php if ($has_active_filters): ?>
                     <div class="menu-content-sticky-header">
-
-                        <!-- Active Filters (only shown when filters are active) -->
-                        <?php if ($has_active_filters): ?>
                         <div class="active-filters">
                             <span class="filter-label">Active Filters:</span>
-
+                            
                             <?php if ($category_filter > 0): ?>
                                 <span class="filter-badge">
                                     <?php echo htmlspecialchars($cat_name); ?>
@@ -322,11 +305,15 @@ if ($category_filter > 0) {
                                     </a>
                                 </span>
                             <?php endif; ?>
+                            
+                            <a href="menu.php" class="btn-clear-active-filters">
+                                Clear All
+                                <i class="fas fa-times"></i>
+                            </a>
                         </div>
-                        <?php endif; ?>
                     </div>
+                    <?php endif; ?>
                     
-                    <!-- Products Grid -->
                     <div class="products-grid">
                         <?php
                         if ($total_products > 0):
@@ -340,7 +327,6 @@ if ($category_filter > 0) {
                                 $product_image = $image_map[$product['category_id']] ?? 'coffee.png';
                         ?>
                             <div class="product-card" data-product-id="<?php echo $product['product_id']; ?>">
-                                <!-- Product Image Section -->
                                 <div class="product-image-wrapper">
                                     <div class="favorite-icon" onclick="toggleFavorite(<?php echo $product['product_id']; ?>, this.querySelector('i'))">
                                         <i class="far fa-heart"></i>
@@ -353,14 +339,13 @@ if ($category_filter > 0) {
                                          class="product-image">
                                 </div>
 
-                                <!-- Product Information Section -->
                                 <div class="product-info">
                                     <h3 class="product-name"><?php echo htmlspecialchars($product['name']); ?></h3>
                                     <p class="product-description">
                                         <?php echo htmlspecialchars($product['description']); ?>
                                     </p>
                                     <div class="product-footer">
-                                        <span class="product-price">&#8369;<?php echo number_format($product['price'], 2); ?></span>
+                                        <span class="product-price">₱<?php echo number_format($product['price'], 2); ?></span>
                                         <button class="btn-order" onclick="addToCart(<?php echo $product['product_id']; ?>)">
                                             <i class="fas fa-shopping-cart"></i> Add to Cart
                                         </button>
@@ -380,20 +365,12 @@ if ($category_filter > 0) {
                         <?php endif; ?>
                     </div>
 
-                </div><!-- /.menu-content -->
-
-            </div>
+                </div></div>
         </div>
     </section>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Main JavaScript -->
     <script src="js/main.js"></script>
-
-    <!-- Menu Page Specific JavaScript -->
-    <script src="js/menu-page.js"></script>
-
+    <script src="js/search.js"></script> 
 </body>
 </html>
