@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 09, 2026 at 01:27 PM
+-- Generation Time: Feb 19, 2026 at 04:11 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -163,6 +163,23 @@ CREATE TABLE `product_interactions` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `product_interactions`
+--
+
+INSERT INTO `product_interactions` (`interaction_id`, `product_id`, `interaction_type`, `interaction_count`, `last_interaction`, `created_at`) VALUES
+(1, 2, 'add_to_cart', 6, '2026-02-19 22:24:53', '2026-02-18 12:31:08'),
+(2, 1, 'favorite', 1, '2026-02-19 22:46:19', '2026-02-18 12:32:01'),
+(3, 2, 'favorite', 1, '2026-02-19 22:46:16', '2026-02-18 12:32:16'),
+(4, 3, 'favorite', 1, '2026-02-19 22:24:49', '2026-02-19 12:51:04'),
+(5, 1, 'add_to_cart', 5, '2026-02-19 22:46:19', '2026-02-19 13:19:53'),
+(6, 3, 'add_to_cart', 3, '2026-02-19 22:18:30', '2026-02-19 14:07:25'),
+(7, 5, 'add_to_cart', 2, '2026-02-19 22:18:09', '2026-02-19 14:07:28'),
+(8, 8, 'add_to_cart', 2, '2026-02-19 22:18:08', '2026-02-19 14:07:30'),
+(9, 5, 'favorite', 0, '2026-02-19 22:24:28', '2026-02-19 14:24:24'),
+(10, 6, 'add_to_cart', 2, '2026-02-19 22:25:01', '2026-02-19 14:24:58'),
+(11, 14, 'add_to_cart', 2, '2026-02-19 22:46:23', '2026-02-19 14:46:22');
+
 -- --------------------------------------------------------
 
 --
@@ -267,7 +284,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `product_interactions`
 --
 ALTER TABLE `product_interactions`
-  MODIFY `interaction_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `interaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `users`
