@@ -48,6 +48,7 @@
 
 .footer-brand {
     margin-bottom: var(--spacing-lg);
+    margin-top: 0;
 }
 
 .footer-brand-name {

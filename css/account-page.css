@@ -1,0 +1,250 @@
+/**
+ * Account Page Styles — Purge Coffee
+ * Enhanced to match the customer-side design system exactly.
+ */
+
+/* ===== ROLE SWITCHER INFO BANNER ===== */
+.role-switcher-bar {
+    background: #f5eeee;
+    border-bottom: 1px solid #e8d5d5;
+    padding: 11px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.role-switcher-bar i { color: var(--burgundy-wine); font-size: 0.85rem; }
+.role-switcher-bar span {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #7a1a1a;
+}
+
+/* ===== PAGE LAYOUT ===== */
+.account-section {
+    padding: var(--spacing-xxl) 0 calc(var(--spacing-xxl) * 1.5);
+    background-color: var(--ivory-cream);
+    min-height: 80vh;
+}
+.account-container {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-md);
+}
+
+/* ===== ACCOUNT HEADER (Avatar Fix) ===== */
+.account-profile-card {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg) var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+    box-shadow: var(--shadow-sm);
+    justify-content: space-between;
+}
+.profile-info-wrap {
+    display: flex;
+    align-items: center;
+}
+/* AVATAR: Shrunk from huge to standard size */
+.account-avatar {
+    width: 70px;  
+    height: 70px; 
+    background: var(--deep-maroon);
+    color: white;
+    font-family: var(--font-heading);
+    font-size: 2rem; 
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: var(--spacing-lg);
+}
+.account-details h1 {
+    font-family: var(--font-heading);
+    color: var(--deep-maroon);
+    font-size: 2rem;
+    margin-bottom: 0.2rem;
+}
+.account-details p {
+    color: #555;
+    font-size: 0.95rem;
+    margin-bottom: 0.3rem;
+}
+.account-details .member-since {
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.account-actions {
+    display: flex;
+    gap: 15px;
+}
+
+/* ===== ACCOUNT STATS (Compact styling) ===== */
+.account-stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+.account-stat-box {
+    background: white;
+    border-radius: var(--radius-md); /* Reduced from massive rounded corners */
+    padding: var(--spacing-md);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+}
+.account-stat-box i {
+    font-size: 1.5rem;
+    color: var(--burgundy-wine);
+    margin-bottom: 0.5rem;
+}
+.account-stat-box .stat-number {
+    font-family: var(--font-subheading);
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--deep-maroon);
+    margin-bottom: 0.2rem;
+}
+.account-stat-box .stat-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #666;
+    font-weight: 600;
+}
+
+/* ===== MAIN CONTENT CARD ===== */
+.account-content-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-sm);
+}
+.account-content-card h2 {
+    font-family: var(--font-heading);
+    color: var(--deep-maroon);
+    font-size: 1.8rem;
+    margin-bottom: var(--spacing-lg);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* ===== EMPTY STATE (Icon visibility fix) ===== */
+.empty-orders {
+    text-align: center;
+    padding: var(--spacing-xxl) 0;
+}
+.empty-orders i {
+    font-size: 3.5rem;
+    color: rgba(91, 19, 18, 0.2); /* Darkened slightly to be visible */
+    margin-bottom: var(--spacing-md);
+    display: block;
+}
+.empty-orders h3 {
+    font-family: var(--font-heading);
+    color: var(--deep-maroon);
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-sm);
+}
+.empty-orders p {
+    color: #7a6f65;
+    margin-bottom: var(--spacing-lg);
+    font-family: var(--font-subheading);
+}
+
+/* ===== BUTTONS ===== */
+.btn-browse {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: var(--deep-maroon);
+    color: var(--ivory-cream);
+    border-radius: var(--radius-md);
+    font-family: var(--font-subheading);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: var(--transition-normal);
+}
+.btn-browse:hover {
+    background: var(--burgundy-wine);
+    color: var(--ivory-cream);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-admin-dash {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border: 1px solid var(--deep-maroon);
+    color: var(--deep-maroon);
+    border-radius: 50px;
+    font-family: var(--font-subheading);
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+.btn-admin-dash:hover {
+    background: var(--deep-maroon);
+    color: white;
+}
+
+.btn-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background: var(--deep-maroon);
+    color: white;
+    border-radius: 50px;
+    font-family: var(--font-subheading);
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-decoration: none;
+    border: none;
+    transition: all 0.2s;
+}
+.btn-logout:hover {
+    background: var(--burgundy-wine);
+    transform: translateY(-2px);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .account-profile-card {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--spacing-lg);
+    }
+    .profile-info-wrap {
+        flex-direction: column;
+    }
+    .account-avatar {
+        margin-right: 0;
+        margin-bottom: var(--spacing-md);
+    }
+    .account-stats-row {
+        grid-template-columns: 1fr;
+    }
+    .account-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    .btn-admin-dash, .btn-logout {
+        justify-content: center;
+        width: 100%;
+    }
+}

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 19, 2026 at 04:11 PM
+-- Generation Time: Feb 20, 2026 at 05:34 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -168,11 +168,11 @@ CREATE TABLE `product_interactions` (
 --
 
 INSERT INTO `product_interactions` (`interaction_id`, `product_id`, `interaction_type`, `interaction_count`, `last_interaction`, `created_at`) VALUES
-(1, 2, 'add_to_cart', 6, '2026-02-19 22:24:53', '2026-02-18 12:31:08'),
-(2, 1, 'favorite', 1, '2026-02-19 22:46:19', '2026-02-18 12:32:01'),
+(1, 2, 'add_to_cart', 7, '2026-02-20 09:50:41', '2026-02-18 12:31:08'),
+(2, 1, 'favorite', 1, '2026-02-20 09:50:40', '2026-02-18 12:32:01'),
 (3, 2, 'favorite', 1, '2026-02-19 22:46:16', '2026-02-18 12:32:16'),
 (4, 3, 'favorite', 1, '2026-02-19 22:24:49', '2026-02-19 12:51:04'),
-(5, 1, 'add_to_cart', 5, '2026-02-19 22:46:19', '2026-02-19 13:19:53'),
+(5, 1, 'add_to_cart', 6, '2026-02-20 09:50:33', '2026-02-19 13:19:53'),
 (6, 3, 'add_to_cart', 3, '2026-02-19 22:18:30', '2026-02-19 14:07:25'),
 (7, 5, 'add_to_cart', 2, '2026-02-19 22:18:09', '2026-02-19 14:07:28'),
 (8, 8, 'add_to_cart', 2, '2026-02-19 22:18:08', '2026-02-19 14:07:30'),
@@ -200,7 +200,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `full_name`, `email`, `password`, `role`, `created_at`) VALUES
-(1, 'Admin User', 'admin@coffeeshop.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', '2026-02-09 12:27:00');
+(1, 'Admin', 'admin@purgecoffee.com', '$2a$12$F4wbKxPcOnhD6K5An76ke.4gS2.m9JQTH88Q8NZYUzGwNaYhY6YKC', 'admin', '2026-02-20 02:12:15'),
+(2, 'Customer', 'customer@purgecoffee.com', '$2a$12$nvPoBAKZQZpBpybEbGlsNeYwwMFn.YcvPM1SqGgM0iR.iHMw2efGW', 'customer', '2026-02-20 02:23:55');
 
 --
 -- Indexes for dumped tables
@@ -290,7 +291,7 @@ ALTER TABLE `product_interactions`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
