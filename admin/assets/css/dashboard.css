@@ -1,0 +1,10 @@
+/* ============================================================
+   PURGE COFFEE — Dashboard Page Styles  (dashboard.css)
+   Page-specific overrides and additions for dashboard.php.
+   Global/shared styles are in admin.css.
+   ============================================================ */
+
+/* ── Dashboard: Recent Orders table constrained height ────── */
+#dashboardOrdersTable tbody tr td {
+  padding: 13px 28px;
+}

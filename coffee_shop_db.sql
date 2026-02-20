@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 20, 2026 at 05:34 AM
+-- Generation Time: Feb 20, 2026 at 06:07 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -146,7 +146,14 @@ INSERT INTO `products` (`product_id`, `category_id`, `name`, `description`, `pri
 (42, 9, 'Oat Milk / Almond Milk', 'Substitute dairy milk with plant-based alternative', 30.00, NULL, 1, '2026-02-09 12:27:00'),
 (43, 9, 'Flavor Pump', 'Add your choice of flavor syrup to any drink', 25.00, NULL, 1, '2026-02-09 12:27:00'),
 (44, 9, 'Coffee Jelly / Pearls', 'Add chewy coffee jelly or boba pearls to your drink', 40.00, NULL, 1, '2026-02-09 12:27:00'),
-(45, 9, 'Whipped Cream', 'Top your drink with fluffy whipped cream', 20.00, NULL, 1, '2026-02-09 12:27:00');
+(45, 9, 'Whipped Cream', 'Top your drink with fluffy whipped cream', 20.00, NULL, 1, '2026-02-09 12:27:00'),
+(46, 6, 'test product', 'just a test product', 100.00, NULL, 1, '2026-02-20 09:40:46'),
+(47, 6, 'test product', 'just a test product', 100.00, NULL, 1, '2026-02-20 09:40:52'),
+(48, 6, 'aaaaaaaaaa', 'aaaaaaaa', 100.00, NULL, 1, '2026-02-20 09:41:20'),
+(49, 2, '123123', 'abakada31232132', 50.00, NULL, 1, '2026-02-20 09:41:25'),
+(50, 1, '0', 'adsadsad', 1.00, NULL, 1, '2026-02-20 09:41:47'),
+(51, 9, '0', 'asdasdsa', 1.00, NULL, 1, '2026-02-20 09:52:32'),
+(52, 6, 'dsadsad', 'asdsads', 123.00, NULL, 1, '2026-02-20 09:52:40');
 
 -- --------------------------------------------------------
 
@@ -172,13 +179,14 @@ INSERT INTO `product_interactions` (`interaction_id`, `product_id`, `interaction
 (2, 1, 'favorite', 1, '2026-02-20 09:50:40', '2026-02-18 12:32:01'),
 (3, 2, 'favorite', 1, '2026-02-19 22:46:16', '2026-02-18 12:32:16'),
 (4, 3, 'favorite', 1, '2026-02-19 22:24:49', '2026-02-19 12:51:04'),
-(5, 1, 'add_to_cart', 6, '2026-02-20 09:50:33', '2026-02-19 13:19:53'),
+(5, 1, 'add_to_cart', 7, '2026-02-20 14:34:27', '2026-02-19 13:19:53'),
 (6, 3, 'add_to_cart', 3, '2026-02-19 22:18:30', '2026-02-19 14:07:25'),
 (7, 5, 'add_to_cart', 2, '2026-02-19 22:18:09', '2026-02-19 14:07:28'),
 (8, 8, 'add_to_cart', 2, '2026-02-19 22:18:08', '2026-02-19 14:07:30'),
 (9, 5, 'favorite', 0, '2026-02-19 22:24:28', '2026-02-19 14:24:24'),
 (10, 6, 'add_to_cart', 2, '2026-02-19 22:25:01', '2026-02-19 14:24:58'),
-(11, 14, 'add_to_cart', 2, '2026-02-19 22:46:23', '2026-02-19 14:46:22');
+(11, 14, 'add_to_cart', 2, '2026-02-19 22:46:23', '2026-02-19 14:46:22'),
+(12, 35, 'add_to_cart', 1, '2026-02-20 14:34:36', '2026-02-20 06:34:36');
 
 -- --------------------------------------------------------
 
@@ -279,13 +287,13 @@ ALTER TABLE `order_items`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT for table `product_interactions`
 --
 ALTER TABLE `product_interactions`
-  MODIFY `interaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `interaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `users`

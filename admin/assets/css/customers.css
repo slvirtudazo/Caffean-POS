@@ -1,0 +1,12 @@
+/* ============================================================
+   PURGE COFFEE — Customers Page Styles  (customers.css)
+   Page-specific overrides and additions for customers.php.
+   Global/shared styles are in admin.css.
+   ============================================================ */
+
+/* ── Customers stat grid: 3 columns on larger screens ──────── */
+@media (min-width: 768px) {
+  .customers-stat-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

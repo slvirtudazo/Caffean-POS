@@ -5,69 +5,79 @@
  * Sticky elements:
  * - .filter-panel               → left sidebar (categories + filters)
  * - .menu-content-sticky-header → right column (active-filters bar)
- * Both sit at --navbar-height below the viewport top, after the sticky navbar.
  */
 
 /* ===== ROOT TOKEN ===== */
 :root {
     --navbar-height: 70px;
+    --sidebar-width: 350px;
+    /* NEW: Adjust sidebar width centrally */
 }
 
 /* ===== MENU MAIN SECTION ===== */
 .menu-main-section {
-    padding-top: 2rem; 
+    padding-top: 2rem;
     padding-bottom: 2rem;
     background-color: var(--ivory-cream);
 }
 
 /* =========================================================
-   SIDEBAR
+   CUSTOM LAYOUT & SIDEBAR (No longer using Bootstrap cols)
    ========================================================= */
+
+/*
+ * The column itself is now the sticky + scrollable container,
+ * mirroring the admin sidebar (.admin-sidebar) exactly.
+ * It sticks to the viewport on page scroll and only scrolls
+ * its own content when the cursor is pointed at it.
+ */
 .menu-sidebar {
     padding: 0 0 0 var(--spacing-md);
-    position: relative;
-    align-self: flex-start; /* Prevents the column from stretching */
+    align-self: flex-start;
+
+    /* CUSTOM LAYOUT WIDTH */
+    flex: 0 0 var(--sidebar-width);
+    max-width: var(--sidebar-width);
+
+    /* Sticky — mirrors admin-sidebar */
+    position: -webkit-sticky;
+    position: sticky;
+    top: calc(var(--navbar-height) + 2rem);
+    height: calc(100vh - var(--navbar-height) - 4rem);
+
+    /* Independent scroll: only moves when cursor is inside */
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    will-change: transform;
+
+    /* Scrollbar — same as before */
+    scrollbar-width: thin;
+    scrollbar-color: var(--burgundy-wine) rgba(226, 217, 200, 0.2);
 }
 
+.menu-sidebar::-webkit-scrollbar {
+    width: 4px;
+    display: block;
+}
+
+.menu-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.menu-sidebar::-webkit-scrollbar-thumb {
+    background-color: var(--burgundy-wine);
+    border-radius: 4px;
+    opacity: 0.6;
+}
+
+/* .filter-panel is now purely visual — no sticky / scroll logic here */
 .filter-panel {
     background: transparent;
     box-shadow: none;
     border-radius: 0;
     padding: 0 var(--spacing-lg) var(--spacing-xxl) 0;
     border-right: 1.5px solid rgba(42, 0, 0, 0.07);
-
-    /* Freezes the sidebar to the viewport */
-    position: -webkit-sticky;
-    position: sticky;
-    top: calc(var(--navbar-height) + 2rem);
-    
-    /* Strict height forces it to occupy the whole vertical space */
-    max-height: calc(100vh - var(--navbar-height) - 4rem);
-    height: fit-content;
-    overflow-y: auto;
-    overflow-x: hidden;
-    
-    /* Isolates scroll: hovering and scrolling here won't move the main page */
-    overscroll-behavior: contain;
-    will-change: transform; /* Optimization for sticky positioning */
-
-    /* Minimalist Modern Scrollbar */
-    scrollbar-width: thin;
-    scrollbar-color: var(--burgundy-wine) rgba(226, 217, 200, 0.2);
-}
-
-/* Webkit Scrollbar Styling */
-.filter-panel::-webkit-scrollbar {
-    width: 4px; 
-    display: block;
-}
-.filter-panel::-webkit-scrollbar-track {
-    background: transparent; 
-}
-.filter-panel::-webkit-scrollbar-thumb {
-    background-color: var(--burgundy-wine);
-    border-radius: 4px;
-    opacity: 0.6;
 }
 
 /* ===== FILTER SECTIONS ===== */
@@ -76,10 +86,12 @@
     padding-bottom: 0;
     border-bottom: none;
 }
+
 .filter-section:last-child {
-    margin-bottom: var(--spacing-lg); /* Ensures last section has breathing room */
+    margin-bottom: var(--spacing-lg);
 }
-.filter-section + .filter-section {
+
+.filter-section+.filter-section {
     padding-top: 1.75rem;
     border-top: 1px solid rgba(42, 0, 0, 0.07);
 }
@@ -87,10 +99,10 @@
 /* ===== FILTER TITLE (Categories, Sort by Price, Best Sellers) ===== */
 .filter-title {
     font-family: var(--font-subheading);
-    font-size: 0.8rem; 
+    font-size: 0.8rem;
     font-weight: 700;
     color: var(--dark-brown);
-    opacity: 0.6; 
+    opacity: 0.6;
     text-transform: uppercase;
     letter-spacing: 1.8px;
     margin-top: 0;
@@ -100,6 +112,7 @@
     gap: 0.5rem;
     line-height: 1.2;
 }
+
 .filter-title i {
     font-size: 0.8rem;
 }
@@ -121,8 +134,8 @@
     border-radius: var(--radius-sm);
     text-decoration: none;
     color: var(--dark-brown);
-    font-family: var(--font-body); 
-    font-size: 0.8rem; 
+    font-family: var(--font-body);
+    font-size: 0.8rem;
     font-weight: 500;
     letter-spacing: 0.1px;
     background: transparent;
@@ -130,23 +143,26 @@
     transition: all 0.18s ease;
     position: relative;
 }
+
 .category-item:hover {
     background: rgba(226, 217, 200, 0.35);
     color: var(--burgundy-wine);
     border-left-color: rgba(91, 19, 18, 0.25);
     padding-left: 1rem;
 }
+
 .category-item.active {
-    background: linear-gradient(
-        to right,
-        rgba(91, 19, 18, 0.08) 0%,
-        rgba(91, 19, 18, 0.02) 60%,
-        transparent 100%
-    );
+    background: linear-gradient(to right,
+            rgba(91, 19, 18, 0.08) 0%,
+            rgba(91, 19, 18, 0.02) 60%,
+            transparent 100%);
     color: var(--burgundy-wine);
     border-left-color: var(--burgundy-wine);
-    font-weight: 700; 
+    font-weight: 700;
     padding-left: 1rem;
+
+    cursor: default; 
+    pointer-events: none;
 }
 
 .category-icon {
@@ -159,14 +175,17 @@
     color: rgba(60, 21, 24, 0.4);
     transition: color 0.18s ease;
 }
+
 .category-item:hover .category-icon,
 .category-item.active .category-icon {
     color: var(--burgundy-wine);
 }
+
 .category-name {
     flex: 1;
     line-height: 1;
 }
+
 .category-count {
     font-size: 0.8rem;
     font-weight: 500;
@@ -177,20 +196,20 @@
     border-radius: 0;
     transition: color 0.18s ease;
 }
+
 .category-item:hover .category-count,
 .category-item.active .category-count {
     color: var(--burgundy-wine);
     opacity: 0.7;
 }
 
-/* =========================================================
-   SORT OPTIONS
-   ========================================================= */
+/* ===== SORT OPTIONS ===== */
 .sort-options {
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
 }
+
 .sort-item {
     display: flex;
     align-items: center;
@@ -207,6 +226,7 @@
     user-select: none;
     transition: all 0.18s ease;
 }
+
 .sort-item i {
     font-size: 0.8rem;
     width: 18px;
@@ -215,46 +235,72 @@
     color: rgba(60, 21, 24, 0.4);
     transition: color 0.18s ease;
 }
+
 .sort-item:hover {
     background: rgba(226, 217, 200, 0.35);
     color: var(--burgundy-wine);
     border-left-color: rgba(91, 19, 18, 0.25);
     padding-left: 1rem;
 }
-.sort-item:hover i { color: var(--burgundy-wine); }
+
+.sort-item:hover i {
+    color: var(--burgundy-wine);
+}
 
 .sort-item.active {
-    background: linear-gradient(
-        to right,
-        rgba(91, 19, 18, 0.08) 0%,
-        rgba(91, 19, 18, 0.02) 60%,
-        transparent 100%
-    );
+    background: linear-gradient(to right,
+            rgba(91, 19, 18, 0.08) 0%,
+            rgba(91, 19, 18, 0.02) 60%,
+            transparent 100%);
     color: var(--burgundy-wine);
     border-left-color: var(--burgundy-wine);
     font-weight: 700;
     padding-left: 1rem;
+
+    cursor: default; 
+    pointer-events: none;
 }
-.sort-item.active i { color: var(--burgundy-wine); }
+
+.sort-item.active i {
+    color: var(--burgundy-wine);
+}
 
 /* =========================================================
    MAIN CONTENT AREA
    ========================================================= */
 .menu-content {
-    padding: 0 var(--spacing-md); 
+    padding: 0 var(--spacing-md);
+    padding-top: 0;
+    flex: 1;
+    max-width: calc(100% - var(--sidebar-width));
 }
 
 /* =========================================================
-   STICKY HEADER
+   STICKY HEADER (Active Filters Bar)
+   Glassmorphism: products blur and fade cleanly beneath it.
    ========================================================= */
 .menu-content-sticky-header {
     position: -webkit-sticky;
     position: sticky;
-    top: calc(var(--navbar-height) + 2rem); 
+    top: var(--navbar-height);
+    margin-top: -2rem;
+    padding-top: 2rem;
     z-index: 800;
-    background-color: var(--ivory-cream); 
-    padding: 0 0 1.5rem 0; 
-    margin: 0;
+
+    background: rgba(245, 241, 232, 0.82);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    box-shadow: 0 6px 28px rgba(226, 217, 200, 0.60);
+
+    padding-bottom: 1.5rem;
+
+    margin-left: calc(-1 * var(--spacing-md));
+    margin-right: calc(-1 * var(--spacing-md));
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
+    width: calc(100% + (var(--spacing-md) * 2));
 }
 
 /* ===== ACTIVE FILTERS CONTAINER ===== */
@@ -264,99 +310,96 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0;
-    margin-top: 0;
-    background: transparent;
-    box-shadow: none;
-    border-radius: 0;
-    margin-bottom: 0;
+    margin: -0.5rem 0 -0.8rem 0;
     min-height: 28px;
 }
 
 /* "ACTIVE FILTERS:" label */
 .filter-label {
     font-family: var(--font-subheading);
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 1.6px;
+    font-size: 0.75rem;
+    /* Scaled down for elegance */
+    font-weight: 600;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--dark-brown);
-    opacity: 0.5;
+    color: #888;
+    /* Softer neutral gray */
     margin-right: 0.25rem;
     white-space: nowrap;
-    flex-shrink: 0;
 }
 
-/* Standard Chip */
+/* Soft Chip Style (Replaces bordered badges) */
 .filter-badge {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
-    padding: 0.3rem 0.9rem 0.3rem 1rem;
-    background: white;
-    border: 1.5px solid var(--burgundy-wine);
+    gap: 5px;
+    padding: 5px 10px 5px 12px;
+    background: rgba(91, 19, 18, 0.08);
+    /* Soft translucent burgundy tint */
     color: var(--burgundy-wine);
+    border: none;
+    /* Removed heavy borders */
     border-radius: 50px;
+    /* Perfect pill shape */
     font-family: var(--font-body);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    letter-spacing: 0.15px;
-    box-shadow: 0 1px 4px rgba(91, 19, 18, 0.06);
-    transition: all 0.18s ease;
-    cursor: default;
+    letter-spacing: 0.1px;
+    transition: all 0.2s ease;
 }
+
 .filter-badge:hover {
-    background: var(--burgundy-wine);
-    color: white;
-    box-shadow: 0 3px 10px rgba(91, 19, 18, 0.18);
+    background: rgba(91, 19, 18, 0.15);
+    /* Darkens slightly on hover */
     transform: translateY(-1px);
 }
+
+/* The 'X' remove icon inside the chip */
 .filter-badge a {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 16px;
-    height: 16px;
-    color: inherit;
-    opacity: 0.55;
+    width: 18px;
+    height: 18px;
+    color: var(--burgundy-wine);
+    opacity: 0.6;
     text-decoration: none;
-    transition: opacity 0.15s ease;
-    flex-shrink: 0;
+    border-radius: 50%;
+    transition: all 0.2s ease;
 }
-.filter-badge a:hover { opacity: 1; }
-.filter-badge:hover a { color: white; }
 
-/* ===== CLEAR ACTIVE FILTERS BUTTON (Badge Style) ===== */
+.filter-badge a:hover {
+    opacity: 1;
+    background: rgba(91, 19, 18, 0.12);
+    /* Subtle circle hover effect behind the X */
+}
+
+/* ===== CLEAR ALL LINK (Demoted to text link) ===== */
 .btn-clear-active-filters {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
-    padding: 0.3rem 0.9rem 0.3rem 1rem;
-    background: white;
-    border: 1.5px solid var(--burgundy-wine);
-    color: var(--burgundy-wine);
-    border-radius: 50px;
+    gap: 5px;
+    margin-left: 0.5rem;
+    padding: 5px 10px 5px 12px;
     font-family: var(--font-body);
-    font-size: 0.8rem;
-    font-weight: 600;
-    letter-spacing: 0.15px;
-    box-shadow: 0 1px 4px rgba(91, 19, 18, 0.06);
-    transition: all 0.18s ease;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+    color: #888;
+    background: transparent;
+    border: none;
     text-decoration: none;
+    text-underline-offset: 3px;
+    transition: color 0.2s ease;
 }
-.btn-clear-active-filters:hover {
-    background: var(--burgundy-wine);
-    color: white;
-    box-shadow: 0 3px 10px rgba(91, 19, 18, 0.18);
-    transform: translateY(-1px);
-    text-decoration: none;
-}
+
 .btn-clear-active-filters i {
-    opacity: 0.55;
-    transition: opacity 0.15s ease;
+    font-size: 0.7rem;
 }
-.btn-clear-active-filters:hover i {
-    opacity: 1;
-    color: white;
+
+.btn-clear-active-filters:hover {
+    color: var(--deep-maroon);
+    text-decoration-color: var(--deep-maroon);
 }
 
 /* =========================================================
@@ -365,12 +408,17 @@
 .products-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--spacing-xl);
+
+    /*
+     * Gap reduced by 2 steps (--spacing-xl 2.5rem → --spacing-md 1.5rem).
+     * max-width / margin:auto removed — the grid now fills .menu-content
+     * naturally. .menu-content already carries padding: 0 var(--spacing-md)
+     * (1.5rem) on both sides, so the outer left/right space is identical
+     * to the gap between cards.
+     */
+    gap: var(--spacing-md);
     margin-top: 0;
     margin-bottom: 0;
-    max-width: 1400px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 /* =========================================================
@@ -387,6 +435,7 @@
     display: flex;
     flex-direction: column;
 }
+
 .product-card:hover {
     transform: translateY(-8px);
     box-shadow: var(--shadow-lg);
@@ -400,6 +449,7 @@
     overflow: hidden;
     background: var(--warm-sand);
 }
+
 .product-image {
     width: 100%;
     height: 100%;
@@ -408,7 +458,10 @@
     position: relative;
     z-index: 1;
 }
-.product-card:hover .product-image { transform: scale(1.1); }
+
+.product-card:hover .product-image {
+    transform: scale(1.1);
+}
 
 /* Favorite Icon */
 .favorite-icon {
@@ -427,11 +480,29 @@
     z-index: 10;
     box-shadow: var(--shadow-sm);
 }
-.favorite-icon:hover { background: var(--burgundy-wine); transform: scale(1.1); }
-.favorite-icon i { font-size: 1.25rem; color: var(--burgundy-wine); transition: var(--transition-fast); }
-.favorite-icon:hover i { color: white; }
-.favorite-icon.active { background: var(--burgundy-wine); }
-.favorite-icon.active i { color: white; }
+
+.favorite-icon:hover {
+    background: var(--burgundy-wine);
+    transform: scale(1.1);
+}
+
+.favorite-icon i {
+    font-size: 1.25rem;
+    color: var(--burgundy-wine);
+    transition: var(--transition-fast);
+}
+
+.favorite-icon:hover i {
+    color: white;
+}
+
+.favorite-icon.active {
+    background: var(--burgundy-wine);
+}
+
+.favorite-icon.active i {
+    color: white;
+}
 
 /* Category Badge */
 .category-badge {
@@ -457,6 +528,7 @@
     flex-direction: column;
     flex-grow: 1;
 }
+
 .product-name {
     font-family: var(--font-subheading);
     font-size: 25px;
@@ -465,6 +537,7 @@
     margin-bottom: var(--spacing-sm);
     line-height: 1.3;
 }
+
 .product-description {
     color: var(--dark-brown);
     font-size: 15px;
@@ -487,6 +560,7 @@
     margin-top: auto;
     padding-top: var(--spacing-sm);
 }
+
 .product-price {
     font-family: var(--font-subheading);
     font-size: 20px;
@@ -511,15 +585,26 @@
     gap: 0.5rem;
     white-space: nowrap;
 }
+
 .btn-order:hover {
     background-color: var(--deep-maroon);
     color: var(--ivory-cream);
     transform: translateY(-3px);
     box-shadow: var(--shadow-lg);
 }
-.btn-order i { font-size: 0.90rem; }
-.btn-order:active { transform: translateY(0); }
-.btn-order.adding { background-color: var(--deep-maroon); pointer-events: none; }
+
+.btn-order i {
+    font-size: 0.90rem;
+}
+
+.btn-order:active {
+    transform: translateY(0);
+}
+
+.btn-order.adding {
+    background-color: var(--deep-maroon);
+    pointer-events: none;
+}
 
 /* =========================================================
    EMPTY STATE
@@ -534,9 +619,29 @@
     align-items: center;
     justify-content: center;
 }
-.empty-state i { font-size: 4rem; color: #5b131233; margin-bottom: var(--spacing-lg); }
-.empty-state h3 { font-family: var(--font-subheading); font-size: 1.5rem; font-weight: 700; color: var(--deep-maroon); margin-bottom: var(--spacing-xs); }
-.empty-state p { font-family: var(--font-body); font-size: 0.9rem; color: var(--dark-brown); opacity: 0.6; margin-bottom: var(--spacing-lg); }
+
+.empty-state i {
+    font-size: 4rem;
+    color: #5b131233;
+    margin-bottom: var(--spacing-lg);
+}
+
+.empty-state h3 {
+    font-family: var(--font-subheading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--deep-maroon);
+    margin-bottom: var(--spacing-xs);
+}
+
+.empty-state p {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--dark-brown);
+    opacity: 0.6;
+    margin-bottom: var(--spacing-lg);
+}
+
 .empty-state .btn-primary {
     background-color: transparent;
     color: var(--burgundy-wine);
@@ -552,6 +657,7 @@
     box-shadow: var(--shadow-sm);
     text-decoration: none;
 }
+
 .empty-state .btn-primary:hover {
     background-color: var(--burgundy-wine);
     color: var(--ivory-cream);
@@ -560,34 +666,61 @@
 }
 
 /* =========================================================
-   RESPONSIVE
+   RESPONSIVE (Adaptive Grid overriding custom width)
    ========================================================= */
 @media (max-width: 1024px) {
-    .products-grid { grid-template-columns: repeat(2, 1fr); }
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media (max-width: 768px) {
-    .menu-main-section { padding: var(--spacing-md) 0; }
-    .menu-sidebar { padding: var(--spacing-sm); }
-    .menu-content { padding: var(--spacing-sm); padding-top: 0; }
-
-    /* Un-freeze the sidebar on mobile so it naturally scrolls with the page */
-    .filter-panel {
-        position: static;
-        height: auto; 
-        max-height: none;
+    .menu-main-section {
         padding: var(--spacing-md) 0;
-        border-right: none;
-        border-bottom: 1px solid rgba(42, 0, 0, 0.07);
+    }
+
+    /* Reset width + un-freeze sidebar on mobile so it stacks naturally */
+    .menu-sidebar {
+        padding: var(--spacing-sm);
+        flex: 0 0 100%;
+        max-width: 100%;
+        position: static;
+        height: auto;
+        overflow-y: visible;
+        overflow-x: visible;
         overscroll-behavior: auto;
     }
 
-    .menu-content-sticky-header { top: var(--navbar-height); }
-    .results-title { font-size: 1.75rem; }
-    .products-grid { grid-template-columns: 1fr; }
-    .active-filters { flex-direction: row; flex-wrap: wrap; }
+    .menu-content {
+        padding: var(--spacing-sm);
+        padding-top: 0;
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    /* Keep border-bottom visual separator on mobile */
+    .filter-panel {
+        padding: var(--spacing-md) 0;
+        border-right: none;
+        border-bottom: 1px solid rgba(42, 0, 0, 0.07);
+    }
+
+    .menu-content-sticky-header {
+        top: var(--navbar-height);
+    }
+
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .active-filters {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
 }
 
 @media (min-width: 1400px) {
-    .product-card { max-width: 420px; }
+    .product-card {
+        max-width: 420px;
+    }
 }

@@ -25,19 +25,23 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 /**
- * Setup multi-select sort/filter toggles.
+ * Setup sort item toggles.
  * * Rules:
  * - 'price_sort' and 'popular' are mutually exclusive sorts.
- * - 'bestsellers' is a filter and operates independently.
  */
 function setupSortToggles() {
     const sortItems = document.querySelectorAll('.sort-item[data-sort-param]');
 
     sortItems.forEach(function (item) {
         item.addEventListener('click', function () {
-            const param     = item.dataset.sortParam;
-            const value     = item.dataset.sortValue;
-            const isActive  = item.classList.contains('active');
+            // Because we're navigating away, let's save scroll pos
+            if (typeof saveScrollPosition === 'function') {
+                saveScrollPosition();
+            }
+
+            const param = item.dataset.sortParam;
+            const value = item.dataset.sortValue;
+            const isActive = item.classList.contains('active');
 
             const urlParams = new URLSearchParams(window.location.search);
 
@@ -45,13 +49,13 @@ function setupSortToggles() {
                 // Deselect: remove the param entirely
                 urlParams.delete(param);
             } else {
-                // EXCLUSIVITY RULE: Sorting by Price and Popularity cannot happen simultaneously.
-                // If clicking either one, clear both first to ensure they don't stack.
+                // EXCLUSIVITY RULE: Sorting by Price and Popularity/Best Sellers cannot happen simultaneously.
+                // Clear both first to ensure they don't stack.
                 if (param === 'price_sort' || param === 'popular') {
                     urlParams.delete('price_sort');
                     urlParams.delete('popular');
                 }
-                
+
                 // Activate: set the new param
                 urlParams.set(param, value);
             }
@@ -70,7 +74,6 @@ function setupSortToggles() {
 
 /**
  * Load favorite products from localStorage and mark them visually.
- * Updates heart icons on product cards for favorited items.
  */
 function loadFavoritesForMenu() {
     const favorites = JSON.parse(localStorage.getItem('coffeeFavorites')) || [];
@@ -172,18 +175,16 @@ function setupMobileFilters() {
  * Track menu page view for analytics.
  */
 function trackMenuPageView() {
-    const urlParams   = new URLSearchParams(window.location.search);
-    const category    = urlParams.get('category')    || 'all';
-    const priceSort   = urlParams.get('price_sort')  || 'none';
-    const popular     = urlParams.get('popular')     || '0';
-    const bestsellers = urlParams.get('bestsellers') || '0';
+    const urlParams = new URLSearchParams(window.location.search);
+    const category = urlParams.get('category') || 'all';
+    const priceSort = urlParams.get('price_sort') || 'none';
+    const popular = urlParams.get('popular') || '0';
 
     console.log('Menu Page View:', {
-        category:    category,
-        priceSort:   priceSort,
-        popular:     popular,
-        bestsellers: bestsellers,
-        timestamp:   new Date().toISOString()
+        category: category,
+        priceSort: priceSort,
+        popular: popular,
+        timestamp: new Date().toISOString()
     });
 }
 
@@ -207,9 +208,9 @@ function updateURLParameter(param, value) {
  * Filter products by search term (client-side).
  */
 function filterProductsBySearch(searchTerm) {
-    const products    = document.querySelectorAll('.product-card');
+    const products = document.querySelectorAll('.product-card');
     const searchLower = searchTerm.toLowerCase().trim();
-    let   visibleCount = 0;
+    let visibleCount = 0;
 
     products.forEach(function (product) {
         const productName = product.querySelector('.product-name').textContent.toLowerCase();

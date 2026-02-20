@@ -12,8 +12,14 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+// Admin users go directly to the admin dashboard
+if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+    header("Location: admin/dashboard.php");
+    exit();
+}
+
 $user_id  = $_SESSION['user_id'];
-$is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+$is_admin = false; // always false here since admins are redirected above
 
 // Fetch user
 $stmt = mysqli_prepare($conn, "SELECT * FROM users WHERE user_id = ?");
@@ -128,7 +134,7 @@ mysqli_stmt_close($stmt);
                     </a>
                     <?php endif; ?>
                     <a href="php/logout.php" class="btn-logout">
-                        <i class="fas fa-right-from-bracket"></i> Logout
+                        <i class="fas fa-right-from-bracket"></i> Log out
                     </a>
                 </div>
             </div>

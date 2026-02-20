@@ -1,0 +1,16 @@
+/* ============================================================
+   PURGE COFFEE — Products Page Styles  (products.css)
+   Page-specific overrides and additions for products.php.
+   Global/shared styles are in admin.css.
+   ============================================================ */
+
+/* ── Items table inside the view modal ─────────────────────── */
+#vw_items_table {
+  margin-top: 4px;
+  font-size: 0.85rem;
+}
+
+#vw_items_table th,
+#vw_items_table td {
+  padding: 10px 14px;
+}

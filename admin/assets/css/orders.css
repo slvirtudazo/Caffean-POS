@@ -1,0 +1,29 @@
+/* ============================================================
+   PURGE COFFEE — Orders Page Styles  (orders.css)
+   Page-specific overrides and additions for orders.php.
+   Global/shared styles are in admin.css.
+   ============================================================ */
+
+/* ── "Ordered Items" section label inside view modal ───────── */
+/* Replaces the former inline style="margin-top:16px; margin-bottom:8px;" */
+.view-modal-section-label {
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+/* ── Items table inside the view modal ─────────────────────── */
+#vw_items_table {
+  margin-top: 4px;
+  font-size: 0.85rem;
+}
+
+#vw_items_table th,
+#vw_items_table td {
+  padding: 10px 14px;
+}
+
+/* ── "No items" cell inside the order items modal table ──── */
+.vw-no-items-cell {
+  text-align: center;
+  color: #999;
+}
