@@ -1,72 +1,78 @@
 /**
  * Purge Coffee Shop - Main JavaScript File
  * Handles cart operations, universal favorite management, and notifications.
- * (Search functionality is now handled independently in search.js)
  */
 
 let cart = JSON.parse(localStorage.getItem('coffeeCart')) || [];
-let currentNotificationTimer = null; // Global timer tracker for notifications
+let currentNotificationTimer = null;
 
 /**
  * Add product to shopping cart
+ * FIX #1: On error, strictly prevent any cart update or navigation.
  */
 function addToCart(productId) {
     const formData = new FormData();
     formData.append('product_id', productId);
     formData.append('quantity', 1);
     formData.append('ajax', '1');
-    
+
     fetch('php/add_to_cart.php', {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            showNotification(data.message, 'success');
-            animateCartIcon();
-            trackInteraction(productId, 'add_to_cart');
-            
-            // Keep local cart array in sync
-            const existingItem = cart.find(item => item.id === productId);
-            if (existingItem) {
-                existingItem.quantity += 1;
+        .then(response => {
+            if (!response.ok) throw new Error('Server error: ' + response.status);
+            return response.json();
+        })
+        .then(data => {
+            if (data.success === true) {
+                showNotification(data.message, 'success');
+                animateCartIcon();
+                trackInteraction(productId, 'add_to_cart');
+
+                // Keep local cart array in sync ONLY on success
+                const existingItem = cart.find(item => item.id === productId);
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    cart.push({ id: productId, quantity: 1 });
+                }
+                localStorage.setItem('coffeeCart', JSON.stringify(cart));
+                updateCartCount();
             } else {
-                cart.push({ id: productId, quantity: 1 });
+                // FIX #1: error — show message only, do NOT update cart or navigate
+                showNotification(data.message || 'Could not add product to cart.', 'error');
             }
-            localStorage.setItem('coffeeCart', JSON.stringify(cart));
-            
-            updateCartCount(); 
-        } else {
-            showNotification(data.message, 'error');
-        }
-    })
-    .catch(error => {
-        console.error('Error adding to cart:', error);
-        showNotification('Error adding product to cart', 'error');
-    });
+        })
+        .catch(error => {
+            console.error('Error adding to cart:', error);
+            // FIX #1: catch — show message only, do NOT update cart
+            showNotification('Error adding product to cart.', 'error');
+        });
 }
 
 /**
- * Update cart count display with a specific number
+ * Update cart count display
  */
 function updateCartCountDisplay(count) {
     const cartLink = document.querySelector('.nav-icons a[href="cart.php"]');
     if (!cartLink) return;
-
     let badge = cartLink.querySelector('.cart-badge');
-    
-    if (!badge && count > 0) {
-        badge = document.createElement('span');
-        badge.className = 'cart-badge';
-        cartLink.appendChild(badge);
-    }
-    
-    if (badge) {
-        badge.textContent = count;
-        if (count === 0) {
-            badge.remove();
+
+    if (count > 0) {
+        if (!badge) {
+            badge = document.createElement('span');
+            badge.className = 'cart-badge';
+            cartLink.appendChild(badge);
+        } else {
+            // Re-trigger pop animation on update
+            badge.style.animation = 'none';
+            badge.offsetHeight; // reflow
+            badge.style.animation = '';
         }
+        badge.textContent = count;
+    } else if (badge) {
+        badge.remove();
     }
 }
 
@@ -82,164 +88,123 @@ function updateQuantity(productId, newQuantity) {
     if (item && newQuantity > 0) {
         item.quantity = newQuantity;
         localStorage.setItem('coffeeCart', JSON.stringify(cart));
-        updateCartCount();
-    } else if (newQuantity <= 0) {
-        removeFromCart(productId);
     }
 }
 
+/**
+ * Fetch and update cart count badge from server session
+ */
 function updateCartCount() {
-    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    updateCartCountDisplay(totalItems);
+    fetch('php/get_cart_count.php')
+        .then(r => r.json())
+        .then(data => {
+            if (typeof data.count !== 'undefined') {
+                updateCartCountDisplay(data.count);
+            }
+        })
+        .catch(() => { });
 }
 
+/**
+ * Animate cart icon on add
+ */
 function animateCartIcon() {
-    const cartIcon = document.querySelector('.fa-shopping-cart');
-    if (cartIcon) {
-        cartIcon.classList.add('bounce');
-        setTimeout(() => {
-            cartIcon.classList.remove('bounce');
-        }, 500);
-    }
+    const icon = document.querySelector('.nav-icons a[href="cart.php"] .fa-shopping-cart');
+    if (!icon) return;
+    icon.classList.add('cart-bounce');
+    setTimeout(() => icon.classList.remove('cart-bounce'), 600);
 }
 
 /**
- * Toggle favorite/wishlist status for products (Universally updates UI)
- */
-function toggleFavorite(productId, element) {
-    let favorites = JSON.parse(localStorage.getItem('coffeeFavorites')) || [];
-    const index = favorites.indexOf(productId);
-    const isFavorited = index > -1;
-    
-    if (isFavorited) {
-        favorites.splice(index, 1);
-        showNotification('Removed from favorites', 'info');
-        trackInteraction(productId, 'unfavorite');
-    } else {
-        favorites.push(productId);
-        showNotification('Added to favorites!', 'success');
-        trackInteraction(productId, 'favorite');
-    }
-    
-    localStorage.setItem('coffeeFavorites', JSON.stringify(favorites));
-
-    // Update ALL matching product cards on the screen instantly
-    const productCards = document.querySelectorAll(`.product-card[data-product-id="${productId}"]`);
-    
-    productCards.forEach(card => {
-        const heartIcon = card.querySelector('.favorite-icon i');
-        const iconContainer = card.querySelector('.favorite-icon');
-        
-        if (isFavorited) {
-            if (heartIcon) {
-                heartIcon.classList.remove('fas');
-                heartIcon.classList.add('far');
-            }
-            if (iconContainer) iconContainer.classList.remove('active');
-        } else {
-            if (heartIcon) {
-                heartIcon.classList.remove('far');
-                heartIcon.classList.add('fas');
-            }
-            if (iconContainer) iconContainer.classList.add('active');
-        }
-    });
-}
-
-/**
- * Track user interactions
- */
-function trackInteraction(productId, interactionType) {
-    const formData = new FormData();
-    formData.append('product_id', productId);
-    formData.append('interaction_type', interactionType);
-    
-    fetch('php/track_interaction.php', {
-        method: 'POST',
-        body: formData
-    }).catch(error => console.log('Interaction tracking error:', error));
-}
-
-/**
- * Show notification to user (Replaces any existing notification instantly)
+ * Show notification toast
+ * Uses .notification + .notification-{type} CSS classes (style.css / components.css).
+ * Slide-in is triggered by the CSS animation on .notification;
+ * slide-out is triggered by adding .slide-out after 3 s.
  */
 function showNotification(message, type = 'info') {
-    // 1. Instantly remove any existing notification and clear its timer
-    const existingNotification = document.getElementById('purge-live-notification');
-    if (existingNotification) {
-        existingNotification.remove();
-        if (currentNotificationTimer) clearTimeout(currentNotificationTimer);
+    let notification = document.getElementById('notification-toast');
+    if (!notification) {
+        notification = document.createElement('div');
+        notification.id = 'notification-toast';
+        document.body.appendChild(notification);
     }
-    
-    // 2. Create the new notification
-    const notification = document.createElement('div');
-    notification.id = 'purge-live-notification';
-    notification.className = `notification notification-${type}`;
+
+    // Cancel any pending hide timer so a rapid second call resets cleanly
+    if (currentNotificationTimer) {
+        clearTimeout(currentNotificationTimer);
+        currentNotificationTimer = null;
+    }
+
     notification.textContent = message;
-    
-    // 3. Mount to DOM
-    document.body.appendChild(notification);
-    
-    // 4. Remove smoothly after 3 seconds
+    // Re-assigning className re-triggers the slideIn CSS animation
+    notification.className = `notification notification-${type}`;
+
     currentNotificationTimer = setTimeout(() => {
         notification.classList.add('slide-out');
-        setTimeout(() => {
-            if (notification.parentElement) {
-                notification.parentElement.removeChild(notification);
-            }
-        }, 300);
+        currentNotificationTimer = null;
     }, 3000);
 }
 
 /**
- * Initialization
+ * Toggle favorite product.
+ * iconEl  — the <i> element inside .favorite-icon.
+ * Also toggles the .active class on the parent wrapper for CSS targeting.
  */
-document.addEventListener('DOMContentLoaded', function() {
-    updateCartCount();
-    loadFavorites();
-    
-    // Smooth scroll for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        });
-    });
-});
+function toggleFavorite(productId, iconEl) {
+    let favorites = JSON.parse(localStorage.getItem('coffeeFavorites')) || [];
+    const idx = favorites.indexOf(productId);
+    const wrapper = iconEl.closest ? iconEl.closest('.favorite-icon') : iconEl.parentElement;
 
-function loadFavorites() {
+    if (idx === -1) {
+        favorites.push(productId);
+        iconEl.classList.replace('far', 'fas');
+        iconEl.style.color = '#c0392b';
+        if (wrapper) wrapper.classList.add('active');
+        showNotification('Added to favorites!', 'success');
+    } else {
+        favorites.splice(idx, 1);
+        iconEl.classList.replace('fas', 'far');
+        iconEl.style.color = '';
+        if (wrapper) wrapper.classList.remove('active');
+        showNotification('Removed from favorites.', 'info');
+    }
+    localStorage.setItem('coffeeFavorites', JSON.stringify(favorites));
+}
+
+/**
+ * Load saved favorites on product cards (page load).
+ * Applies .fas class + red colour to the heart icon, and .active to wrapper.
+ */
+function loadFavoritesForMenu() {
     const favorites = JSON.parse(localStorage.getItem('coffeeFavorites')) || [];
-    
     favorites.forEach(productId => {
-        const productCards = document.querySelectorAll(`.product-card[data-product-id="${productId}"]`);
-        
-        productCards.forEach(card => {
-            const heartIcon = card.querySelector('.favorite-icon i');
-            const iconContainer = card.querySelector('.favorite-icon');
-            
-            if (heartIcon) {
-                heartIcon.classList.remove('far');
-                heartIcon.classList.add('fas');
-            }
-            if (iconContainer) {
-                iconContainer.classList.add('active');
-            }
-        });
+        const card = document.querySelector(`[data-product-id="${productId}"]`);
+        if (!card) return;
+        const wrapper = card.querySelector('.favorite-icon');
+        const icon = card.querySelector('.favorite-icon i');
+        if (icon) {
+            icon.classList.replace('far', 'fas');
+            icon.style.color = '#c0392b';
+        }
+        if (wrapper) wrapper.classList.add('active');
     });
 }
 
-function formatPrice(price) {
-    return '₱ ' + parseFloat(price).toFixed(2);
+/**
+ * Track user interaction (lightweight analytics)
+ */
+function trackInteraction(productId, action) {
+    try {
+        const key = 'interactions';
+        const data = JSON.parse(localStorage.getItem(key)) || [];
+        data.push({ productId, action, timestamp: Date.now() });
+        if (data.length > 100) data.splice(0, data.length - 100);
+        localStorage.setItem(key, JSON.stringify(data));
+    } catch (e) { /* fail silently */ }
 }
 
-function calculateCartTotal() {
-    return cart.reduce((total, item) => total + item.quantity, 0);
-}
-
-// Module export for Node environments (if any)
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { addToCart, removeFromCart, updateQuantity, toggleFavorite, calculateCartTotal, trackInteraction };
-}
+// Initialise cart count on page load
+document.addEventListener('DOMContentLoaded', () => {
+    updateCartCount();
+    loadFavoritesForMenu();
+});

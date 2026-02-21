@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 21, 2026 at 08:49 AM
+-- Generation Time: Feb 21, 2026 at 05:11 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -79,8 +79,30 @@ CREATE TABLE `orders` (
   `status` enum('pending','processing','completed','cancelled') DEFAULT 'pending',
   `payment_method` varchar(50) NOT NULL,
   `delivery_address` text NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `mobile_number` varchar(20) DEFAULT NULL,
+  `order_type` enum('delivery','pickup') NOT NULL DEFAULT 'delivery',
+  `house_unit` varchar(100) DEFAULT NULL,
+  `street_name` varchar(150) DEFAULT NULL,
+  `barangay` varchar(100) DEFAULT NULL,
+  `city_municipality` varchar(100) DEFAULT NULL,
+  `province` varchar(100) DEFAULT NULL,
+  `zip_code` varchar(10) DEFAULT NULL,
+  `delivery_notes` text DEFAULT NULL,
+  `pickup_branch` varchar(100) DEFAULT NULL,
+  `pickup_date` date DEFAULT NULL,
+  `pickup_time` time DEFAULT NULL,
+  `promo_code` varchar(50) DEFAULT NULL,
+  `discount_amount` decimal(10,2) NOT NULL DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`order_id`, `user_id`, `order_date`, `total_amount`, `status`, `payment_method`, `delivery_address`, `created_at`, `mobile_number`, `order_type`, `house_unit`, `street_name`, `barangay`, `city_municipality`, `province`, `zip_code`, `delivery_notes`, `pickup_branch`, `pickup_date`, `pickup_time`, `promo_code`, `discount_amount`) VALUES
+(1, 3, '2026-02-21 17:51:26', 51.00, 'pending', 'GCash', 'test', '2026-02-21 09:51:26', NULL, 'delivery', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00),
+(4, 3, '2026-02-21 23:35:42', 210.00, 'processing', 'Cash on Delivery', 'Block 6 Lot 17 Crestview Homes, Crestview Avenue, Ula, Tugbok District, Davao City, Davao del Sur 8000', '2026-02-21 15:35:42', '09123456789', 'delivery', 'Block 6 Lot 17 Crestview Homes', 'Crestview Avenue', 'Ula, Tugbok District', 'Davao City', 'Davao del Sur', '8000', 'test', '', NULL, NULL, '', 0.00);
 
 -- --------------------------------------------------------
 
@@ -93,8 +115,21 @@ CREATE TABLE `order_items` (
   `order_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
-  `price_at_time` decimal(10,2) NOT NULL
+  `price_at_time` decimal(10,2) NOT NULL,
+  `size` varchar(20) DEFAULT NULL,
+  `temperature` varchar(20) DEFAULT NULL,
+  `sugar_level` varchar(10) DEFAULT NULL,
+  `milk_type` varchar(30) DEFAULT NULL,
+  `addons` text DEFAULT NULL,
+  `special_instructions` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `order_items`
+--
+
+INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price_at_time`, `size`, `temperature`, `sugar_level`, `milk_type`, `addons`, `special_instructions`) VALUES
+(2, 4, 55, 1, 160.00, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -118,7 +153,6 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`product_id`, `category_id`, `name`, `description`, `price`, `image_path`, `status`, `created_at`) VALUES
-(1, 1, 'Caffe Americano', 'Rich espresso diluted with hot water for a smooth, bold flavor', 160.00, NULL, 1, '2026-02-09 12:27:00'),
 (2, 1, 'Cappuccino', 'Perfect balance of espresso, steamed milk, and velvety foam', 175.00, NULL, 1, '2026-02-09 12:27:00'),
 (3, 1, 'Espresso', 'Intense shot of pure coffee perfection, bold and concentrated', 140.00, NULL, 1, '2026-02-09 12:27:00'),
 (4, 1, 'White Chocolate Mocha', 'Luxurious blend of espresso, white chocolate, and steamed milk', 195.00, NULL, 1, '2026-02-09 12:27:00'),
@@ -159,17 +193,11 @@ INSERT INTO `products` (`product_id`, `category_id`, `name`, `description`, `pri
 (39, 8, 'Sausage Roll', 'Flaky pastry wrapped around savory sausage filling', 165.00, NULL, 1, '2026-02-09 12:27:00'),
 (40, 8, 'Loaded Nachos', 'Crispy tortilla chips with cheese, salsa, and toppings', 185.00, NULL, 1, '2026-02-09 12:27:00'),
 (41, 9, 'Extra Espresso Shot', 'Add an extra shot of espresso to your drink for more kick', 35.00, NULL, 1, '2026-02-09 12:27:00'),
-(42, 9, 'Oat Milk / Almond Milk', 'Substitute dairy milk with plant-based alternative', 30.00, NULL, 1, '2026-02-09 12:27:00'),
-(43, 9, 'Flavor Pump', 'Add your choice of flavor syrup to any drink', 25.00, NULL, 1, '2026-02-09 12:27:00'),
-(44, 9, 'Coffee Jelly / Pearls', 'Add chewy coffee jelly or boba pearls to your drink', 40.00, NULL, 1, '2026-02-09 12:27:00'),
-(45, 9, 'Whipped Cream', 'Top your drink with fluffy whipped cream', 20.00, NULL, 1, '2026-02-09 12:27:00'),
-(46, 6, 'test product', 'just a test product', 100.00, NULL, 1, '2026-02-20 09:40:46'),
-(47, 6, 'test product', 'just a test product', 100.00, NULL, 1, '2026-02-20 09:40:52'),
-(48, 6, 'aaaaaaaaaa', 'aaaaaaaa', 100.00, NULL, 1, '2026-02-20 09:41:20'),
-(49, 2, '123123', 'abakada31232132', 50.00, NULL, 1, '2026-02-20 09:41:25'),
-(50, 1, '0', 'adsadsad', 1.00, NULL, 1, '2026-02-20 09:41:47'),
-(51, 9, '0', 'asdasdsa', 1.00, NULL, 0, '2026-02-20 09:52:32'),
-(52, 6, 'dsadsad', 'asdsads', 123.00, NULL, 1, '2026-02-20 09:52:40');
+(43, 9, 'Vanilla Syrup', 'A sweet, aromatic syrup made with natural or artificial vanilla, used to add a creamy vanilla flavor to coffee, lattes, or other beverages', 25.00, NULL, 1, '2026-02-09 12:27:00'),
+(55, 1, 'Caffe Americano', 'A rich espresso diluted with hot water, creating a smooth, full-bodied coffee without the intensity of straight espresso', 160.00, NULL, 1, '2026-02-21 14:45:44'),
+(56, 9, 'Whipped Cream', 'Light, airy cream topping that adds richness and a creamy texture to coffee drinks or desserts', 20.00, NULL, 1, '2026-02-21 15:05:20'),
+(57, 9, 'Coffee Jelly', 'Cubes of firm, slightly sweetened coffee-flavored gelatin, perfect for mixing into cold drinks or desserts', 40.00, NULL, 1, '2026-02-21 15:05:50'),
+(58, 9, 'Pearl (Boba)', 'Chewy tapioca balls often added to iced teas, coffees, or milk drinks for texture and fun', 30.00, NULL, 1, '2026-02-21 15:06:06');
 
 -- --------------------------------------------------------
 
@@ -192,19 +220,15 @@ CREATE TABLE `product_interactions` (
 
 INSERT INTO `product_interactions` (`interaction_id`, `product_id`, `interaction_type`, `interaction_count`, `last_interaction`, `created_at`) VALUES
 (1, 2, 'add_to_cart', 7, '2026-02-20 09:50:41', '2026-02-18 12:31:08'),
-(2, 1, 'favorite', 1, '2026-02-20 09:50:40', '2026-02-18 12:32:01'),
 (3, 2, 'favorite', 1, '2026-02-19 22:46:16', '2026-02-18 12:32:16'),
 (4, 3, 'favorite', 1, '2026-02-19 22:24:49', '2026-02-19 12:51:04'),
-(5, 1, 'add_to_cart', 7, '2026-02-20 14:34:27', '2026-02-19 13:19:53'),
 (6, 3, 'add_to_cart', 3, '2026-02-19 22:18:30', '2026-02-19 14:07:25'),
 (7, 5, 'add_to_cart', 2, '2026-02-19 22:18:09', '2026-02-19 14:07:28'),
 (8, 8, 'add_to_cart', 2, '2026-02-19 22:18:08', '2026-02-19 14:07:30'),
 (9, 5, 'favorite', 0, '2026-02-19 22:24:28', '2026-02-19 14:24:24'),
 (10, 6, 'add_to_cart', 2, '2026-02-19 22:25:01', '2026-02-19 14:24:58'),
 (11, 14, 'add_to_cart', 2, '2026-02-19 22:46:23', '2026-02-19 14:46:22'),
-(12, 35, 'add_to_cart', 1, '2026-02-20 14:34:36', '2026-02-20 06:34:36'),
-(13, 50, 'favorite', 0, '2026-02-21 01:10:32', '2026-02-20 17:10:31'),
-(14, 50, 'add_to_cart', 2, '2026-02-21 01:10:34', '2026-02-20 17:10:33');
+(12, 35, 'add_to_cart', 1, '2026-02-20 14:34:36', '2026-02-20 06:34:36');
 
 -- --------------------------------------------------------
 
@@ -307,19 +331,19 @@ ALTER TABLE `contact_messages`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
 -- AUTO_INCREMENT for table `product_interactions`

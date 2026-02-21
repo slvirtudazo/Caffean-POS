@@ -8,7 +8,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Oleo+Script:wght@400;500;600;700&family=EB+Garamond:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
 /* ===== CSS VARIABLES FOR CONSISTENT THEMING ===== */
-:root { 
+:root {
     /* Primary Color Palette */
     --ivory-cream: #F5F1E8;
     --warm-sand: #E2D9C8;
@@ -16,33 +16,39 @@
     --burgundy-wine: #5B1312;
     --light-beige: #EDE8DC;
     --dark-brown: #3C1518;
-    
+
     /* Typography Hierarchy */
     --font-main: 'Oleo Script';
     --font-heading: 'EB Garamond', serif;
     --font-subheading: 'Outfit', sans-serif;
     --font-body: 'Inter', sans-serif;
-    
+
     /* Spacing System - 8px base */
-    --spacing-xs: 0.5rem;    /* 8px */
-    --spacing-sm: 1rem;      /* 16px */
-    --spacing-md: 1.5rem;    /* 24px */
-    --spacing-lg: 2rem;      /* 32px */
-    --spacing-xl: 2.5rem;      /* 48px */
-    --spacing-xxl: 3rem;     /* 80px */
-    
+    --spacing-xs: 0.5rem;
+    /* 8px */
+    --spacing-sm: 1rem;
+    /* 16px */
+    --spacing-md: 1.5rem;
+    /* 24px */
+    --spacing-lg: 2rem;
+    /* 32px */
+    --spacing-xl: 2.5rem;
+    /* 48px */
+    --spacing-xxl: 3rem;
+    /* 80px */
+
     /* Border Radius */
     --radius-sm: 10px;
     --radius-md: 15px;
     --radius-lg: 20px;
     --radius-xl: 25px;
     --radius-xxl: 30px;
-    
+
     /* Shadows */
     --shadow-sm: 0 2px 8px rgba(42, 0, 0, 0.08);
     --shadow-md: 0 4px 16px rgba(42, 0, 0, 0.12);
     --shadow-lg: 0 8px 32px rgba(42, 0, 0, 0.16);
-    
+
     /* Transitions */
     --transition-fast: 0.2s ease;
     --transition-normal: 0.3s ease;
@@ -70,7 +76,12 @@ html {
 }
 
 /* ===== TYPOGRAPHY ===== */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     font-family: var(--font-heading);
     font-weight: 700;
     line-height: 1.2;
@@ -624,6 +635,7 @@ p {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -631,9 +643,12 @@ p {
 }
 
 @keyframes floatAnimation {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0px);
     }
+
     50% {
         transform: translateY(-20px);
     }
@@ -641,33 +656,34 @@ p {
 
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 992px) {
+
     /* Navigation */
     .navbar-nav {
         gap: var(--spacing-md);
         flex-direction: column;
         padding: var(--spacing-md) 0;
     }
-    
+
     .nav-icons {
         margin-top: var(--spacing-md);
     }
-    
+
     /* Hero Section */
     .hero-section {
         min-height: auto;
         padding: var(--spacing-xl) 0;
     }
-    
+
     .hero-content {
         text-align: center;
         margin-bottom: var(--spacing-xl);
     }
-    
+
     .hero-description {
         margin-left: auto;
         margin-right: auto;
     }
-    
+
     /* Location Content */
     .location-content {
         grid-template-columns: 1fr;
@@ -675,25 +691,26 @@ p {
 }
 
 @media (max-width: 768px) {
+
     /* Spacing Adjustments */
     :root {
         --spacing-xxl: 3rem;
     }
-    
+
     /* Typography */
     .section-title {
         font-size: 2rem;
     }
-    
+
     /* Grids */
     .offers-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .features-grid {
         grid-template-columns: 1fr;
     }
-    
+
     /* Hero */
     .hero-image {
         margin-top: var(--spacing-lg);
@@ -729,19 +746,37 @@ p {
 
 .cart-badge {
     position: absolute;
-    top: -6px;
-    right: -8px;
+    top: -7px;
+    right: -9px;
     background-color: var(--burgundy-wine);
-    color: white;
+    color: #fff;
     border-radius: 50%;
-    width: 18px;
+    min-width: 18px;
     height: 18px;
+    padding: 0 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.7rem;
-    font-weight: bold;
-    box-shadow: var(--shadow-sm);
+    font-family: var(--font-subheading);
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: 0 2px 6px rgba(42, 0, 0, 0.25);
+    pointer-events: none;
+    animation: badgePop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 10;
+}
+
+@keyframes badgePop {
+    from {
+        transform: scale(0.4);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 /* =========================================================
@@ -768,7 +803,7 @@ p {
 }
 
 .notification-error {
-    background-color: #cc3333; 
+    background-color: #cc3333;
 }
 
 .notification-info {
@@ -784,20 +819,41 @@ p {
    COMPONENT ANIMATIONS (Badges & Notifications)
    ========================================================= */
 @keyframes slideIn {
-    from { transform: translateX(400px); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 @keyframes slideOut {
-    from { transform: translateX(0); opacity: 1; }
-    to { transform: translateX(400px); opacity: 0; }
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
 }
 
 @keyframes bounce {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.2); }
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
 }
 
-.bounce { 
-    animation: bounce 0.5s ease; 
+.bounce {
+    animation: bounce 0.5s ease;
 }

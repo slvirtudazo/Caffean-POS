@@ -161,7 +161,7 @@
     font-weight: 700;
     padding-left: 1rem;
 
-    cursor: default; 
+    cursor: default;
     pointer-events: none;
 }
 
@@ -257,7 +257,7 @@
     font-weight: 700;
     padding-left: 1rem;
 
-    cursor: default; 
+    cursor: default;
     pointer-events: none;
 }
 
@@ -476,32 +476,35 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: var(--transition-fast);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
     z-index: 10;
     box-shadow: var(--shadow-sm);
 }
 
 .favorite-icon:hover {
-    background: var(--burgundy-wine);
-    transform: scale(1.1);
+    transform: scale(1.12);
+    box-shadow: var(--shadow-md);
+    background: rgba(255, 255, 255, 0.95);
 }
 
 .favorite-icon i {
-    font-size: 1.25rem;
-    color: var(--burgundy-wine);
-    transition: var(--transition-fast);
+    font-size: 1.2rem;
+    color: rgba(42, 0, 0, 0.28);
+    transition: color var(--transition-fast);
 }
 
 .favorite-icon:hover i {
-    color: white;
+    color: rgba(42, 0, 0, 0.45);
 }
 
+/* Favorited state — inline style in JS sets icon color to #c0392b */
 .favorite-icon.active {
-    background: var(--burgundy-wine);
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 10px rgba(192, 57, 43, 0.18);
 }
 
 .favorite-icon.active i {
-    color: white;
+    color: #c0392b;
 }
 
 /* Category Badge */

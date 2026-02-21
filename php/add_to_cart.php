@@ -1,71 +1,91 @@
 <?php
+
 /**
- * Purge Coffee Shop - Add to Cart Handler
- * This script processes requests to add products to the shopping cart.
- * It can be called via AJAX for seamless cart updates without page reload.
+ * Purge Coffee Shop — Add to Cart Handler (php/add_to_cart.php)
+ * FIX #1: Output buffering ensures clean JSON — no stray output can corrupt the response.
+ * FIX #5: Default options use the FIRST item of each dropdown (Short, Hot, 0%, Whole).
  */
+ob_start();                  // capture any accidental output (warnings, notices, etc.)
+error_reporting(0);          // suppress PHP notices/warnings from reaching the buffer
+ini_set('display_errors', 0);
 
 require_once 'db_connection.php';
 
-// Initialize cart in session if not exists
-if (!isset($_SESSION['cart'])) {
-    $_SESSION['cart'] = array();
+if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
+
+/* Normalise any legacy integer cart entries */
+foreach ($_SESSION['cart'] as $pid => &$v) {
+    if (!is_array($v)) {
+        $v = [
+            'quantity'             => (int)$v,
+            'size'                 => 'Short',  // first dropdown option
+            'temperature'          => 'Hot',    // first dropdown option
+            'sugar_level'          => '0%',     // first dropdown option
+            'milk'                 => 'Whole',  // first dropdown option
+            'addons'               => [],
+            'special_instructions' => ''
+        ];
+    }
 }
+unset($v);
 
-$response = array('success' => false, 'message' => '');
+$response = ['success' => false, 'message' => ''];
 
-// Process add to cart request
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['product_id'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
     $product_id = intval($_POST['product_id']);
-    $quantity = isset($_POST['quantity']) ? intval($_POST['quantity']) : 1;
-    
-    // Validate product exists in database
-    $check_query = "SELECT product_id, name, price FROM products WHERE product_id = ? AND status = 1";
-    $stmt = mysqli_prepare($conn, $check_query);
-    mysqli_stmt_bind_param($stmt, "i", $product_id);
+    $quantity   = max(1, intval($_POST['quantity'] ?? 1));
+
+    $stmt = mysqli_prepare(
+        $conn,
+        "SELECT product_id, name, price FROM products WHERE product_id = ? AND status = 1"
+    );
+    mysqli_stmt_bind_param($stmt, 'i', $product_id);
     mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    
-    if (mysqli_num_rows($result) > 0) {
-        $product = mysqli_fetch_assoc($result);
-        
-        // Add to cart or update quantity if already in cart
+    $product = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+    mysqli_stmt_close($stmt);
+
+    if ($product) {
         if (isset($_SESSION['cart'][$product_id])) {
-            $_SESSION['cart'][$product_id] += $quantity;
-            $response['message'] = 'Product quantity updated in cart!';
+            $_SESSION['cart'][$product_id]['quantity'] += $quantity;
+            $response['message'] = $product['name'] . ' quantity updated!';
         } else {
-            $_SESSION['cart'][$product_id] = $quantity;
-            $response['message'] = 'Product added to cart!';
+            /* FIX #5: defaults match the first option in each dropdown */
+            $_SESSION['cart'][$product_id] = [
+                'quantity'             => $quantity,
+                'size'                 => 'Short', // first dropdown option
+                'temperature'          => 'Hot',   // first dropdown option
+                'sugar_level'          => '0%',    // first dropdown option
+                'milk'                 => 'Whole', // first dropdown option
+                'addons'               => [],
+                'special_instructions' => ''
+            ];
+            $response['message'] = $product['name'] . ' added to cart!';
         }
-        
-        $response['success'] = true;
+        $response['success']      = true;
         $response['product_name'] = $product['name'];
-        $response['cart_count'] = array_sum($_SESSION['cart']);
-        
+        $response['cart_count']   = array_sum(
+            array_column(array_values($_SESSION['cart']), 'quantity')
+        );
     } else {
         $response['message'] = 'Product not found or unavailable.';
     }
-    
-    mysqli_stmt_close($stmt);
-    
 } else {
     $response['message'] = 'Invalid request.';
 }
 
-// Return JSON response for AJAX calls
+/* ── AJAX response ─────────────────────────────────────────── */
 if (isset($_POST['ajax']) && $_POST['ajax'] == '1') {
+    ob_end_clean();             // discard any accidental output before JSON
     header('Content-Type: application/json');
     echo json_encode($response);
     exit();
 }
 
-// For non-AJAX requests, redirect back with message
+/* ── Non-AJAX fallback ─────────────────────────────────────── */
 if ($response['success']) {
     $_SESSION['cart_message'] = $response['message'];
-    header("Location: " . $_SERVER['HTTP_REFERER']);
 } else {
     $_SESSION['cart_error'] = $response['message'];
-    header("Location: " . $_SERVER['HTTP_REFERER']);
 }
+header('Location: ' . ($_SERVER['HTTP_REFERER'] ?? 'menu.php'));
 exit();
-?>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Purge Coffee Shop — Admin Products Management  (products.php)
  * Full CRUD: Add, View, Edit, Delete.
@@ -8,53 +9,55 @@ session_start();
 require_once '../php/db_connection.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../login.php');
-    exit();
+  header('Location: ../login.php');
+  exit();
 }
 
 // ── POST Handlers (PRG) ──────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
-    if ($_POST['action'] === 'add') {
-        $name        = trim($_POST['name']);
-        $category_id = (int)$_POST['category_id'];
-        $description = trim($_POST['description']);
-        $price       = (float)$_POST['price'];
-        $stmt = mysqli_prepare($conn,
-            "INSERT INTO products (category_id, name, description, price, status) VALUES (?,?,?,?,1)");
-        mysqli_stmt_bind_param($stmt, "issd", $category_id, $name, $description, $price);
-        $_SESSION['flash'] = mysqli_stmt_execute($stmt)
-            ? ['type' => 'success', 'msg' => "Product '$name' added successfully!"]
-            : ['type' => 'error',   'msg' => 'Error adding product. Please try again.'];
-        mysqli_stmt_close($stmt);
+  if ($_POST['action'] === 'add') {
+    $name        = trim($_POST['name']);
+    $category_id = (int)$_POST['category_id'];
+    $description = trim($_POST['description']);
+    $price       = (float)$_POST['price'];
+    $stmt = mysqli_prepare(
+      $conn,
+      "INSERT INTO products (category_id, name, description, price, status) VALUES (?,?,?,?,1)"
+    );
+    mysqli_stmt_bind_param($stmt, "issd", $category_id, $name, $description, $price);
+    $_SESSION['flash'] = mysqli_stmt_execute($stmt)
+      ? ['type' => 'success', 'msg' => "Product '$name' added successfully!"]
+      : ['type' => 'error',   'msg' => 'Error adding product. Please try again.'];
+    mysqli_stmt_close($stmt);
+  } elseif ($_POST['action'] === 'edit') {
+    $product_id  = (int)$_POST['product_id'];
+    $name        = trim($_POST['name']);
+    $category_id = (int)$_POST['category_id'];
+    $description = trim($_POST['description']);
+    $price       = (float)$_POST['price'];
+    $status      = (int)$_POST['status'];
+    $stmt = mysqli_prepare(
+      $conn,
+      "UPDATE products SET name=?, category_id=?, description=?, price=?, status=? WHERE product_id=?"
+    );
+    mysqli_stmt_bind_param($stmt, "sisdii", $name, $category_id, $description, $price, $status, $product_id);
+    $_SESSION['flash'] = mysqli_stmt_execute($stmt)
+      ? ['type' => 'success', 'msg' => 'Product updated successfully!']
+      : ['type' => 'error',   'msg' => 'Error updating product. Please try again.'];
+    mysqli_stmt_close($stmt);
+  } elseif ($_POST['action'] === 'delete') {
+    $product_id = (int)$_POST['product_id'];
+    $stmt = mysqli_prepare($conn, "DELETE FROM products WHERE product_id=?");
+    mysqli_stmt_bind_param($stmt, "i", $product_id);
+    $_SESSION['flash'] = mysqli_stmt_execute($stmt)
+      ? ['type' => 'success', 'msg' => 'Product deleted successfully!']
+      : ['type' => 'error',   'msg' => 'Error deleting product.'];
+    mysqli_stmt_close($stmt);
+  }
 
-    } elseif ($_POST['action'] === 'edit') {
-        $product_id  = (int)$_POST['product_id'];
-        $name        = trim($_POST['name']);
-        $category_id = (int)$_POST['category_id'];
-        $description = trim($_POST['description']);
-        $price       = (float)$_POST['price'];
-        $status      = (int)$_POST['status'];
-        $stmt = mysqli_prepare($conn,
-            "UPDATE products SET name=?, category_id=?, description=?, price=?, status=? WHERE product_id=?");
-        mysqli_stmt_bind_param($stmt, "issdii", $name, $category_id, $description, $price, $status, $product_id);
-        $_SESSION['flash'] = mysqli_stmt_execute($stmt)
-            ? ['type' => 'success', 'msg' => 'Product updated successfully!']
-            : ['type' => 'error',   'msg' => 'Error updating product. Please try again.'];
-        mysqli_stmt_close($stmt);
-
-    } elseif ($_POST['action'] === 'delete') {
-        $product_id = (int)$_POST['product_id'];
-        $stmt = mysqli_prepare($conn, "DELETE FROM products WHERE product_id=?");
-        mysqli_stmt_bind_param($stmt, "i", $product_id);
-        $_SESSION['flash'] = mysqli_stmt_execute($stmt)
-            ? ['type' => 'success', 'msg' => 'Product deleted successfully!']
-            : ['type' => 'error',   'msg' => 'Error deleting product.'];
-        mysqli_stmt_close($stmt);
-    }
-
-    header('Location: products.php');
-    exit();
+  header('Location: products.php');
+  exit();
 }
 
 // ── Session Flash ─────────────────────────────────────────────
@@ -64,11 +67,13 @@ $message = ($flash && $flash['type'] === 'success') ? $flash['msg'] : '';
 $error   = ($flash && $flash['type'] === 'error')   ? $flash['msg'] : '';
 
 // ── Fetch data ───────────────────────────────────────────────
-$products_result = mysqli_query($conn,
-    "SELECT p.*, c.name AS category_name
+$products_result = mysqli_query(
+  $conn,
+  "SELECT p.*, c.name AS category_name
      FROM products p
      JOIN categories c ON p.category_id = c.category_id
-     ORDER BY c.name, p.name");
+     ORDER BY c.name, p.name"
+);
 
 $categories_result = mysqli_query($conn, "SELECT * FROM categories ORDER BY name");
 
@@ -97,7 +102,7 @@ include 'includes/header.php';
   <div class="search-box">
     <span class="search-icon"><i class="fas fa-search"></i></span>
     <input type="text" id="productSearch" placeholder="Search products..."
-           oninput="filterTable(this.value)"/>
+      oninput="filterTable(this.value)" />
   </div>
   <button class="btn-primary" onclick="openModal('addProductModal')">
     <i class="fas fa-plus"></i> Add New Product
@@ -144,15 +149,15 @@ include 'includes/header.php';
             </td>
             <td class="td-actions">
               <button class="btn-icon btn-icon-view" title="View Product"
-                      onclick="viewProduct(<?= htmlspecialchars(json_encode($product)) ?>)">
+                onclick="viewProduct(<?= htmlspecialchars(json_encode($product)) ?>)">
                 <i class="fas fa-eye"></i>
               </button>
               <button class="btn-icon btn-icon-update" title="Update Product"
-                      onclick="editProduct(<?= htmlspecialchars(json_encode($product)) ?>)">
+                onclick="editProduct(<?= htmlspecialchars(json_encode($product)) ?>)">
                 <i class="fas fa-pen"></i>
               </button>
               <button class="btn-icon btn-icon-delete" title="Delete Product"
-                      onclick="confirmDelete(<?= $product['product_id'] ?>, '<?= addslashes(htmlspecialchars($product['name'])) ?>')">
+                onclick="confirmDelete(<?= $product['product_id'] ?>, '<?= addslashes(htmlspecialchars($product['name'])) ?>')">
                 <i class="fas fa-trash"></i>
               </button>
             </td>
@@ -211,12 +216,12 @@ include 'includes/header.php';
     </div>
     <form method="POST">
       <div class="modal-body">
-        <input type="hidden" name="action" value="add"/>
+        <input type="hidden" name="action" value="add" />
 
         <div class="form-group">
           <label class="form-label">Product Name</label>
           <input type="text" name="name" class="form-control"
-                 placeholder="e.g. Espresso" required/>
+            placeholder="e.g. Espresso" required />
         </div>
 
         <div class="form-group">
@@ -232,13 +237,13 @@ include 'includes/header.php';
         <div class="form-group">
           <label class="form-label">Description</label>
           <textarea name="description" class="form-control"
-                    placeholder="Brief product description"></textarea>
+            placeholder="Brief product description"></textarea>
         </div>
 
         <div class="form-group">
           <label class="form-label">Price (&#8369;)</label>
           <input type="number" name="price" class="form-control"
-                 step="0.01" min="0" placeholder="0.00" required/>
+            step="0.01" min="0" placeholder="0.00" required />
         </div>
       </div>
       <div class="modal-footer">
@@ -258,13 +263,13 @@ include 'includes/header.php';
     </div>
     <form method="POST">
       <div class="modal-body">
-        <input type="hidden" name="action"     value="edit"/>
-        <input type="hidden" name="product_id" id="edit_product_id"/>
+        <input type="hidden" name="action" value="edit" />
+        <input type="hidden" name="product_id" id="edit_product_id" />
 
         <div class="form-group">
           <label class="form-label">Product Name</label>
           <input type="text" name="name" id="edit_name" class="form-control"
-                 placeholder="e.g. Espresso" required/>
+            placeholder="e.g. Espresso" required />
         </div>
 
         <div class="form-group">
@@ -280,13 +285,13 @@ include 'includes/header.php';
         <div class="form-group">
           <label class="form-label">Description</label>
           <textarea name="description" id="edit_description" class="form-control"
-                    placeholder="Brief product description"></textarea>
+            placeholder="Brief product description"></textarea>
         </div>
 
         <div class="form-group">
           <label class="form-label">Price (&#8369;)</label>
           <input type="number" name="price" id="edit_price" class="form-control"
-                 step="0.01" min="0" placeholder="0.00" required/>
+            step="0.01" min="0" placeholder="0.00" required />
         </div>
 
         <div class="form-group">
@@ -318,8 +323,8 @@ include 'includes/header.php';
           Are you sure you want to delete <strong id="delete_product_name"></strong>?
           This action cannot be undone.
         </p>
-        <input type="hidden" name="action"     value="delete"/>
-        <input type="hidden" name="product_id" id="delete_product_id"/>
+        <input type="hidden" name="action" value="delete" />
+        <input type="hidden" name="product_id" id="delete_product_id" />
       </div>
       <div class="modal-footer">
         <button type="button" class="btn-cancel" onclick="closeModal('deleteProductModal')">Cancel</button>
@@ -331,8 +336,13 @@ include 'includes/header.php';
 
 <script>
   /* ── Modal helpers ─────────────────────────────────────────── */
-  function openModal(id)  { document.getElementById(id).style.display = 'flex'; }
-  function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+  function openModal(id) {
+    document.getElementById(id).style.display = 'flex';
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+  }
 
   document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
     overlay.addEventListener('click', function(e) {
@@ -342,34 +352,36 @@ include 'includes/header.php';
 
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape')
-      document.querySelectorAll('.modal-overlay').forEach(function(o) { o.style.display = 'none'; });
+      document.querySelectorAll('.modal-overlay').forEach(function(o) {
+        o.style.display = 'none';
+      });
   });
 
   /* ── Product view/edit/delete ──────────────────────────────── */
   function viewProduct(p) {
-    document.getElementById('view_product_id').textContent  = '#' + p.product_id;
-    document.getElementById('view_name').textContent        = p.name;
-    document.getElementById('view_category').textContent    = p.category_name;
-    document.getElementById('view_price').textContent       = '\u20B1' + parseFloat(p.price).toFixed(2);
+    document.getElementById('view_product_id').textContent = '#' + p.product_id;
+    document.getElementById('view_name').textContent = p.name;
+    document.getElementById('view_category').textContent = p.category_name;
+    document.getElementById('view_price').textContent = '\u20B1' + parseFloat(p.price).toFixed(2);
     document.getElementById('view_description').textContent = p.description || '\u2014';
-    document.getElementById('view_status').innerHTML = p.status == 1
-      ? '<span class="badge badge-active">Active</span>'
-      : '<span class="badge badge-inactive">Hidden</span>';
+    document.getElementById('view_status').innerHTML = p.status == 1 ?
+      '<span class="badge badge-active">Active</span>' :
+      '<span class="badge badge-inactive">Hidden</span>';
     openModal('viewProductModal');
   }
 
   function editProduct(p) {
-    document.getElementById('edit_product_id').value  = p.product_id;
-    document.getElementById('edit_name').value        = p.name;
+    document.getElementById('edit_product_id').value = p.product_id;
+    document.getElementById('edit_name').value = p.name;
     document.getElementById('edit_category_id').value = p.category_id;
     document.getElementById('edit_description').value = p.description;
-    document.getElementById('edit_price').value       = p.price;
-    document.getElementById('edit_status').value      = p.status;
+    document.getElementById('edit_price').value = p.price;
+    document.getElementById('edit_status').value = p.status;
     openModal('editProductModal');
   }
 
   function confirmDelete(id, name) {
-    document.getElementById('delete_product_id').value        = id;
+    document.getElementById('delete_product_id').value = id;
     document.getElementById('delete_product_name').textContent = name;
     openModal('deleteProductModal');
   }
@@ -377,7 +389,7 @@ include 'includes/header.php';
   /* ── Live search filter ────────────────────────────────────── */
   function filterTable(term) {
     var rows = document.querySelectorAll('#productsTable tbody tr');
-    var q    = term.toLowerCase();
+    var q = term.toLowerCase();
     rows.forEach(function(row) {
       row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
     });

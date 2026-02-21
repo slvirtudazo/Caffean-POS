@@ -126,12 +126,7 @@ while ($row = mysqli_fetch_assoc($orders_result)) $orders_arr[] = $row;
                     <h1>My Account</h1>
                     <p>View your profile, order stats, and order history</p>
                 </div>
-                <?php if ($stats['pending_orders'] > 0): ?>
-                    <a href="#order-history" class="acct-btn-primary">
-                        <i class="fas fa-bell"></i>
-                        <?= $stats['pending_orders'] ?> Pending Order<?= $stats['pending_orders'] > 1 ? 's' : '' ?>
-                    </a>
-                <?php endif; ?>
+
             </div>
 
             <!-- ── Profile Card ─────────────────────────────────────── -->
