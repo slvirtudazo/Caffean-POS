@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Purge Coffee Shop — Admin Dashboard  (dashboard.php)
  */
@@ -7,32 +8,49 @@ session_start();
 require_once '../php/db_connection.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../login.php');
-    exit();
+  header('Location: ../login.php');
+  exit();
 }
 
 // ── Statistics ────────────────────────────────────────────────
 $stats = [];
 
-$row = mysqli_fetch_assoc(mysqli_query($conn,
-    "SELECT COUNT(*) AS total FROM products WHERE status = 1"));
+$row = mysqli_fetch_assoc(mysqli_query(
+  $conn,
+  "SELECT COUNT(*) AS total FROM products WHERE status = 1"
+));
 $stats['products'] = $row['total'];
 
-$row = mysqli_fetch_assoc(mysqli_query($conn,
-    "SELECT COUNT(*) AS total FROM orders"));
+$row = mysqli_fetch_assoc(mysqli_query(
+  $conn,
+  "SELECT COUNT(*) AS total FROM orders"
+));
 $stats['orders'] = $row['total'];
 
-$row = mysqli_fetch_assoc(mysqli_query($conn,
-    "SELECT COUNT(*) AS total FROM users WHERE role = 'customer'"));
+$row = mysqli_fetch_assoc(mysqli_query(
+  $conn,
+  "SELECT COUNT(*) AS total FROM users WHERE role = 'customer'"
+));
 $stats['customers'] = $row['total'];
 
-$row = mysqli_fetch_assoc(mysqli_query($conn,
-    "SELECT COALESCE(SUM(total_amount), 0) AS revenue FROM orders WHERE status = 'completed'"));
+$row = mysqli_fetch_assoc(mysqli_query(
+  $conn,
+  "SELECT COALESCE(SUM(total_amount), 0) AS revenue FROM orders WHERE status = 'completed'"
+));
 $stats['revenue'] = $row['revenue'];
 
-$row = mysqli_fetch_assoc(mysqli_query($conn,
-    "SELECT COUNT(*) AS total FROM orders WHERE status = 'pending'"));
+$row = mysqli_fetch_assoc(mysqli_query(
+  $conn,
+  "SELECT COUNT(*) AS total FROM orders WHERE status = 'pending'"
+));
 $stats['pending'] = $row['total'];
+
+// FIX: Safe query — returns 0 if contact_messages table doesn't exist yet
+$msg_result        = mysqli_query(
+  $conn,
+  "SELECT COUNT(*) AS total FROM contact_messages WHERE is_read = 0"
+);
+$stats['messages'] = $msg_result ? (int)mysqli_fetch_assoc($msg_result)['total'] : 0;
 
 include 'includes/header.php';
 ?>
@@ -42,12 +60,20 @@ include 'includes/header.php';
     <h1>Dashboard</h1>
     <p>View an overview of key metrics, sales, and recent store activity</p>
   </div>
-  <?php if ($stats['pending'] > 0): ?>
-    <a href="orders.php" class="btn-primary">
-      <i class="fas fa-bell"></i>
-      <?= $stats['pending'] ?> Pending Order<?= $stats['pending'] > 1 ? 's' : '' ?>
-    </a>
-  <?php endif; ?>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+    <?php if ($stats['pending'] > 0): ?>
+      <a href="orders.php" class="btn-primary">
+        <i class="fas fa-bell"></i>
+        <?= $stats['pending'] ?> Pending Order<?= $stats['pending'] > 1 ? 's' : '' ?>
+      </a>
+    <?php endif; ?>
+    <?php if ($stats['messages'] > 0): ?>
+      <a href="messages.php" class="btn-primary" style="background:var(--saddle-brown,#8B4513);">
+        <i class="fas fa-envelope"></i>
+        <?= $stats['messages'] ?> Unread Message<?= $stats['messages'] > 1 ? 's' : '' ?>
+      </a>
+    <?php endif; ?>
+  </div>
 </div>
 
 <div class="stat-grid">
@@ -71,14 +97,21 @@ include 'includes/header.php';
     <div class="number">&#8369;<?= number_format($stats['revenue'], 2) ?></div>
     <div class="icon"><i class="fas fa-coins"></i></div>
   </div>
+  <div class="stat-card">
+    <h4>Unread Messages</h4>
+    <div class="number"><?= number_format($stats['messages']) ?></div>
+    <div class="icon"><i class="fas fa-envelope"></i></div>
+  </div>
 </div>
 
 <?php
-$recent_orders = mysqli_query($conn,
-    "SELECT o.order_id, o.total_amount, o.status, o.order_date, u.full_name
+$recent_orders = mysqli_query(
+  $conn,
+  "SELECT o.order_id, o.total_amount, o.status, o.order_date, u.full_name
      FROM orders o
      JOIN users u ON o.user_id = u.user_id
-     ORDER BY o.order_date DESC LIMIT 5");
+     ORDER BY o.order_date DESC LIMIT 5"
+);
 $order_count = mysqli_num_rows($recent_orders);
 ?>
 

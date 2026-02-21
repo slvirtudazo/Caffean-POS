@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 20, 2026 at 06:07 PM
+-- Generation Time: Feb 21, 2026 at 08:49 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -48,6 +48,22 @@ INSERT INTO `categories` (`category_id`, `name`, `description`, `created_at`) VA
 (7, 'Pastry', 'Freshly baked goods and pastries made daily', '2026-02-09 12:27:00'),
 (8, 'Snacks', 'Savory snacks and light meals', '2026-02-09 12:27:00'),
 (9, 'Add Ons', 'Customize your drink with premium add-ons', '2026-02-09 12:27:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `contact_messages`
+--
+
+CREATE TABLE `contact_messages` (
+  `message_id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `is_read` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -152,7 +168,7 @@ INSERT INTO `products` (`product_id`, `category_id`, `name`, `description`, `pri
 (48, 6, 'aaaaaaaaaa', 'aaaaaaaa', 100.00, NULL, 1, '2026-02-20 09:41:20'),
 (49, 2, '123123', 'abakada31232132', 50.00, NULL, 1, '2026-02-20 09:41:25'),
 (50, 1, '0', 'adsadsad', 1.00, NULL, 1, '2026-02-20 09:41:47'),
-(51, 9, '0', 'asdasdsa', 1.00, NULL, 1, '2026-02-20 09:52:32'),
+(51, 9, '0', 'asdasdsa', 1.00, NULL, 0, '2026-02-20 09:52:32'),
 (52, 6, 'dsadsad', 'asdsads', 123.00, NULL, 1, '2026-02-20 09:52:40');
 
 -- --------------------------------------------------------
@@ -186,7 +202,9 @@ INSERT INTO `product_interactions` (`interaction_id`, `product_id`, `interaction
 (9, 5, 'favorite', 0, '2026-02-19 22:24:28', '2026-02-19 14:24:24'),
 (10, 6, 'add_to_cart', 2, '2026-02-19 22:25:01', '2026-02-19 14:24:58'),
 (11, 14, 'add_to_cart', 2, '2026-02-19 22:46:23', '2026-02-19 14:46:22'),
-(12, 35, 'add_to_cart', 1, '2026-02-20 14:34:36', '2026-02-20 06:34:36');
+(12, 35, 'add_to_cart', 1, '2026-02-20 14:34:36', '2026-02-20 06:34:36'),
+(13, 50, 'favorite', 0, '2026-02-21 01:10:32', '2026-02-20 17:10:31'),
+(14, 50, 'add_to_cart', 2, '2026-02-21 01:10:34', '2026-02-20 17:10:33');
 
 -- --------------------------------------------------------
 
@@ -209,7 +227,8 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_id`, `full_name`, `email`, `password`, `role`, `created_at`) VALUES
 (1, 'Admin', 'admin@purgecoffee.com', '$2a$12$F4wbKxPcOnhD6K5An76ke.4gS2.m9JQTH88Q8NZYUzGwNaYhY6YKC', 'admin', '2026-02-20 02:12:15'),
-(2, 'Customer', 'customer@purgecoffee.com', '$2a$12$nvPoBAKZQZpBpybEbGlsNeYwwMFn.YcvPM1SqGgM0iR.iHMw2efGW', 'customer', '2026-02-20 02:23:55');
+(2, 'Customer', 'customer@purgecoffee.com', '$2a$12$nvPoBAKZQZpBpybEbGlsNeYwwMFn.YcvPM1SqGgM0iR.iHMw2efGW', 'customer', '2026-02-20 02:23:55'),
+(3, 'John Doe', 'johndoe@gmail.com', '$2y$10$31mqhulkg7rPDmyNSwiuj.CAQAqlJGgdknbpSJo0m22QsNKaKcLEO', 'customer', '2026-02-21 07:15:51');
 
 --
 -- Indexes for dumped tables
@@ -220,6 +239,13 @@ INSERT INTO `users` (`user_id`, `full_name`, `email`, `password`, `role`, `creat
 --
 ALTER TABLE `categories`
   ADD PRIMARY KEY (`category_id`);
+
+--
+-- Indexes for table `contact_messages`
+--
+ALTER TABLE `contact_messages`
+  ADD PRIMARY KEY (`message_id`),
+  ADD KEY `idx_is_read` (`is_read`);
 
 --
 -- Indexes for table `orders`
@@ -272,6 +298,12 @@ ALTER TABLE `categories`
   MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
+-- AUTO_INCREMENT for table `contact_messages`
+--
+ALTER TABLE `contact_messages`
+  MODIFY `message_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
@@ -293,13 +325,13 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `product_interactions`
 --
 ALTER TABLE `product_interactions`
-  MODIFY `interaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `interaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables

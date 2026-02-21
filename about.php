@@ -18,14 +18,10 @@ require_once 'php/db_connection.php';
 
     <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/components.css?v=<?php echo time(); ?>"> 
-    <link rel="stylesheet" href="css/footer-section.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/about-page.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
 </head>
 <body>
-
-    <!-- Top Banner -->
-    <div class="top-banner">Shipping Nationwide</div>
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg sticky-top">
@@ -211,52 +207,6 @@ require_once 'php/db_connection.php';
             <a href="menu.php" class="btn-primary about-cta-btn">View Our Menu</a>
         </div>
     </section>
-
-    <!-- ═══════════════════════════════════════════
-         FOOTER — Matches Home Page
-    ═══════════════════════════════════════════ -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <!-- Brand & Contact -->
-                <div class="footer-section">
-                    <div class="footer-brand">
-                        <span class="footer-brand-name">PURGE COFFEE</span>
-                    </div>
-                    <div class="footer-contact">
-                        <p><i class="fas fa-phone"></i> 0960 315 0070</p>
-                        <p><i class="fas fa-envelope"></i> purgecoffee@gmail.com</p>
-                    </div>
-                </div>
-
-                <!-- Policies -->
-                <div class="footer-section">
-                    <h3>OUR POLICIES</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms Of Use</a></li>
-                        <li><a href="#">Shipping &amp; Delivery</a></li>
-                    </ul>
-                </div>
-
-                <!-- Social Media -->
-                <div class="footer-section">
-                    <h3>SOCIAL MEDIA</h3>
-                    <div class="social-icons">
-                        <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                    </div>
-                </div>
-            </div>
-
-            <hr>
-
-            <div class="footer-bottom">
-                <p>&copy; 2026 Purge Coffee | All Rights Reserved</p>
-            </div>
-        </div>
-    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/main.js"></script>

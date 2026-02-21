@@ -33,9 +33,6 @@ require_once 'php/db_connection.php';
 </head>
 <body>
 
-    <!-- Top Announcement Banner -->
-    <div class="top-banner">Shipping Nationwide</div>
-
     <!-- Main Navigation Bar -->
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">

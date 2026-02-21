@@ -73,8 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="css/search.css">
 </head>
 <body>
-    
-    <div class="top-banner">Shipping Nationwide</div>
 
     <nav class="navbar navbar-expand-lg">
         <div class="container">
@@ -198,9 +196,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </div>
                             
                             <?php if(isset($_SESSION['user_id'])): ?>
-                                <button class="btn-checkout btn-full-width" onclick="alert('Checkout functionality will be implemented soon!')">
-                                    Proceed to Checkout
-                                </button>
+                                <a href="checkout.php" class="btn-checkout btn-full-width">
+                                Proceed to Checkout
                             <?php else: ?>
                                 <a href="login.php" class="btn-checkout btn-full-width">
                                     Login to Checkout

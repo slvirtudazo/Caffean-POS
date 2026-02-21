@@ -109,8 +109,6 @@ if ($category_filter > 0) {
 
 <body>
 
-    <div class="top-banner">Shipping Nationwide</div>
-
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="index.php">
