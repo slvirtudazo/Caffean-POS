@@ -39,14 +39,8 @@ $row = mysqli_fetch_assoc(mysqli_query(
 ));
 $stats['revenue'] = $row['revenue'];
 
-$row = mysqli_fetch_assoc(mysqli_query(
-  $conn,
-  "SELECT COUNT(*) AS total FROM orders WHERE status = 'pending'"
-));
-$stats['pending'] = $row['total'];
-
 // FIX: Safe query — returns 0 if contact_messages table doesn't exist yet
-$msg_result        = mysqli_query(
+$msg_result = mysqli_query(
   $conn,
   "SELECT COUNT(*) AS total FROM contact_messages WHERE is_read = 0"
 );
@@ -61,12 +55,6 @@ include 'includes/header.php';
     <p>View an overview of key metrics, sales, and recent store activity</p>
   </div>
   <div style="display:flex;gap:10px;flex-wrap:wrap;">
-    <?php if ($stats['pending'] > 0): ?>
-      <a href="orders.php" class="btn-primary">
-        <i class="fas fa-bell"></i>
-        <?= $stats['pending'] ?> Pending Order<?= $stats['pending'] > 1 ? 's' : '' ?>
-      </a>
-    <?php endif; ?>
     <?php if ($stats['messages'] > 0): ?>
       <a href="messages.php" class="btn-primary" style="background:var(--saddle-brown,#8B4513);">
         <i class="fas fa-envelope"></i>
@@ -161,7 +149,10 @@ $order_count = mysqli_num_rows($recent_orders);
 </div>
 
 <script>
-  initSortableTable('dashboardOrdersTable');
+  // Safety wrapper ensures no JS errors if the sorting script is still loading
+  if (typeof initSortableTable === 'function') {
+    initSortableTable('dashboardOrdersTable');
+  }
 </script>
 
 <?php include 'includes/footer.php'; ?>
