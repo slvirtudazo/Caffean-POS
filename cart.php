@@ -6,6 +6,12 @@
  */
 require_once 'php/db_connection.php';
 
+// ── Redirect admin away from cart ────────────────────────────
+if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+    header('Location: admin/dashboard.php');
+    exit();
+}
+
 /* ── Session cart normalisation ─────────────────────────────── */
 if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
 foreach ($_SESSION['cart'] as $pid => &$v) {

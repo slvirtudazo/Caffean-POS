@@ -106,9 +106,11 @@ while ($row = mysqli_fetch_assoc($orders_result)) $orders_arr[] = $row;
 
             <div class="nav-icons">
                 <i class="fas fa-search nav-icon" onclick="showSearchOverlay()"></i>
-                <a href="cart.php" class="text-decoration-none">
-                    <i class="fas fa-shopping-cart nav-icon"></i>
-                </a>
+                <?php if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin'): ?>
+                    <a href="cart.php" class="text-decoration-none">
+                        <i class="fas fa-shopping-cart nav-icon"></i>
+                    </a>
+                <?php endif; ?>
                 <a href="account.php" class="text-decoration-none">
                     <i class="fas fa-user nav-icon active-icon"></i>
                 </a>

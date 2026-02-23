@@ -8,6 +8,8 @@
 
 require_once 'php/db_connection.php';
 
+$is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+
 // Get filter parameters from URL
 $category_filter   = isset($_GET['category'])    ? intval($_GET['category'])   : 0;
 $price_sort        = isset($_GET['price_sort'])  ? $_GET['price_sort']         : '';   // 'low' | 'high'
@@ -105,6 +107,19 @@ if ($category_filter > 0) {
     <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/menu-page.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
+
+    <style>
+        .product-category {
+            font-family: var(--font-subheading);
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--burgundy-wine);
+            opacity: 0.75;
+            margin: -4px 0 8px 0;
+        }
+    </style>
 </head>
 
 <body>
@@ -131,9 +146,11 @@ if ($category_filter > 0) {
 
             <div class="nav-icons">
                 <i class="fas fa-search nav-icon"></i>
-                <a href="cart.php" class="text-decoration-none">
-                    <i class="fas fa-shopping-cart nav-icon"></i>
-                </a>
+                <?php if (!$is_admin): ?>
+                    <a href="cart.php" class="text-decoration-none">
+                        <i class="fas fa-shopping-cart nav-icon"></i>
+                    </a>
+                <?php endif; ?>
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <a href="account.php" class="text-decoration-none">
                         <i class="fas fa-user nav-icon"></i>
@@ -313,14 +330,15 @@ if ($category_filter > 0) {
 
                                     <div class="product-info">
                                         <h3 class="product-name"><?php echo htmlspecialchars($product['name']); ?></h3>
-                                        <p class="product-description">
-                                            <?php echo htmlspecialchars($product['description']); ?>
-                                        </p>
+                                        <p class="product-category"><?php echo htmlspecialchars($product['category_name']); ?></p>
+                                        <p class="product-description"><?php echo htmlspecialchars($product['description']); ?></p>
                                         <div class="product-footer">
                                             <span class="product-price">₱<?php echo number_format($product['price'], 2); ?></span>
-                                            <button class="btn-order" onclick="addToCart(<?php echo $product['product_id']; ?>)">
-                                                <i class="fas fa-shopping-cart"></i> Add to Cart
-                                            </button>
+                                            <?php if (!$is_admin): ?>
+                                                <button class="btn-order" onclick="addToCart(<?php echo $product['product_id']; ?>)">
+                                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                                </button>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>

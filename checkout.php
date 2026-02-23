@@ -7,6 +7,12 @@
 
 require_once 'php/db_connection.php';
 
+// After session/db include, add:
+if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+    header('Location: admin/dashboard.php');
+    exit();
+}
+
 // Must be logged in
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");

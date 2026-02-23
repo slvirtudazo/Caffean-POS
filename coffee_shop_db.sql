@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 21, 2026 at 05:11 PM
+-- Generation Time: Feb 23, 2026 at 11:25 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -197,7 +197,8 @@ INSERT INTO `products` (`product_id`, `category_id`, `name`, `description`, `pri
 (55, 1, 'Caffe Americano', 'A rich espresso diluted with hot water, creating a smooth, full-bodied coffee without the intensity of straight espresso', 160.00, NULL, 1, '2026-02-21 14:45:44'),
 (56, 9, 'Whipped Cream', 'Light, airy cream topping that adds richness and a creamy texture to coffee drinks or desserts', 20.00, NULL, 1, '2026-02-21 15:05:20'),
 (57, 9, 'Coffee Jelly', 'Cubes of firm, slightly sweetened coffee-flavored gelatin, perfect for mixing into cold drinks or desserts', 40.00, NULL, 1, '2026-02-21 15:05:50'),
-(58, 9, 'Pearl (Boba)', 'Chewy tapioca balls often added to iced teas, coffees, or milk drinks for texture and fun', 30.00, NULL, 1, '2026-02-21 15:06:06');
+(58, 9, 'Pearl (Boba)', 'Chewy tapioca balls often added to iced teas, coffees, or milk drinks for texture and fun', 30.00, NULL, 1, '2026-02-21 15:06:06'),
+(59, 2, 'Spanish Latte', 'test', 39.00, NULL, 1, '2026-02-23 02:28:13');
 
 -- --------------------------------------------------------
 
@@ -343,7 +344,7 @@ ALTER TABLE `order_items`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT for table `product_interactions`
@@ -355,7 +356,7 @@ ALTER TABLE `product_interactions`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables

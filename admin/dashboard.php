@@ -15,31 +15,53 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 // ── Statistics ────────────────────────────────────────────────
 $stats = [];
 
+// Products: active (status=1) and inactive (status=0)
 $row = mysqli_fetch_assoc(mysqli_query(
   $conn,
   "SELECT COUNT(*) AS total FROM products WHERE status = 1"
 ));
-$stats['products'] = $row['total'];
+$stats['products_active'] = (int)$row['total'];
 
+$row = mysqli_fetch_assoc(mysqli_query(
+  $conn,
+  "SELECT COUNT(*) AS total FROM products WHERE status = 0"
+));
+$stats['products_inactive'] = (int)$row['total'];
+
+// Orders total
 $row = mysqli_fetch_assoc(mysqli_query(
   $conn,
   "SELECT COUNT(*) AS total FROM orders"
 ));
 $stats['orders'] = $row['total'];
 
+// Customers: active (has placed ≥1 order) and inactive (no orders)
 $row = mysqli_fetch_assoc(mysqli_query(
   $conn,
-  "SELECT COUNT(*) AS total FROM users WHERE role = 'customer'"
+  "SELECT COUNT(DISTINCT u.user_id) AS total
+   FROM users u
+   JOIN orders o ON u.user_id = o.user_id
+   WHERE u.role = 'customer'"
 ));
-$stats['customers'] = $row['total'];
+$stats['customers_active'] = (int)$row['total'];
 
+$row = mysqli_fetch_assoc(mysqli_query(
+  $conn,
+  "SELECT COUNT(*) AS total
+   FROM users u
+   LEFT JOIN orders o ON u.user_id = o.user_id
+   WHERE u.role = 'customer' AND o.order_id IS NULL"
+));
+$stats['customers_inactive'] = (int)$row['total'];
+
+// Revenue
 $row = mysqli_fetch_assoc(mysqli_query(
   $conn,
   "SELECT COALESCE(SUM(total_amount), 0) AS revenue FROM orders WHERE status = 'completed'"
 ));
 $stats['revenue'] = $row['revenue'];
 
-// FIX: Safe query — returns 0 if contact_messages table doesn't exist yet
+// Unread messages
 $msg_result = mysqli_query(
   $conn,
   "SELECT COUNT(*) AS total FROM contact_messages WHERE is_read = 0"
@@ -65,94 +87,92 @@ include 'includes/header.php';
 </div>
 
 <div class="stat-grid">
+
+  <!-- Total Revenue Card -->
   <div class="stat-card">
-    <h4>Active Products</h4>
-    <div class="number"><?= number_format($stats['products']) ?></div>
-    <div class="icon"><i class="fas fa-mug-hot"></i></div>
+    <div class="stat-header">
+      <h4>Total Revenue</h4>
+      <div class="icon"><i class="fas fa-coins"></i></div>
+    </div>
+    <div class="stat-body">
+      <div class="stat-dual">
+        <div class="stat-dual-row">
+          <span class="stat-dual-num">&#8369;<?= number_format($stats['revenue'], 2) ?></span>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <!-- Total Orders Card -->
   <div class="stat-card">
-    <h4>Total Orders</h4>
-    <div class="number"><?= number_format($stats['orders']) ?></div>
-    <div class="icon"><i class="fas fa-receipt"></i></div>
+    <div class="stat-header">
+      <h4>Total Orders</h4>
+      <div class="icon"><i class="fas fa-receipt"></i></div>
+    </div>
+    <div class="stat-body">
+      <div class="stat-dual">
+        <div class="stat-dual-row">
+          <span class="stat-dual-num"><?= number_format($stats['orders']) ?></span>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <!-- Registered Customers Card -->
   <div class="stat-card">
-    <h4>Total Customers</h4>
-    <div class="number"><?= number_format($stats['customers']) ?></div>
-    <div class="icon"><i class="fas fa-users"></i></div>
+    <div class="stat-header">
+      <h4>Registered Customers</h4>
+      <div class="icon"><i class="fas fa-users"></i></div>
+    </div>
+    <div class="stat-body">
+      <div class="stat-dual">
+        <div class="stat-dual-row">
+          <span class="stat-dual-num"><?= number_format($stats['customers_active']) ?></span>
+          <span class="stat-dual-label">Active</span>
+        </div>
+        <div class="stat-dual-row">
+          <span class="stat-dual-num inactive"><?= number_format($stats['customers_inactive']) ?></span>
+          <span class="stat-dual-label">Inactive</span>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <!-- Inventory Status Card -->
   <div class="stat-card">
-    <h4>Total Revenue</h4>
-    <div class="number">&#8369;<?= number_format($stats['revenue'], 2) ?></div>
-    <div class="icon"><i class="fas fa-coins"></i></div>
+    <div class="stat-header">
+      <h4>Inventory Status</h4>
+      <div class="icon"><i class="fas fa-shopping-cart"></i></div>
+    </div>
+    <div class="stat-body">
+      <div class="stat-dual">
+        <div class="stat-dual-row">
+          <span class="stat-dual-num"><?= number_format($stats['products_active']) ?></span>
+          <span class="stat-dual-label">Active</span>
+        </div>
+        <div class="stat-dual-row">
+          <span class="stat-dual-num inactive"><?= number_format($stats['products_inactive']) ?></span>
+          <span class="stat-dual-label">Inactive</span>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <!-- Unread Inquiries Card -->
   <div class="stat-card">
-    <h4>Unread Messages</h4>
-    <div class="number"><?= number_format($stats['messages']) ?></div>
-    <div class="icon"><i class="fas fa-envelope"></i></div>
+    <div class="stat-header">
+      <h4>Unread Inquiries</h4>
+      <div class="icon"><i class="fas fa-envelope"></i></div>
+    </div>
+    <div class="stat-body">
+      <div class="stat-dual">
+        <div class="stat-dual-row">
+          <span class="stat-dual-num"><?= number_format($stats['messages']) ?></span>
+        </div>
+      </div>
+    </div>
   </div>
+
 </div>
-
-<?php
-$recent_orders = mysqli_query(
-  $conn,
-  "SELECT o.order_id, o.total_amount, o.status, o.order_date, u.full_name
-     FROM orders o
-     JOIN users u ON o.user_id = u.user_id
-     ORDER BY o.order_date DESC LIMIT 5"
-);
-$order_count = mysqli_num_rows($recent_orders);
-?>
-
-<div class="card">
-  <div class="card-header">
-    <h2>Recent Orders</h2>
-    <a href="orders.php" class="btn-outline">View All <i class="fas fa-arrow-right"></i></a>
-  </div>
-
-  <table class="admin-table" id="dashboardOrdersTable">
-    <thead>
-      <tr>
-        <th data-sort="number">Order ID</th>
-        <th data-sort="text">Customer</th>
-        <th data-sort="number">Amount</th>
-        <th data-sort="status">Status</th>
-        <th data-sort="date">Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php if ($order_count === 0): ?>
-        <tr>
-          <td colspan="5">
-            <div class="empty-state">
-              <i class="fas fa-inbox"></i>
-              <p>No orders found</p>
-            </div>
-          </td>
-        </tr>
-      <?php else: ?>
-        <?php while ($o = mysqli_fetch_assoc($recent_orders)): ?>
-          <tr>
-            <td class="td-id">#<?= $o['order_id'] ?></td>
-            <td><?= htmlspecialchars($o['full_name']) ?></td>
-            <td>&#8369;<?= number_format($o['total_amount'], 2) ?></td>
-            <td>
-              <span class="badge badge-<?= strtolower($o['status']) ?>">
-                <?= ucfirst($o['status']) ?>
-              </span>
-            </td>
-            <td><?= date('M d, Y', strtotime($o['order_date'])) ?></td>
-          </tr>
-        <?php endwhile; ?>
-      <?php endif; ?>
-    </tbody>
-  </table>
-</div>
-
-<script>
-  // Safety wrapper ensures no JS errors if the sorting script is still loading
-  if (typeof initSortableTable === 'function') {
-    initSortableTable('dashboardOrdersTable');
-  }
-</script>
 
 <?php include 'includes/footer.php'; ?>
