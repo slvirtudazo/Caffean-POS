@@ -11,7 +11,7 @@ require_once 'php/db_connection.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Supplies - Purge Coffee</title>
+    <title>Purge Coffee - Supplies Page</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
@@ -57,7 +57,7 @@ require_once 'php/db_connection.php';
                         <a class="nav-link" href="menu.php">Menu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="supplies-page.php">Offers</a>
+                        <a class="nav-link active" href="supplies-page.php">Supplies</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="about.php">About</a>

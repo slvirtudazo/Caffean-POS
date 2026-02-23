@@ -34,7 +34,7 @@ $_unread_count = (int)($_unread_row['c'] ?? 0);
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Purge Coffee — Admin</title>
+  <title>Purge Coffee - Admin Account</title>
   <link rel="icon" type="image/png" href="<?= BASE_URL ?>/images/coffee_beans_logo.png" />
 
   <!-- Shared admin styles -->

@@ -10,7 +10,7 @@ require_once 'php/db_connection.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - Purge Coffee</title>
+    <title>Purge Coffee - About Page</title>
 
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">

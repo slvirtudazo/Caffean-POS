@@ -59,7 +59,7 @@ if (mysqli_num_rows($bestsellers_result) == 0) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Purge Coffee - The Richest Coffee in the City</title>
+    <title>Purge Coffee - Home Page</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
