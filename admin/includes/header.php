@@ -2,7 +2,6 @@
 
 /**
  * Admin Header Include — admin/includes/header.php
- * Navbar style mirrors the customer-facing site exactly.
  */
 
 if (!defined('BASE_URL')) define('BASE_URL', '/purge-coffee');
@@ -17,11 +16,10 @@ $page_css_map = [
   'products.php'  => 'products.css',
   'orders.php'    => 'orders.css',
   'customers.php' => 'customers.css',
-  // messages.php uses inline <style> — no separate CSS file needed
 ];
 $page_css_file = $page_css_map[$current_page] ?? null;
 
-/* Unread messages count — shown as live badge in sidebar */
+/* Unread messages count — shown as live badge in sidebar + bell */
 $_unread_row   = mysqli_fetch_assoc(mysqli_query(
   $conn,
   "SELECT COUNT(*) AS c FROM contact_messages WHERE is_read = 0"
@@ -34,7 +32,7 @@ $_unread_count = (int)($_unread_row['c'] ?? 0);
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Purge Coffee - Admin Account</title>
+  <title>Purge Coffee - Admin</title>
   <link rel="icon" type="image/png" href="<?= BASE_URL ?>/images/coffee_beans_logo.png" />
 
   <!-- Shared admin styles -->
@@ -45,7 +43,6 @@ $_unread_count = (int)($_unread_row['c'] ?? 0);
     <link rel="stylesheet" href="<?= BASE_URL ?>/admin/assets/css/<?= $page_css_file ?>?v=<?= time() ?>" />
   <?php endif; ?>
 
-  <link rel="stylesheet" href="<?= BASE_URL ?>/css/footer-section.css?v=<?= time() ?>" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
   <style>
@@ -64,6 +61,23 @@ $_unread_count = (int)($_unread_row['c'] ?? 0);
       font-weight: 700;
       margin-left: auto;
       line-height: 1;
+    }
+
+    /* Sortable table utility */
+    .admin-table th[data-sort]::after {
+      content: ' ↕';
+      font-size: 0.65rem;
+      opacity: 0.4;
+    }
+
+    .admin-table th[data-sort].sort-asc::after {
+      content: ' ↑';
+      opacity: 0.9;
+    }
+
+    .admin-table th[data-sort].sort-desc::after {
+      content: ' ↓';
+      opacity: 0.9;
     }
   </style>
 
@@ -148,7 +162,10 @@ $_unread_count = (int)($_unread_row['c'] ?? 0);
       <div class="nav-right">
         <div class="admin-chip">
           <div class="admin-avatar"><?= $admin_initial ?></div>
-          <span class="admin-name"><?= $admin_name ?></span>
+          <div style="display:flex;flex-direction:column;line-height:1.2;">
+            <span class="admin-name"><?= $admin_name ?></span>
+            <span style="font-size:0.7rem;color:var(--text-muted);font-family:var(--font-subheading);">Administrator</span>
+          </div>
         </div>
         <a href="<?= BASE_URL ?>/php/logout.php" class="btn-logout" title="Logout">
           <i class="fas fa-sign-out-alt"></i> Log Out
@@ -164,56 +181,52 @@ $_unread_count = (int)($_unread_row['c'] ?? 0);
     <!-- ── Sidebar ──────────────────────────────────────────── -->
     <aside class="admin-sidebar">
 
-      <div class="sidebar-section">
-        <p class="sidebar-label"><i class="fas fa-bars"></i> Navigation</p>
-        <ul class="sidebar-nav">
-          <li>
-            <a href="<?= BASE_URL ?>/admin/dashboard.php"
-              <?= $current_page === 'dashboard.php' ? 'class="active"' : '' ?>>
-              <i class="fas fa-chart-pie"></i> Dashboard
-            </a>
-          </li>
-          <li>
-            <a href="<?= BASE_URL ?>/admin/products.php"
-              <?= $current_page === 'products.php' ? 'class="active"' : '' ?>>
-              <i class="fas fa-box-open"></i> Products
-            </a>
-          </li>
-          <li>
-            <a href="<?= BASE_URL ?>/admin/orders.php"
-              <?= $current_page === 'orders.php' ? 'class="active"' : '' ?>>
-              <i class="fas fa-receipt"></i> Orders
-            </a>
-          </li>
-          <li>
-            <a href="<?= BASE_URL ?>/admin/customers.php"
-              <?= $current_page === 'customers.php' ? 'class="active"' : '' ?>>
-              <i class="fas fa-users"></i> Customers
-            </a>
-          </li>
-          <li>
-            <a href="<?= BASE_URL ?>/admin/messages.php"
-              <?= $current_page === 'messages.php' ? 'class="active"' : '' ?>
-              style="display:flex;align-items:center;gap:8px;">
-              <i class="fas fa-envelope"></i> Messages
-              <?php if ($_unread_count > 0): ?>
-                <span class="sidebar-badge"><?= $_unread_count ?></span>
-              <?php endif; ?>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div class="sidebar-section">
-        <p class="sidebar-label"><i class="fas fa-store"></i> Store</p>
-        <ul class="sidebar-nav">
-          <li>
-            <a href="<?= BASE_URL ?>/" target="_blank">
-              <i class="fas fa-external-link-alt"></i> View Store
-            </a>
-          </li>
-        </ul>
-      </div>
+      <ul class="sidebar-nav">
+        <li>
+          <a href="<?= BASE_URL ?>/admin/dashboard.php"
+            <?= $current_page === 'dashboard.php' ? 'class="active"' : '' ?>>
+            <span class="snav-icon"><i class="fas fa-chart-bar"></i></span>
+            <span class="snav-text">Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="<?= BASE_URL ?>/admin/products.php"
+            <?= $current_page === 'products.php' ? 'class="active"' : '' ?>>
+            <span class="snav-icon"><i class="fas fa-box-open"></i></span>
+            <span class="snav-text">Products</span>
+          </a>
+        </li>
+        <li>
+          <a href="<?= BASE_URL ?>/admin/orders.php"
+            <?= $current_page === 'orders.php' ? 'class="active"' : '' ?>>
+            <span class="snav-icon"><i class="fas fa-receipt"></i></span>
+            <span class="snav-text">Orders</span>
+          </a>
+        </li>
+        <li>
+          <a href="<?= BASE_URL ?>/admin/customers.php"
+            <?= $current_page === 'customers.php' ? 'class="active"' : '' ?>>
+            <span class="snav-icon"><i class="fas fa-users"></i></span>
+            <span class="snav-text">Customers</span>
+          </a>
+        </li>
+        <li>
+          <a href="<?= BASE_URL ?>/admin/messages.php"
+            <?= $current_page === 'messages.php' ? 'class="active"' : '' ?>>
+            <span class="snav-icon"><i class="fas fa-envelope"></i></span>
+            <span class="snav-text">Messages</span>
+            <?php if ($_unread_count > 0): ?>
+              <span class="sidebar-badge"><?= $_unread_count ?></span>
+            <?php endif; ?>
+          </a>
+        </li>
+        <li>
+          <a href="<?= BASE_URL ?>/" target="_blank">
+            <span class="snav-icon"><i class="fas fa-external-link-alt"></i></span>
+            <span class="snav-text">View Store</span>
+          </a>
+        </li>
+      </ul>
 
     </aside>
 

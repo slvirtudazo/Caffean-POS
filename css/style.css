@@ -146,6 +146,8 @@ p {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    max-width: 1400px;
+    padding: 0 2.5rem;
 }
 
 /* Brand Logo */
@@ -245,7 +247,7 @@ p {
     min-height: 650px;
     display: flex;
     align-items: center;
-    padding: var(--spacing-xs) 0 var(--spacing-xxl) 0;
+    padding: var(--spacing-xxl) 0 var(--spacing-xxl) 0;
 }
 
 .hero-content {
@@ -303,13 +305,12 @@ p {
     filter: drop-shadow(0 20px 40px rgba(42, 0, 0, 0.15));
 }
 
-/* ===== BUTTONS - ENHANCED ===== */
-.btn-primary {
+.btn-hero {
     background-color: transparent;
     color: var(--burgundy-wine);
     border: 2px solid var(--burgundy-wine);
-    border-radius: var(--radius-xxl);
     padding: 0.75rem 2rem;
+    border-radius: var(--radius-xxl);
     font-family: var(--font-subheading);
     font-size: 1rem;
     font-weight: 600;
@@ -320,7 +321,7 @@ p {
     box-shadow: var(--shadow-sm);
 }
 
-.btn-primary:hover {
+.btn-hero:hover {
     background-color: var(--burgundy-wine);
     color: var(--ivory-cream);
     transform: translateY(-3px);

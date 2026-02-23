@@ -99,7 +99,7 @@ if (isset($_SESSION['user_id'])) {
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="menu.php">Menu</a></li>
-                    <li class="nav-item"><a class="nav-link" href="supplies-page.php">Offers</a></li>
+                    <li class="nav-item"><a class="nav-link" href="supplies-page.php">Supplies</a></li>
                     <li class="nav-item"><a class="nav-link" href="about.php">About</a></li>
                 </ul>
             </div>
@@ -1023,6 +1023,9 @@ if (isset($_SESSION['user_id'])) {
             }
         })();
     </script>
+
+    <script src="js/search.js?v=<?php echo time(); ?>"></script>
+
 </body>
 
 </html>

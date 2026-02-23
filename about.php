@@ -1,12 +1,14 @@
 <?php
+
 /**
  * Purge Coffee Shop - About Page
- * Enhanced UI with animations, search fix, and matching footer.
  */
 require_once 'php/db_connection.php';
+$is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,10 +19,10 @@ require_once 'php/db_connection.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="css/components.css?v=<?php echo time(); ?>"> 
     <link rel="stylesheet" href="css/about-page.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
 </head>
+
 <body>
 
     <!-- Navbar -->
@@ -39,16 +41,18 @@ require_once 'php/db_connection.php';
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="menu.php">Menu</a></li>
-                    <li class="nav-item"><a class="nav-link" href="supplies-page.php">Offers</a></li>
+                    <li class="nav-item"><a class="nav-link" href="supplies-page.php">Supplies</a></li>
                     <li class="nav-item"><a class="nav-link active" href="about.php">About</a></li>
                 </ul>
             </div>
 
             <div class="nav-icons">
                 <i class="fas fa-search nav-icon" onclick="showSearchOverlay()"></i>
-                <a href="cart.php" class="text-decoration-none">
-                    <i class="fas fa-shopping-cart nav-icon"></i>
-                </a>
+                <?php if (!$is_admin): ?>
+                    <a href="cart.php" class="text-decoration-none">
+                        <i class="fas fa-shopping-cart nav-icon"></i>
+                    </a>
+                <?php endif; ?>
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <a href="account.php" class="text-decoration-none">
                         <i class="fas fa-user nav-icon"></i>
@@ -204,40 +208,45 @@ require_once 'php/db_connection.php';
         <div class="container text-center reveal-up">
             <h2 class="about-cta-title">Ready to Experience the Difference?</h2>
             <p class="about-cta-text">Explore our menu and find your next favorite brew.</p>
-            <a href="menu.php" class="btn-primary about-cta-btn">View Our Menu</a>
+            <a href="menu.php" class="btn-hero">View Our Menu</a>
         </div>
     </section>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/search.js"></script>
+    <script src="js/main.js?v=<?php echo time(); ?>"></script>
+    <script src="js/search.js?v=<?php echo time(); ?>"></script>
 
     <!-- Scroll Reveal Animations -->
     <script>
-    (function () {
-        const revealEls = document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right');
+        (function() {
+            const revealEls = document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right');
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(el => {
-                if (el.isIntersecting) {
-                    const delay = el.target.style.getPropertyValue('--delay') || '0s';
-                    el.target.style.transitionDelay = delay;
-                    el.target.classList.add('revealed');
-                    observer.unobserve(el.target);
-                }
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(el => {
+                    if (el.isIntersecting) {
+                        const delay = el.target.style.getPropertyValue('--delay') || '0s';
+                        el.target.style.transitionDelay = delay;
+                        el.target.classList.add('revealed');
+                        observer.unobserve(el.target);
+                    }
+                });
+            }, {
+                threshold: 0.15
             });
-        }, { threshold: 0.15 });
 
-        revealEls.forEach(el => observer.observe(el));
+            revealEls.forEach(el => observer.observe(el));
 
-        // Scroll chevron in hero
-        const chevron = document.querySelector('.about-hero-scroll');
-        if (chevron) {
-            chevron.addEventListener('click', () => {
-                document.querySelector('.about-story-section').scrollIntoView({ behavior: 'smooth' });
-            });
-        }
-    })();
+            // Scroll chevron in hero
+            const chevron = document.querySelector('.about-hero-scroll');
+            if (chevron) {
+                chevron.addEventListener('click', () => {
+                    document.querySelector('.about-story-section').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            }
+        })();
     </script>
 </body>
+
 </html>

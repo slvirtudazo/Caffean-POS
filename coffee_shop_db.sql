@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 23, 2026 at 11:25 AM
+-- Generation Time: Feb 23, 2026 at 06:03 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -186,7 +186,7 @@ INSERT INTO `products` (`product_id`, `category_id`, `name`, `description`, `pri
 (32, 7, 'Blueberry Scone', 'Tender scone studded with fresh blueberries', 155.00, NULL, 1, '2026-02-09 12:27:00'),
 (33, 7, 'Cinnamon Roll', 'Soft sweet dough with cinnamon swirl and cream cheese frosting', 165.00, NULL, 1, '2026-02-09 12:27:00'),
 (34, 7, 'Chocolate Muffin', 'Moist chocolate crumb with rich cocoa flavor', 150.00, NULL, 1, '2026-02-09 12:27:00'),
-(35, 7, 'Baguette', 'Crisp golden crust with light airy interior, freshly baked', 175.00, NULL, 1, '2026-02-09 12:27:00'),
+(35, 7, 'Baguette', 'Crisp golden crust with light airy interior, freshly baked', 175.00, 'images/products/product_699c86a09c9df.jpg', 1, '2026-02-09 12:27:00'),
 (36, 8, 'Tuna Melt Panini', 'Grilled sandwich with tuna salad and melted cheese', 195.00, NULL, 1, '2026-02-09 12:27:00'),
 (37, 8, 'Chicken Pesto Pasta', 'Tender chicken with basil pesto and pasta', 210.00, NULL, 1, '2026-02-09 12:27:00'),
 (38, 8, 'Club Sandwich', 'Triple-decker with turkey, bacon, lettuce, and tomato', 205.00, NULL, 1, '2026-02-09 12:27:00'),
@@ -198,7 +198,8 @@ INSERT INTO `products` (`product_id`, `category_id`, `name`, `description`, `pri
 (56, 9, 'Whipped Cream', 'Light, airy cream topping that adds richness and a creamy texture to coffee drinks or desserts', 20.00, NULL, 1, '2026-02-21 15:05:20'),
 (57, 9, 'Coffee Jelly', 'Cubes of firm, slightly sweetened coffee-flavored gelatin, perfect for mixing into cold drinks or desserts', 40.00, NULL, 1, '2026-02-21 15:05:50'),
 (58, 9, 'Pearl (Boba)', 'Chewy tapioca balls often added to iced teas, coffees, or milk drinks for texture and fun', 30.00, NULL, 1, '2026-02-21 15:06:06'),
-(59, 2, 'Spanish Latte', 'test', 39.00, NULL, 1, '2026-02-23 02:28:13');
+(59, 2, 'Spanish Latte', 'test', 39.00, NULL, 1, '2026-02-23 02:28:13'),
+(60, 1, 'test coffee', 'test desc', 100.00, 'images/products/product_699c8314b2e20.jpg', 1, '2026-02-23 16:40:52');
 
 -- --------------------------------------------------------
 
@@ -251,7 +252,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `full_name`, `email`, `password`, `role`, `created_at`) VALUES
-(1, 'Admin', 'admin@purgecoffee.com', '$2a$12$F4wbKxPcOnhD6K5An76ke.4gS2.m9JQTH88Q8NZYUzGwNaYhY6YKC', 'admin', '2026-02-20 02:12:15'),
+(1, 'Samantha Virtudazo', 'admin@purgecoffee.com', '$2a$12$F4wbKxPcOnhD6K5An76ke.4gS2.m9JQTH88Q8NZYUzGwNaYhY6YKC', 'admin', '2026-02-20 02:12:15'),
 (2, 'Customer', 'customer@purgecoffee.com', '$2a$12$nvPoBAKZQZpBpybEbGlsNeYwwMFn.YcvPM1SqGgM0iR.iHMw2efGW', 'customer', '2026-02-20 02:23:55'),
 (3, 'John Doe', 'johndoe@gmail.com', '$2y$10$31mqhulkg7rPDmyNSwiuj.CAQAqlJGgdknbpSJo0m22QsNKaKcLEO', 'customer', '2026-02-21 07:15:51');
 
@@ -344,7 +345,7 @@ ALTER TABLE `order_items`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT for table `product_interactions`

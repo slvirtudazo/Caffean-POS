@@ -1,0 +1,57 @@
+.msg-subject {
+    font-weight: 600;
+    color: var(--deep-maroon);
+}
+
+.msg-preview {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 280px;
+}
+
+.row-unread td {
+    background: rgba(91, 19, 18, .03);
+}
+
+.unread-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--burgundy-wine);
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+/* ── Messages stat grid: always 3 columns ──────────────────── */
+.messages-stat-grid {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 768px) {
+    .messages-stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .messages-stat-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* view modal message body */
+.msg-body-box {
+    background: var(--light-beige, #f5f1e8);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    font-size: .93rem;
+    line-height: 1.65;
+    color: var(--dark-brown);
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin-top: 4px;
+}

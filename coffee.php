@@ -38,8 +38,9 @@ $products_result = mysqli_query(
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/coffee-page.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/footer-section.css?v=<?php echo time(); ?>">
     <style>
         .product-category {
             font-family: var(--font-subheading);
@@ -71,12 +72,12 @@ $products_result = mysqli_query(
                     <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
                     <li class="nav-item"><a class="nav-link active" href="coffee.php">Coffee</a></li>
                     <li class="nav-item"><a class="nav-link" href="pastry.php">Pastry</a></li>
-                    <li class="nav-item"><a class="nav-link" href="supplies-page.php">Offers</a></li>
+                    <li class="nav-item"><a class="nav-link" href="supplies-page.php">Supplies</a></li>
                     <li class="nav-item"><a class="nav-link" href="contact.php">Contact</a></li>
                 </ul>
             </div>
             <div class="nav-icons">
-                <i class="fas fa-search nav-icon"></i>
+                <i class="fas fa-search nav-icon" onclick="showSearchOverlay()"></i>
                 <?php if (!$is_admin): ?>
                     <a href="cart.php" class="text-decoration-none">
                         <i class="fas fa-shopping-cart nav-icon"></i>
@@ -157,6 +158,7 @@ $products_result = mysqli_query(
     <?php include 'includes/footer.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/main.js?v=<?php echo time(); ?>"></script>
+    <script src="js/search.js?v=<?php echo time(); ?>"></script>
 </body>
 
 </html>

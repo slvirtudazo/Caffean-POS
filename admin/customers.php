@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Purge Coffee Shop — Admin Customers Management  (customers.php)
  * Operation: View only (eye icon).
@@ -8,39 +9,43 @@ session_start();
 require_once '../php/db_connection.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../login.php');
-    exit();
+  header('Location: ../login.php');
+  exit();
 }
 
 // ── Customers with order stats ────────────────────────────────
-$customers_result = mysqli_query($conn,
-    "SELECT u.*,
+$customers_result = mysqli_query(
+  $conn,
+  "SELECT u.*,
      COUNT(DISTINCT o.order_id)       AS total_orders,
      COALESCE(SUM(o.total_amount), 0) AS total_spent
      FROM users u
      LEFT JOIN orders o ON u.user_id = o.user_id
      WHERE u.role = 'customer'
      GROUP BY u.user_id
-     ORDER BY u.created_at DESC");
+     ORDER BY u.created_at DESC"
+);
 
 $total_customers = mysqli_num_rows($customers_result);
 
 // ── Summary stats ─────────────────────────────────────────────
-$summary = mysqli_fetch_assoc(mysqli_query($conn,
-    "SELECT
+$summary = mysqli_fetch_assoc(mysqli_query(
+  $conn,
+  "SELECT
      COUNT(DISTINCT CASE WHEN o.order_date >= DATE_SUB(NOW(), INTERVAL 30 DAY)
                          THEN u.user_id END)               AS active_customers,
      COUNT(DISTINCT CASE WHEN o.order_id IS NULL
                          THEN u.user_id END)               AS no_orders
      FROM users u
      LEFT JOIN orders o ON u.user_id = o.user_id
-     WHERE u.role = 'customer'"));
+     WHERE u.role = 'customer'"
+));
 
 // Load all customers into array for JS map
 $customers_arr = [];
 mysqli_data_seek($customers_result, 0);
 while ($c = mysqli_fetch_assoc($customers_result)) {
-    $customers_arr[] = $c;
+  $customers_arr[] = $c;
 }
 
 include 'includes/header.php';
@@ -50,24 +55,6 @@ include 'includes/header.php';
   <div class="page-header-text">
     <h1>Customers</h1>
     <p>View and manage registered user accounts and details</p>
-  </div>
-</div>
-
-<div class="stat-grid">
-  <div class="stat-card">
-    <h4>Total Customers</h4>
-    <div class="number"><?= number_format($total_customers) ?></div>
-    <div class="icon"><i class="fas fa-users"></i></div>
-  </div>
-  <div class="stat-card">
-    <h4>Active (30 Days)</h4>
-    <div class="number"><?= number_format($summary['active_customers']) ?></div>
-    <div class="icon"><i class="fas fa-user-check"></i></div>
-  </div>
-  <div class="stat-card">
-    <h4>No Orders Yet</h4>
-    <div class="number"><?= number_format($summary['no_orders']) ?></div>
-    <div class="icon"><i class="fas fa-user-clock"></i></div>
   </div>
 </div>
 
@@ -120,7 +107,7 @@ include 'includes/header.php';
             </td>
             <td class="td-actions">
               <button class="btn-icon btn-icon-view" title="View Customer"
-                      onclick="viewCustomer(<?= $c['user_id'] ?>)">
+                onclick="viewCustomer(<?= $c['user_id'] ?>)">
                 <i class="fas fa-eye"></i>
               </button>
             </td>
@@ -177,26 +164,39 @@ include 'includes/header.php';
 <script>
   /* ── Customers data map from PHP ─────────────────────────── */
   var customersData = <?= json_encode($customers_arr) ?>;
-  var customersMap  = {};
-  customersData.forEach(function(c) { customersMap[c.user_id] = c; });
+  var customersMap = {};
+  customersData.forEach(function(c) {
+    customersMap[c.user_id] = c;
+  });
 
-  function openModal(id)  { document.getElementById(id).style.display = 'flex'; }
-  function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+  function openModal(id) {
+    document.getElementById(id).style.display = 'flex';
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+  }
 
   function viewCustomer(userId) {
     var c = customersMap[userId];
     if (!c) return;
 
-    document.getElementById('vc_id').textContent     = '#' + c.user_id;
-    document.getElementById('vc_name').textContent   = c.full_name;
-    document.getElementById('vc_email').textContent  = c.email;
-    document.getElementById('vc_date').textContent   = c.created_at ? c.created_at.split(' ')[0] : '—';
+    document.getElementById('vc_id').textContent = '#' + c.user_id;
+    document.getElementById('vc_name').textContent = c.full_name;
+    document.getElementById('vc_email').textContent = c.email;
+    document.getElementById('vc_date').textContent = c.created_at ? c.created_at.split(' ')[0] : '—';
     document.getElementById('vc_orders').textContent = c.total_orders;
-    document.getElementById('vc_spent').textContent  = '\u20B1' + parseFloat(c.total_spent).toFixed(2);
+    document.getElementById('vc_spent').textContent = '\u20B1' + parseFloat(c.total_spent).toFixed(2);
 
-    var tier = 'New', tierClass = 'badge-pending';
-    if (parseFloat(c.total_spent) > 5000)     { tier = 'VIP';    tierClass = 'badge-completed';  }
-    else if (parseInt(c.total_orders) > 0)    { tier = 'Active'; tierClass = 'badge-processing'; }
+    var tier = 'New',
+      tierClass = 'badge-pending';
+    if (parseFloat(c.total_spent) > 5000) {
+      tier = 'VIP';
+      tierClass = 'badge-completed';
+    } else if (parseInt(c.total_orders) > 0) {
+      tier = 'Active';
+      tierClass = 'badge-processing';
+    }
     document.getElementById('vc_tier').innerHTML =
       '<span class="badge ' + tierClass + '">' + tier + '</span>';
 
@@ -211,7 +211,9 @@ include 'includes/header.php';
 
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape')
-      document.querySelectorAll('.modal-overlay').forEach(function(o) { o.style.display = 'none'; });
+      document.querySelectorAll('.modal-overlay').forEach(function(o) {
+        o.style.display = 'none';
+      });
   });
 
   /* ── Sorting ─────────────────────────────────────────────── */

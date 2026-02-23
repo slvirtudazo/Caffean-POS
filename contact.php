@@ -32,7 +32,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (mysqli_stmt_execute($stmt)) {
             $success = "Thank you for contacting us! We'll get back to you soon.";
-            // Clear fields after successful submission
             $name = $email = $subject = $message = '';
         } else {
             $error = "Something went wrong. Please try again.";
@@ -52,9 +51,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/search.css">
-    <link rel="stylesheet" href="css/contact-page.css">
+    <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/contact-page.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/footer-section.css?v=<?php echo time(); ?>">
 </head>
 
 <body>
@@ -85,7 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <a class="nav-link" href="pastry.php">Pastry</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="supplies-page.php">Offers</a>
+                        <a class="nav-link" href="supplies-page.php">Supplies</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="contact.php">Contact</a>
@@ -94,7 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             <div class="nav-icons">
-                <i class="fas fa-search nav-icon"></i>
+                <i class="fas fa-search nav-icon" onclick="showSearchOverlay()"></i>
                 <a href="cart.php" class="text-decoration-none">
                     <i class="fas fa-shopping-cart nav-icon"></i>
                 </a>
@@ -111,7 +111,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </nav>
 
-    <!-- Contact information section with cards for phone, email, and location -->
+    <!-- Contact information section -->
     <section class="contact-section">
         <div class="container">
             <div class="section-header">
@@ -123,9 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </p>
             </div>
 
-            <!-- Contact information cards grid -->
             <div class="contact-grid">
-                <!-- Phone contact card -->
                 <div class="contact-card">
                     <div class="contact-icon">
                         <i class="fas fa-phone"></i>
@@ -138,7 +136,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </p>
                 </div>
 
-                <!-- Email contact card -->
                 <div class="contact-card">
                     <div class="contact-icon">
                         <i class="fas fa-envelope"></i>
@@ -150,7 +147,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </p>
                 </div>
 
-                <!-- Location contact card -->
                 <div class="contact-card">
                     <div class="contact-icon">
                         <i class="fas fa-map-marker-alt"></i>
@@ -184,7 +180,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="alert alert-danger"><?php echo $error; ?></div>
                 <?php endif; ?>
 
-                <!-- Contact form with all necessary fields -->
                 <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
                     <div class="form-group">
                         <label class="form-label">Your Name</label>
@@ -219,51 +214,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="footer-brand">
-                        <img src="images/coffee_beans_logo.png" alt="Purge Coffee">
-                        <span class="footer-brand-name">purge coffee</span>
-                    </div>
-                    <div class="footer-contact">
-                        <p><i class="fas fa-phone"></i> 0960 315 0070</p>
-                        <p><i class="fas fa-envelope"></i> purgecoffee@gmail.com</p>
-                    </div>
-                </div>
-
-                <div class="footer-section">
-                    <h3>Our Policies</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">Privacy</a></li>
-                        <li><a href="#">Terms Of Use</a></li>
-                        <li><a href="#">Shipping & Delivery</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-section">
-                    <h3>Social Media</h3>
-                    <div class="social-icons">
-                        <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="footer-divider"></div>
-
-            <div class="footer-bottom">
-                <p>&copy; 2026 Purge Coffee | All Rights Reserved</p>
-            </div>
-        </div>
-    </footer>
+    <?php include 'includes/footer.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/search.js"></script>
+    <script src="js/main.js?v=<?php echo time(); ?>"></script>
+    <script src="js/search.js?v=<?php echo time(); ?>"></script>
 </body>
 
 </html>

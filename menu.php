@@ -67,7 +67,6 @@ $total_products = mysqli_num_rows($products_result);
  */
 function buildFilterUrl($overrides = [], $removals = [])
 {
-    // Removed 'bestsellers' from the keys array
     $keys   = ['category', 'price_sort', 'popular'];
     $params = [];
     foreach ($keys as $k) {
@@ -81,7 +80,7 @@ function buildFilterUrl($overrides = [], $removals = [])
     foreach ($removals as $k) {
         unset($params[$k]);
     }
-    return 'menu.php' . (count($params) ? '?' . http_build_query($params) : '');
+    return 'menu.php' . ($params ? '?' . http_build_query($params) : '');
 }
 
 $has_active_filters = ($category_filter > 0 || $price_sort !== '' || $show_popular);
@@ -107,19 +106,7 @@ if ($category_filter > 0) {
     <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/menu-page.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
-
-    <style>
-        .product-category {
-            font-family: var(--font-subheading);
-            font-size: 0.72rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.6px;
-            color: var(--burgundy-wine);
-            opacity: 0.75;
-            margin: -4px 0 8px 0;
-        }
-    </style>
+    <link rel="stylesheet" href="css/footer-section.css?v=<?php echo time(); ?>">
 </head>
 
 <body>
@@ -139,13 +126,13 @@ if ($category_filter > 0) {
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
                     <li class="nav-item"><a class="nav-link active" href="menu.php">Menu</a></li>
-                    <li class="nav-item"><a class="nav-link" href="supplies-page.php">Offers</a></li>
+                    <li class="nav-item"><a class="nav-link" href="supplies-page.php">Supplies</a></li>
                     <li class="nav-item"><a class="nav-link" href="about.php">About</a></li>
                 </ul>
             </div>
 
             <div class="nav-icons">
-                <i class="fas fa-search nav-icon"></i>
+                <i class="fas fa-search nav-icon" onclick="showSearchOverlay()"></i>
                 <?php if (!$is_admin): ?>
                     <a href="cart.php" class="text-decoration-none">
                         <i class="fas fa-shopping-cart nav-icon"></i>
@@ -302,28 +289,30 @@ if ($category_filter > 0) {
                         if ($total_products > 0):
                             mysqli_data_seek($products_result, 0);
                             while ($product = mysqli_fetch_assoc($products_result)):
-                                $image_map = [
-                                    1 => 'coffee.png',
-                                    2 => 'coffee.png',
-                                    3 => 'coffee.png',
-                                    4 => 'coffee.png',
-                                    5 => 'coffee.png',
-                                    6 => 'pastry.png',
-                                    7 => 'pastry.png',
-                                    8 => 'pastry.png',
-                                    9 => 'coffee.png'
-                                ];
-                                $product_image = $image_map[$product['category_id']] ?? 'coffee.png';
+                                // Use uploaded image if available, else fall back to category default
+                                if (!empty($product['image_path'])) {
+                                    $product_image_src = $product['image_path'];
+                                } else {
+                                    $image_map = [
+                                        1 => 'coffee.png',
+                                        2 => 'coffee.png',
+                                        3 => 'coffee.png',
+                                        4 => 'coffee.png',
+                                        5 => 'coffee.png',
+                                        6 => 'pastry.png',
+                                        7 => 'pastry.png',
+                                        8 => 'pastry.png',
+                                        9 => 'coffee.png'
+                                    ];
+                                    $product_image_src = 'images/' . ($image_map[$product['category_id']] ?? 'coffee.png');
+                                }
                         ?>
                                 <div class="product-card" data-product-id="<?php echo $product['product_id']; ?>">
                                     <div class="product-image-wrapper">
                                         <div class="favorite-icon" onclick="toggleFavorite(<?php echo $product['product_id']; ?>, this.querySelector('i'))">
                                             <i class="far fa-heart"></i>
                                         </div>
-                                        <div class="category-badge">
-                                            <?php echo htmlspecialchars($product['category_name']); ?>
-                                        </div>
-                                        <img src="images/<?php echo $product_image; ?>"
+                                        <img src="<?php echo htmlspecialchars($product_image_src); ?>"
                                             alt="<?php echo htmlspecialchars($product['name']); ?>"
                                             class="product-image">
                                     </div>
@@ -360,6 +349,8 @@ if ($category_filter > 0) {
         </div>
     </section>
 
+    <?php include 'includes/footer.php'; ?>
+
     <script>
         // Save scroll position before navigation
         function saveScrollPosition() {
@@ -386,7 +377,6 @@ if ($category_filter > 0) {
         // Handle category filter clicks
         document.querySelectorAll('.category-item').forEach(item => {
             item.addEventListener('click', function(e) {
-                // Prevent action if already active (Fallback for older browsers)
                 if (this.classList.contains('active')) {
                     e.preventDefault();
                     return;
@@ -395,7 +385,6 @@ if ($category_filter > 0) {
                 e.preventDefault();
                 saveScrollPosition();
 
-                // Visual feedback to feel instantly responsive
                 this.style.opacity = '0.5';
                 document.body.style.cursor = 'wait';
 
@@ -408,9 +397,9 @@ if ($category_filter > 0) {
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/search.js"></script>
-    <script src="js/menu-page.js"></script>
+    <script src="js/main.js?v=<?php echo time(); ?>"></script>
+    <script src="js/search.js?v=<?php echo time(); ?>"></script>
+    <script src="js/menu-page.js?v=<?php echo time(); ?>"></script>
 </body>
 
 </html>

@@ -214,111 +214,107 @@ body {
 .admin-sidebar {
   width: var(--sidebar-w);
   background: var(--ivory-cream);
-  border-right: 1px solid var(--border);
+  border-right: 1px solid rgba(42, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  padding: 32px 0 24px;
+  padding: 36px 12px 20px;
   position: sticky;
   top: var(--navbar-h);
   height: calc(100vh - var(--navbar-h));
-  overflow-y: auto;
+  overflow: hidden;
   flex-shrink: 0;
-  box-shadow: 2px 0 12px rgba(42, 0, 0, 0.04);
 }
 
-.sidebar-section {
-  padding: 20px 16px 16px;
-}
-
-.sidebar-section+.sidebar-section {
-  border-top: 1px solid rgba(42, 0, 0, 0.07);
-  padding-top: 16px;
-}
-
-.sidebar-label {
-  font-family: var(--font-subheading);
-  font-size: 0.8rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.8px;
-  color: var(--dark-brown);
-  opacity: 0.6;
-  padding: 0 16px 10px 14px;
-  margin-top: 24px;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  line-height: 1.2;
-}
-
-.sidebar-label i {
-  font-size: 0.8rem;
-}
-
-.sidebar-label:first-child {
-  margin-top: 0;
-}
-
+/* ── Nav List ──────────────────────────────────────────────── */
 .sidebar-nav {
   list-style: none;
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  gap: 4px;
+}
+
+.sidebar-nav li {
+  position: relative;
 }
 
 .sidebar-nav a {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.55rem 16px;
-  font-family: var(--font-body);
-  font-size: 0.8rem;
+  gap: 14px;
+  padding: 11px 14px;
+  font-family: var(--font-subheading);
+  font-size: 0.88rem;
   font-weight: 500;
   color: var(--dark-brown);
-  letter-spacing: 0.1px;
+  border-radius: 15px;
   background: transparent;
-  border-left: 2.5px solid transparent;
-  border-radius: var(--radius-sm);
-  transition: all 0.18s ease;
-  position: relative;
+  transition: background 0.18s ease, color 0.18s ease;
+  text-decoration: none;
 }
 
-.sidebar-nav a i {
-  width: 18px;
-  flex-shrink: 0;
+.snav-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(42, 0, 0, 0.06);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8rem;
-  color: rgba(60, 21, 24, 0.4);
-  transition: color 0.18s ease;
+  font-size: 0.82rem;
+  color: rgba(60, 21, 24, 0.5);
+  flex-shrink: 0;
+  transition: all 0.18s ease;
 }
 
+.snav-text {
+  flex: 1;
+  line-height: 1;
+}
+
+/* ── Hover ─────────────────────────────────────────────────── */
 .sidebar-nav a:hover {
-  background: rgba(226, 217, 200, 0.35);
-  color: var(--burgundy-wine);
-  border-left-color: rgba(91, 19, 18, 0.25);
-  padding-left: 1rem;
-}
-
-.sidebar-nav a:hover i {
+  background: rgba(42, 0, 0, 0.05);
   color: var(--burgundy-wine);
 }
 
+.sidebar-nav a:hover .snav-icon {
+  background: rgba(91, 19, 18, 0.1);
+  color: var(--burgundy-wine);
+}
+
+/* ── Active ────────────────────────────────────────────────── */
 .sidebar-nav a.active {
-  background: linear-gradient(to right,
-      rgba(91, 19, 18, 0.09) 0%,
-      rgba(91, 19, 18, 0.02) 60%,
-      transparent 100%);
-  color: var(--burgundy-wine);
-  border-left-color: var(--burgundy-wine);
-  font-weight: 700;
-  padding-left: 1rem;
+  background: var(--burgundy-wine);
+  color: #fff;
+  font-weight: 600;
 }
 
-.sidebar-nav a.active i {
-  color: var(--burgundy-wine);
+.sidebar-nav a.active .snav-icon {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+/* ── Unread badge ──────────────────────────────────────────── */
+.sidebar-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 50px;
+  background: var(--burgundy-wine);
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  margin-left: auto;
+  line-height: 1;
+}
+
+.sidebar-nav a.active .sidebar-badge {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
 }
 
 /* ── MAIN CONTENT AREA ─────────────────────────────────────── */
@@ -396,6 +392,62 @@ body {
 
 .stat-card:hover::before {
   opacity: 1;
+}
+
+/* ── STAT CARD SUB-COMPONENTS (dashboard-style, shared) ─────── */
+.stat-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stat-card-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(91, 19, 18, 0.10), rgba(91, 19, 18, 0.05));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--burgundy-wine);
+  font-size: 1.05rem;
+  flex-shrink: 0;
+}
+
+.stat-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-left: 2px;
+}
+
+.stat-card-label {
+  font-family: var(--font-subheading);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+.stat-card-value {
+  font-family: var(--font-subheading);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--deep-maroon);
+  line-height: 1.15;
+  margin-top: 10px;
+}
+
+.stat-card-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(to right, var(--burgundy-wine), transparent);
+  opacity: 0.3;
 }
 
 /* ── STAT CARD HEADER ROW (title + icon inline) ─────────────── */

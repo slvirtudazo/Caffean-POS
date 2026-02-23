@@ -78,49 +78,7 @@ define('BASE_URL', '..');
 include 'includes/header.php';
 ?>
 
-<!-- ── Page-specific styles ──────────────────────────────────── -->
-<style>
-    .msg-subject {
-        font-weight: 600;
-        color: var(--deep-maroon);
-    }
-
-    .msg-preview {
-        color: var(--text-muted);
-        font-size: 0.85rem;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 280px;
-    }
-
-    .row-unread td {
-        background: rgba(91, 19, 18, .03);
-    }
-
-    .unread-dot {
-        display: inline-block;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--burgundy-wine);
-        margin-right: 6px;
-        vertical-align: middle;
-    }
-
-    /* view modal message body */
-    .msg-body-box {
-        background: var(--light-beige, #f5f1e8);
-        border-radius: var(--radius-sm);
-        padding: 16px 20px;
-        font-size: .93rem;
-        line-height: 1.65;
-        color: var(--dark-brown);
-        white-space: pre-wrap;
-        word-break: break-word;
-        margin-top: 4px;
-    }
-</style>
+<link rel="stylesheet" href="assets/css/messages.css?v=<?php echo time(); ?>">
 
 <div class="page-header">
     <div class="page-header-text">
@@ -136,30 +94,11 @@ include 'includes/header.php';
     <div class="flash-error"><i class="fas fa-exclamation-circle"></i><?= $error ?></div>
 <?php endif; ?>
 
-<!-- ── Stat Cards ─────────────────────────────────────────────── -->
-<div class="stat-grid">
-    <div class="stat-card">
-        <h4>Total Messages</h4>
-        <div class="number"><?= number_format($counts['all']) ?></div>
-        <div class="icon"><i class="fas fa-envelope"></i></div>
-    </div>
-    <div class="stat-card">
-        <h4>Unread</h4>
-        <div class="number"><?= number_format($counts['unread']) ?></div>
-        <div class="icon"><i class="fas fa-envelope-open-text"></i></div>
-    </div>
-    <div class="stat-card">
-        <h4>Read</h4>
-        <div class="number"><?= number_format($counts['read']) ?></div>
-        <div class="icon"><i class="fas fa-envelope-open"></i></div>
-    </div>
-</div>
-
 <!-- ── Filter Tabs ────────────────────────────────────────────── -->
 <div class="admin-tabs">
-    <a href="?filter=all" class="tab <?= $filter === 'all'    ? 'active' : '' ?>">All <span class="tab-count"><?= $counts['all']    ?></span></a>
-    <a href="?filter=unread" class="tab <?= $filter === 'unread' ? 'active' : '' ?>">Unread <span class="tab-count"><?= $counts['unread'] ?></span></a>
+    <a href="?filter=all" class="tab <?= $filter === 'all'    ? 'active' : '' ?>">All Messages <span class="tab-count"><?= $counts['all']    ?></span></a>
     <a href="?filter=read" class="tab <?= $filter === 'read'   ? 'active' : '' ?>">Read <span class="tab-count"><?= $counts['read']   ?></span></a>
+    <a href="?filter=unread" class="tab <?= $filter === 'unread' ? 'active' : '' ?>">Unread <span class="tab-count"><?= $counts['unread'] ?></span></a>
 </div>
 
 <!-- ── Messages Table ─────────────────────────────────────────── -->

@@ -2,6 +2,7 @@
 
 /**
  * Purge Coffee Shop — Admin Dashboard  (dashboard.php)
+ * Enhanced with Sales Analytics, Trending Products, Recent Orders
  */
 
 session_start();
@@ -15,164 +16,437 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 // ── Statistics ────────────────────────────────────────────────
 $stats = [];
 
-// Products: active (status=1) and inactive (status=0)
-$row = mysqli_fetch_assoc(mysqli_query(
-  $conn,
-  "SELECT COUNT(*) AS total FROM products WHERE status = 1"
-));
+$row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM products WHERE status = 1"));
 $stats['products_active'] = (int)$row['total'];
 
-$row = mysqli_fetch_assoc(mysqli_query(
-  $conn,
-  "SELECT COUNT(*) AS total FROM products WHERE status = 0"
-));
+$row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM products WHERE status = 0"));
 $stats['products_inactive'] = (int)$row['total'];
 
-// Orders total
-$row = mysqli_fetch_assoc(mysqli_query(
-  $conn,
-  "SELECT COUNT(*) AS total FROM orders"
-));
-$stats['orders'] = $row['total'];
+$row = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM orders"));
+$stats['orders'] = (int)$row['total'];
 
-// Customers: active (has placed ≥1 order) and inactive (no orders)
 $row = mysqli_fetch_assoc(mysqli_query(
   $conn,
-  "SELECT COUNT(DISTINCT u.user_id) AS total
-   FROM users u
-   JOIN orders o ON u.user_id = o.user_id
-   WHERE u.role = 'customer'"
+  "SELECT COUNT(DISTINCT u.user_id) AS total FROM users u
+   JOIN orders o ON u.user_id = o.user_id WHERE u.role = 'customer'"
 ));
 $stats['customers_active'] = (int)$row['total'];
 
 $row = mysqli_fetch_assoc(mysqli_query(
   $conn,
-  "SELECT COUNT(*) AS total
-   FROM users u
+  "SELECT COUNT(*) AS total FROM users u
    LEFT JOIN orders o ON u.user_id = o.user_id
    WHERE u.role = 'customer' AND o.order_id IS NULL"
 ));
 $stats['customers_inactive'] = (int)$row['total'];
 
-// Revenue
 $row = mysqli_fetch_assoc(mysqli_query(
   $conn,
   "SELECT COALESCE(SUM(total_amount), 0) AS revenue FROM orders WHERE status = 'completed'"
 ));
 $stats['revenue'] = $row['revenue'];
 
-// Unread messages
-$msg_result = mysqli_query(
-  $conn,
-  "SELECT COUNT(*) AS total FROM contact_messages WHERE is_read = 0"
-);
+$msg_result = mysqli_query($conn, "SELECT COUNT(*) AS total FROM contact_messages WHERE is_read = 0");
 $stats['messages'] = $msg_result ? (int)mysqli_fetch_assoc($msg_result)['total'] : 0;
+
+// Total customers
+$stats['customers_total'] = $stats['customers_active'] + $stats['customers_inactive'];
+
+// ── Chart Data: Revenue last 7 days ──────────────────────────
+$chart_labels = [];
+$chart_data   = [];
+for ($i = 6; $i >= 0; $i--) {
+  $date = date('Y-m-d', strtotime("-$i days"));
+  $label = date('M j', strtotime("-$i days"));
+  $chart_labels[] = $label;
+  $r = mysqli_fetch_assoc(mysqli_query(
+    $conn,
+    "SELECT COALESCE(SUM(total_amount), 0) AS rev
+     FROM orders WHERE DATE(order_date) = '$date' AND status != 'cancelled'"
+  ));
+  $chart_data[] = (float)$r['rev'];
+}
+
+// ── Trending Products (top 5 by quantity ordered) ─────────────
+$trending_res = mysqli_query(
+  $conn,
+  "SELECT p.name, p.price, p.image_path, SUM(oi.quantity) AS total_qty
+   FROM order_items oi
+   JOIN products p ON oi.product_id = p.product_id
+   GROUP BY oi.product_id
+   ORDER BY total_qty DESC
+   LIMIT 5"
+);
+$trending = [];
+while ($t = mysqli_fetch_assoc($trending_res)) {
+  $trending[] = $t;
+}
+
+// Fallback: if no order_items yet, show top active products
+if (empty($trending)) {
+  $fallback = mysqli_query(
+    $conn,
+    "SELECT name, price, image_path, 0 AS total_qty
+     FROM products WHERE status = 1 ORDER BY product_id DESC LIMIT 5"
+  );
+  while ($t = mysqli_fetch_assoc($fallback)) {
+    $trending[] = $t;
+  }
+}
+
+// ── Recent Orders (last 6) ─────────────────────────────────────
+$recent_orders_res = mysqli_query(
+  $conn,
+  "SELECT o.order_id, o.total_amount, o.status, o.payment_method,
+          o.order_date, o.order_type, u.full_name
+   FROM orders o
+   JOIN users u ON o.user_id = u.user_id
+   ORDER BY o.order_date DESC
+   LIMIT 6"
+);
+$recent_orders = [];
+while ($ro = mysqli_fetch_assoc($recent_orders_res)) {
+  $recent_orders[] = $ro;
+}
+
+// ── Month-over-month deltas (simple comparison) ────────────────
+$this_month  = date('Y-m');
+$last_month  = date('Y-m', strtotime('first day of last month'));
+
+$tm_orders = (int)mysqli_fetch_assoc(mysqli_query(
+  $conn,
+  "SELECT COUNT(*) AS c FROM orders WHERE DATE_FORMAT(order_date,'%Y-%m')='$this_month'"
+))['c'];
+$lm_orders = (int)mysqli_fetch_assoc(mysqli_query(
+  $conn,
+  "SELECT COUNT(*) AS c FROM orders WHERE DATE_FORMAT(order_date,'%Y-%m')='$last_month'"
+))['c'];
+$orders_delta = $lm_orders > 0 ? round((($tm_orders - $lm_orders) / $lm_orders) * 100, 1) : ($tm_orders > 0 ? 100 : 0);
+
+$tm_revenue = (float)mysqli_fetch_assoc(mysqli_query(
+  $conn,
+  "SELECT COALESCE(SUM(total_amount),0) AS r FROM orders
+   WHERE DATE_FORMAT(order_date,'%Y-%m')='$this_month' AND status!='cancelled'"
+))['r'];
+$lm_revenue = (float)mysqli_fetch_assoc(mysqli_query(
+  $conn,
+  "SELECT COALESCE(SUM(total_amount),0) AS r FROM orders
+   WHERE DATE_FORMAT(order_date,'%Y-%m')='$last_month' AND status!='cancelled'"
+))['r'];
+$revenue_delta = $lm_revenue > 0 ? round((($tm_revenue - $lm_revenue) / $lm_revenue) * 100, 1) : ($tm_revenue > 0 ? 100 : 0);
+
+$tm_customers = (int)mysqli_fetch_assoc(mysqli_query(
+  $conn,
+  "SELECT COUNT(*) AS c FROM users
+   WHERE role='customer' AND DATE_FORMAT(created_at,'%Y-%m')='$this_month'"
+))['c'];
+$lm_customers = (int)mysqli_fetch_assoc(mysqli_query(
+  $conn,
+  "SELECT COUNT(*) AS c FROM users
+   WHERE role='customer' AND DATE_FORMAT(created_at,'%Y-%m')='$last_month'"
+))['c'];
+$customers_delta = $lm_customers > 0 ? round((($tm_customers - $lm_customers) / $lm_customers) * 100, 1) : ($tm_customers > 0 ? 100 : 0);
 
 include 'includes/header.php';
 ?>
 
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
 <div class="page-header">
   <div class="page-header-text">
     <h1>Dashboard</h1>
-    <p>View an overview of key metrics, sales, and recent store activity</p>
+    <p>Overview of key metrics, sales analytics, and recent activity</p>
   </div>
-  <div style="display:flex;gap:10px;flex-wrap:wrap;">
-    <?php if ($stats['messages'] > 0): ?>
-      <a href="messages.php" class="btn-primary" style="background:var(--saddle-brown,#8B4513);">
-        <i class="fas fa-envelope"></i>
-        <?= $stats['messages'] ?> Unread Message<?= $stats['messages'] > 1 ? 's' : '' ?>
-      </a>
-    <?php endif; ?>
-  </div>
+  <?php if ($stats['messages'] > 0): ?>
+    <a href="messages.php" class="btn-primary dash-msg-btn">
+      <i class="fas fa-envelope"></i>
+      <?= $stats['messages'] ?> Unread Message<?= $stats['messages'] > 1 ? 's' : '' ?>
+    </a>
+  <?php endif; ?>
 </div>
 
+<!-- ── Stat Cards ─────────────────────────────────────────────── -->
 <div class="stat-grid">
 
-  <!-- Total Revenue Card -->
-  <div class="stat-card">
-    <div class="stat-header">
-      <h4>Total Revenue</h4>
-      <div class="icon"><i class="fas fa-coins"></i></div>
+  <!-- Total Revenue -->
+  <div class="stat-card stat-card--revenue">
+    <div class="stat-card-top">
+      <div class="stat-card-icon"><i class="fas fa-coins"></i></div>
+      <span class="stat-card-label">Total<br>Revenue</span>
     </div>
-    <div class="stat-body">
-      <div class="stat-dual">
-        <div class="stat-dual-row">
-          <span class="stat-dual-num">&#8369;<?= number_format($stats['revenue'], 2) ?></span>
-        </div>
-      </div>
+    <div class="stat-card-body">
+      <span class="stat-card-value">&#8369;<?= number_format($stats['revenue'], 2) ?></span>
     </div>
+    <div class="stat-card-bar"></div>
   </div>
 
-  <!-- Total Orders Card -->
-  <div class="stat-card">
-    <div class="stat-header">
-      <h4>Total Orders</h4>
-      <div class="icon"><i class="fas fa-receipt"></i></div>
+  <!-- Total Orders -->
+  <div class="stat-card stat-card--orders">
+    <div class="stat-card-top">
+      <div class="stat-card-icon"><i class="fas fa-receipt"></i></div>
+      <span class="stat-card-label">Total<br>Orders</span>
     </div>
-    <div class="stat-body">
-      <div class="stat-dual">
-        <div class="stat-dual-row">
-          <span class="stat-dual-num"><?= number_format($stats['orders']) ?></span>
-        </div>
-      </div>
+    <div class="stat-card-body">
+      <span class="stat-card-value"><?= number_format($stats['orders']) ?></span>
     </div>
+    <div class="stat-card-bar"></div>
   </div>
 
-  <!-- Registered Customers Card -->
-  <div class="stat-card">
-    <div class="stat-header">
-      <h4>Registered Customers</h4>
-      <div class="icon"><i class="fas fa-users"></i></div>
+  <!-- Customers -->
+  <div class="stat-card stat-card--customers">
+    <div class="stat-card-top">
+      <div class="stat-card-icon"><i class="fas fa-users"></i></div>
+      <span class="stat-card-label">Registered<br>Customers</span>
     </div>
-    <div class="stat-body">
-      <div class="stat-dual">
-        <div class="stat-dual-row">
-          <span class="stat-dual-num"><?= number_format($stats['customers_active']) ?></span>
-          <span class="stat-dual-label">Active</span>
+    <div class="stat-card-body">
+      <div class="stat-active-inactive">
+        <div class="stat-ai-row">
+          <span class="stat-ai-num"><?= number_format($stats['customers_active']) ?></span>
+          <span class="stat-ai-label">Active</span>
         </div>
-        <div class="stat-dual-row">
-          <span class="stat-dual-num inactive"><?= number_format($stats['customers_inactive']) ?></span>
-          <span class="stat-dual-label">Inactive</span>
+        <div class="stat-ai-row">
+          <span class="stat-ai-num inactive"><?= number_format($stats['customers_inactive']) ?></span>
+          <span class="stat-ai-label">Inactive</span>
         </div>
       </div>
     </div>
+    <div class="stat-card-bar"></div>
   </div>
 
-  <!-- Inventory Status Card -->
-  <div class="stat-card">
-    <div class="stat-header">
-      <h4>Inventory Status</h4>
-      <div class="icon"><i class="fas fa-shopping-cart"></i></div>
+  <!-- Inventory -->
+  <div class="stat-card stat-card--inventory">
+    <div class="stat-card-top">
+      <div class="stat-card-icon"><i class="fas fa-shopping-cart"></i></div>
+      <span class="stat-card-label">Inventory<br>Status</span>
     </div>
-    <div class="stat-body">
-      <div class="stat-dual">
-        <div class="stat-dual-row">
-          <span class="stat-dual-num"><?= number_format($stats['products_active']) ?></span>
-          <span class="stat-dual-label">Active</span>
+    <div class="stat-card-body">
+      <div class="stat-active-inactive">
+        <div class="stat-ai-row">
+          <span class="stat-ai-num"><?= number_format($stats['products_active']) ?></span>
+          <span class="stat-ai-label">Active</span>
         </div>
-        <div class="stat-dual-row">
-          <span class="stat-dual-num inactive"><?= number_format($stats['products_inactive']) ?></span>
-          <span class="stat-dual-label">Inactive</span>
+        <div class="stat-ai-row">
+          <span class="stat-ai-num inactive"><?= number_format($stats['products_inactive']) ?></span>
+          <span class="stat-ai-label">Inactive</span>
         </div>
       </div>
     </div>
+    <div class="stat-card-bar"></div>
   </div>
 
-  <!-- Unread Inquiries Card -->
-  <div class="stat-card">
-    <div class="stat-header">
-      <h4>Unread Inquiries</h4>
-      <div class="icon"><i class="fas fa-envelope"></i></div>
+  <!-- Inquiries -->
+  <div class="stat-card stat-card--inquiries">
+    <div class="stat-card-top">
+      <div class="stat-card-icon"><i class="fas fa-envelope"></i></div>
+      <span class="stat-card-label">Unread<br>Inquiries</span>
     </div>
-    <div class="stat-body">
-      <div class="stat-dual">
-        <div class="stat-dual-row">
-          <span class="stat-dual-num"><?= number_format($stats['messages']) ?></span>
-        </div>
-      </div>
+    <div class="stat-card-body">
+      <span class="stat-card-value"><?= number_format($stats['messages']) ?></span>
+      <a href="messages.php" class="stat-card-link">View messages &rarr;</a>
     </div>
+    <div class="stat-card-bar"></div>
   </div>
 
 </div>
+
+<!-- ── Analytics + Trending Grid ─────────────────────────────── -->
+<div class="dash-analytics-grid">
+
+  <!-- Sales Analytics Chart -->
+  <div class="dash-panel dash-panel--chart">
+    <div class="dash-panel-header">
+      <h3 class="dash-panel-title">Sales Analytics</h3>
+      <span class="dash-panel-sub">Last 7 days revenue</span>
+      <a href="orders.php" class="dash-see-all">See all &rarr;</a>
+    </div>
+    <div class="dash-chart-wrap">
+      <canvas id="salesChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Trending Products -->
+  <div class="dash-panel dash-panel--trending">
+    <div class="dash-panel-header">
+      <h3 class="dash-panel-title">Trending Products</h3>
+      <a href="products.php" class="dash-see-all">See all &rarr;</a>
+    </div>
+    <ul class="trending-list">
+      <?php if (empty($trending)): ?>
+        <li class="trending-empty">No product data yet.</li>
+      <?php else: ?>
+        <?php foreach ($trending as $i => $item):
+          $icons = ['☕', '🧋', '🍵', '🥐', '🍰'];
+          $icon  = $icons[$i % count($icons)];
+        ?>
+          <li class="trending-item">
+            <div class="trending-rank"><?= $i + 1 ?></div>
+            <div class="trending-icon"><?= $icon ?></div>
+            <div class="trending-info">
+              <span class="trending-name"><?= htmlspecialchars($item['name']) ?></span>
+              <span class="trending-price">&#8369;<?= number_format($item['price'], 2) ?></span>
+            </div>
+            <div class="trending-qty">
+              <?= $item['total_qty'] > 0 ? number_format($item['total_qty']) . ' sold' : 'In stock' ?>
+            </div>
+          </li>
+        <?php endforeach; ?>
+      <?php endif; ?>
+    </ul>
+  </div>
+
+</div>
+
+<!-- ── Recent Orders ──────────────────────────────────────────── -->
+<div class="dash-panel dash-panel--orders">
+  <div class="dash-panel-header">
+    <h3 class="dash-panel-title">Recent Orders</h3>
+    <a href="orders.php" class="dash-see-all">See all &rarr;</a>
+  </div>
+  <?php if (empty($recent_orders)): ?>
+    <div class="dash-empty-state">
+      <i class="fas fa-receipt"></i>
+      <p>No orders yet. They'll appear here once customers start ordering.</p>
+    </div>
+  <?php else: ?>
+    <div class="dash-table-wrap">
+      <table class="dash-orders-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Customer</th>
+            <th>Date &amp; Time</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Payment</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($recent_orders as $ro): ?>
+            <tr>
+              <td class="td-id">#<?= $ro['order_id'] ?></td>
+              <td class="td-customer">
+                <div class="td-customer-avatar"><?= strtoupper(substr($ro['full_name'], 0, 1)) ?></div>
+                <span><?= htmlspecialchars($ro['full_name']) ?></span>
+              </td>
+              <td><?= date('M j, Y · g:i A', strtotime($ro['order_date'])) ?></td>
+              <td>
+                <span class="badge-type badge-<?= $ro['order_type'] ?>">
+                  <i class="fas fa-<?= $ro['order_type'] === 'pickup' ? 'store' : 'truck' ?>"></i>
+                  <?= ucfirst($ro['order_type']) ?>
+                </span>
+              </td>
+              <td class="td-amount">&#8369;<?= number_format($ro['total_amount'], 2) ?></td>
+              <td><?= htmlspecialchars($ro['payment_method']) ?></td>
+              <td>
+                <span class="status-pill status-<?= $ro['status'] ?>">
+                  <?= ucfirst($ro['status']) ?>
+                </span>
+              </td>
+              <td>
+                <a href="orders.php" class="btn-icon-sm" title="View Order">
+                  <i class="fas fa-arrow-right"></i>
+                </a>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
+  <?php endif; ?>
+</div>
+
+<script>
+  (function() {
+    const labels = <?= json_encode($chart_labels) ?>;
+    const data = <?= json_encode($chart_data) ?>;
+
+    const ctx = document.getElementById('salesChart').getContext('2d');
+
+    const grad = ctx.createLinearGradient(0, 0, 0, 280);
+    grad.addColorStop(0, 'rgba(91, 19, 18, 0.18)');
+    grad.addColorStop(1, 'rgba(91, 19, 18, 0.0)');
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Revenue (₱)',
+          data,
+          borderColor: '#5B1312',
+          borderWidth: 2.5,
+          pointBackgroundColor: '#5B1312',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          fill: true,
+          backgroundColor: grad,
+          tension: 0.42,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            backgroundColor: '#2A0000',
+            titleColor: '#e8d5b0',
+            bodyColor: '#fff',
+            borderColor: 'rgba(255,255,255,0.1)',
+            borderWidth: 1,
+            padding: 12,
+            callbacks: {
+              label: ctx => '  ₱' + ctx.parsed.y.toLocaleString('en-PH', {
+                minimumFractionDigits: 2
+              })
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: {
+              display: false
+            },
+            border: {
+              display: false
+            },
+            ticks: {
+              color: '#7a6a5a',
+              font: {
+                family: 'Outfit',
+                size: 12
+              }
+            }
+          },
+          y: {
+            grid: {
+              color: 'rgba(42,0,0,0.06)',
+              drawBorder: false
+            },
+            border: {
+              display: false,
+              dash: [4, 4]
+            },
+            ticks: {
+              color: '#7a6a5a',
+              font: {
+                family: 'Outfit',
+                size: 12
+              },
+              callback: v => '₱' + (v >= 1000 ? (v / 1000).toFixed(1) + 'k' : v)
+            }
+          }
+        }
+      }
+    });
+  })();
+</script>
 
 <?php include 'includes/footer.php'; ?>

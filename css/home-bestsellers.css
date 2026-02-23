@@ -137,8 +137,19 @@
     font-size: 25px;
     font-weight: 700;
     color: var(--deep-maroon);
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: 2px;
     line-height: 1.3;
+}
+
+.home-bestsellers-section .product-category {
+    font-family: var(--font-subheading);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--burgundy-wine);
+    opacity: 0.75;
+    margin: 0 0 10px 0;
 }
 
 .home-bestsellers-section .product-description {
