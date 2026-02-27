@@ -1,13 +1,14 @@
-/* ──────────────────────────────────────────────────────────────
-FILE 1: php/apply_promo.php (new file)
-────────────────────────────────────────────────────────────── */
 <?php
+
 /**
- * Purge Coffee Shop — Apply Promo Code AJAX Handler (php/apply_promo.php)
+ * Purge Coffee Shop — Apply Promo Code (php/apply_promo.php)
+ * Validates a promo code against the promo_codes table and returns discount data.
  */
+
 require_once 'db_connection.php';
 
 header('Content-Type: application/json');
+
 $r = ['success' => false, 'message' => ''];
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -15,8 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-$code     = strtoupper(trim($_POST['code']     ?? ''));
-$subtotal = (float)($_POST['subtotal']          ?? 0);
+$code     = strtoupper(trim($_POST['code']    ?? ''));
+$subtotal = (float)($_POST['subtotal']         ?? 0);
 
 if (!$code) {
     $r['message'] = 'Please enter a promo code.';
@@ -24,7 +25,7 @@ if (!$code) {
     exit();
 }
 
-/* ── Check promo_codes table ─────────────────────────────────── */
+// Fetch active, non-expired promo code
 $stmt = mysqli_prepare(
     $conn,
     "SELECT discount_type, discount_value, min_order_amount
@@ -42,14 +43,14 @@ if (!$promo) {
     echo json_encode($r);
     exit();
 }
+
 if ($subtotal < $promo['min_order_amount']) {
-    $r['message'] = 'Minimum order of ₱' . number_format($promo['min_order_amount'], 2)
-        . ' required to use this code.';
+    $r['message'] = 'Minimum order of ₱' . number_format($promo['min_order_amount'], 2) . ' required for this code.';
     echo json_encode($r);
     exit();
 }
 
-/* ── Calculate discount ──────────────────────────────────────── */
+// Calculate discount amount
 if ($promo['discount_type'] === 'percentage') {
     $discount = round($subtotal * ($promo['discount_value'] / 100), 2);
     $label    = $promo['discount_value'] . '% off';
@@ -58,10 +59,9 @@ if ($promo['discount_type'] === 'percentage') {
     $label    = '₱' . number_format($discount, 2) . ' off';
 }
 
-$r = [
+echo json_encode([
     'success'         => true,
     'discount_amount' => $discount,
     'discount_type'   => $promo['discount_type'],
-    'message'         => "Promo applied! You saved $label."
-];
-echo json_encode($r);
+    'message'         => "Promo applied! You saved $label.",
+]);

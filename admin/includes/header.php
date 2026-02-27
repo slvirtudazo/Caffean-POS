@@ -2,6 +2,7 @@
 
 /**
  * Admin Header Include — admin/includes/header.php
+ * Outputs the full HTML head, top navbar, and sidebar for all admin pages.
  */
 
 if (!defined('BASE_URL')) define('BASE_URL', '/purge-coffee');
@@ -10,26 +11,25 @@ $admin_name    = isset($_SESSION['full_name']) ? htmlspecialchars($_SESSION['ful
 $admin_initial = strtoupper(substr($admin_name, 0, 1));
 $current_page  = basename($_SERVER['PHP_SELF']);
 
-/* Map each admin page to its own CSS file */
+// Map each admin page to its page-specific CSS file
 $page_css_map = [
-  'dashboard.php'       => 'dashboard.css',
-  'products.php'        => 'products.css',
-  'orders.php'          => 'orders.css',
-  'instore_orders.php'  => 'orders.css',
-  'customers.php'       => 'customers.css',
+    'dashboard.php'      => 'dashboard.css',
+    'products.php'       => 'products.css',
+    'orders.php'         => 'orders.css',
+    'instore_orders.php' => 'orders.css',
+    'customers.php'      => 'customers.css',
+    'messages.php'       => 'messages.css',
 ];
 $page_css_file = $page_css_map[$current_page] ?? null;
 
-/* Unread messages count — shown as live badge in sidebar + bell */
-$_unread_row   = mysqli_fetch_assoc(mysqli_query(
-  $conn,
-  "SELECT COUNT(*) AS c FROM contact_messages WHERE is_read = 0"
+// Unread message count for sidebar badge
+$_unread_row   = mysqli_fetch_assoc(mysqli_query($conn,
+    "SELECT COUNT(*) AS c FROM contact_messages WHERE is_read = 0"
 ));
 $_unread_count = (int)($_unread_row['c'] ?? 0);
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
@@ -64,85 +64,62 @@ $_unread_count = (int)($_unread_row['c'] ?? 0);
       line-height: 1;
     }
 
-    /* Sortable table utility */
-    .admin-table th[data-sort]::after {
-      content: ' ↕';
-      font-size: 0.65rem;
-      opacity: 0.4;
-    }
-
-    .admin-table th[data-sort].sort-asc::after {
-      content: ' ↑';
-      opacity: 0.9;
-    }
-
-    .admin-table th[data-sort].sort-desc::after {
-      content: ' ↓';
-      opacity: 0.9;
-    }
+    /* Sortable column indicators */
+    .admin-table th[data-sort]::after      { content: ' ↕'; font-size: 0.65rem; opacity: 0.4; }
+    .admin-table th[data-sort].sort-asc::after  { content: ' ↑'; opacity: 0.9; }
+    .admin-table th[data-sort].sort-desc::after { content: ' ↓'; opacity: 0.9; }
   </style>
 
-  <!-- ══ Shared Table Sorting Utility ══ -->
+  <!-- Shared sortable table utility used by all admin table pages -->
   <script>
     function initSortableTable(tableId) {
       var table = document.getElementById(tableId);
       if (!table) return;
-
-      var headers = table.querySelectorAll('thead th[data-sort]');
+      var headers    = table.querySelectorAll('thead th[data-sort]');
       var currentCol = -1;
       var currentDir = 'asc';
 
       function parseAdminDate(str) {
         if (!str) return 0;
         var d = new Date(str.replace(',', ''));
-        if (!isNaN(d)) return d.getTime();
-        d = new Date(str);
         return isNaN(d) ? 0 : d.getTime();
       }
 
-      headers.forEach(function(th) {
-        th.addEventListener('click', function() {
-          var col = th.cellIndex;
+      headers.forEach(function (th) {
+        th.addEventListener('click', function () {
+          var col  = th.cellIndex;
           var type = th.dataset.sort;
+          currentDir = (currentCol === col && currentDir === 'asc') ? 'desc' : 'asc';
+          currentCol = col;
 
-          if (currentCol === col) {
-            currentDir = (currentDir === 'asc') ? 'desc' : 'asc';
-          } else {
-            currentCol = col;
-            currentDir = 'asc';
-          }
-
-          table.querySelectorAll('thead th[data-sort]').forEach(function(h) {
+          table.querySelectorAll('thead th[data-sort]').forEach(function (h) {
             h.classList.remove('sort-asc', 'sort-desc');
           });
           th.classList.add(currentDir === 'asc' ? 'sort-asc' : 'sort-desc');
 
           var tbody = table.querySelector('tbody');
-          var rows = Array.from(tbody.querySelectorAll('tr')).filter(function(r) {
+          var rows  = Array.from(tbody.querySelectorAll('tr')).filter(function (r) {
             return !r.querySelector('.empty-state');
           });
-          if (rows.length === 0) return;
+          if (!rows.length) return;
 
-          rows.sort(function(a, b) {
-            var aText = a.cells[col] ? a.cells[col].textContent.trim() : '';
-            var bText = b.cells[col] ? b.cells[col].textContent.trim() : '';
+          rows.sort(function (a, b) {
+            var aT = a.cells[col] ? a.cells[col].textContent.trim() : '';
+            var bT = b.cells[col] ? b.cells[col].textContent.trim() : '';
             var cmp = 0;
 
             if (type === 'number') {
-              cmp = (parseFloat(aText.replace(/[^0-9.-]/g, '')) || 0) -
-                (parseFloat(bText.replace(/[^0-9.-]/g, '')) || 0);
+              cmp = (parseFloat(aT.replace(/[^0-9.-]/g, '')) || 0) -
+                    (parseFloat(bT.replace(/[^0-9.-]/g, '')) || 0);
             } else if (type === 'date') {
-              cmp = parseAdminDate(aText) - parseAdminDate(bText);
+              cmp = parseAdminDate(aT) - parseAdminDate(bT);
             } else {
-              cmp = aText.toLowerCase().localeCompare(bText.toLowerCase());
+              cmp = aT.toLowerCase().localeCompare(bT.toLowerCase());
             }
-
-            return (currentDir === 'asc') ? cmp : -cmp;
+            return currentDir === 'asc' ? cmp : -cmp;
           });
 
-          rows.forEach(function(r) {
-            tbody.appendChild(r);
-          });
+          rows.forEach(function (r) { tbody.appendChild(r); });
         });
       });
     }
@@ -151,15 +128,13 @@ $_unread_count = (int)($_unread_row['c'] ?? 0);
 
 <body>
 
-  <!-- ══ TOP NAVBAR ════════════════════════════════════════════ -->
+  <!-- Top navbar -->
   <nav class="admin-navbar">
     <div class="admin-nav-inner">
-
       <a href="<?= BASE_URL ?>/admin/dashboard.php" class="admin-brand">
         <img src="<?= BASE_URL ?>/images/coffee_beans_logo.png" alt="Purge Coffee" />
         <span>purge coffee</span>
       </a>
-
       <div class="nav-right">
         <div class="admin-chip">
           <div class="admin-avatar"><?= $admin_initial ?></div>
@@ -172,16 +147,13 @@ $_unread_count = (int)($_unread_row['c'] ?? 0);
           <i class="fas fa-sign-out-alt"></i> Log Out
         </a>
       </div>
-
     </div>
   </nav>
 
-  <!-- ══ BODY WRAPPER ══════════════════════════════════════════ -->
+  <!-- Body wrapper: sidebar + main -->
   <div class="admin-body">
 
-    <!-- ── Sidebar ──────────────────────────────────────────── -->
     <aside class="admin-sidebar">
-
       <ul class="sidebar-nav">
         <li>
           <a href="<?= BASE_URL ?>/admin/dashboard.php"
@@ -235,8 +207,7 @@ $_unread_count = (int)($_unread_row['c'] ?? 0);
           </a>
         </li>
       </ul>
-
     </aside>
 
-    <!-- ── Main Content ─────────────────────────────────────── -->
+    <!-- Main content area -->
     <main class="admin-wrapper">
