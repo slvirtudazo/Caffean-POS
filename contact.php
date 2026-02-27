@@ -58,8 +58,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body>
-    <!-- Top banner with shipping information -->
-    <div class="top-banner">Shipping Nationwide</div>
 
     <!-- Navigation bar -->
     <nav class="navbar navbar-expand-lg">

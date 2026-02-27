@@ -56,7 +56,6 @@ $products_result = mysqli_query(
 </head>
 
 <body>
-    <div class="top-banner">Shipping Nationwide</div>
 
     <nav class="navbar navbar-expand-lg">
         <div class="container">

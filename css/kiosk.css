@@ -1,0 +1,1612 @@
+/**
+ * Purge Coffee Shop — Kiosk Stylesheet
+ * Self-order kiosk flow styles matching main site theme.
+ */
+
+/* Lock body scroll when on step 1 (Type tab fits exactly in viewport) */
+body.kiosk-no-scroll {
+    overflow: hidden;
+}
+
+/* ── Step sections ───────────────────────────────────────────── */
+.kiosk-step {
+    display: none;
+    min-height: calc(100vh - 135px);
+    animation: fadeInUp 0.35s ease both;
+    padding-bottom: 80px;
+}
+
+.kiosk-step.active {
+    display: block;
+}
+
+#step2 {
+    padding-bottom: 90px;
+}
+
+/* Step 1 fills exact viewport — no scroll, no overflow */
+#step1 {
+    height: calc(100vh - 135px);
+    overflow: hidden;
+    padding-bottom: 0;
+}
+
+#step1 .welcome-section {
+    height: 100%;
+    min-height: unset;
+    margin: 0;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Kiosk navbar overrides ──────────────────────────────────── */
+.navbar {
+    padding: calc(var(--spacing-sm) - 2px) 0;
+}
+
+.navbar .container {
+    max-width: 100%;
+    padding: 0 1.5rem 0 1rem;
+}
+
+/* Match home page brand size exactly */
+.navbar .navbar-brand {
+    font-size: 1.65rem;
+}
+
+.navbar .navbar-brand img {
+    width: 30px;
+    height: 30px;
+}
+
+/* Back button — same visual style as View Cart, adapted for light navbar */
+.btn-cancel-order {
+    background: transparent;
+    border: 1.5px solid rgba(42, 0, 0, 0.35);
+    color: var(--deep-maroon);
+    font-family: var(--font-subheading);
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.2px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-cancel-order:hover {
+    background: rgba(42, 0, 0, 0.06);
+    border-color: var(--deep-maroon);
+    color: var(--deep-maroon);
+}
+
+/* ── Progress bar ────────────────────────────────────────────── */
+.kiosk-progress {
+    background: var(--deep-maroon);
+    padding: 1rem 0;
+    position: sticky;
+    top: 80px;
+    z-index: 100;
+}
+
+.kiosk-progress-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* Each step takes equal space, connector line between dots */
+.kp-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    position: relative;
+}
+
+/* Connector line stops at each circle's edge */
+.kp-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: calc(50% + 16px);
+    width: calc(100% - 32px);
+    height: 1.5px;
+    background: rgba(255, 255, 255, 0.18);
+    z-index: 0;
+}
+
+/* Done step connector brightens */
+.kp-step.done:not(:last-child)::after {
+    background: rgba(255, 255, 255, 0.55);
+}
+
+/* Default dot — inactive */
+.kp-dot {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1.5px solid rgba(255, 255, 255, 0.22);
+    color: rgba(255, 255, 255, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 400;
+    font-family: var(--font-subheading);
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+/* Active dot — burgundy fill with white ring */
+.kp-step.active .kp-dot {
+    background: var(--burgundy-wine);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
+}
+
+/* Done dot — muted light fill */
+.kp-step.done .kp-dot {
+    background: rgba(255, 255, 255, 0.55);
+    border-color: rgba(255, 255, 255, 0.55);
+    color: var(--deep-maroon);
+    font-weight: 700;
+}
+
+/* Default label — inactive, 400 */
+.kp-lbl {
+    font-size: 0.5rem;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-family: var(--font-subheading);
+    font-weight: 400;
+}
+
+/* Active label — 700 */
+.kp-step.active .kp-lbl {
+    color: #fff;
+    font-weight: 700;
+}
+
+/* Done label — visible but not bold */
+.kp-step.done .kp-lbl {
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 400;
+}
+
+/* ── STEP 1 – Welcome / Order Type ───────────────────────────── */
+.welcome-section {
+    padding: 3rem 1rem;
+    text-align: center;
+    background: linear-gradient(180deg, rgba(245, 241, 232, 1) 0%, rgba(42, 0, 0, 1) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.welcome-inner {
+    max-width: 700px;
+    width: 100%;
+}
+
+.welcome-heading {
+    font-family: var(--font-main);
+    font-size: 60px;
+    font-weight: 700;
+    color: var(--deep-maroon);
+    margin-bottom: 0.5rem;
+}
+
+.welcome-sub {
+    font-family: var(--font-subheading);
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--deep-maroon);
+    margin-bottom: 3.5rem;
+}
+
+.order-type-row {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.ot-card {
+    background: rgba(255, 255, 255, 0.07);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem 3rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: center;
+    color: var(--ivory-cream);
+    min-width: 200px;
+    flex: 1;
+    max-width: 260px;
+}
+
+.ot-card:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.ot-card i {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+    color: var(--warm-sand);
+}
+
+.ot-card-title {
+    font-family: var(--font-subheading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+}
+
+.ot-card-desc {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: rgba(245, 241, 232, 0.65);
+    font-family: var(--font-subheading);
+}
+
+/* ── STEP 2 – Menu Browser ───────────────────────────────────── */
+.kiosk-menu-wrap {
+    display: flex;
+    min-height: calc(100vh - 130px);
+    background: var(--ivory-cream);
+}
+
+/* Category Sidebar */
+.kiosk-cat-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 110px;
+    height: calc(100vh - 110px);
+    overflow-y: auto;
+    padding: 1.5rem 1.5rem 1.5rem 0; /* Permanent fixed padding */
+}
+
+.kiosk-cat-sidebar::-webkit-scrollbar {
+    width: 4px;
+    display: block;
+}
+
+.kiosk-cat-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.kiosk-cat-sidebar::-webkit-scrollbar-thumb {
+    background-color: var(--burgundy-wine);
+    border-radius: 4px;
+}
+
+/* Filter panel container */
+.kiosk-cat-sidebar .filter-panel {
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0 1.5rem 3rem 1rem;
+    border-right: 1.5px solid rgba(42, 0, 0, 0.07);
+}
+
+/* Filter sections */
+.kiosk-cat-sidebar .filter-section {
+    margin-bottom: 1rem;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.kiosk-cat-sidebar .filter-section:last-child {
+    margin-bottom: 1rem;
+}
+
+.kiosk-cat-sidebar .filter-section+.filter-section {
+    padding-top: 1rem;
+    border-top: 1px solid rgba(42, 0, 0, 0.07);
+}
+
+/* Section headings */
+.kiosk-cat-sidebar .filter-title {
+    font-family: var(--font-subheading);
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--dark-brown);
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 1.8px;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    line-height: 1.2;
+}
+
+.kiosk-cat-sidebar .filter-title i {
+    font-size: 0.6rem;
+}
+
+/* Category list */
+.kiosk-cat-sidebar .category-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+/* Category row — reduced font size by 1px */
+.kiosk-cat-sidebar .category-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--radius-sm);
+    color: var(--dark-brown);
+    font-family: var(--font-body);
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+    background: transparent;
+    border-left: 2.5px solid transparent;
+    transition: all 0.18s ease;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.kiosk-cat-sidebar .category-item:hover {
+    background: rgba(226, 217, 200, 0.35);
+    color: var(--burgundy-wine);
+    border-left-color: rgba(91, 19, 18, 0.25);
+    padding-left: 1rem;
+}
+
+.kiosk-cat-sidebar .category-item.active {
+    background: linear-gradient(to right, rgba(91, 19, 18, 0.08) 0%, rgba(91, 19, 18, 0.02) 60%, transparent 100%);
+    color: var(--burgundy-wine);
+    border-left-color: var(--burgundy-wine);
+    font-weight: 700;
+    padding-left: 1rem;
+    cursor: default;
+    pointer-events: none;
+}
+
+/* Category icon */
+.kiosk-cat-sidebar .category-icon {
+    width: 18px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    color: rgba(60, 21, 24, 0.4);
+    transition: color 0.18s ease;
+}
+
+.kiosk-cat-sidebar .category-item:hover .category-icon,
+.kiosk-cat-sidebar .category-item.active .category-icon {
+    color: var(--burgundy-wine);
+}
+
+/* Category name and count — count reduced by 1px */
+.kiosk-cat-sidebar .category-name {
+    flex: 1;
+    line-height: 1;
+}
+
+.kiosk-cat-sidebar .category-count {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: rgba(60, 21, 24, 0.35);
+    transition: color 0.18s ease;
+}
+
+.kiosk-cat-sidebar .category-item:hover .category-count,
+.kiosk-cat-sidebar .category-item.active .category-count {
+    color: var(--burgundy-wine);
+    opacity: 0.7;
+}
+
+/* Sort options */
+.kiosk-cat-sidebar .sort-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.kiosk-cat-sidebar .sort-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--radius-sm);
+    color: var(--dark-brown);
+    font-family: var(--font-body);
+    font-size: 0.6rem;
+    font-weight: 500;
+    background: transparent;
+    border-left: 2.5px solid transparent;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.18s ease;
+}
+
+.kiosk-cat-sidebar .sort-item i {
+    font-size: 0.6rem;
+    width: 18px;
+    flex-shrink: 0;
+    text-align: center;
+    color: rgba(60, 21, 24, 0.4);
+    transition: color 0.18s ease;
+}
+
+.kiosk-cat-sidebar .sort-item:hover {
+    background: rgba(226, 217, 200, 0.35);
+    color: var(--burgundy-wine);
+    border-left-color: rgba(91, 19, 18, 0.25);
+    padding-left: 1rem;
+}
+
+.kiosk-cat-sidebar .sort-item:hover i {
+    color: var(--burgundy-wine);
+}
+
+.kiosk-cat-sidebar .sort-item.active {
+    background: linear-gradient(to right, rgba(91, 19, 18, 0.08) 0%, rgba(91, 19, 18, 0.02) 60%, transparent 100%);
+    color: var(--burgundy-wine);
+    border-left-color: var(--burgundy-wine);
+    font-weight: 700;
+    padding-left: 1rem;
+    cursor: default;
+    pointer-events: none;
+}
+
+.kiosk-cat-sidebar .sort-item.active i {
+    color: var(--burgundy-wine);
+}
+
+.kiosk-products-area {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+.kiosk-section-title {
+    font-family: var(--font-subheading);
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--dark-brown);
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 1.8px;
+    line-height: 1.2;
+    margin-bottom: 1.3rem;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.kiosk-cat-group {
+    margin-bottom: 1rem;
+}
+
+.kiosk-cat-label {
+    font-family: var(--font-subheading);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--burgundy-wine);
+    margin-bottom: 0.75rem;
+    font-weight: 700;
+}
+
+.kiosk-products-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+}
+
+.kiosk-product-card {
+    background: #fff;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.kiosk-product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.kiosk-prod-img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    background: var(--light-beige);
+}
+
+.kiosk-prod-img-placeholder {
+    width: 100%;
+    height: 130px;
+    background: var(--light-beige);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--warm-sand);
+    font-size: 2.5rem;
+}
+
+.kiosk-prod-info {
+    padding: 0.85rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.kiosk-prod-name {
+    font-family: var(--font-subheading);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--deep-maroon);
+    margin-bottom: 0.25rem;
+    line-height: 1.3;
+}
+
+.kiosk-prod-desc {
+    font-size: 0.75rem;
+    color: #888;
+    font-family: var(--font-body);
+    font-weight: 400;
+    line-height: 1.4;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+}
+
+.kiosk-prod-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.kiosk-prod-price {
+    font-family: var(--font-subheading);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--burgundy-wine);
+}
+
+.btn-kiosk-add {
+    background: var(--deep-maroon);
+    color: #fff;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    flex-shrink: 0;
+}
+
+.btn-kiosk-add:hover {
+    background: var(--burgundy-wine);
+}
+
+/* ── Floating cart bar ───────────────────────────────────────── */
+.kiosk-cart-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--deep-maroon);
+    color: #fff;
+    padding: 1rem 1.5rem;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 200;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.kiosk-cart-bar.visible {
+    transform: translateY(0);
+}
+
+.cart-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Count badge — matches active kp-dot style */
+.cart-bar-count {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--burgundy-wine);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: var(--font-subheading);
+    transition: all 0.3s ease;
+}
+
+.cart-bar-label {
+    font-family: var(--font-subheading);
+    font-size: 0.95rem;
+}
+
+.cart-bar-total {
+    font-family: var(--font-subheading);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+/* View Cart — matches Cancel Order style, adapted for dark background */
+.btn-view-cart {
+    background: transparent;
+    border: 1.5px solid rgba(255, 255, 255, 0.45);
+    color: #fff;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-subheading);
+    font-weight: 600;
+    font-size: 0.82rem;
+    letter-spacing: 0.2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-view-cart:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
+/* ── STEP 3 – Cart Review ────────────────────────────────────── */
+.kiosk-cart-page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 1.5rem 1.5rem 3rem;
+}
+
+.kiosk-page-title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    color: var(--deep-maroon);
+    margin-bottom: 1.25rem;
+    text-align: center;
+}
+
+.kiosk-cart-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+/* Cart item card */
+.k-ci-card {
+    background: #fff;
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1rem;
+}
+
+.k-ci-top {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.k-ci-img {
+    width: 72px;
+    height: 72px;
+    border-radius: var(--radius-sm);
+    object-fit: cover;
+    flex-shrink: 0;
+    background: var(--light-beige);
+}
+
+.k-ci-img-ph {
+    width: 72px;
+    height: 72px;
+    border-radius: var(--radius-sm);
+    background: var(--light-beige);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--warm-sand);
+    flex-shrink: 0;
+}
+
+.k-ci-info {
+    flex: 1;
+}
+
+.k-ci-name {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--deep-maroon);
+    margin-bottom: 0.2rem;
+}
+
+.k-ci-price {
+    font-size: 0.85rem;
+    color: var(--burgundy-wine);
+    font-weight: 600;
+    font-family: var(--font-body);
+}
+
+.k-ci-del {
+    background: none;
+    border: none;
+    color: #c0392b;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: color 0.2s;
+}
+
+.k-ci-del:hover {
+    color: #922b21;
+}
+
+/* Customize toggle — removed; panel is always visible */
+.k-ci-cust-toggle {
+    display: none;
+}
+
+.k-ci-cust-panel {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed var(--warm-sand);
+}
+
+.k-cust-lbl {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--dark-brown);
+    display: block;
+    margin-bottom: 0.3rem;
+    font-family: var(--font-body);
+}
+
+.k-cust-sel {
+    width: 100%;
+    padding: 0.45rem 0.7rem;
+    border: 1px solid #ddd;
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem;
+    font-family: var(--font-body);
+    background: #fff;
+    color: var(--dark-brown);
+}
+
+.k-cust-ta {
+    width: 100%;
+    padding: 0.5rem 0.7rem;
+    border: 1px solid #ddd;
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem;
+    font-family: var(--font-body);
+    resize: none;
+}
+
+/* Quantity row */
+.k-qty-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.85rem;
+}
+
+.k-qty-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--light-beige);
+    border: 1px solid var(--warm-sand);
+    color: var(--deep-maroon);
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.k-qty-btn:hover {
+    background: var(--warm-sand);
+}
+
+.k-qty-num {
+    font-family: var(--font-subheading);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--deep-maroon);
+    min-width: 24px;
+    text-align: center;
+}
+
+/* Cart order summary */
+.kiosk-sum-card {
+    background: #fff;
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 110px;
+    display: flex;
+    flex-direction: column;
+}
+
+.kiosk-sum-title {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    color: var(--deep-maroon);
+    margin-bottom: 1rem;
+}
+
+.k-sum-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.88rem;
+    font-family: var(--font-body);
+    color: var(--dark-brown);
+    padding: 0.3rem 0;
+}
+
+.k-sum-hr {
+    border: none;
+    border-top: 1px solid var(--warm-sand);
+    margin: 0.75rem 0;
+}
+
+.k-sum-total {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-subheading);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--deep-maroon);
+    margin-bottom: 1rem;
+}
+
+.btn-kiosk-main {
+    width: 100%;
+    background: var(--deep-maroon);
+    color: var(--ivory-cream);
+    border: none;
+    padding: 0.85rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-subheading);
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    margin-bottom: 0.5rem;
+}
+
+.btn-kiosk-main:hover {
+    background: var(--burgundy-wine);
+}
+
+.btn-kiosk-back {
+    width: 100%;
+    background: transparent;
+    color: var(--dark-brown);
+    border: 1px solid var(--warm-sand);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-subheading);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+}
+
+.btn-kiosk-back:hover {
+    background: var(--light-beige);
+}
+
+.kiosk-empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--dark-brown);
+}
+
+.kiosk-empty i {
+    font-size: 3.5rem;
+    color: var(--warm-sand);
+    margin-bottom: 1rem;
+}
+
+.kiosk-empty h3 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.kiosk-empty p {
+    color: #888;
+    font-family: var(--font-body);
+}
+
+/* ── STEP 4 – Checkout ───────────────────────────────────────── */
+/* ── STEP 4 – Checkout ───────────────────────────────────────── */
+.kiosk-checkout-page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 1.75rem 1.5rem 4rem;
+}
+
+/* Two-column grid: left (info) | right (summary) */
+.kiosk-co-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    grid-template-rows: auto;
+    gap: 0 1.5rem;
+    align-items: start;
+}
+
+/* Alert row spans both columns */
+.kiosk-co-alert-row {
+    grid-column: 1 / -1;
+    margin-bottom: 0.5rem;
+}
+
+.kiosk-co-alert-row:empty {
+    display: none;
+}
+
+.kiosk-co-left {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.kiosk-co-right {
+    position: sticky;
+    top: 110px;
+}
+
+.kiosk-co-card {
+    background: #fff;
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Summary card — flex column so buttons sit naturally at bottom */
+.kiosk-co-summary-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.kiosk-co-card-title {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    color: var(--deep-maroon);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Muted helper text for optional labels */
+.kiosk-co-optional {
+    font-size: 0.75rem;
+    color: #aaa;
+    font-family: var(--font-body);
+    font-weight: 400;
+}
+
+.kiosk-co-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--dark-brown);
+    font-family: var(--font-body);
+    display: block;
+    margin-bottom: 0.35rem;
+}
+
+.kiosk-co-input {
+    width: 100%;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid #ddd;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    background: var(--ivory-cream);
+    color: var(--dark-brown);
+    transition: border-color 0.2s;
+}
+
+.kiosk-co-input:focus {
+    outline: none;
+    border-color: var(--burgundy-wine);
+}
+
+/* Order type — muted read-only, signals already selected */
+.k-order-type-muted {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    color: #999;
+    font-style: italic;
+}
+
+.k-order-type-muted i {
+    color: #bbb;
+    font-size: 0.9rem;
+}
+
+/* Payment options — 4 equal columns */
+.k-pay-opts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+}
+
+.k-pay-opt {
+    border: 2px solid var(--warm-sand);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    background: var(--ivory-cream);
+}
+
+.k-pay-opt input {
+    display: none;
+}
+
+.k-pay-opt:hover {
+    border-color: var(--burgundy-wine);
+}
+
+.k-pay-opt.active {
+    border-color: var(--deep-maroon);
+    background: var(--light-beige);
+}
+
+/* Disabled — unclickable, visually muted */
+.k-pay-disabled {
+    opacity: 0.35;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.k-pay-opt i {
+    font-size: 1.6rem;
+    display: block;
+    color: var(--burgundy-wine);
+    margin-bottom: 0.5rem;
+}
+
+.k-pay-name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-family: var(--font-subheading);
+    color: var(--deep-maroon);
+}
+
+/* Order type badge — kept for backward compat, hidden in kiosk */
+.k-order-type-badge {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .kiosk-co-layout {
+        grid-template-columns: 1fr;
+        gap: 1.25rem 0;
+    }
+
+    .kiosk-co-right {
+        position: static;
+    }
+
+    .k-pay-opts {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ── STEP 5 – Confirmation ───────────────────────────────────── */
+.kiosk-confirm-page {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+    text-align: center;
+}
+
+.kiosk-confirm-icon {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--deep-maroon), var(--burgundy-wine));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 2.5rem;
+    color: #fff;
+}
+
+.kiosk-confirm-h1 {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    color: var(--deep-maroon);
+    margin-bottom: 0.5rem;
+}
+
+.kiosk-confirm-sub {
+    color: #888;
+    font-family: var(--font-body);
+    margin-bottom: 2rem;
+}
+
+/* Order number display */
+.kiosk-order-number-box {
+    background: var(--deep-maroon);
+    color: var(--ivory-cream);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.kon-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--warm-sand);
+    font-family: var(--font-body);
+    margin-bottom: 0.5rem;
+}
+
+.kon-number {
+    font-family: var(--font-main);
+    font-size: 4rem;
+    color: #fff;
+    line-height: 1;
+}
+
+.kon-type {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--warm-sand);
+    font-family: var(--font-body);
+}
+
+/* Receipt details */
+.kiosk-receipt {
+    background: #fff;
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    text-align: left;
+    margin-bottom: 1.5rem;
+}
+
+.kiosk-receipt-title {
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    color: var(--deep-maroon);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--warm-sand);
+}
+
+.kr-detail-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    font-family: var(--font-body);
+    color: var(--dark-brown);
+    padding: 0.3rem 0;
+}
+
+.kr-lbl {
+    color: #888;
+}
+
+.kr-items {
+    margin: 0.75rem 0;
+}
+
+.kr-item-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    font-family: var(--font-body);
+    padding: 0.25rem 0;
+    color: var(--dark-brown);
+}
+
+.kr-total {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-subheading);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--deep-maroon);
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--warm-sand);
+}
+
+.kiosk-wait-notice {
+    background: var(--light-beige);
+    border: 1px solid var(--warm-sand);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    color: var(--dark-brown);
+    text-align: left;
+}
+
+.kiosk-wait-notice i {
+    color: var(--burgundy-wine);
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.btn-kiosk-new-order {
+    background: var(--deep-maroon);
+    color: var(--ivory-cream);
+    border: none;
+    padding: 0.9rem 2.5rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-subheading);
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-kiosk-new-order:hover {
+    background: var(--burgundy-wine);
+}
+
+/* ── Order Queue Display page ────────────────────────────────── */
+.queue-page {
+    background: var(--deep-maroon);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    color: var(--ivory-cream);
+}
+
+.queue-header {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.queue-logo-area {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.queue-logo-area img {
+    width: 50px;
+}
+
+.queue-logo-area span {
+    font-family: var(--font-main);
+    font-size: 1.6rem;
+    color: var(--ivory-cream);
+}
+
+.queue-clock {
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    color: var(--warm-sand);
+}
+
+.queue-body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+}
+
+.queue-section {
+    padding: 2.5rem;
+}
+
+.queue-section-title {
+    font-family: var(--font-subheading);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245, 241, 232, 0.5);
+    margin-bottom: 1.5rem;
+}
+
+.serving-now {
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.queue-numbers-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.queue-number-tag {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-md);
+    padding: 1.5rem 2rem;
+    font-family: var(--font-main);
+    font-size: 3rem;
+    color: var(--ivory-cream);
+    min-width: 130px;
+    text-align: center;
+    position: relative;
+}
+
+.queue-number-tag.now-serving {
+    background: rgba(91, 19, 18, 0.6);
+    border-color: var(--warm-sand);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(226, 217, 200, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 0 10px rgba(226, 217, 200, 0);
+    }
+}
+
+.queue-number-tag .qt-type {
+    font-family: var(--font-body);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(245, 241, 232, 0.5);
+    display: block;
+    margin-bottom: 0.3rem;
+}
+
+.queue-empty-notice {
+    color: rgba(245, 241, 232, 0.3);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    padding: 1rem 0;
+}
+
+.queue-footer {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1rem 2rem;
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    color: rgba(245, 241, 232, 0.4);
+}
+
+/* ── Alert toast ─────────────────────────────────────────────── */
+.kiosk-toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--deep-maroon);
+    color: var(--ivory-cream);
+    padding: 0.7rem 1.5rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    box-shadow: var(--shadow-md);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 300;
+    white-space: nowrap;
+    max-width: 90vw;
+}
+
+.kiosk-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .kiosk-cat-sidebar {
+        width: 52px;
+        padding: 1rem 0;
+    }
+
+    .kiosk-cat-sidebar .filter-panel {
+        padding: 0;
+        border-right: none;
+    }
+
+    .kiosk-cat-sidebar .filter-title,
+    .kiosk-cat-sidebar .category-name,
+    .kiosk-cat-sidebar .category-count,
+    .kiosk-cat-sidebar .sort-options {
+        display: none;
+    }
+
+    .kiosk-cat-sidebar .category-item {
+        padding: 0.75rem;
+        justify-content: center;
+    }
+
+    .kiosk-cart-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .kiosk-sum-card {
+        position: static;
+    }
+
+    .order-type-row {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .ot-card {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .queue-body {
+        grid-template-columns: 1fr;
+    }
+
+    .serving-now {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .kiosk-products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+/* ── Back warning dialog ──────────────────────────────────────── */
+.kiosk-dialog-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+.kiosk-dialog-overlay.active {
+    display: flex;
+}
+
+.kiosk-dialog {
+    background: var(--bg-card, #1e1e1e);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.25rem;
+    padding: 2.5rem 2rem 2rem;
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    animation: fadeInUp 0.25s ease both;
+}
+
+.kiosk-dialog-icon {
+    font-size: 2.5rem;
+    color: var(--accent, #c8a97e);
+    margin-bottom: 1rem;
+}
+
+.kiosk-dialog-title {
+    font-family: var(--font-heading, 'Playfair Display', serif);
+    font-size: 1.5rem;
+    color: var(--text-primary, #fff);
+    margin-bottom: 0.65rem;
+}
+
+.kiosk-dialog-msg {
+    font-size: 0.92rem;
+    color: var(--text-muted, #aaa);
+    margin-bottom: 1.75rem;
+    line-height: 1.55;
+}
+
+.kiosk-dialog-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+.kiosk-dialog-btn {
+    flex: 1;
+    max-width: 160px;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 0.65rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.kiosk-dialog-btn:hover {
+    opacity: 0.85;
+}
+
+.kiosk-dialog-cancel {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary, #fff);
+}
+
+.kiosk-dialog-confirm {
+    background: var(--accent, #c8a97e);
+    color: #1a1209;
+}

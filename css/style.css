@@ -110,21 +110,6 @@ p {
     line-height: 1.7;
 }
 
-/* ===== TOP BANNER ===== */
-.top-banner {
-    background-color: var(--deep-maroon);
-    color: var(--ivory-cream);
-    text-align: center;
-    padding: 12px 0;
-    font-family: var(--font-heading);
-    font-size: 0.875rem;
-    letter-spacing: 0.5rem;
-    text-transform: uppercase;
-    font-weight: 500;
-    position: relative;
-    z-index: 1001;
-}
-
 /* ===== NAVIGATION - ENHANCED ===== */
 .navbar {
     background-color: var(--ivory-cream);
@@ -323,6 +308,31 @@ p {
 
 .btn-hero:hover {
     background-color: var(--burgundy-wine);
+    color: var(--ivory-cream);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Walk-in / Kiosk button — matches btn-hero but filled */
+.btn-hero-secondary {
+    background-color: var(--deep-maroon);
+    color: var(--ivory-cream);
+    border: 2px solid var(--deep-maroon);
+    padding: 0.75rem 2rem;
+    border-radius: var(--radius-xxl);
+    font-family: var(--font-subheading);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-normal);
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-hero-secondary:hover {
+    background-color: var(--burgundy-wine);
+    border-color: var(--burgundy-wine);
     color: var(--ivory-cream);
     transform: translateY(-3px);
     box-shadow: var(--shadow-lg);

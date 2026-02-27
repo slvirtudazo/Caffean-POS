@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 23, 2026 at 06:03 PM
+-- Generation Time: Feb 27, 2026 at 07:11 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -73,7 +73,7 @@ CREATE TABLE `contact_messages` (
 
 CREATE TABLE `orders` (
   `order_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `order_date` datetime DEFAULT current_timestamp(),
   `total_amount` decimal(10,2) NOT NULL,
   `status` enum('pending','processing','completed','cancelled') DEFAULT 'pending',
@@ -93,16 +93,21 @@ CREATE TABLE `orders` (
   `pickup_date` date DEFAULT NULL,
   `pickup_time` time DEFAULT NULL,
   `promo_code` varchar(50) DEFAULT NULL,
-  `discount_amount` decimal(10,2) NOT NULL DEFAULT 0.00
+  `discount_amount` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `is_kiosk` tinyint(1) NOT NULL DEFAULT 0,
+  `kiosk_order_type` enum('dine_in','take_out') DEFAULT NULL,
+  `customer_name` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`order_id`, `user_id`, `order_date`, `total_amount`, `status`, `payment_method`, `delivery_address`, `created_at`, `mobile_number`, `order_type`, `house_unit`, `street_name`, `barangay`, `city_municipality`, `province`, `zip_code`, `delivery_notes`, `pickup_branch`, `pickup_date`, `pickup_time`, `promo_code`, `discount_amount`) VALUES
-(1, 3, '2026-02-21 17:51:26', 51.00, 'pending', 'GCash', 'test', '2026-02-21 09:51:26', NULL, 'delivery', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00),
-(4, 3, '2026-02-21 23:35:42', 210.00, 'processing', 'Cash on Delivery', 'Block 6 Lot 17 Crestview Homes, Crestview Avenue, Ula, Tugbok District, Davao City, Davao del Sur 8000', '2026-02-21 15:35:42', '09123456789', 'delivery', 'Block 6 Lot 17 Crestview Homes', 'Crestview Avenue', 'Ula, Tugbok District', 'Davao City', 'Davao del Sur', '8000', 'test', '', NULL, NULL, '', 0.00);
+INSERT INTO `orders` (`order_id`, `user_id`, `order_date`, `total_amount`, `status`, `payment_method`, `delivery_address`, `created_at`, `mobile_number`, `order_type`, `house_unit`, `street_name`, `barangay`, `city_municipality`, `province`, `zip_code`, `delivery_notes`, `pickup_branch`, `pickup_date`, `pickup_time`, `promo_code`, `discount_amount`, `is_kiosk`, `kiosk_order_type`, `customer_name`) VALUES
+(1, 3, '2026-02-21 17:51:26', 51.00, 'pending', 'GCash', 'test', '2026-02-21 09:51:26', NULL, 'delivery', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0, NULL, NULL),
+(4, 3, '2026-02-21 23:35:42', 210.00, 'processing', 'Cash on Delivery', 'Block 6 Lot 17 Crestview Homes, Crestview Avenue, Ula, Tugbok District, Davao City, Davao del Sur 8000', '2026-02-21 15:35:42', '09123456789', 'delivery', 'Block 6 Lot 17 Crestview Homes', 'Crestview Avenue', 'Ula, Tugbok District', 'Davao City', 'Davao del Sur', '8000', 'test', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
+(5, 2, '2026-02-28 01:56:46', 210.00, 'pending', 'Cash on Delivery', '123, asd, asd, asd, asd 8000', '2026-02-27 17:56:46', '09603150070', 'delivery', '123', 'asd', 'asd', 'asd', 'asd', '8000', 'asdasdas', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
+(6, NULL, '2026-02-28 01:58:47', 160.00, 'pending', 'Cash', 'Dine In', '2026-02-27 17:58:47', '09603150070', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Jane Smith');
 
 -- --------------------------------------------------------
 
@@ -129,7 +134,9 @@ CREATE TABLE `order_items` (
 --
 
 INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price_at_time`, `size`, `temperature`, `sugar_level`, `milk_type`, `addons`, `special_instructions`) VALUES
-(2, 4, 55, 1, 160.00, NULL, NULL, NULL, NULL, NULL, NULL);
+(2, 4, 55, 1, 160.00, NULL, NULL, NULL, NULL, NULL, NULL),
+(3, 5, 55, 1, 160.00, NULL, NULL, NULL, NULL, NULL, NULL),
+(4, 6, 55, 1, 160.00, 'Tall', 'Iced', '50%', 'Skim', NULL, 'asdasd');
 
 -- --------------------------------------------------------
 
@@ -197,9 +204,7 @@ INSERT INTO `products` (`product_id`, `category_id`, `name`, `description`, `pri
 (55, 1, 'Caffe Americano', 'A rich espresso diluted with hot water, creating a smooth, full-bodied coffee without the intensity of straight espresso', 160.00, NULL, 1, '2026-02-21 14:45:44'),
 (56, 9, 'Whipped Cream', 'Light, airy cream topping that adds richness and a creamy texture to coffee drinks or desserts', 20.00, NULL, 1, '2026-02-21 15:05:20'),
 (57, 9, 'Coffee Jelly', 'Cubes of firm, slightly sweetened coffee-flavored gelatin, perfect for mixing into cold drinks or desserts', 40.00, NULL, 1, '2026-02-21 15:05:50'),
-(58, 9, 'Pearl (Boba)', 'Chewy tapioca balls often added to iced teas, coffees, or milk drinks for texture and fun', 30.00, NULL, 1, '2026-02-21 15:06:06'),
-(59, 2, 'Spanish Latte', 'test', 39.00, NULL, 1, '2026-02-23 02:28:13'),
-(60, 1, 'test coffee', 'test desc', 100.00, 'images/products/product_699c8314b2e20.jpg', 1, '2026-02-23 16:40:52');
+(58, 9, 'Pearl (Boba)', 'Chewy tapioca balls often added to iced teas, coffees, or milk drinks for texture and fun', 30.00, NULL, 1, '2026-02-21 15:06:06');
 
 -- --------------------------------------------------------
 
@@ -279,7 +284,8 @@ ALTER TABLE `contact_messages`
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`order_id`),
   ADD KEY `idx_user` (`user_id`),
-  ADD KEY `idx_status` (`status`);
+  ADD KEY `idx_status` (`status`),
+  ADD KEY `idx_kiosk` (`is_kiosk`,`status`,`order_date`);
 
 --
 -- Indexes for table `order_items`
@@ -333,13 +339,13 @@ ALTER TABLE `contact_messages`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -367,7 +373,7 @@ ALTER TABLE `users`
 -- Constraints for table `orders`
 --
 ALTER TABLE `orders`
-  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `order_items`

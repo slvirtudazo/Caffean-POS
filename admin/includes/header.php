@@ -12,10 +12,11 @@ $current_page  = basename($_SERVER['PHP_SELF']);
 
 /* Map each admin page to its own CSS file */
 $page_css_map = [
-  'dashboard.php' => 'dashboard.css',
-  'products.php'  => 'products.css',
-  'orders.php'    => 'orders.css',
-  'customers.php' => 'customers.css',
+  'dashboard.php'       => 'dashboard.css',
+  'products.php'        => 'products.css',
+  'orders.php'          => 'orders.css',
+  'instore_orders.php'  => 'orders.css',
+  'customers.php'       => 'customers.css',
 ];
 $page_css_file = $page_css_map[$current_page] ?? null;
 
@@ -200,7 +201,14 @@ $_unread_count = (int)($_unread_row['c'] ?? 0);
           <a href="<?= BASE_URL ?>/admin/orders.php"
             <?= $current_page === 'orders.php' ? 'class="active"' : '' ?>>
             <span class="snav-icon"><i class="fas fa-receipt"></i></span>
-            <span class="snav-text">Orders</span>
+            <span class="snav-text">Online Orders</span>
+          </a>
+        </li>
+        <li>
+          <a href="<?= BASE_URL ?>/admin/instore_orders.php"
+            <?= $current_page === 'instore_orders.php' ? 'class="active"' : '' ?>>
+            <span class="snav-icon"><i class="fas fa-cash-register"></i></span>
+            <span class="snav-text">In-Store Orders</span>
           </a>
         </li>
         <li>

@@ -27,11 +27,6 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 
 <body>
 
-    <!-- Top Strip Banner (Homepage only) -->
-    <div class="top-banner">
-        Shipping Nationwide
-    </div>
-
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
@@ -79,6 +74,9 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                     <h1 class="hero-title">We serve the richest coffee in the city!</h1>
                     <p class="hero-description">Experience the perfect blend of premium beans and expert craftsmanship in every cup we brew</p>
                     <a href="menu.php" class="btn-hero">Order Now</a>
+                    <a href="kiosk.php" class="btn-hero-secondary ms-2">
+                        <i class="fas fa-store me-1"></i> Walk-in Order
+                    </a>
                 </div>
                 <div class="col-lg-6 hero-image">
                     <img src="images/coffee_mug.png" alt="Premium Coffee">
