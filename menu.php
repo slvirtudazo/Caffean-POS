@@ -105,9 +105,7 @@ if ($category_filter > 0) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/menu-page.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="css/footer-section.css?v=<?php echo time(); ?>">
-</head>
+    <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>"></head>
 
 <body>
 
@@ -153,7 +151,7 @@ if ($category_filter > 0) {
 
     <section class="menu-main-section">
         <div class="container-fluid">
-            <div class="row">
+            <div class="row menu-layout-row">
 
                 <div class="menu-sidebar">
                     <div class="filter-panel" id="filterPanel">
@@ -237,119 +235,127 @@ if ($category_filter > 0) {
 
                 <div class="menu-content">
 
-                    <?php if ($has_active_filters): ?>
-                        <div class="menu-content-sticky-header">
-                            <div class="active-filters">
-                                <span class="filter-label">Active Filters:</span>
+                    <?php
+                    // Resolve image for a product
+                    $image_map = [
+                        1 => 'coffee.png',
+                        2 => 'coffee.png',
+                        3 => 'coffee.png',
+                        4 => 'coffee.png',
+                        5 => 'coffee.png',
+                        6 => 'pastry.png',
+                        7 => 'pastry.png',
+                        8 => 'pastry.png',
+                        9 => 'coffee.png'
+                    ];
+                    function getProductImage($product, $image_map)
+                    {
+                        return !empty($product['image_path'])
+                            ? $product['image_path']
+                            : 'images/' . ($image_map[$product['category_id']] ?? 'coffee.png');
+                    }
 
-                                <?php if ($category_filter > 0): ?>
-                                    <span class="filter-badge">
-                                        <?php echo htmlspecialchars($cat_name); ?>
-                                        <a href="<?php echo buildFilterUrl([], ['category']); ?>">
-                                            <i class="fas fa-times"></i>
-                                        </a>
-                                    </span>
-                                <?php endif; ?>
+                    // Render a single compact product card
+                    function renderProductCard($product, $img_src, $is_admin)
+                    {
+                        $id   = $product['product_id'];
+                        $name = htmlspecialchars($product['name']);
+                        $desc = htmlspecialchars($product['description']);
+                        $price = number_format($product['price'], 2);
+                        echo '<div class="product-card" data-product-id="' . $id . '">';
+                        echo  '<div class="product-image-wrapper">';
+                        echo   '<img src="' . htmlspecialchars($img_src) . '" alt="' . $name . '" class="product-image">';
+                        echo  '</div>';
+                        echo  '<div class="product-info">';
+                        echo   '<h3 class="product-name">' . $name . '</h3>';
+                        echo   '<p class="product-description">' . $desc . '</p>';
+                        echo   '<div class="product-footer">';
+                        echo    '<span class="product-price">₱' . $price . '</span>';
+                        if (!$is_admin) {
+                            echo '<button class="btn-order" onclick="addToCart(' . $id . ')"><i class="fas fa-plus"></i></button>';
+                        }
+                        echo   '</div>';
+                        echo  '</div>';
+                        echo '</div>';
+                    }
+                    ?>
 
-                                <?php if ($price_sort === 'low'): ?>
-                                    <span class="filter-badge">
-                                        Price: Low to High
-                                        <a href="<?php echo buildFilterUrl([], ['price_sort']); ?>">
-                                            <i class="fas fa-times"></i>
-                                        </a>
-                                    </span>
-                                <?php elseif ($price_sort === 'high'): ?>
-                                    <span class="filter-badge">
-                                        Price: High to Low
-                                        <a href="<?php echo buildFilterUrl([], ['price_sort']); ?>">
-                                            <i class="fas fa-times"></i>
-                                        </a>
-                                    </span>
-                                <?php endif; ?>
-
-                                <?php if ($show_popular): ?>
-                                    <span class="filter-badge">
-                                        Best Sellers
-                                        <a href="<?php echo buildFilterUrl([], ['popular']); ?>">
-                                            <i class="fas fa-times"></i>
-                                        </a>
-                                    </span>
-                                <?php endif; ?>
-
-                                <a href="menu.php" class="btn-clear-active-filters">
-                                    Clear All
-                                    <i class="fas fa-times"></i>
-                                </a>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-
-                    <div class="products-grid">
+                    <?php if ($total_products > 0): ?>
                         <?php
-                        if ($total_products > 0):
-                            mysqli_data_seek($products_result, 0);
-                            while ($product = mysqli_fetch_assoc($products_result)):
-                                // Use uploaded image if available, else fall back to category default
-                                if (!empty($product['image_path'])) {
-                                    $product_image_src = $product['image_path'];
-                                } else {
-                                    $image_map = [
-                                        1 => 'coffee.png',
-                                        2 => 'coffee.png',
-                                        3 => 'coffee.png',
-                                        4 => 'coffee.png',
-                                        5 => 'coffee.png',
-                                        6 => 'pastry.png',
-                                        7 => 'pastry.png',
-                                        8 => 'pastry.png',
-                                        9 => 'coffee.png'
-                                    ];
-                                    $product_image_src = 'images/' . ($image_map[$product['category_id']] ?? 'coffee.png');
-                                }
-                        ?>
-                                <div class="product-card" data-product-id="<?php echo $product['product_id']; ?>">
-                                    <div class="product-image-wrapper">
-                                        <div class="favorite-icon" onclick="toggleFavorite(<?php echo $product['product_id']; ?>, this.querySelector('i'))">
-                                            <i class="far fa-heart"></i>
-                                        </div>
-                                        <img src="<?php echo htmlspecialchars($product_image_src); ?>"
-                                            alt="<?php echo htmlspecialchars($product['name']); ?>"
-                                            class="product-image">
-                                    </div>
+                        // Grouped view — all categories, no sort override
+                        $use_grouped = ($category_filter === 0 && $price_sort === '' && !$show_popular);
 
-                                    <div class="product-info">
-                                        <h3 class="product-name"><?php echo htmlspecialchars($product['name']); ?></h3>
-                                        <p class="product-category"><?php echo htmlspecialchars($product['category_name']); ?></p>
-                                        <p class="product-description"><?php echo htmlspecialchars($product['description']); ?></p>
-                                        <div class="product-footer">
-                                            <span class="product-price">₱<?php echo number_format($product['price'], 2); ?></span>
-                                            <?php if (!$is_admin): ?>
-                                                <button class="btn-order" onclick="addToCart(<?php echo $product['product_id']; ?>)">
-                                                    <i class="fas fa-shopping-cart"></i> Add to Cart
-                                                </button>
-                                            <?php endif; ?>
-                                        </div>
+                        if ($use_grouped):
+                            // Collect products into category groups
+                            $groups = [];
+                            mysqli_data_seek($products_result, 0);
+                            while ($p = mysqli_fetch_assoc($products_result)) {
+                                $groups[$p['category_name']][] = $p;
+                            }
+                        ?>
+                            <?php foreach ($groups as $group_name => $items): ?>
+                                <div class="menu-cat-group">
+                                    <p class="menu-cat-label"><?php echo htmlspecialchars($group_name); ?></p>
+                                    <div class="products-grid">
+                                        <?php foreach ($items as $product):
+                                            renderProductCard($product, getProductImage($product, $image_map), $is_admin);
+                                        endforeach; ?>
                                     </div>
                                 </div>
-                            <?php
-                            endwhile;
-                        else:
-                            ?>
-                            <div class="empty-state">
-                                <i class="fas fa-search"></i>
-                                <h3>No products found</h3>
-                                <p>Try adjusting your filters or browse all categories</p>
-                                <a href="menu.php" class="btn-primary">View All Products</a>
+                            <?php endforeach; ?>
+
+                        <?php else: ?>
+                            <!-- Filtered / sorted flat grid with active-filter bar -->
+                            <?php if ($has_active_filters): ?>
+                                <div class="menu-content-sticky-header">
+                                    <div class="active-filters">
+                                        <span class="filter-label">Active Filters:</span>
+                                        <?php if ($category_filter > 0): ?>
+                                            <span class="filter-badge">
+                                                <?php echo htmlspecialchars($cat_name); ?>
+                                                <a href="<?php echo buildFilterUrl([], ['category']); ?>"><i class="fas fa-times"></i></a>
+                                            </span>
+                                        <?php endif; ?>
+                                        <?php if ($price_sort === 'low'): ?>
+                                            <span class="filter-badge">Price: Low to High
+                                                <a href="<?php echo buildFilterUrl([], ['price_sort']); ?>"><i class="fas fa-times"></i></a>
+                                            </span>
+                                        <?php elseif ($price_sort === 'high'): ?>
+                                            <span class="filter-badge">Price: High to Low
+                                                <a href="<?php echo buildFilterUrl([], ['price_sort']); ?>"><i class="fas fa-times"></i></a>
+                                            </span>
+                                        <?php endif; ?>
+                                        <?php if ($show_popular): ?>
+                                            <span class="filter-badge">Best Sellers
+                                                <a href="<?php echo buildFilterUrl([], ['popular']); ?>"><i class="fas fa-times"></i></a>
+                                            </span>
+                                        <?php endif; ?>
+                                        <a href="menu.php" class="btn-clear-active-filters">Clear All <i class="fas fa-times"></i></a>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                            <div class="products-grid">
+                                <?php
+                                mysqli_data_seek($products_result, 0);
+                                while ($product = mysqli_fetch_assoc($products_result)):
+                                    renderProductCard($product, getProductImage($product, $image_map), $is_admin);
+                                endwhile; ?>
                             </div>
                         <?php endif; ?>
-                    </div>
+
+                    <?php else: ?>
+                        <div class="empty-state">
+                            <i class="fas fa-search"></i>
+                            <h3>No products found</h3>
+                            <p>Try adjusting your filters or browse all categories</p>
+                            <a href="menu.php" class="btn-primary">View All Products</a>
+                        </div>
+                    <?php endif; ?>
 
                 </div>
             </div>
         </div>
     </section>
-
-    <?php include 'includes/footer.php'; ?>
 
     <script>
         // Save scroll position before navigation

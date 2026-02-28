@@ -77,10 +77,21 @@ if (empty($trending)) {
 }
 
 // ── Recent orders: last 6 (includes kiosk + online) ──────────
-// LEFT JOIN allows NULL user_id (kiosk/guest orders)
+// Check if order_number column exists (may be missing on older installs)
+$has_order_num = (bool)mysqli_fetch_assoc(mysqli_query($conn,
+    "SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS
+     WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'orders' AND COLUMN_NAME = 'order_number'"
+));
+
+$order_num_select = $has_order_num
+    ? "COALESCE(NULLIF(o.order_number,''), CONCAT('PC-', YEAR(o.order_date), '-', LPAD(o.order_id,5,'0')))"
+    : "CONCAT('PC-', YEAR(o.order_date), '-', LPAD(o.order_id,5,'0'))";
+
 $recent_res = mysqli_query($conn,
-    "SELECT o.order_id, o.order_number, o.total_amount, o.status,
-            o.payment_method, o.order_date, o.order_type, o.is_kiosk,
+    "SELECT o.order_id,
+            $order_num_select AS order_number,
+            o.total_amount, o.status, o.payment_method,
+            o.order_date, o.order_type, o.is_kiosk,
             COALESCE(u.full_name, o.customer_name, 'Guest') AS customer_name
      FROM orders o
      LEFT JOIN users u ON o.user_id = u.user_id

@@ -40,7 +40,7 @@ $products_result = mysqli_query(
     <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/coffee-page.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="css/footer-section.css?v=<?php echo time(); ?>">
+
     <style>
         .product-category {
             font-family: var(--font-subheading);
@@ -154,7 +154,7 @@ $products_result = mysqli_query(
         </div>
     </section>
 
-    <?php include 'includes/footer.php'; ?>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/main.js?v=<?php echo time(); ?>"></script>
     <script src="js/search.js?v=<?php echo time(); ?>"></script>

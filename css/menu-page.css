@@ -10,7 +10,7 @@
 /* ===== ROOT TOKEN ===== */
 :root {
     --navbar-height: 70px;
-    --sidebar-width: 350px;
+    --sidebar-width: 280px;
     /* NEW: Adjust sidebar width centrally */
 }
 
@@ -19,6 +19,14 @@
     padding-top: 2rem;
     padding-bottom: 2rem;
     background-color: var(--ivory-cream);
+}
+
+/* Neutralize Bootstrap .row gutters so all spacing is controlled manually */
+.menu-main-section .row {
+    --bs-gutter-x: 0;
+    margin-left: 0;
+    margin-right: 0;
+    align-items: flex-start;
 }
 
 /* =========================================================
@@ -31,28 +39,18 @@
  * It sticks to the viewport on page scroll and only scrolls
  * its own content when the cursor is pointed at it.
  */
+/* Sidebar — sticky, scrolls its own content independently */
 .menu-sidebar {
-    padding: 0 0 0 var(--spacing-md);
-    align-self: flex-start;
-
-    /* CUSTOM LAYOUT WIDTH */
-    flex: 0 0 var(--sidebar-width);
-    max-width: var(--sidebar-width);
-
-    /* Sticky — mirrors admin-sidebar */
-    position: -webkit-sticky;
+    width: 280px;
+    flex-shrink: 0;
     position: sticky;
     top: calc(var(--navbar-height) + 2rem);
-    height: calc(100vh - var(--navbar-height) - 4rem);
-
-    /* Independent scroll: only moves when cursor is inside */
+    max-height: calc(100vh - var(--navbar-height) - 2rem);
     overflow-y: auto;
     overflow-x: hidden;
     overscroll-behavior: contain;
-    will-change: transform;
-
-    /* Scrollbar — same as before */
-    scrollbar-width: thin;
+    padding: 0 0 0 var(--spacing-md);
+    scrollbar-width: none;
     scrollbar-color: var(--burgundy-wine) rgba(226, 217, 200, 0.2);
 }
 
@@ -76,13 +74,14 @@
     background: transparent;
     box-shadow: none;
     border-radius: 0;
-    padding: 0 var(--spacing-lg) var(--spacing-xxl) 0;
+    padding: var(--spacing-xs) var(--spacing-sm) 0 0;
+    margin-right: 0.8rem;
     border-right: 1.5px solid rgba(42, 0, 0, 0.07);
 }
 
 /* ===== FILTER SECTIONS ===== */
 .filter-section {
-    margin-bottom: 2.25rem;
+    margin-bottom: 1.75rem;
     padding-bottom: 0;
     border-bottom: none;
 }
@@ -99,7 +98,7 @@
 /* ===== FILTER TITLE (Categories, Sort by Price, Best Sellers) ===== */
 .filter-title {
     font-family: var(--font-subheading);
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     font-weight: 700;
     color: var(--dark-brown);
     opacity: 0.6;
@@ -114,7 +113,7 @@
 }
 
 .filter-title i {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
 }
 
 /* =========================================================
@@ -135,7 +134,7 @@
     text-decoration: none;
     color: var(--dark-brown);
     font-family: var(--font-body);
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     font-weight: 500;
     letter-spacing: 0.1px;
     background: transparent;
@@ -171,7 +170,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     color: rgba(60, 21, 24, 0.4);
     transition: color 0.18s ease;
 }
@@ -187,7 +186,7 @@
 }
 
 .category-count {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     font-weight: 500;
     color: rgba(60, 21, 24, 0.35);
     background: transparent;
@@ -218,7 +217,7 @@
     border-radius: var(--radius-sm);
     color: var(--dark-brown);
     font-family: var(--font-body);
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     font-weight: 500;
     background: transparent;
     border-left: 2.5px solid transparent;
@@ -228,7 +227,7 @@
 }
 
 .sort-item i {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     width: 18px;
     flex-shrink: 0;
     text-align: center;
@@ -268,10 +267,11 @@
 /* =========================================================
    MAIN CONTENT AREA
    ========================================================= */
+/* Content area — no padding; grid's own padding controls all outer spacing uniformly */
 .menu-content {
-    padding: 0 var(--spacing-md);
-    padding-top: 0;
+    padding: 0;
     flex: 1;
+    min-width: 0;
     max-width: calc(100% - var(--sidebar-width));
 }
 
@@ -317,7 +317,7 @@
 /* "ACTIVE FILTERS:" label */
 .filter-label {
     font-family: var(--font-subheading);
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     /* Scaled down for elegance */
     font-weight: 600;
     letter-spacing: 1px;
@@ -342,7 +342,7 @@
     border-radius: 50px;
     /* Perfect pill shape */
     font-family: var(--font-body);
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 600;
     letter-spacing: 0.1px;
     transition: all 0.2s ease;
@@ -382,7 +382,7 @@
     margin-left: 0.5rem;
     padding: 5px 10px 5px 12px;
     font-family: var(--font-body);
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 500;
     letter-spacing: 0.1px;
     color: #888;
@@ -403,51 +403,63 @@
 }
 
 /* =========================================================
-   PRODUCTS GRID
+   SECTION & CATEGORY GROUP LABELS (kiosk-style)
    ========================================================= */
+
+.menu-cat-group {
+    margin-bottom: 1.5rem;
+}
+
+.menu-cat-label {
+    font-family: var(--font-subheading);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--burgundy-wine);
+    padding-top: 0.4rem;
+    padding-left: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+/* =========================================================
+   PRODUCTS GRID — 5 columns matching kiosk
+   ========================================================= */
+/* Products grid — outer padding equals inner gap for consistent spacing */
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-
-    /*
-     * Gap reduced by 2 steps (--spacing-xl 2.5rem → --spacing-md 1.5rem).
-     * max-width / margin:auto removed — the grid now fills .menu-content
-     * naturally. .menu-content already carries padding: 0 var(--spacing-md)
-     * (1.5rem) on both sides, so the outer left/right space is identical
-     * to the gap between cards.
-     */
-    gap: var(--spacing-md);
-    margin-top: 0;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.75rem;
+    padding: 0 0.75rem;
     margin-bottom: 0;
 }
 
 /* =========================================================
-   PRODUCT CARD
+   PRODUCT CARD — compact kiosk style
    ========================================================= */
 .product-card {
-    background-color: var(--light-beige);
-    border-radius: var(--radius-xl);
+    background: #fff;
+    border-radius: var(--radius-md);
     overflow: hidden;
-    transition: var(--transition-normal);
-    box-shadow: var(--shadow-md);
-    border: 1px solid rgba(42, 0, 0, 0.05);
-    position: relative;
+    box-shadow: var(--shadow-sm);
+    border: none;
     display: flex;
     flex-direction: column;
+    cursor: pointer;
+    transition: all 0.25s ease;
 }
 
 .product-card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
 }
 
-/* Product Image */
+/* Product Image — compact 130px */
 .product-image-wrapper {
-    position: relative;
     width: 100%;
-    height: 280px;
+    height: 130px;
     overflow: hidden;
-    background: var(--warm-sand);
+    background: var(--light-beige);
 }
 
 .product-image {
@@ -455,151 +467,82 @@
     height: 100%;
     object-fit: cover;
     transition: var(--transition-slow);
-    position: relative;
-    z-index: 1;
 }
 
 .product-card:hover .product-image {
-    transform: scale(1.1);
-}
-
-/* Favorite Icon */
-.favorite-icon {
-    position: absolute;
-    top: var(--spacing-md);
-    right: var(--spacing-md);
-    width: 45px;
-    height: 45px;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-    z-index: 10;
-    box-shadow: var(--shadow-sm);
-}
-
-.favorite-icon:hover {
-    transform: scale(1.12);
-    box-shadow: var(--shadow-md);
-    background: rgba(255, 255, 255, 0.95);
-}
-
-.favorite-icon i {
-    font-size: 1.2rem;
-    color: rgba(42, 0, 0, 0.28);
-    transition: color var(--transition-fast);
-}
-
-.favorite-icon:hover i {
-    color: rgba(42, 0, 0, 0.45);
-}
-
-/* Favorited state — inline style in JS sets icon color to #c0392b */
-.favorite-icon.active {
-    background: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 2px 10px rgba(192, 57, 43, 0.18);
-}
-
-.favorite-icon.active i {
-    color: #c0392b;
+    transform: scale(1.05);
 }
 
 /* Product Info */
 .product-info {
-    padding: var(--spacing-lg);
+    padding: 0.85rem;
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
+    flex: 1;
 }
 
 .product-name {
     font-family: var(--font-subheading);
-    font-size: 25px;
+    font-size: 1rem;
     font-weight: 700;
     color: var(--deep-maroon);
-    margin-bottom: 2px;
+    margin-bottom: 0.25rem;
     line-height: 1.3;
 }
 
-.product-category {
-    font-family: var(--font-subheading);
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    color: var(--burgundy-wine);
-    opacity: 0.75;
-    margin: 0 0 10px 0;
-}
-
 .product-description {
-    color: var(--dark-brown);
-    font-size: 15px;
-    line-height: 1.8;
-    margin-bottom: var(--spacing-xs);
-    flex-grow: 1;
+    font-size: 0.7rem;
+    color: #888;
+    font-family: var(--font-body);
+    line-height: 1.4;
+    flex: 1;
     display: -webkit-box;
     -webkit-line-clamp: 2;
-    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    margin-bottom: 0.75rem;
 }
 
 /* Product Footer */
 .product-footer {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: var(--spacing-md);
+    justify-content: space-between;
+    gap: 0.5rem;
     margin-top: auto;
-    padding-top: var(--spacing-sm);
 }
 
 .product-price {
     font-family: var(--font-subheading);
-    font-size: 20px;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--burgundy-wine);
 }
 
-/* Add to Cart Button */
+/* Add button — round circle matching kiosk */
 .btn-order {
-    background-color: var(--burgundy-wine);
-    color: var(--ivory-cream);
-    padding: 0.90rem 2rem;
+    background: var(--deep-maroon);
+    color: #fff;
     border: none;
-    border-radius: var(--radius-xxl);
-    font-family: var(--font-subheading);
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition-normal);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    white-space: nowrap;
+    justify-content: center;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    flex-shrink: 0;
+    padding: 0;
 }
 
 .btn-order:hover {
-    background-color: var(--deep-maroon);
-    color: var(--ivory-cream);
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-lg);
-}
-
-.btn-order i {
-    font-size: 0.90rem;
-}
-
-.btn-order:active {
-    transform: translateY(0);
+    background: var(--burgundy-wine);
 }
 
 .btn-order.adding {
-    background-color: var(--deep-maroon);
+    background: var(--burgundy-wine);
     pointer-events: none;
 }
 
@@ -663,11 +606,17 @@
 }
 
 /* =========================================================
-   RESPONSIVE (Adaptive Grid overriding custom width)
+   RESPONSIVE
    ========================================================= */
+@media (max-width: 1200px) {
+    .products-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
 @media (max-width: 1024px) {
     .products-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
@@ -676,12 +625,13 @@
         padding: var(--spacing-md) 0;
     }
 
-    /* Reset width + un-freeze sidebar on mobile so it stacks naturally */
     .menu-sidebar {
         padding: var(--spacing-sm);
         flex: 0 0 100%;
         max-width: 100%;
         position: static;
+        top: auto;
+        max-height: none;
         height: auto;
         overflow-y: visible;
         overflow-x: visible;
@@ -695,7 +645,10 @@
         max-width: 100%;
     }
 
-    /* Keep border-bottom visual separator on mobile */
+    .products-grid {
+        padding: 0;
+    }
+
     .filter-panel {
         padding: var(--spacing-md) 0;
         border-right: none;
@@ -707,17 +660,11 @@
     }
 
     .products-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
     }
 
     .active-filters {
         flex-direction: row;
         flex-wrap: wrap;
-    }
-}
-
-@media (min-width: 1400px) {
-    .product-card {
-        max-width: 420px;
     }
 }

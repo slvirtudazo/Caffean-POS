@@ -67,33 +67,38 @@ function kioskProductImage($product)
                 <img src="images/coffee_beans_logo.png" alt="Purge Coffee">
                 <span>purge coffee</span>
             </a>
-            <div class="nav-icons">
-                <button class="btn-cancel-order" onclick="goBack()">Back</button>
-            </div>
         </div>
     </nav>
 
     <div class="kiosk-progress" id="kiosk-progress">
-        <div class="kiosk-progress-inner">
-            <div class="kp-step active" id="kp1">
-                <div class="kp-dot">1</div>
-                <span class="kp-lbl">Type</span>
+        <div class="kiosk-bar-wrapper">
+            <div class="k-bar-left"></div>
+            <div class="k-bar-center kiosk-progress-inner">
+                <div class="kp-step active" id="kp1">
+                    <div class="kp-dot">1</div>
+                    <span class="kp-lbl">Type</span>
+                </div>
+                <div class="kp-step" id="kp2">
+                    <div class="kp-dot">2</div>
+                    <span class="kp-lbl">Menu</span>
+                </div>
+                <div class="kp-step" id="kp3">
+                    <div class="kp-dot">3</div>
+                    <span class="kp-lbl">Cart</span>
+                </div>
+                <div class="kp-step" id="kp4">
+                    <div class="kp-dot">4</div>
+                    <span class="kp-lbl">Pay</span>
+                </div>
+                <div class="kp-step" id="kp5">
+                    <div class="kp-dot">5</div>
+                    <span class="kp-lbl">Done</span>
+                </div>
             </div>
-            <div class="kp-step" id="kp2">
-                <div class="kp-dot">2</div>
-                <span class="kp-lbl">Menu</span>
-            </div>
-            <div class="kp-step" id="kp3">
-                <div class="kp-dot">3</div>
-                <span class="kp-lbl">Cart</span>
-            </div>
-            <div class="kp-step" id="kp4">
-                <div class="kp-dot">4</div>
-                <span class="kp-lbl">Pay</span>
-            </div>
-            <div class="kp-step" id="kp5">
-                <div class="kp-dot">5</div>
-                <span class="kp-lbl">Done</span>
+            <div class="k-bar-right">
+                <button class="btn-view-cart" onclick="goBack()">
+                    <i class="fas fa-arrow-left me-1"></i> Back
+                </button>
             </div>
         </div>
     </div>
@@ -187,14 +192,16 @@ function kioskProductImage($product)
             </div>
 
             <div class="kiosk-products-area" id="kiosk-products-area">
-                <div class="kiosk-section-title">All Menu</div>
+                <div class="kiosk-active-header" id="kiosk-active-header">
+                    <div class="kiosk-active-filters" id="kiosk-active-filters"></div>
+                </div>
 
                 <?php foreach ($categories_map as $cid => $cat): ?>
                     <div class="kiosk-cat-group" id="cat-group-<?= $cid ?>" data-cat-id="<?= $cid ?>">
                         <div class="kiosk-cat-label"><?= htmlspecialchars($cat['name']) ?></div>
                         <div class="kiosk-products-grid">
-                            <?php foreach ($cat['products'] as $product): ?>
-                                <div class="kiosk-product-card" data-price="<?= $product['price'] ?>">
+                            <?php foreach ($cat['products'] as $idx => $product): ?>
+                                <div class="kiosk-product-card" data-price="<?= $product['price'] ?>" data-idx="<?= $idx ?>">
                                     <?php $img = kioskProductImage($product); ?>
                                     <img src="<?= $img ?>"
                                         alt="<?= htmlspecialchars($product['name']) ?>"
@@ -237,10 +244,8 @@ function kioskProductImage($product)
 
             <div class="kiosk-co-layout">
 
-                <!-- Alert spans both columns -->
                 <div class="kiosk-co-alert-row" id="step4-alert"></div>
 
-                <!-- Left column: order type + name + payment -->
                 <div class="kiosk-co-left">
 
                     <div class="kiosk-co-card">
@@ -299,7 +304,6 @@ function kioskProductImage($product)
 
                 </div>
 
-                <!-- Right column: order summary + actions -->
                 <div class="kiosk-co-right">
                     <div class="kiosk-co-card kiosk-co-summary-card">
                         <div class="kiosk-co-card-title">
@@ -354,7 +358,6 @@ function kioskProductImage($product)
         </div>
     </div>
 
-    <!-- Delete item warning dialog -->
     <div class="kiosk-dialog-overlay" id="delete-dialog-overlay">
         <div class="kiosk-dialog">
             <div class="kiosk-dialog-icon" style="color:#c0392b;"><i class="fas fa-trash-alt"></i></div>
@@ -367,7 +370,6 @@ function kioskProductImage($product)
         </div>
     </div>
 
-    <!-- Back warning dialog — shown when cart has items -->
     <div class="kiosk-dialog-overlay" id="back-dialog-overlay">
         <div class="kiosk-dialog">
             <div class="kiosk-dialog-icon"><i class="fas fa-triangle-exclamation"></i></div>
@@ -381,14 +383,30 @@ function kioskProductImage($product)
     </div>
 
     <div class="kiosk-cart-bar" id="kiosk-cart-bar">
-        <div class="cart-bar-left">
-            <div class="cart-bar-count" id="cbar-count">0</div>
-            <span class="cart-bar-label">items in cart</span>
+        <div class="kiosk-bar-wrapper">
+            <div class="k-bar-left"></div>
+            
+            <div class="k-bar-center kiosk-progress-inner">
+                <div class="k-cart-step">
+                    <div class="cart-bar-left">
+                        <div class="cart-bar-count" id="cbar-count">0</div>
+                        <span class="cart-bar-label">items in cart</span>
+                    </div>
+                </div>
+                <div class="k-cart-step"></div>
+                <div class="k-cart-step">
+                    <span class="cart-bar-total" id="cbar-total">₱0.00</span>
+                </div>
+                <div class="k-cart-step"></div>
+                <div class="k-cart-step"></div>
+            </div>
+
+            <div class="k-bar-right">
+                <button class="btn-view-cart" onclick="goToStep(3)">
+                    View Cart <i class="fas fa-arrow-right ms-1"></i>
+                </button>
+            </div>
         </div>
-        <span class="cart-bar-total" id="cbar-total">₱0.00</span>
-        <button class="btn-view-cart" onclick="goToStep(3)">
-            View Cart <i class="fas fa-arrow-right ms-1"></i>
-        </button>
     </div>
 
     <div class="kiosk-toast" id="kiosk-toast"></div>
@@ -396,9 +414,11 @@ function kioskProductImage($product)
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         /* ── State ───────────────────────────────────────────────────── */
-        let kioskOrderType = 'dine_in'; // 'dine_in' | 'take_out'
-        let kioskPayment = 'Cash';
-        let kioskCart = {}; // { product_id: { name, price, qty, size, temp, sugar, milk, notes, img } }
+        let kioskOrderType  = 'dine_in';
+        let kioskPayment    = 'Cash';
+        let kioskCart       = {};
+        let kioskCurrentCat = 'all'; // 'all' | category id string
+        let kioskCurrentSort = null; // null | 'low' | 'high' | 'popular'
 
         /* Step 1 is default — lock body scroll immediately */
         document.body.classList.add('kiosk-no-scroll');
@@ -432,7 +452,7 @@ function kioskProductImage($product)
             const cartBar = document.getElementById('kiosk-cart-bar');
             if (cartBar) {
                 if (n === 2) {
-                    cartBar.style.display = 'flex';
+                    cartBar.style.display = 'block';
                 } else {
                     cartBar.style.display = 'none';
                 }
@@ -809,24 +829,27 @@ function kioskProductImage($product)
             setTimeout(() => el.innerHTML = '', 4000);
         }
 
+        /* Filter groups by category — shows/hides groups, updates active bar */
         function scrollToCategory(cid) {
-            /* Highlight active sidebar item */
+            kioskCurrentCat = cid;
+
+            /* Update sidebar active state */
             document.querySelectorAll('.kiosk-cat-item').forEach(i => i.classList.remove('active'));
             const btn = cid === 'all' ? document.getElementById('catbtn-all') : document.getElementById('catbtn-' + cid);
             if (btn) btn.classList.add('active');
 
-            /* Scroll to first group (all) or specific category group */
-            const group = cid === 'all' ?
-                document.querySelector('.kiosk-cat-group') :
-                document.getElementById('cat-group-' + cid);
-            if (group) group.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
+            /* Show only the selected category group, or all if 'all' */
+            document.querySelectorAll('.kiosk-cat-group').forEach(g => {
+                g.style.display = (cid === 'all' || g.dataset.catId == cid) ? '' : 'none';
             });
+
+            updateKioskActiveHeader();
         }
 
-        /* Sort cards by price within each category grid */
+        /* Sort cards by price within each visible group */
         function kioskSort(mode) {
+            kioskCurrentSort = mode;
+
             document.querySelectorAll('.sort-item').forEach(s => s.classList.remove('active'));
             const el = document.getElementById('sort-' + mode);
             if (el) el.classList.add('active');
@@ -844,9 +867,87 @@ function kioskProductImage($product)
                 });
                 cards.forEach(c => grid.appendChild(c));
             });
+
+            updateKioskActiveHeader();
         }
 
-        /* ── New order reset ─────────────────────────────────────── */
+        /* Build and show/hide the active filters bar */
+        function updateKioskActiveHeader() {
+            const header    = document.getElementById('kiosk-active-header');
+            const sectionTitle = document.querySelector('.kiosk-section-title');
+            const hasCat    = kioskCurrentCat !== 'all';
+            const hasSort   = kioskCurrentSort !== null;
+
+            if (!hasCat && !hasSort) {
+                header.classList.remove('visible');
+                if (sectionTitle) sectionTitle.style.display = '';
+                return;
+            }
+
+            /* Hide "ALL MENU" title when any filter is active */
+            if (sectionTitle) sectionTitle.style.display = 'none';
+
+            const sortLabels = { low: 'Price: Low to High', high: 'Price: High to Low', popular: 'Best Sellers' };
+            const sortIcons  = { low: 'fa-arrow-down', high: 'fa-arrow-up', popular: 'fa-fire' };
+
+            let html = '<span class="kiosk-filter-label">Active Filters:</span>';
+
+            /* Category chip */
+            if (hasCat) {
+                const catName = document.getElementById('catbtn-' + kioskCurrentCat)
+                    ?.querySelector('.category-name')?.textContent?.trim() || '';
+                html += `<span class="kiosk-sort-badge">${catName}
+                    <span onclick="kioskClearCategory()"><i class="fas fa-times"></i></span>
+                </span>`;
+            }
+
+            /* Sort chip */
+            if (hasSort) {
+                html += `<span class="kiosk-sort-badge">
+                    <i class="fas ${sortIcons[kioskCurrentSort]}"></i>
+                    ${sortLabels[kioskCurrentSort]}
+                    <span onclick="kioskClearSort()"><i class="fas fa-times"></i></span>
+                </span>`;
+            }
+
+            html += `<button class="kiosk-clear-sort" onclick="kioskClearAll()">Clear All <i class="fas fa-times"></i></button>`;
+
+            document.getElementById('kiosk-active-filters').innerHTML = html;
+            header.classList.add('visible');
+        }
+
+        /* Clear category filter only */
+        function kioskClearCategory() {
+            scrollToCategory('all');
+        }
+
+        /* Clear sort only — restore original card order */
+        function kioskClearSort() {
+            kioskCurrentSort = null;
+            document.querySelectorAll('.sort-item').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.kiosk-cat-group').forEach(group => {
+                const grid = group.querySelector('.kiosk-products-grid');
+                if (!grid) return;
+                const cards = Array.from(grid.querySelectorAll('.kiosk-product-card'));
+                cards.sort((a, b) => parseInt(a.dataset.idx || 0) - parseInt(b.dataset.idx || 0));
+                cards.forEach(c => grid.appendChild(c));
+            });
+            updateKioskActiveHeader();
+        }
+
+        /* Clear all active filters */
+        function kioskClearAll() {
+            kioskCurrentSort = null;
+            document.querySelectorAll('.sort-item').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.kiosk-cat-group').forEach(group => {
+                const grid = group.querySelector('.kiosk-products-grid');
+                if (!grid) return;
+                const cards = Array.from(grid.querySelectorAll('.kiosk-product-card'));
+                cards.sort((a, b) => parseInt(a.dataset.idx || 0) - parseInt(b.dataset.idx || 0));
+                cards.forEach(c => grid.appendChild(c));
+            });
+            scrollToCategory('all');
+        }
         function startNewOrder() {
             kioskCart = {};
             kioskOrderType = 'dine_in';

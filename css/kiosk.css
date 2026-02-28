@@ -69,28 +69,38 @@ body.kiosk-no-scroll {
     height: 30px;
 }
 
-/* Back button — same visual style as View Cart, adapted for light navbar */
-.btn-cancel-order {
-    background: transparent;
-    border: 1.5px solid rgba(42, 0, 0, 0.35);
-    color: var(--deep-maroon);
-    font-family: var(--font-subheading);
-    font-size: 0.82rem;
-    font-weight: 600;
-    padding: 0.35rem 0.85rem;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    letter-spacing: 0.2px;
-    text-decoration: none;
-    display: inline-flex;
+/* ── Common Bar Layout (Progress & Cart) ─────────────────────── */
+.kiosk-bar-wrapper {
+    display: flex;
     align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 1.5rem;
+    margin: 0 auto;
 }
 
-.btn-cancel-order:hover {
-    background: rgba(42, 0, 0, 0.06);
-    border-color: var(--deep-maroon);
-    color: var(--deep-maroon);
+.k-bar-left, .k-bar-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    min-width: 0; /* Allows text truncation if necessary */
+}
+
+.k-bar-left {
+    justify-content: flex-start;
+}
+
+.k-bar-right {
+    justify-content: flex-end;
+}
+
+.k-bar-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 640px;
+    flex: 0 1 auto; /* Take required space, perfectly center aligning content */
+    width: 100%;
 }
 
 /* ── Progress bar ────────────────────────────────────────────── */
@@ -107,9 +117,7 @@ body.kiosk-no-scroll {
     align-items: center;
     justify-content: center;
     gap: 0;
-    max-width: 640px;
-    margin: 0 auto;
-    padding: 0 1.5rem;
+    width: 100%;
 }
 
 /* Each step takes equal space, connector line between dots */
@@ -278,21 +286,25 @@ body.kiosk-no-scroll {
 }
 
 /* ── STEP 2 – Menu Browser ───────────────────────────────────── */
+/* Fixed-height viewport panel — sidebar stays put, only products scroll */
 .kiosk-menu-wrap {
     display: flex;
-    min-height: calc(100vh - 130px);
+    height: calc(100vh - 130px - 80px); /* minus navbar+progress, minus cart bar */
     background: var(--ivory-cream);
+    overflow: hidden;
 }
 
-/* Category Sidebar */
+/* Category sidebar — fills fixed-height wrap, scrolls independently */
 .kiosk-cat-sidebar {
     width: 280px;
     flex-shrink: 0;
-    position: sticky;
-    top: 110px;
-    height: calc(100vh - 110px);
+    height: 100%;
     overflow-y: auto;
-    padding: 1.5rem 1.5rem 1.5rem 0; /* Permanent fixed padding */
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    padding: 1.5rem 0 1.5rem var(--spacing-md);
+    scrollbar-width: none;
+    scrollbar-color: var(--burgundy-wine) rgba(226, 217, 200, 0.2);
 }
 
 .kiosk-cat-sidebar::-webkit-scrollbar {
@@ -307,26 +319,27 @@ body.kiosk-no-scroll {
 .kiosk-cat-sidebar::-webkit-scrollbar-thumb {
     background-color: var(--burgundy-wine);
     border-radius: 4px;
+    opacity: 0.6;
 }
 
-/* Filter panel container */
+/* Filter panel — matches menu .filter-panel */
 .kiosk-cat-sidebar .filter-panel {
     background: transparent;
     box-shadow: none;
     border-radius: 0;
-    padding: 0 1.5rem 3rem 1rem;
+    padding: var(--spacing-xs) var(--spacing-sm) 0 0;
     border-right: 1.5px solid rgba(42, 0, 0, 0.07);
 }
 
-/* Filter sections */
+/* Filter sections — matches menu spacing */
 .kiosk-cat-sidebar .filter-section {
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     padding-bottom: 0;
     border-bottom: none;
 }
 
 .kiosk-cat-sidebar .filter-section:last-child {
-    margin-bottom: 1rem;
+    margin-bottom: 0;
 }
 
 .kiosk-cat-sidebar .filter-section+.filter-section {
@@ -334,10 +347,10 @@ body.kiosk-no-scroll {
     border-top: 1px solid rgba(42, 0, 0, 0.07);
 }
 
-/* Section headings */
+/* Section headings — matches menu .filter-title */
 .kiosk-cat-sidebar .filter-title {
     font-family: var(--font-subheading);
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     font-weight: 700;
     color: var(--dark-brown);
     opacity: 0.6;
@@ -352,26 +365,26 @@ body.kiosk-no-scroll {
 }
 
 .kiosk-cat-sidebar .filter-title i {
-    font-size: 0.6rem;
+    font-size: 0.7rem;
 }
 
-/* Category list */
+/* Category list — matches menu gap */
 .kiosk-cat-sidebar .category-list {
     display: flex;
     flex-direction: column;
-    gap: 0.1rem;
+    gap: 0.15rem;
 }
 
-/* Category row — reduced font size by 1px */
+/* Category row — matches menu .category-item */
 .kiosk-cat-sidebar .category-item {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.4rem 0.75rem;
+    padding: 0.55rem 0.75rem;
     border-radius: var(--radius-sm);
     color: var(--dark-brown);
     font-family: var(--font-body);
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     font-weight: 500;
     letter-spacing: 0.1px;
     background: transparent;
@@ -398,14 +411,14 @@ body.kiosk-no-scroll {
     pointer-events: none;
 }
 
-/* Category icon */
+/* Category icon — matches menu */
 .kiosk-cat-sidebar .category-icon {
     width: 18px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     color: rgba(60, 21, 24, 0.4);
     transition: color 0.18s ease;
 }
@@ -415,15 +428,15 @@ body.kiosk-no-scroll {
     color: var(--burgundy-wine);
 }
 
-/* Category name and count — count reduced by 1px */
+/* Category name and count */
 .kiosk-cat-sidebar .category-name {
     flex: 1;
     line-height: 1;
 }
 
 .kiosk-cat-sidebar .category-count {
-    font-size: 0.6rem;
-    font-weight: 700;
+    font-size: 0.7rem;
+    font-weight: 500;
     color: rgba(60, 21, 24, 0.35);
     transition: color 0.18s ease;
 }
@@ -434,22 +447,23 @@ body.kiosk-no-scroll {
     opacity: 0.7;
 }
 
-/* Sort options */
+/* Sort options — matches menu gap */
 .kiosk-cat-sidebar .sort-options {
     display: flex;
     flex-direction: column;
-    gap: 0.1rem;
+    gap: 0.15rem;
 }
 
+/* Sort item — matches menu .sort-item */
 .kiosk-cat-sidebar .sort-item {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.4rem 0.75rem;
+    padding: 0.55rem 0.75rem;
     border-radius: var(--radius-sm);
     color: var(--dark-brown);
     font-family: var(--font-body);
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     font-weight: 500;
     background: transparent;
     border-left: 2.5px solid transparent;
@@ -459,7 +473,7 @@ body.kiosk-no-scroll {
 }
 
 .kiosk-cat-sidebar .sort-item i {
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     width: 18px;
     flex-shrink: 0;
     text-align: center;
@@ -492,38 +506,162 @@ body.kiosk-no-scroll {
     color: var(--burgundy-wine);
 }
 
+/* Products area — matches menu-content spacing */
+/* Products area — independent scroll, no top padding (header sits flush) */
 .kiosk-products-area {
     flex: 1;
-    padding: 1.5rem;
+    padding: 0 var(--spacing-md);
     overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
 }
 
-.kiosk-section-title {
-    font-family: var(--font-subheading);
-    font-size: 0.6rem;
-    font-weight: 700;
-    color: var(--dark-brown);
-    opacity: 0.6;
-    text-transform: uppercase;
-    letter-spacing: 1.8px;
-    line-height: 1.2;
-    margin-bottom: 1.3rem;
-    padding-bottom: 0;
-    border-bottom: none;
-}
-
+/* Category group — matches menu .menu-cat-group */
 .kiosk-cat-group {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
+.kiosk-cat-group:first-of-type {
+    padding-top: 0;
+}
+
+/* Category label — matches menu .menu-cat-label */
 .kiosk-cat-label {
     font-family: var(--font-subheading);
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--burgundy-wine);
-    margin-bottom: 0.75rem;
+    padding-top: 0.4rem;
+    margin-bottom: 0.5rem;
     font-weight: 700;
+}
+
+/* Slide-down animation for active filters bar */
+@keyframes kioskFilterSlideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Active filters bar — sticky at very top of products scroll container */
+.kiosk-active-header {
+    display: none;
+    position: sticky;
+    top: 0;
+    z-index: 800;
+
+    background: rgba(245, 241, 232, 0.82);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    box-shadow: 0 6px 28px rgba(226, 217, 200, 0.60);
+
+    padding: 1.5rem var(--spacing-md);
+    margin-left: calc(-1 * var(--spacing-md));
+    margin-right: calc(-1 * var(--spacing-md));
+    width: calc(100% + (var(--spacing-md) * 2));
+    margin-bottom: 1.3rem;
+}
+
+.kiosk-active-header.visible {
+    display: block;
+    animation: kioskFilterSlideDown 0.2s ease both;
+}
+
+/* Active filters row — exact match to .active-filters */
+.kiosk-active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0;
+    margin: -0.5rem 0 -0.8rem 0;
+    min-height: 28px;
+}
+
+/* "ACTIVE FILTERS:" label — exact match to .filter-label */
+.kiosk-filter-label {
+    font-family: var(--font-subheading);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #888;
+    margin-right: 0.25rem;
+    white-space: nowrap;
+}
+
+/* Filter chip — exact match to .filter-badge */
+.kiosk-sort-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px 5px 12px;
+    background: rgba(91, 19, 18, 0.08);
+    color: var(--burgundy-wine);
+    border: none;
+    border-radius: 50px;
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1px;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.kiosk-sort-badge:hover {
+    background: rgba(91, 19, 18, 0.15);
+    transform: translateY(-1px);
+}
+
+/* Remove icon inside chip — exact match to .filter-badge a */
+.kiosk-sort-badge span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    color: var(--burgundy-wine);
+    opacity: 0.6;
+    text-decoration: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.kiosk-sort-badge span:hover {
+    opacity: 1;
+    background: rgba(91, 19, 18, 0.12);
+}
+
+/* Clear All — exact match to .btn-clear-active-filters */
+.kiosk-clear-sort {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 0.5rem;
+    padding: 5px 10px 5px 12px;
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1px;
+    color: #888;
+    background: transparent;
+    border: none;
+    text-decoration: none;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.kiosk-clear-sort i {
+    font-size: 0.7rem;
+}
+
+.kiosk-clear-sort:hover {
+    color: var(--deep-maroon);
+    text-decoration-color: var(--deep-maroon);
 }
 
 .kiosk-products-grid {
@@ -638,16 +776,22 @@ body.kiosk-no-scroll {
     right: 0;
     background: var(--deep-maroon);
     color: #fff;
-    padding: 1rem 1.5rem;
-    display: none;
-    align-items: center;
-    justify-content: space-between;
+    padding: 1rem 0;
+    display: none; /* Changed to block dynamically */
     z-index: 200;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .kiosk-cart-bar.visible {
     transform: translateY(0);
+}
+
+/* New flex class for vertical alignment to progress dots */
+.k-cart-step {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
 }
 
 .cart-bar-left {
@@ -685,7 +829,7 @@ body.kiosk-no-scroll {
     font-weight: 700;
 }
 
-/* View Cart — matches Cancel Order style, adapted for dark background */
+/* View Cart and Back Buttons */
 .btn-view-cart {
     background: transparent;
     border: 1.5px solid rgba(255, 255, 255, 0.45);
@@ -1479,9 +1623,18 @@ body.kiosk-no-scroll {
 
 /* ── Responsive ──────────────────────────────────────────────── */
 @media (max-width: 768px) {
+    .kiosk-menu-wrap {
+        height: auto;
+        min-height: calc(100vh - 130px);
+        overflow: visible;
+    }
+
     .kiosk-cat-sidebar {
         width: 52px;
+        height: auto;
         padding: 1rem 0;
+        overflow-y: visible;
+        overscroll-behavior: auto;
     }
 
     .kiosk-cat-sidebar .filter-panel {
@@ -1499,6 +1652,18 @@ body.kiosk-no-scroll {
     .kiosk-cat-sidebar .category-item {
         padding: 0.75rem;
         justify-content: center;
+    }
+
+    .kiosk-products-area {
+        padding: var(--spacing-sm);
+        overflow-y: visible;
+    }
+
+    .kiosk-active-header {
+        position: relative;
+        top: auto;
+        margin: 0 0 1rem 0;
+        width: 100%;
     }
 
     .kiosk-cart-layout {
