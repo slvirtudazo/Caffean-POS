@@ -72,10 +72,15 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
     <section class="about-hero">
         <div class="about-hero-bg"></div>
         <div class="container position-relative">
-            <span class="about-hero-label">Our Story</span>
-            <h1 class="about-hero-title">Crafted with Passion,<br>Served with Purpose</h1>
+            <span class="about-hero-label">
+                Our Story
+            </span>
+            <h1 class="about-hero-title">
+                Our First Leap, Your Best Sip
+            </h1>
             <p class="about-hero-subtitle">
-                From bean to cup — every detail matters at Purge Coffee.
+                Experience the warmth, passion, and rich flavors
+                of our very first coffee venture
             </p>
             <div class="about-hero-scroll">
                 <i class="fas fa-chevron-down"></i>
@@ -90,29 +95,36 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
         <div class="container">
             <div class="row align-items-center g-5">
                 <div class="col-lg-6 reveal-left">
-                    <span class="section-eyebrow">Who We Are</span>
-                    <h2 class="about-subtitle">Born from a Love of Coffee</h2>
+                    <span class="section-eyebrow">From Our Kitchen to Your Favorite Cup</span>
+                    <h2 class="about-subtitle">A Shared Dream, Freshly Brewed</h2>
                     <p class="about-text">
-                        Purge Coffee was founded with one simple belief — that a great cup of coffee can transform your entire day. What began as a small passion project by a group of dedicated baristas has grown into the city's most beloved coffee destination.
+                        Purge Coffee started as a late-night family dream brewed right in our own kitchen.
+                        Our first business venture took that dining table idea and transformed it into a
+                        welcoming space to share our love of coffee with the community.
                     </p>
                     <p class="about-text">
-                        We travel the world to source the finest single-origin beans, working directly with farmers who share our commitment to quality and sustainability. Every roast is carefully crafted in small batches to bring out each bean's unique character and flavor.
+                        Driven to serve only the best, we hand-select our premium beans from ethical farms
+                        focused on sustainability. Each single-origin roast receives the meticulous,
+                        dedicated care that only a passionate family business can offer.
                     </p>
                     <p class="about-text">
-                        Today, we continue that tradition of ethical sourcing, ensuring every bean we roast not only tastes exceptional but supports sustainable agricultural practices. Whether you're looking for a robust espresso to start your day, a delicate pastry to treat yourself, or a warm space to connect with friends, Purge Coffee is your sanctuary. Welcome to our family.
+                        Today, our doors are wide open, and our espresso machines are humming.
+                        Whether you're stopping by for a robust morning pick-me-up, a delicate
+                        pastry, or just a cozy spot to connect with friends, we want you to feel
+                        right at home. From our family to yours—welcome to Purge Coffee.
                     </p>
                     <div class="about-stats">
                         <div class="about-stat">
-                            <span class="stat-num">5+</span>
+                            <span class="stat-num">2+</span>
                             <span class="stat-label">Years Brewing</span>
                         </div>
                         <div class="about-stat">
-                            <span class="stat-num">12K+</span>
-                            <span class="stat-label">Happy Customers</span>
+                            <span class="stat-num">1</span>
+                            <span class="stat-label">Big Family Leap</span>
                         </div>
                         <div class="about-stat">
-                            <span class="stat-num">30+</span>
-                            <span class="stat-label">Signature Drinks</span>
+                            <span class="stat-num">20+</span>
+                            <span class="stat-label">Handcrafted Recipes</span>
                         </div>
                     </div>
                 </div>
@@ -133,7 +145,7 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
         <div class="container">
             <div class="text-center mb-5 reveal-up">
                 <span class="section-eyebrow">What Drives Us</span>
-                <h2 class="about-subtitle" style="color: var(--ivory-cream);">Our Core Values</h2>
+                <h2 class="about-subtitle">Our Core Values</h2>
             </div>
             <div class="row g-4">
                 <div class="col-md-4 reveal-up" style="--delay: 0s">
@@ -142,7 +154,10 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                             <i class="fas fa-leaf value-icon"></i>
                         </div>
                         <h3 class="value-title">Sustainability</h3>
-                        <p class="value-text">We are committed to eco-friendly practices, from sourcing our beans to our fully compostable packaging.</p>
+                        <p class="value-text">
+                            We keep our community green through eco-friendly
+                            brewing and fully compostable packaging.
+                        </p>
                     </div>
                 </div>
                 <div class="col-md-4 reveal-up" style="--delay: 0.1s">
@@ -151,7 +166,10 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                             <i class="fas fa-handshake value-icon"></i>
                         </div>
                         <h3 class="value-title">Community</h3>
-                        <p class="value-text">We build lasting relationships with our farmers, our team, and every customer who walks through our doors.</p>
+                        <p class="value-text">
+                            We build genuine relationships from farm to cup,
+                            welcoming you to our family's table with every visit.
+                        </p>
                     </div>
                 </div>
                 <div class="col-md-4 reveal-up" style="--delay: 0.2s">
@@ -160,7 +178,10 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                             <i class="fas fa-medal value-icon"></i>
                         </div>
                         <h3 class="value-title">Quality</h3>
-                        <p class="value-text">We never compromise on quality. Every cup served meets our highest standards of taste and craftsmanship.</p>
+                        <p class="value-text">
+                            Crafted to strict homegrown standards.
+                            Pouring uncompromised quality, from our family to yours.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -178,21 +199,16 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
             </div>
             <div class="process-grid">
                 <div class="process-step reveal-up" style="--delay: 0s">
-                    <div class="process-num">01</div>
                     <div class="process-icon"><i class="fas fa-globe-asia"></i></div>
                     <h4 class="process-title">Ethical Sourcing</h4>
                     <p class="process-text">We partner directly with farmers in the best coffee-growing regions, ensuring fair trade and premium quality.</p>
                 </div>
-                <div class="process-connector"></div>
                 <div class="process-step reveal-up" style="--delay: 0.15s">
-                    <div class="process-num">02</div>
                     <div class="process-icon"><i class="fas fa-fire"></i></div>
                     <h4 class="process-title">Small-Batch Roasting</h4>
                     <p class="process-text">Each batch is roasted in-house with precision, unlocking the unique flavors locked inside every bean.</p>
                 </div>
-                <div class="process-connector"></div>
                 <div class="process-step reveal-up" style="--delay: 0.3s">
-                    <div class="process-num">03</div>
                     <div class="process-icon"><i class="fas fa-mug-hot"></i></div>
                     <h4 class="process-title">Expert Brewing</h4>
                     <p class="process-text">Our skilled baristas brew every cup to order, making sure each sip is exactly as it should be — perfect.</p>

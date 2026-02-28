@@ -252,7 +252,7 @@ p {
     text-transform: uppercase;
     letter-spacing: 3px;
     color: var(--burgundy-wine);
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-xs);
     font-weight: 500;
 }
 
@@ -263,15 +263,6 @@ p {
     line-height: 1.1;
     margin-bottom: var(--spacing-lg);
     font-weight: 700;
-}
-
-.hero-description {
-    color: var(--dark-brown);
-    font-family: var(--font-subheading);
-    font-size: 1.2rem;
-    max-width: 520px;
-    margin-bottom: var(--spacing-xl);
-    line-height: 1.8;
 }
 
 .hero-image {
@@ -313,11 +304,10 @@ p {
     box-shadow: var(--shadow-lg);
 }
 
-/* Walk-in / Kiosk button — matches btn-hero but filled */
 .btn-hero-secondary {
-    background-color: var(--deep-maroon);
-    color: var(--ivory-cream);
-    border: 2px solid var(--deep-maroon);
+    background-color: transparent;
+    color: var(--burgundy-wine);
+    border: 2px solid var(--burgundy-wine);
     padding: 0.75rem 2rem;
     border-radius: var(--radius-xxl);
     font-family: var(--font-subheading);
@@ -332,7 +322,6 @@ p {
 
 .btn-hero-secondary:hover {
     background-color: var(--burgundy-wine);
-    border-color: var(--burgundy-wine);
     color: var(--ivory-cream);
     transform: translateY(-3px);
     box-shadow: var(--shadow-lg);
@@ -688,11 +677,6 @@ p {
     .hero-content {
         text-align: center;
         margin-bottom: var(--spacing-xl);
-    }
-
-    .hero-description {
-        margin-left: auto;
-        margin-right: auto;
     }
 
     /* Location Content */

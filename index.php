@@ -70,12 +70,13 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6 hero-content">
-                    <p class="hero-label">Welcome</p>
-                    <h1 class="hero-title">We serve the richest coffee in the city!</h1>
-                    <p class="hero-description">Experience the perfect blend of premium beans and expert craftsmanship in every cup we brew</p>
-                    <a href="menu.php" class="btn-hero">Online Order</a>
+                    <p class="hero-label">Locally Crafted</p>
+                    <h1 class="hero-title">
+                        We serve the richest coffee in Davao!
+                    </h1>
+                    <a href="menu.php" class="btn-hero">Order Online</a>
                     <a href="kiosk.php" class="btn-hero-secondary ms-2">
-                        <i class="fas fa-store me-1"></i> In-store Order
+                        Self-Order Kiosk
                     </a>
                 </div>
                 <div class="col-lg-6 hero-image">

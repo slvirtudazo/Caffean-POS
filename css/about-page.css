@@ -40,14 +40,14 @@
     font-size: 0.8rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 4px;
+    letter-spacing: 2px;
     color: var(--burgundy-wine);
     margin-bottom: var(--spacing-sm);
 }
 
 .about-subtitle {
     font-family: var(--font-heading);
-    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-size: 2.3rem;
     color: var(--deep-maroon);
     margin-bottom: var(--spacing-lg);
     font-weight: 700;
@@ -55,7 +55,8 @@
 }
 
 .about-text {
-    font-size: 1.05rem;
+    font-family: var(--font-subheading);
+    font-size: 1.1rem;
     line-height: 1.9;
     color: var(--dark-brown);
     margin-bottom: var(--spacing-md);
@@ -75,6 +76,7 @@
     text-align: center;
     overflow: hidden;
     padding: var(--spacing-xxl) 0;
+    margin-bottom: 5rem;
 }
 
 /* Animated noise/texture overlay */
@@ -132,7 +134,7 @@
 
 .about-hero-title {
     font-family: var(--font-heading);
-    font-size: clamp(2.4rem, 6vw, 4.5rem);
+    font-size: 4rem;
     color: var(--ivory-cream);
     font-weight: 700;
     line-height: 1.15;
@@ -142,8 +144,8 @@
 
 .about-hero-subtitle {
     font-family: var(--font-subheading);
-    font-size: 1.15rem;
-    color: rgba(245, 241, 232, 0.75);
+    font-size: 1.1rem;
+    color: rgba(245, 241, 232, 0.6);
     max-width: 500px;
     margin: 0 auto var(--spacing-xl);
     line-height: 1.7;
@@ -193,6 +195,7 @@
 ═══════════════════════════════════════════ */
 .about-story-section {
     padding: calc(var(--spacing-xxl) * 1.5) 0;
+    padding-top: calc(var(--spacing-lg) * 4);
     background-color: var(--ivory-cream);
 }
 
@@ -294,7 +297,19 @@
 }
 
 .about-values-section .section-eyebrow {
-    color: rgba(245, 241, 232, 0.55);
+    font-family: var(--font-subheading);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    color: rgba(245, 241, 232, 0.6);
+}
+
+.about-values-section .about-subtitle {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--ivory-cream);
+    margin-bottom: var(--spacing-lg);
 }
 
 .value-card {
@@ -353,98 +368,129 @@
 
 .value-title {
     font-family: var(--font-subheading);
-    font-size: 1.35rem;
+    font-size: 1.3rem;
     font-weight: 700;
     color: var(--ivory-cream);
     margin-bottom: var(--spacing-sm);
 }
 
 .value-text {
-    font-size: 0.97rem;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
     color: rgba(245, 241, 232, 0.7);
     line-height: 1.7;
     margin: 0;
 }
 
 /* ═══════════════════════════════════════════
-   PROCESS SECTION
+   PROCESS SECTION (Matched to Values Theme - Light Mode)
 ═══════════════════════════════════════════ */
 .about-process-section {
     padding: calc(var(--spacing-xxl) * 1.5) 0;
-    background-color: var(--light-beige);
-}
-
-.process-grid {
-    display: flex;
-    align-items: flex-start;
-    gap: 0;
-    justify-content: center;
-    flex-wrap: nowrap;
-}
-
-.process-step {
-    flex: 1;
-    max-width: 280px;
-    text-align: center;
-    padding: var(--spacing-xl) var(--spacing-lg);
-    background: var(--ivory-cream);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-sm);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: var(--ivory-cream); /* Applied Ivory Cream background */
     position: relative;
+    overflow: hidden;
+}
+
+/* Decorative texture (adapted for light background) */
+.about-process-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Ccircle cx='30' cy='30' r='1' fill='rgba(42,0,0,0.03)'/%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+}
+
+.about-process-section .section-eyebrow {
+    font-family: var(--font-subheading);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    color: var(--burgundy-wine); /* Darkened for readability */
+}
+
+.about-process-section .about-subtitle {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--deep-maroon); /* Darkened for readability */
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Updated to Grid to exactly match Values layout */
+.process-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem; /* Matches Bootstrap g-4 spacing */
+    position: relative;
+    z-index: 1;
+}
+
+/* Mirrors .value-card but inverted for Ivory Cream background */
+.process-step {
+    background: rgba(42, 0, 0, 0.03); /* Light maroon glass effect */
+    border: 1px solid rgba(42, 0, 0, 0.06);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-xl);
+    text-align: center;
+    transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    backdrop-filter: blur(4px);
+    position: relative;
+    overflow: hidden;
+}
+
+.process-step::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(42,0,0,0.04) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .process-step:hover {
-    transform: translateY(-6px);
-    box-shadow: var(--shadow-lg);
+    background: rgba(42, 0, 0, 0.05);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(42, 0, 0, 0.1); /* Soft shadow for light theme */
 }
 
-.process-connector {
-    flex: 0 0 60px;
-    height: 2px;
-    background: linear-gradient(90deg, var(--burgundy-wine), rgba(91,19,18,0.2));
-    margin-top: 80px; /* aligns with center of icon */
-    opacity: 0.4;
+.process-step:hover::before {
+    opacity: 1;
 }
 
-.process-num {
-    font-family: var(--font-heading);
-    font-size: 3.5rem;
-    font-weight: 700;
-    color: rgba(42, 0, 0, 0.07);
-    line-height: 1;
-    margin-bottom: -10px;
-}
-
+/* Mirrors .value-icon-wrap (Using your existing .process-icon div) */
 .process-icon {
-    width: 64px;
-    height: 64px;
-    background: linear-gradient(135deg, var(--deep-maroon), var(--burgundy-wine));
+    width: 72px;
+    height: 72px;
+    background: rgba(42, 0, 0, 0.06);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto var(--spacing-md);
-    font-size: 1.5rem;
-    color: var(--ivory-cream);
-    box-shadow: 0 8px 20px rgba(42, 0, 0, 0.25);
-    transition: transform 0.3s ease;
+    font-size: 1.8rem;
+    color: var(--deep-maroon);
+    transition: background 0.3s ease, transform 0.3s ease, color 0.3s ease;
 }
 
 .process-step:hover .process-icon {
-    transform: scale(1.12) rotate(-5deg);
+    background: var(--burgundy-wine);
+    color: var(--ivory-cream); /* Icon turns white on hover */
+    transform: scale(1.1);
 }
 
 .process-title {
     font-family: var(--font-subheading);
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     font-weight: 700;
     color: var(--deep-maroon);
     margin-bottom: var(--spacing-sm);
 }
 
 .process-text {
-    font-size: 0.93rem;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
     color: var(--dark-brown);
     line-height: 1.7;
     margin: 0;
@@ -526,8 +572,7 @@
     }
 
     .process-grid {
-        flex-direction: column;
-        align-items: center;
+        grid-template-columns: 1fr; /* Stacks items perfectly on smaller screens */
         gap: var(--spacing-lg);
     }
 

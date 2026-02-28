@@ -263,7 +263,7 @@
 .cart-empty-state h2 {
     font-family: var(--font-subheading);
     font-size: 1.5rem;
-    font-weight: 500;
+    font-weight: 600;
     color: var(--deep-maroon);
     margin-bottom: 0.75rem;
     letter-spacing: 1px;
