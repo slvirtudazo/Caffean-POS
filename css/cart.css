@@ -1,13 +1,12 @@
 /**
- * Purge Coffee Shop — Cart Page Stylesheet (css/cart.css)
- */
+* Purge Coffee Shop — Cart Page Stylesheet (css/cart.css)
+*/
 
 /* ════════════════════════════════════════════════════════
    PAGE SECTIONS
    ════════════════════════════════════════════════════════ */
 .pg-section {
     display: none;
-    /* FIX: reduced top spacing — "reduce by -2", just a small comfortable gap */
     padding: 28px 0 80px;
     background: var(--ivory-cream);
     min-height: calc(100vh - 120px);
@@ -52,42 +51,48 @@
     border: 1px solid rgba(42, 0, 0, 0.09);
     box-shadow: var(--shadow-sm);
     padding: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .sum-sticky {
     position: sticky;
     top: 88px;
-    /* Height is determined purely by its own content — not tied to the left column */
+    min-height: auto;
 }
 
-/* Items list: natural height, no flex growth, scrollable only when many items */
-.sum-sticky .sum-items {
+/* Push buttons to bottom */
+.sum-actions {
+    margin-top: auto;
+    padding-top: 24px;
+}
+
+.sum-title {
+    font-family: var(--font-subheading);
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--deep-maroon);
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(42, 0, 0, 0.08);
+}
+
+.sum-items {
     overflow-y: auto;
-    max-height: 260px;
-    /* scroll if list gets very long */
+    max-height: 240px;
     margin-bottom: 0;
     scrollbar-width: thin;
     scrollbar-color: rgba(42, 0, 0, 0.15) transparent;
 }
 
-.sum-sticky .sum-items::-webkit-scrollbar {
+.sum-items::-webkit-scrollbar {
     width: 3px;
 }
 
-.sum-sticky .sum-items::-webkit-scrollbar-thumb {
+.sum-items::-webkit-scrollbar-thumb {
     background: rgba(42, 0, 0, 0.18);
     border-radius: 4px;
-}
-
-/* FIX #10: Order Summary title font-weight 700 */
-.sum-title {
-    font-family: var(--font-subheading);
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--deep-maroon);
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid rgba(42, 0, 0, 0.08);
 }
 
 .sum-item-line {
@@ -106,30 +111,29 @@
     border-bottom: none;
 }
 
-/* FIX #12: category-level labels → 500 */
 .sil-name {
     font-family: var(--font-body);
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: var(--deep-maroon);
     line-height: 1.4;
 }
 
-/* FIX #13: low-opacity text → 400 */
 .sil-qty {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 400;
     color: var(--dark-brown);
     margin-left: 4px;
-    font-weight: 400;
 }
 
 .sil-opts {
     display: block;
     font-family: var(--font-body);
-    font-weight: 500;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 400;
     color: rgba(42, 0, 0, 0.45);
     margin-top: 2px;
-    font-weight: 400;
 }
 
 .sil-price {
@@ -138,14 +142,6 @@
     font-size: 0.8rem;
     font-weight: 600;
     color: var(--deep-maroon);
-}
-
-.sil-qty-badge {
-    display: block;
-    font-size: 0.72rem;
-    color: rgba(42, 0, 0, 0.4);
-    text-align: right;
-    font-weight: 400;
 }
 
 .sum-hr {
@@ -158,7 +154,7 @@
     display: flex;
     justify-content: space-between;
     font-family: var(--font-body);
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: var(--deep-maroon);
     padding: 4px 0;
@@ -174,20 +170,12 @@
     padding: 6px 0 2px;
 }
 
-.discount-row {
-    color: #2e7d32;
-}
-
-.disc-label {
-    font-weight: 600;
-}
-
-.disc-val {
-    font-weight: 700;
+.sum-bottom {
+    margin-top: auto;
+    padding-top: 15px;
 }
 
 /* ── Buttons ──────────────────────────────────────────── */
-/* FIX #11: all cart buttons → font-weight 600 */
 .btn-cart-main {
     display: block;
     width: 100%;
@@ -243,7 +231,6 @@
 /* ════════════════════════════════════════════════════════
    SECTION 1 — CART ITEMS
    ════════════════════════════════════════════════════════ */
-
 .cart-empty-state {
     display: flex;
     flex-direction: column;
@@ -278,7 +265,7 @@
     font-size: 1rem;
     color: #7a6f65;
     line-height: 1.5;
-    margin-bottom: 2.3rem;  
+    margin-bottom: 2.3rem;
     max-width: 450px;
 }
 
@@ -320,7 +307,6 @@
     box-shadow: var(--shadow-md);
 }
 
-/* Top row */
 .ci-top {
     display: flex;
     align-items: flex-start;
@@ -342,7 +328,6 @@
     object-fit: cover;
 }
 
-/* FIX #4: placeholder icon centered */
 .ci-img-placeholder {
     width: 100%;
     height: 100%;
@@ -358,7 +343,6 @@
     min-width: 0;
 }
 
-/* FIX #10: product name → font-weight 700 */
 .ci-name {
     font-family: var(--font-subheading);
     font-size: 1.5rem;
@@ -367,7 +351,6 @@
     margin-bottom: 5px;
 }
 
-/* FIX #10: price below name → font-weight 700 */
 .ci-base-price {
     font-family: var(--font-subheading);
     font-size: 1rem;
@@ -376,7 +359,6 @@
     margin-bottom: 4px;
 }
 
-/* FIX #13: options preview → font-weight 400 */
 .ci-opts-preview {
     font-family: var(--font-body);
     font-size: 0.8rem;
@@ -386,7 +368,6 @@
     line-height: 1.4;
 }
 
-/* FIX #3: ci-right only holds delete button, aligned to top */
 .ci-right {
     display: flex;
     flex-direction: column;
@@ -394,7 +375,6 @@
     flex-shrink: 0;
 }
 
-/* Delete button: --deep-maroon primary, --burgundy-wine hover */
 .ci-del-btn {
     background: none;
     border: none;
@@ -412,9 +392,9 @@
     background: rgba(114, 47, 55, 0.08);
 }
 
-/* ── Customization Fields (always visible, no toggle) ──── */
+/* ── Customization Fields ─────────────────────────────── */
 .ci-customize {
-    margin-top: 15px;
+    margin: 0;
     border-top: 1px solid rgba(42, 0, 0, 0.06);
 }
 
@@ -422,20 +402,18 @@
     padding: 0 var(--spacing-xs) var(--spacing-xs);
 }
 
-/* FIX #12: category labels → font-weight 500 */
 .cust-lbl {
     display: block;
     font-family: var(--font-subheading);
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--deep-maroon);
+    color: rgba(60, 21, 24, 0.7);
     margin-bottom: 5px;
     padding-top: var(--spacing-sm);
 }
 
-/* FIX #6 + #13: dropdowns and textareas use --font-body, weight 400 */
 .cust-sel,
 .cust-ta {
     width: 100%;
@@ -443,7 +421,7 @@
     border-radius: 8px;
     padding: 8px 10px;
     font-family: var(--font-body);
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-weight: 500;
     color: var(--dark-brown);
     background: #fff;
@@ -462,14 +440,12 @@
     resize: none;
 }
 
-/* FIX #6: ensure all select options use body font at 400 */
 .cust-sel option {
     font-family: var(--font-body);
     font-weight: 400;
     color: var(--dark-brown);
 }
 
-/* Add-ons checkboxes — plain label layout, no pill shape */
 .addons-grid {
     display: flex;
     flex-wrap: wrap;
@@ -485,9 +461,9 @@
     border-radius: 0;
     padding: 3px 0;
     cursor: pointer;
-    font-size: 0.82rem;
     font-family: var(--font-body);
-    font-weight: 400;
+    font-size: 0.85rem;
+    font-weight: 500;
     color: var(--dark-brown);
     transition: color var(--transition-fast);
 }
@@ -504,16 +480,14 @@
     flex-shrink: 0;
 }
 
-/* Remove has-checked pill style; colour the label text instead */
 .addon-item:has(input:checked) {
     background: transparent;
     color: var(--deep-maroon);
     font-weight: 500;
 }
 
-/* FIX #8: "(Optional)" as plain inline text — no pill shape */
 .opt-text {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     font-family: var(--font-body);
     font-weight: 400;
     color: var(--dark-brown);
@@ -524,8 +498,8 @@
 
 /* ── Quantity Controls ────────────────────────────────── */
 .ci-qty-row {
-    margin-top: 14px;
-    padding-top: 14px;
+    margin-top: 15px;
+    padding-top: 25px;
     border-top: 1px solid rgba(42, 0, 0, 0.06);
 }
 
@@ -569,487 +543,7 @@
 }
 
 /* ════════════════════════════════════════════════════════
-   SECTION 2 — CHECKOUT
-   ════════════════════════════════════════════════════════ */
-.co-card {
-    background: #fff;
-    border-radius: var(--radius-md);
-    border: 1px solid rgba(42, 0, 0, 0.08);
-    box-shadow: var(--shadow-sm);
-    padding: 24px;
-    margin-bottom: 20px;
-}
-
-.co-card-title {
-    font-family: var(--font-subheading);
-    font-size: 0.95rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--deep-maroon);
-    margin-bottom: 20px;
-    padding-bottom: 14px;
-    border-bottom: 1px solid rgba(42, 0, 0, 0.07);
-}
-
-/* FIX #12: checkout labels → 500 */
-.co-label {
-    display: block;
-    font-family: var(--font-subheading);
-    font-size: 0.78rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: rgba(42, 0, 0, 0.5);
-    margin-bottom: 6px;
-}
-
-/* FIX #13: checkout inputs → 400 */
-.co-input {
-    width: 100%;
-    border: 1px solid rgba(42, 0, 0, 0.15);
-    border-radius: var(--radius-sm);
-    padding: 10px 12px;
-    font-family: var(--font-body);
-    font-size: 0.875rem;
-    font-weight: 400;
-    color: var(--dark-brown);
-    background: #fff;
-    transition: border-color var(--transition-fast);
-    appearance: auto;
-}
-
-.co-input:focus {
-    outline: none;
-    border-color: var(--deep-maroon);
-    box-shadow: 0 0 0 3px rgba(42, 0, 0, 0.07);
-}
-
-textarea.co-input {
-    resize: none;
-}
-
-select.co-input option {
-    font-family: var(--font-body);
-    font-weight: 400;
-}
-
-/* Order type selector */
-.ot-options {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 4px;
-}
-
-.ot-opt {
-    cursor: pointer;
-    border: 1.5px solid rgba(42, 0, 0, 0.12);
-    border-radius: var(--radius-sm);
-    transition: all var(--transition-fast);
-    overflow: hidden;
-}
-
-.ot-opt input {
-    display: none;
-}
-
-.ot-opt.active {
-    border-color: var(--deep-maroon);
-    background: rgba(42, 0, 0, 0.03);
-}
-
-.ot-inner {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 16px;
-    font-family: var(--font-subheading);
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: rgba(42, 0, 0, 0.5);
-}
-
-.ot-opt.active .ot-inner {
-    color: var(--deep-maroon);
-}
-
-.ot-inner i {
-    font-size: 1.1rem;
-}
-
-.addr-fields {
-    margin-top: 12px;
-}
-
-/* Payment options */
-.pay-options {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-}
-
-.pay-opt {
-    cursor: pointer;
-    border: 1.5px solid rgba(42, 0, 0, 0.12);
-    border-radius: var(--radius-sm);
-    transition: all var(--transition-fast);
-    overflow: hidden;
-}
-
-.pay-opt input {
-    display: none;
-}
-
-.pay-opt.active {
-    border-color: var(--deep-maroon);
-    background: rgba(42, 0, 0, 0.03);
-}
-
-.pay-inner {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 14px;
-    font-size: 0.9rem;
-}
-
-.pay-name {
-    font-family: var(--font-subheading);
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: rgba(42, 0, 0, 0.6);
-}
-
-.pay-opt.active .pay-name {
-    color: var(--deep-maroon);
-}
-
-.pay-inner i {
-    font-size: 1rem;
-    color: var(--warm-sand);
-}
-
-.pay-opt.active .pay-inner i {
-    color: var(--deep-maroon);
-}
-
-/* Promo row */
-.promo-row {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-.promo-row .btn-cart-back {
-    width: auto;
-    padding: 10px 18px;
-    font-size: 0.85rem;
-}
-
-.promo-msg {
-    font-family: var(--font-body);
-    font-size: 0.8rem;
-    font-weight: 400;
-    margin-top: 8px;
-    margin-bottom: 0;
-}
-
-.promo-ok {
-    color: #2e7d32;
-}
-
-.promo-err {
-    color: #c0392b;
-}
-
-/* Section 2 alert */
-.s2-alert {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 16px;
-    border-radius: var(--radius-sm);
-    font-family: var(--font-body);
-    font-size: 0.88rem;
-    font-weight: 400;
-    margin-bottom: 20px;
-}
-
-.s2-alert-error {
-    background: #fde8e8;
-    color: #c0392b;
-    border: 1px solid #f5c6c6;
-}
-
-.s2-alert-success {
-    background: #e8f5e9;
-    color: #2e7d32;
-    border: 1px solid #c8e6c9;
-}
-
-.s2-alert-close {
-    margin-left: auto;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: inherit;
-    opacity: 0.6;
-    font-weight: 600;
-}
-
-/* ════════════════════════════════════════════════════════
-   SECTION 3 — CONFIRMATION
-   ════════════════════════════════════════════════════════ */
-/* ════════════════════════════════════════════════════════
-   SECTION 3 — ORDER CONFIRMATION
-   ════════════════════════════════════════════════════════ */
-.success-wrap {
-    max-width: 520px;
-    margin: 0 auto;
-    text-align: center;
-    padding: 32px 0 56px;
-}
-
-/* Icon ring */
-.success-icon-ring {
-    width: 72px;
-    height: 72px;
-    border-radius: 50%;
-    background: var(--deep-maroon);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 24px;
-    font-size: 2rem;
-    color: #fff;
-    box-shadow: 0 4px 16px rgba(42, 0, 0, 0.22);
-}
-
-/* Heading */
-.success-h1 {
-    font-family: var(--font-heading);
-    font-size: clamp(1.5rem, 4vw, 2rem);
-    font-weight: 700;
-    color: var(--deep-maroon);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    line-height: 1.2;
-}
-
-/* Subtext */
-.success-sub {
-    font-family: var(--font-body);
-    font-size: 0.92rem;
-    color: rgba(42, 0, 0, 0.5);
-    margin-bottom: 32px;
-    line-height: 1.6;
-}
-
-/* ── Order Details Card ──────────────────────────────── */
-.s3-details-card {
-    background: #fff;
-    border-radius: 14px;
-    border: 1px solid rgba(42, 0, 0, 0.08);
-    box-shadow: 0 2px 12px rgba(42, 0, 0, 0.06);
-    padding: 0;
-    margin-bottom: 16px;
-    text-align: left;
-    overflow: hidden;
-}
-
-.s3-detail-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 13px 22px;
-    border-bottom: 1px solid rgba(42, 0, 0, 0.055);
-    font-family: var(--font-body);
-    font-size: 0.88rem;
-    gap: 12px;
-}
-
-.s3-detail-row:last-child {
-    border-bottom: none;
-    padding-top: 14px;
-    padding-bottom: 14px;
-}
-
-.s3-lbl {
-    font-family: var(--font-subheading);
-    font-weight: 700;
-    color: rgba(42, 0, 0, 0.4);
-    text-transform: uppercase;
-    font-size: 0.7rem;
-    letter-spacing: 0.8px;
-    flex-shrink: 0;
-    min-width: 80px;
-}
-
-.s3-detail-row>span:last-child {
-    font-weight: 500;
-    color: var(--dark-brown);
-    text-align: right;
-}
-
-.s3-total-val {
-    font-family: var(--font-subheading);
-    font-size: 1rem;
-    font-weight: 700 !important;
-    color: var(--deep-maroon) !important;
-}
-
-/* ── Items Section ───────────────────────────────────── */
-.s3-items-title {
-    font-family: var(--font-subheading);
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: rgba(42, 0, 0, 0.4);
-    margin-bottom: 10px;
-    padding: 0 2px;
-}
-
-.s3-items-card {
-    background: #fff;
-    border-radius: 14px;
-    border: 1px solid rgba(42, 0, 0, 0.08);
-    box-shadow: 0 2px 12px rgba(42, 0, 0, 0.06);
-    padding: 0;
-    margin-bottom: 28px;
-    overflow: hidden;
-}
-
-.s3-item-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 13px 22px;
-    border-bottom: 1px solid rgba(42, 0, 0, 0.055);
-    font-family: var(--font-body);
-    font-size: 0.88rem;
-    gap: 12px;
-}
-
-.s3-item-row:last-child {
-    border-bottom: none;
-}
-
-.s3-item-name {
-    font-weight: 500;
-    color: var(--dark-brown);
-}
-
-.s3-item-qty {
-    font-weight: 400;
-    color: rgba(42, 0, 0, 0.45);
-    margin-left: 4px;
-    font-size: 0.83rem;
-}
-
-.s3-item-price {
-    white-space: nowrap;
-    font-weight: 600;
-    color: var(--deep-maroon);
-    flex-shrink: 0;
-    font-size: 0.9rem;
-}
-
-/* ── Success Actions ──────────────────────────────────── */
-.success-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.success-actions .btn-cart-main,
-.success-actions .btn-cart-back {
-    width: auto;
-    min-width: 160px;
-    display: inline-block;
-}
-
-/* ════════════════════════════════════════════════════════
-   RESPONSIVE
-   ════════════════════════════════════════════════════════ */
-@media (max-width: 768px) {
-    .pg-section {
-        padding: 40px 0 60px;
-    }
-
-    .cart-pg-title {
-        letter-spacing: 2px;
-    }
-
-    .ci-img-wrap {
-        width: 72px;
-        height: 72px;
-    }
-
-    .ot-options {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .ot-inner {
-        padding: 10px 12px;
-        font-size: 0.82rem;
-    }
-
-    .ot-inner i {
-        font-size: 1rem;
-    }
-
-    .pay-inner {
-        padding: 10px 12px;
-    }
-
-    .sum-sticky {
-        position: static;
-        top: auto;
-    }
-
-    .success-actions {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .success-actions .btn-cart-main,
-    .success-actions .btn-cart-back {
-        width: 100%;
-        max-width: 340px;
-    }
-}
-
-@media (max-width: 480px) {
-    .ci-top {
-        flex-wrap: wrap;
-    }
-
-    .ci-right {
-        flex-direction: row;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .addons-grid {
-        gap: 6px;
-    }
-
-    .addon-item {
-        padding: 4px 10px;
-        font-size: 0.75rem;
-    }
-
-    .pay-options {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* ════════════════════════════════════════════════════════
-   DELETE CONFIRMATION MODAL (cart page)
+   DELETE CONFIRMATION MODAL
    ════════════════════════════════════════════════════════ */
 .cart-modal-overlay {
     position: fixed;
@@ -1162,7 +656,6 @@ select.co-input option {
     background: rgba(245, 241, 232, 0.25);
 }
 
-/* Cancel button */
 .cart-modal-btn-cancel {
     background: transparent;
     color: rgba(42, 0, 0, 0.55);
@@ -1186,7 +679,6 @@ select.co-input option {
     transform: translateY(-1px);
 }
 
-/* Delete confirm button: --deep-maroon primary, --burgundy-wine hover */
 .cart-modal-btn-delete {
     background: var(--burgundy-wine);
     color: #fff;
@@ -1207,4 +699,48 @@ select.co-input option {
     background: var(--deep-maroon);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(42, 0, 0, 0.22);
+}
+
+/* ════════════════════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+    .pg-section {
+        padding: 40px 0 60px;
+    }
+
+    .cart-pg-title {
+        letter-spacing: 2px;
+    }
+
+    .ci-img-wrap {
+        width: 72px;
+        height: 72px;
+    }
+
+    .sum-sticky {
+        position: static;
+        top: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .ci-top {
+        flex-wrap: wrap;
+    }
+
+    .ci-right {
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .addons-grid {
+        gap: 6px;
+    }
+
+    .addon-item {
+        padding: 4px 10px;
+        font-size: 0.75rem;
+    }
 }
