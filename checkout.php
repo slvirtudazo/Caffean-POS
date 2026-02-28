@@ -1,8 +1,7 @@
 <?php
-
 /**
- * Purge Coffee Shop — Checkout Page (checkout.php)
- * Collects delivery address and payment method, then submits to place_order.php.
+ * Purge Coffee Shop — Checkout Page
+ * Collects customer info, order type, address/pickup, and payment method.
  */
 require_once 'php/db_connection.php';
 
@@ -14,18 +13,17 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
 
 // Must be logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+    header('Location: login.php');
     exit();
 }
 
 // Cart must not be empty
 if (empty($_SESSION['cart'])) {
-    header("Location: cart.php");
+    header('Location: cart.php');
     exit();
 }
 
 /* ── Session cart normalisation ─────────────────────────────── */
-if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
 foreach ($_SESSION['cart'] as $pid => &$v) {
     if (!is_array($v)) {
         $v = [
@@ -54,28 +52,28 @@ mysqli_stmt_close($user_stmt);
 $cart_items   = [];
 $subtotal     = 0.0;
 $DELIVERY_FEE = 50.0;
-if (!empty($_SESSION['cart'])) {
-    $ids = implode(',', array_map('intval', array_keys($_SESSION['cart'])));
-    $res = mysqli_query(
-        $conn,
-        "SELECT product_id, name, price, image_path FROM products
-        WHERE product_id IN ($ids) AND status = 1"
-    );
-    while ($p = mysqli_fetch_assoc($res)) {
-        $pid2                      = $p['product_id'];
-        $o                         = $_SESSION['cart'][$pid2];
-        $p['quantity']             = $o['quantity'];
-        $p['size']                 = $o['size']                 ?? 'Short';
-        $p['temperature']          = $o['temperature']          ?? 'Hot';
-        $p['sugar_level']          = $o['sugar_level']          ?? '0%';
-        $p['milk']                 = $o['milk']                 ?? 'Whole';
-        $p['addons']               = $o['addons']               ?? [];
-        $p['special_instructions'] = $o['special_instructions'] ?? '';
-        $p['item_total']           = $p['price'] * $p['quantity'];
-        $subtotal                 += $p['item_total'];
-        $cart_items[]              = $p;
-    }
+
+$ids = implode(',', array_map('intval', array_keys($_SESSION['cart'])));
+$res = mysqli_query($conn,
+    "SELECT product_id, name, price, image_path FROM products
+     WHERE product_id IN ($ids) AND status = 1"
+);
+while ($p = mysqli_fetch_assoc($res)) {
+    $pid2                      = $p['product_id'];
+    $o                         = $_SESSION['cart'][$pid2];
+    $p['quantity']             = $o['quantity'];
+    $p['size']                 = $o['size']                 ?? 'Short';
+    $p['temperature']          = $o['temperature']          ?? 'Hot';
+    $p['sugar_level']          = $o['sugar_level']          ?? '0%';
+    $p['milk']                 = $o['milk']                 ?? 'Whole';
+    $p['addons']               = $o['addons']               ?? [];
+    $p['special_instructions'] = $o['special_instructions'] ?? '';
+    $p['item_total']           = $p['price'] * $p['quantity'];
+    $subtotal                 += $p['item_total'];
+    $cart_items[]              = $p;
 }
+
+$min_date = date('Y-m-d'); // Prevent past pickup dates
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -94,6 +92,7 @@ if (!empty($_SESSION['cart'])) {
 </head>
 
 <body>
+
     <!-- ── Navbar ────────────────────────────────────────────── -->
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
@@ -130,16 +129,18 @@ if (!empty($_SESSION['cart'])) {
         </div>
     </nav>
 
-    <!-- ════════════════════════════════════════════════════════
-CHECKOUT SECTION
-════════════════════════════════════════════════════════ -->
+    <!-- ── Checkout Section ──────────────────────────────────── -->
     <section class="checkout-page">
         <div class="container">
+
             <h1 class="checkout-title">CHECKOUT</h1>
             <div id="s2-alert-zone"></div>
+
             <div class="row g-4">
+
                 <!-- LEFT: Forms -->
                 <div class="col-lg-7">
+
                     <!-- Customer Information -->
                     <div class="checkout-card">
                         <h3><i class="fas fa-user me-2"></i>Customer Information</h3>
@@ -148,18 +149,24 @@ CHECKOUT SECTION
                                 <label class="form-label">Full Name *</label>
                                 <input type="text" id="co-name" class="form-control"
                                     value="<?= htmlspecialchars($user_info['full_name'] ?? '') ?>"
-                                    placeholder="Your full name" />
+                                    placeholder="Enter your full name"
+                                    autocomplete="name" />
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Email Address *</label>
                                 <input type="email" id="co-email" class="form-control"
                                     value="<?= htmlspecialchars($user_info['email'] ?? '') ?>"
-                                    placeholder="you@email.com" />
+                                    placeholder="example@gmail.com"
+                                    autocomplete="email" />
                             </div>
                             <div class="col-md-6">
+                                <!-- Digits only, 11 chars, enforced via JS -->
                                 <label class="form-label">Mobile Number *</label>
                                 <input type="tel" id="co-mobile" class="form-control"
-                                    placeholder="09XXXXXXXXX" maxlength="11" />
+                                    placeholder="09XXXXXXXXX"
+                                    maxlength="11"
+                                    inputmode="numeric"
+                                    autocomplete="tel" />
                             </div>
                         </div>
                     </div>
@@ -167,83 +174,103 @@ CHECKOUT SECTION
                     <!-- Order Type -->
                     <div class="checkout-card">
                         <h3><i class="fas fa-location-dot me-2"></i>Order Type</h3>
-                        <div class="order-type-options">
-                            <div class="order-type-option">
-                                <input type="radio" name="order_type" id="order-delivery" value="delivery" onchange="switchOrderType('delivery')" checked />
+
+                        <!-- Same card-radio layout as payment; height matches input fields via .order-type-options -->
+                        <div class="payment-options order-type-options">
+                            <div class="payment-option">
+                                <input type="radio" name="order_type" id="order-delivery"
+                                    value="delivery" onchange="switchOrderType('delivery')" checked />
                                 <label for="order-delivery">
-                                    <i class="fas fa-truck"></i>
-                                    <span>Delivery</span>
+                                    <span class="pay-icon"><i class="fas fa-truck"></i></span>
+                                    <span class="pay-label">Delivery</span>
                                 </label>
                             </div>
-                            <div class="order-type-option">
-                                <input type="radio" name="order_type" id="order-pickup" value="pickup" onchange="switchOrderType('pickup')" />
+                            <div class="payment-option">
+                                <input type="radio" name="order_type" id="order-pickup"
+                                    value="pickup" onchange="switchOrderType('pickup')" />
                                 <label for="order-pickup">
-                                    <i class="fas fa-store"></i>
-                                    <span>Pickup</span>
+                                    <span class="pay-icon"><i class="fas fa-store"></i></span>
+                                    <span class="pay-label">Pickup</span>
                                 </label>
                             </div>
                         </div>
 
-                        <!-- Delivery Address Fields -->
-                        <div id="delivery-fields">
+                        <!-- Delivery Address Fields — mt-3 adds the gap below options -->
+                        <div id="delivery-fields" class="mt-3">
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">House/Unit No. *</label>
+                                    <label class="form-label">House / Unit No. *</label>
                                     <input type="text" id="del-house" class="form-control"
-                                        placeholder="e.g. Unit 4B" />
+                                        placeholder="e.g., Blk 2 Lot 5, Unit A"
+                                        autocomplete="address-line1" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Street *</label>
                                     <input type="text" id="del-street" class="form-control"
-                                        placeholder="Street name" />
+                                        placeholder="e.g., Emerald Avenue, San Pedro St."
+                                        autocomplete="address-line2" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Barangay *</label>
                                     <input type="text" id="del-brgy" class="form-control"
-                                        placeholder="Barangay" />
+                                        placeholder="e.g., Brgy. Magang, Matina" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">City / Municipality *</label>
                                     <input type="text" id="del-city" class="form-control"
-                                        placeholder="City" />
+                                        placeholder="City / Municipality"
+                                        autocomplete="address-level2" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Province *</label>
                                     <input type="text" id="del-province" class="form-control"
-                                        placeholder="Province" />
+                                        placeholder="e.g., Camarines Norte, Davao del Sur"
+                                        autocomplete="address-level1" />
                                 </div>
                                 <div class="col-md-6">
+                                    <!-- PH ZIP codes are 4 digits; digits only via JS -->
                                     <label class="form-label">ZIP Code *</label>
                                     <input type="text" id="del-zip" class="form-control"
-                                        placeholder="ZIP" maxlength="10" />
+                                        placeholder="e.g. 8000"
+                                        maxlength="4"
+                                        inputmode="numeric"
+                                        autocomplete="postal-code" />
                                 </div>
                                 <div class="col-12">
-                                    <label class="form-label">Delivery Notes <span style="opacity:0.5">(Optional)</span></label>
-                                    <textarea id="del-notes" class="form-control" rows="2"
-                                        placeholder="Gate code, landmark, etc."></textarea>
+                                    <label class="form-label">
+                                        Delivery Notes <span class="opt-text">(Optional)</span>
+                                    </label>
+                                    <textarea id="del-notes" class="form-control del-notes-ta" rows="3"
+                                        placeholder="e.g., Beside the green gate, leave at guard house..."></textarea>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Pickup Fields -->
-                        <div id="pickup-fields" style="display:none;">
+                        <div id="pickup-fields" class="mt-3" style="display:none;">
                             <div class="row g-3">
                                 <div class="col-12">
                                     <label class="form-label">Pickup Branch *</label>
                                     <select id="pick-branch" class="form-select">
-                                        <option value="" disabled selected>— Select branch —</option>
-                                        <option value="Main Branch - Daet">Main Branch - Daet</option>
-                                        <option value="Branch 2 - Naga">Branch 2 - Naga</option>
+                                        <option value="">Select Branch</option>
+                                        <option value="Diversion Road, Matina Balusong (Main)">Diversion Road, Matina Balusong (Main)</option>
+                                        <option value="Quimpo Boulevard, Ecoland">Quimpo Boulevard, Ecoland</option>
+                                        <option value="J.P. Laurel Avenue, Lanang">J.P. Laurel Avenue, Lanang</option>
+                                        <option value="Polo Street, Obrero">Polo Street, Obrero</option>
+                                        <option value="Prime Square, F. Torres">Prime Square, F. Torres</option>
                                     </select>
                                 </div>
                                 <div class="col-md-6">
+                                    <!-- min set server-side to prevent past dates -->
                                     <label class="form-label">Pickup Date *</label>
-                                    <input type="date" id="pick-date" class="form-control" />
+                                    <input type="date" id="pick-date" class="form-control"
+                                        min="<?= $min_date ?>" />
                                 </div>
                                 <div class="col-md-6">
+                                    <!-- Slots 8:00 AM – 8:00 PM built by JS -->
                                     <label class="form-label">Pickup Time *</label>
                                     <select id="pick-time" class="form-select">
-                                        <option value="" disabled selected>— Select time —</option>
+                                        <option value="">Select Time</option>
                                     </select>
                                 </div>
                             </div>
@@ -253,30 +280,35 @@ CHECKOUT SECTION
                     <!-- Payment Method -->
                     <div class="checkout-card">
                         <h3><i class="fas fa-credit-card me-2"></i>Payment Method</h3>
+                        <!-- CSS :checked handles all active states — no JS needed here -->
                         <div class="payment-options">
                             <div class="payment-option">
-                                <input type="radio" name="payment_method" id="pay-cod" value="Cash on Delivery" checked onchange="activatePayOpt(this)" />
+                                <input type="radio" name="payment_method" id="pay-cod"
+                                    value="Cash on Delivery" checked />
                                 <label for="pay-cod">
                                     <span class="pay-icon"><i class="fas fa-money-bill-wave"></i></span>
                                     <span class="pay-label">Cash on Delivery</span>
                                 </label>
                             </div>
                             <div class="payment-option">
-                                <input type="radio" name="payment_method" id="pay-gcash" value="GCash" onchange="activatePayOpt(this)" />
+                                <input type="radio" name="payment_method" id="pay-gcash"
+                                    value="GCash" />
                                 <label for="pay-gcash">
                                     <span class="pay-icon"><i class="fas fa-mobile-alt"></i></span>
                                     <span class="pay-label">GCash</span>
                                 </label>
                             </div>
                             <div class="payment-option">
-                                <input type="radio" name="payment_method" id="pay-maya" value="Maya" onchange="activatePayOpt(this)" />
+                                <input type="radio" name="payment_method" id="pay-maya"
+                                    value="Maya" />
                                 <label for="pay-maya">
                                     <span class="pay-icon"><i class="fas fa-wallet"></i></span>
                                     <span class="pay-label">Maya</span>
                                 </label>
                             </div>
                             <div class="payment-option">
-                                <input type="radio" name="payment_method" id="pay-bank" value="Bank Transfer" onchange="activatePayOpt(this)" />
+                                <input type="radio" name="payment_method" id="pay-bank"
+                                    value="Bank Transfer" />
                                 <label for="pay-bank">
                                     <span class="pay-icon"><i class="fas fa-building-columns"></i></span>
                                     <span class="pay-label">Bank Transfer</span>
@@ -285,21 +317,14 @@ CHECKOUT SECTION
                         </div>
                     </div>
 
-                    <!-- Promo Code -->
-                    <div class="checkout-card">
-                        <h3><i class="fas fa-tag me-2"></i>Promo Code <span style="opacity:0.5">(Optional)</span></h3>
-                        <div class="promo-input-group">
-                            <input type="text" id="promo-input" placeholder="ENTER PROMO CODE" style="text-transform:uppercase;" />
-                            <button type="button" onclick="applyPromo()">Apply</button>
-                        </div>
-                        <p class="promo-msg" id="promo-msg" style="margin-top:8px;font-size:0.85rem;"></p>
-                    </div>
                 </div>
 
                 <!-- RIGHT: Order Summary -->
                 <div class="col-lg-5">
                     <div class="checkout-card order-summary sum-card sum-sticky">
-                        <h3 class="sum-title"><i class="fas fa-receipt me-2"></i>Order Summary</h3>
+                        <h3 class="sum-title">
+                            <i class="fas fa-receipt me-2"></i>Order Summary
+                        </h3>
 
                         <div class="sum-items">
                             <?php foreach ($cart_items as $item): ?>
@@ -307,185 +332,174 @@ CHECKOUT SECTION
                                     <span class="sil-name">
                                         <?= htmlspecialchars($item['name']) ?>
                                         <span class="sil-qty">× <?= $item['quantity'] ?></span>
-                                        <span class="sil-opts"><?= htmlspecialchars($item['size'] . ' · ' . $item['temperature'] . ' · Sugar ' . $item['sugar_level']) ?></span>
+                                        <span class="sil-opts">
+                                            <?= htmlspecialchars($item['size'] . ' · ' . $item['temperature'] . ' · Sugar ' . $item['sugar_level']) ?>
+                                        </span>
                                     </span>
-                                    <span class="sil-price">₱<?= number_format($item['item_total'], 2) ?></span>
+                                    <span class="sil-price">
+                                        ₱<?= number_format($item['item_total'], 2) ?>
+                                    </span>
                                 </div>
                             <?php endforeach; ?>
                         </div>
 
                         <div class="sum-bottom">
                             <div class="sum-hr"></div>
-                            <div class="sum-calc-row"><span>Subtotal</span><span>₱<?= number_format($subtotal, 2) ?></span></div>
-                            <div class="sum-calc-row"><span>Delivery Fee</span><span>₱<?= number_format($DELIVERY_FEE, 2) ?></span></div>
+                            <div class="sum-calc-row">
+                                <span>Subtotal</span>
+                                <span>₱<?= number_format($subtotal, 2) ?></span>
+                            </div>
+                            <!-- Fee row hidden for pickup (free), updated by switchOrderType() -->
+                            <div class="sum-calc-row" id="co-fee-row">
+                                <span>Delivery Fee</span>
+                                <span id="co-fee">₱<?= number_format($DELIVERY_FEE, 2) ?></span>
+                            </div>
                             <div class="sum-hr"></div>
-                            <div class="sum-total-row"><span>Total Amount</span><span>₱<?= number_format($subtotal + $DELIVERY_FEE, 2) ?></span></div>
+                            <div class="sum-total-row">
+                                <span>Total Amount</span>
+                                <span id="co-total">₱<?= number_format($subtotal + $DELIVERY_FEE, 2) ?></span>
+                            </div>
 
                             <button class="btn-cart-main mt-3" id="btn-place-order" onclick="placeOrder()">
                                 <i class="fas fa-check-circle me-2"></i>Place Order
                             </button>
-                            <a href="cart.php" class="btn-cart-back mt-2 d-block">
-                                <i class="fas fa-arrow-left me-1"></i> Back to Cart
+                            <a href="cart.php" class="btn-cart-back mt-2 d-block text-decoration-none text-center">
+                                <i class="fas fa-arrow-left me-1"></i>Back to Cart
                             </a>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/search.js"></script>
+    <script src="js/search.js?v=<?php echo time(); ?>"></script>
     <script>
         const DELIVERY_FEE = <?= $DELIVERY_FEE ?>;
-        let subtotal = <?= $subtotal ?>;
-        let discountAmt = 0;
-        let appliedPromo = '';
-        let orderType = 'delivery';
+        const subtotal     = <?= $subtotal ?>;
+        let   orderType    = 'delivery';
+
+        /* ── Format number with commas ─────────────────────── */
+        function fmt(n) {
+            return n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
 
         /* ── Order Type Switch ─────────────────────────────── */
         function switchOrderType(type) {
             orderType = type;
             const isDel = type === 'delivery';
             document.getElementById('delivery-fields').style.display = isDel ? 'block' : 'none';
-            document.getElementById('pickup-fields').style.display = isDel ? 'none' : 'block';
+            document.getElementById('pickup-fields').style.display   = isDel ? 'none'  : 'block';
+            // Update fee row and total: delivery = ₱50, pickup = free
+            const feeRow = document.getElementById('co-fee-row');
+            feeRow.style.display = isDel ? 'flex' : 'none';
+            document.getElementById('co-total').textContent = '₱' + fmt(subtotal + (isDel ? DELIVERY_FEE : 0));
         }
 
-        /* ── Payment Method ────────────────────────────────── */
-        function activatePayOpt(radio) {
-            document.querySelectorAll('.payment-option').forEach(el => {
-                el.querySelector('label').style.borderColor = '';
-                el.querySelector('label').style.background = '';
+        /* ── Digits-only enforcement (mobile + ZIP) ────────── */
+        function digitsOnly(el) {
+            el.addEventListener('keydown', function(e) {
+                const ctrl = e.ctrlKey || e.metaKey;
+                const nav  = [8, 9, 35, 36, 37, 39, 46].includes(e.keyCode);
+                if (!ctrl && !nav && !/^\d$/.test(e.key)) e.preventDefault();
             });
-            radio.nextElementSibling.style.borderColor = 'var(--deep-maroon)';
-            radio.nextElementSibling.style.background = 'rgba(60, 21, 24, 0.07)';
+            el.addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '');
+            });
+            el.addEventListener('paste', function(e) {
+                e.preventDefault();
+                const pasted = (e.clipboardData || window.clipboardData).getData('text');
+                const digits = pasted.replace(/\D/g, '');
+                const max    = parseInt(this.getAttribute('maxlength') || '99');
+                this.value   = (this.value + digits).slice(0, max);
+            });
         }
+        digitsOnly(document.getElementById('co-mobile'));
+        digitsOnly(document.getElementById('del-zip'));
 
-        /* ── Promo Code ────────────────────────────────────── */
-        function applyPromo() {
-            const code = document.getElementById('promo-input').value.trim();
-            if (!code) {
-                setPromoMsg('Please enter a promo code.', false);
-                return;
-            }
-            const fd = new FormData();
-            fd.append('code', code);
-            fd.append('subtotal', subtotal);
-            fetch('php/apply_promo.php', {
-                    method: 'POST',
-                    body: fd
-                })
-                .then(r => r.json())
-                .then(d => {
-                    if (d.success) {
-                        discountAmt = d.discount_amount;
-                        appliedPromo = code;
-                        setPromoMsg(d.message, true);
-                    } else {
-                        discountAmt = 0;
-                        appliedPromo = '';
-                        setPromoMsg(d.message, false);
-                    }
-                });
-        }
-
-        function setPromoMsg(msg, ok) {
-            const el = document.getElementById('promo-msg');
-            el.textContent = msg;
-            el.style.color = ok ? '#2e7d32' : '#c0392b';
+        /* ── Validate email format ─────────────────────────── */
+        function validEmail(v) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
         }
 
         /* ── Place Order ───────────────────────────────────── */
         function placeOrder() {
             clearAlert();
-            const name = document.getElementById('co-name').value.trim();
-            const email = document.getElementById('co-email').value.trim();
-            const mobile = document.getElementById('co-mobile').value.trim();
+            const name    = document.getElementById('co-name').value.trim();
+            const email   = document.getElementById('co-email').value.trim();
+            const mobile  = document.getElementById('co-mobile').value.trim();
             const payment = document.querySelector('input[name="payment_method"]:checked')?.value || '';
 
-            if (!name || !email || !mobile) return showAlert('Please fill in all customer information fields.', 'error');
-            if (!/^09\d{9}$/.test(mobile)) return showAlert('Enter a valid PH mobile number (09XXXXXXXXX).', 'error');
+            if (!name)              return showAlert('Please enter your full name.');
+            if (!validEmail(email)) return showAlert('Please enter a valid email address.');
+            if (!/^09\d{9}$/.test(mobile))
+                                    return showAlert('Enter a valid PH mobile number (09XXXXXXXXX).');
+            if (!payment)           return showAlert('Please select a payment method.');
 
-            const data = {
-                name,
-                email,
-                mobile,
-                payment_method: payment,
-                order_type: orderType,
-                promo_code: appliedPromo
-            };
+            const data = { name, email, mobile, payment_method: payment, order_type: orderType };
 
             if (orderType === 'delivery') {
-                const house = document.getElementById('del-house').value.trim();
-                const street = document.getElementById('del-street').value.trim();
-                const brgy = document.getElementById('del-brgy').value.trim();
-                const city = document.getElementById('del-city').value.trim();
+                const house    = document.getElementById('del-house').value.trim();
+                const street   = document.getElementById('del-street').value.trim();
+                const brgy     = document.getElementById('del-brgy').value.trim();
+                const city     = document.getElementById('del-city').value.trim();
                 const province = document.getElementById('del-province').value.trim();
-                const zip = document.getElementById('del-zip').value.trim();
+                const zip      = document.getElementById('del-zip').value.trim();
                 if (!house || !street || !brgy || !city || !province || !zip)
-                    return showAlert('Please fill in all required delivery address fields.', 'error');
+                    return showAlert('Please fill in all required delivery address fields.');
+                if (!/^\d{4}$/.test(zip))
+                    return showAlert('Enter a valid 4-digit Philippine ZIP code.');
                 Object.assign(data, {
-                    house_unit: house,
-                    street_name: street,
-                    barangay: brgy,
-                    city_municipality: city,
-                    province,
-                    zip_code: zip,
+                    house_unit: house, street_name: street, barangay: brgy,
+                    city_municipality: city, province, zip_code: zip,
                     delivery_notes: document.getElementById('del-notes').value.trim()
                 });
             } else {
                 const branch = document.getElementById('pick-branch').value;
-                const date = document.getElementById('pick-date').value;
-                const time = document.getElementById('pick-time').value;
-                if (!branch || !date || !time)
-                    return showAlert('Please select your pickup branch, date, and time.', 'error');
-                Object.assign(data, {
-                    pickup_branch: branch,
-                    pickup_date: date,
-                    pickup_time: time
-                });
+                const date   = document.getElementById('pick-date').value;
+                const time   = document.getElementById('pick-time').value;
+                if (!branch) return showAlert('Please select a pickup branch.');
+                if (!date)   return showAlert('Please select a pickup date.');
+                if (!time)   return showAlert('Please select a pickup time.');
+                Object.assign(data, { pickup_branch: branch, pickup_date: date, pickup_time: time });
             }
 
             const btn = document.getElementById('btn-place-order');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Placing Order…';
+            btn.disabled    = true;
+            btn.innerHTML   = '<i class="fas fa-spinner fa-spin me-2"></i>Placing Order…';
 
             const fd = new FormData();
             Object.entries(data).forEach(([k, v]) => fd.append(k, v));
 
-            fetch('php/place_order.php', {
-                    method: 'POST',
-                    body: fd
-                })
+            fetch('php/place_order.php', { method: 'POST', body: fd })
                 .then(r => r.json())
                 .then(d => {
                     if (d.success) {
                         window.location.href = 'order_success.php?order_id=' + d.order_id;
                     } else {
-                        showAlert(d.message || 'Something went wrong. Please try again.', 'error');
-                        btn.disabled = false;
-                        btn.innerHTML = '<i class="fas fa-check-circle"></i> Place Order';
+                        showAlert(d.message || 'Something went wrong. Please try again.');
+                        btn.disabled  = false;
+                        btn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Place Order';
                     }
                 })
                 .catch(() => {
-                    showAlert('Network error. Please try again.', 'error');
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-check-circle"></i> Place Order';
+                    showAlert('Network error. Please check your connection and try again.');
+                    btn.disabled  = false;
+                    btn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Place Order';
                 });
         }
 
-        /* ── Inline Alert ─────────────────────────────── */
-        function showAlert(msg, type) {
+        /* ── Inline Alert ──────────────────────────────────── */
+        function showAlert(msg) {
             const zone = document.getElementById('s2-alert-zone');
             zone.innerHTML = `<div class="alert-error">
-        <i class="fas fa-exclamation-circle"></i>${msg}
-        <button class="dismiss-btn" onclick="clearAlert()">&#x2715;</button>
-    </div>`;
-            zone.scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest'
-            });
+                <i class="fas fa-exclamation-circle"></i>${msg}
+                <button class="dismiss-btn" onclick="clearAlert()">&#x2715;</button>
+            </div>`;
+            zone.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             setTimeout(clearAlert, 6000);
         }
 
@@ -493,26 +507,25 @@ CHECKOUT SECTION
             document.getElementById('s2-alert-zone').innerHTML = '';
         }
 
-        /* ── Populate pickup time slots ────────────────────── */
+        /* ── Pickup time slots: 8:00 AM – 8:00 PM only ────── */
         (function buildTimeSlots() {
             const sel = document.getElementById('pick-time');
             if (!sel) return;
-            for (let h = 7; h <= 20; h++) {
+            for (let h = 8; h <= 20; h++) {
                 ['00', '30'].forEach(m => {
-                    if (h === 20 && m === '30') return;
-                    const val = `${String(h).padStart(2, '0')}:${m}`;
-                    const ampm = h < 12 ? 'AM' : 'PM';
-                    const hr12 = h <= 12 ? h : h - 12;
-                    const label = `${hr12 === 0 ? 12 : hr12}:${m} ${ampm}`;
-                    const opt = document.createElement('option');
-                    opt.value = val;
+                    if (h === 20 && m === '30') return; // last slot is 8:00 PM
+                    const val   = `${String(h).padStart(2, '0')}:${m}`;
+                    const ampm  = h < 12 ? 'AM' : 'PM';
+                    const hr12  = h > 12 ? h - 12 : h;
+                    const label = `${hr12}:${m} ${ampm}`;
+                    const opt   = document.createElement('option');
+                    opt.value       = val;
                     opt.textContent = label;
                     sel.appendChild(opt);
                 });
             }
         })();
     </script>
-    <script src="js/search.js?v=<?php echo time(); ?>"></script>
-</body>
 
+</body>
 </html>

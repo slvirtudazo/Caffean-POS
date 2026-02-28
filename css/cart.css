@@ -80,7 +80,7 @@
 
 .sum-items {
     overflow-y: auto;
-    max-height: 240px;
+    max-height: 200px;
     margin-bottom: 0;
     scrollbar-width: thin;
     scrollbar-color: rgba(42, 0, 0, 0.15) transparent;
@@ -139,7 +139,7 @@
 .sil-price {
     white-space: nowrap;
     font-family: var(--font-body);
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: var(--deep-maroon);
 }
@@ -364,7 +364,6 @@
     font-size: 0.8rem;
     font-weight: 500;
     color: rgba(42, 0, 0, 0.45);
-    margin: 0;
     line-height: 1.4;
 }
 

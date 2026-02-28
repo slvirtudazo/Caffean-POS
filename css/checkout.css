@@ -1,19 +1,28 @@
+/* ════════════════════════════════════════════════════════
+PAGE WRAPPER
+════════════════════════════════════════════════════════ */
 .checkout-page {
-    padding: 60px 0;
+    padding: 28px 0 80px;
     background: var(--ivory-cream, #f5f1e8);
-    min-height: 80vh;
+    min-height: calc(100vh - 120px);
 }
 
+/* Title — EXACT same typography as SHOPPING CART heading */
 .checkout-title {
-    font-family: var(--font-heading);
-    font-size: 2rem;
-    color: var(--deep-maroon, #3c1518);
-    margin-bottom: 30px;
+    font-family: var(--font-subheading);
+    font-size: 45px;
+    font-weight: 700;
     text-align: center;
-    letter-spacing: 2px;
     text-transform: uppercase;
+    letter-spacing: 5px;
+    color: var(--deep-maroon, #3c1518);
+    margin-top: 10px;
+    margin-bottom: 50px;
 }
 
+/* ════════════════════════════════════════════════════════
+CARDS
+════════════════════════════════════════════════════════ */
 .checkout-card {
     background: #fff;
     border-radius: 12px;
@@ -37,6 +46,9 @@
     font-size: 1.1rem;
 }
 
+/* ════════════════════════════════════════════════════════
+FORM ELEMENTS
+════════════════════════════════════════════════════════ */
 .form-label {
     font-family: var(--font-subheading);
     font-size: 0.8rem;
@@ -45,11 +57,24 @@
     color: rgba(60, 21, 24, 0.7);
 }
 
+.opt-text {
+    font-size: 0.8rem;
+    font-family: var(--font-body);
+    font-weight: 400;
+    color: var(--dark-brown);
+    margin-left: 4px;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
 .form-control,
 .form-select {
     border: 1px solid rgba(60, 21, 24, 0.2);
     border-radius: 8px;
     font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--dark-brown);
     padding: 10px 14px;
 }
 
@@ -59,7 +84,93 @@
     box-shadow: 0 0 0 3px rgba(60, 21, 24, 0.1);
 }
 
-/* Order Summary — matches cart page layout exactly */
+/* Delivery notes — fixed, scrollable, not resizable */
+.del-notes-ta {
+    resize: none;
+    overflow-y: auto;
+    min-height: 72px;
+    max-height: 120px;
+}
+
+/* ════════════════════════════════════════════════════════
+PAYMENT & ORDER TYPE CARD RADIOS
+════════════════════════════════════════════════════════ */
+.payment-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.payment-option {
+    position: relative;
+}
+
+.payment-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.payment-option label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1.5px solid rgba(60, 21, 24, 0.2);
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: var(--font-subheading);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(60, 21, 24, 0.75);
+    background: #fff;
+    transition: all 0.18s ease;
+    user-select: none;
+}
+
+.payment-option label:hover {
+    border-color: var(--deep-maroon, #3c1518);
+    background: rgba(60, 21, 24, 0.03);
+    color: var(--deep-maroon, #3c1518);
+}
+
+.payment-option input[type="radio"]:checked + label {
+    border-color: var(--deep-maroon, #3c1518);
+    background: rgba(60, 21, 24, 0.07);
+    color: var(--deep-maroon, #3c1518);
+    box-shadow: 0 0 0 3px rgba(60, 21, 24, 0.08);
+}
+
+/* Icon — no background; icon color shifts on checked */
+.payment-option label .pay-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: rgba(60, 21, 24, 0.45);
+    transition: color 0.18s ease;
+    flex-shrink: 0;
+}
+
+.payment-option input[type="radio"]:checked + label .pay-icon {
+    color: var(--deep-maroon, #3c1518);
+}
+
+.payment-option label .pay-label {
+    line-height: 1.2;
+}
+
+/* Order type options — shorter padding to match input field height */
+.order-type-options .payment-option label {
+    padding: 10px 16px;
+}
+
+/* ════════════════════════════════════════════════════════
+ORDER SUMMARY (shared with cart)
+════════════════════════════════════════════════════════ */
 .checkout-card.order-summary {
     display: flex;
     flex-direction: column;
@@ -79,7 +190,7 @@
 
 .sum-items {
     overflow-y: auto;
-    max-height: 240px;
+    max-height: 200px;
     margin-bottom: 0;
     scrollbar-width: thin;
     scrollbar-color: rgba(42, 0, 0, 0.15) transparent;
@@ -139,7 +250,7 @@
 .sil-price {
     white-space: nowrap;
     font-family: var(--font-body);
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: var(--deep-maroon, #3c1518);
 }
@@ -175,7 +286,9 @@
     padding-top: 15px;
 }
 
-/* Checkout buttons — matches cart btn-cart-main / btn-cart-back */
+/* ════════════════════════════════════════════════════════
+BUTTONS
+════════════════════════════════════════════════════════ */
 .btn-cart-main {
     display: block;
     width: 100%;
@@ -224,80 +337,9 @@
     color: var(--deep-maroon, #3c1518);
 }
 
-
-
-/* Payment Method Card Radio Buttons */
-.payment-options {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-
-.payment-option {
-    position: relative;
-}
-
-.payment-option input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.payment-option label {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 16px;
-    border: 1.5px solid rgba(60, 21, 24, 0.2);
-    border-radius: 10px;
-    cursor: pointer;
-    font-family: var(--font-subheading);
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: rgba(60, 21, 24, 0.75);
-    background: #fff;
-    transition: all 0.18s ease;
-    user-select: none;
-}
-
-.payment-option label:hover {
-    border-color: var(--deep-maroon, #3c1518);
-    background: rgba(60, 21, 24, 0.03);
-    color: var(--deep-maroon, #3c1518);
-}
-
-.payment-option input[type="radio"]:checked+label {
-    border-color: var(--deep-maroon, #3c1518);
-    background: rgba(60, 21, 24, 0.07);
-    color: var(--deep-maroon, #3c1518);
-    box-shadow: 0 0 0 3px rgba(60, 21, 24, 0.08);
-}
-
-.payment-option label .pay-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    background: rgba(60, 21, 24, 0.08);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    color: rgba(60, 21, 24, 0.5);
-    transition: all 0.18s ease;
-    flex-shrink: 0;
-}
-
-.payment-option input[type="radio"]:checked+label .pay-icon {
-    background: var(--deep-maroon, #3c1518);
-    color: #fff;
-}
-
-.payment-option label .pay-label {
-    line-height: 1.2;
-}
-
-/* Alert Messages */
+/* ════════════════════════════════════════════════════════
+ALERTS
+════════════════════════════════════════════════════════ */
 .alert-error {
     background: #fdecea;
     color: #7b1a1a;
@@ -323,29 +365,17 @@
     line-height: 1;
 }
 
-.back-link {
-    font-family: var(--font-subheading);
-    font-size: 0.9rem;
-    color: var(--deep-maroon, #3c1518);
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 20px;
-}
-
-.back-link:hover {
-    text-decoration: underline;
-    color: var(--deep-maroon, #3c1518);
-}
-
-/* Order Summary sticky — mirrors cart page behaviour */
+/* ════════════════════════════════════════════════════════
+STICKY SUMMARY
+════════════════════════════════════════════════════════ */
 .sum-sticky {
     position: sticky;
     top: 88px;
 }
 
-/* Responsive */
+/* ════════════════════════════════════════════════════════
+RESPONSIVE
+════════════════════════════════════════════════════════ */
 @media (max-width: 991px) {
     .checkout-page {
         padding: 40px 0;
@@ -373,6 +403,7 @@
 
 @media (max-width: 480px) {
     .checkout-title {
-        font-size: 1.5rem;
+        font-size: 28px;
+        letter-spacing: 3px;
     }
 }

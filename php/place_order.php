@@ -156,7 +156,7 @@ try {
              promo_code, discount_amount)
          VALUES (?,?,?,'pending',?,?, ?,?, ?,?,?,?,?,?, ?,?,?,?, ?,?)"
     );
-    mysqli_stmt_bind_param($stmt, 'sidssssssssssssssd',
+    mysqli_stmt_bind_param($stmt, 'sidsssssssssssssssd',
         $order_number, $user_id, $total,
         $payment_method, $delivery_address,
         $mobile, $order_type,
@@ -190,7 +190,7 @@ try {
         $addons   = is_array($opts) ? implode(', ', (array)($opts['addons'] ?? [])) : null;
         $notes    = is_array($opts) ? ($opts['special_instructions'] ?? null) : null;
 
-        mysqli_stmt_bind_param($stmt, 'iiidsssss',
+        mysqli_stmt_bind_param($stmt, 'iiidssssss',
             $order_id, $pid, $qty, $price,
             $size, $temp, $sugar, $milk, $addons, $notes
         );

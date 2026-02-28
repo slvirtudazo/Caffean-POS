@@ -305,7 +305,7 @@ CART ITEMS SECTION ONLY
                                 <div class="sum-actions">
                                     <?php if (isset($_SESSION['user_id'])): ?>
                                         <a href="checkout.php" class="btn-cart-main btn-full text-center d-block text-decoration-none">
-                                            Proceed to Checkout
+                                            Proceed to Checkout <i class="fas fa-arrow-right ms-1"></i>
                                         </a>
                                     <?php else: ?>
                                         <a href="login.php" class="btn-cart-main btn-full text-center d-block text-decoration-none">
