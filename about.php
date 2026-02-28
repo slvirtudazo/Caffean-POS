@@ -225,7 +225,7 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
         <div class="container text-center reveal-up">
             <h2 class="about-cta-title">Come Taste What We've Been Brewing</h2>
             <p class="about-cta-text">Explore our family's menu and find your new favorite daily ritual.</p>
-            <a href="menu.php" class="about-cta-btn">View All Menu</a>
+            <a href="menu.php" class="about-cta-btn">Browse Menu</a>
         </div>
     </section>
 

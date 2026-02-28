@@ -128,3 +128,92 @@
 .bounce {
     animation: bounce 0.5s ease;
 }
+
+/* =========================================================
+   LOGIN-REQUIRED POPUP
+   ========================================================= */
+.login-popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(42, 0, 0, 0.45);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-popup-card {
+    background: var(--ivory-cream, #F5F1E8);
+    border-radius: 16px;
+    padding: 2rem 2.5rem;
+    text-align: center;
+    max-width: 360px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(42, 0, 0, 0.18);
+    animation: fadeIn 0.25s ease;
+}
+
+.login-popup-title {
+    font-family: var(--font-heading, 'EB Garamond', serif);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--deep-maroon, #2A0000);
+    margin-bottom: 1.5rem;
+}
+
+.login-popup-message {
+    font-family: var(--font-body, 'Quicksand', sans-serif);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--dark-brown, #3C1518);
+    margin-bottom: 1.5rem;
+}
+
+.login-popup-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btn-popup-login {
+    background: transparent;
+    color: var(--deep-maroon);
+    border: 2px solid var(--deep-maroon);
+    border-radius: 50px;
+    padding: 0.5rem 1.5rem;
+    font-family: var(--font-subheading, 'Outfit', sans-serif);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+}
+
+.btn-popup-login:hover {
+    background: var(--burgundy-wine);
+    color: var(--ivory-cream);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-popup-close {
+    background: transparent;
+    color: var(--deep-maroon);
+    border: 2px solid var(--deep-maroon);
+    border-radius: 50px;
+    padding: 0.5rem 1.5rem;
+    font-family: var(--font-subheading);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+}
+
+.btn-popup-close:hover {
+    background: var(--burgundy-wine);
+    color: var(--ivory-cream);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
+}

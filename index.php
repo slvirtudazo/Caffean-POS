@@ -7,7 +7,8 @@
 require_once 'php/db_connection.php';
 
 // ── Admin check ───────────────────────────────────────────────
-$is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+$is_admin      = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+$is_logged_in  = isset($_SESSION['user_id']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,6 +24,7 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
     <link rel="stylesheet" href="css/buttons.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/footer-section.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/components.css?v=<?php echo time(); ?>">
 </head>
 
 <body>
@@ -74,10 +76,12 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                     <h1 class="hero-title">
                         We serve the richest coffee in Davao!
                     </h1>
-                    <a href="menu.php" class="btn-hero">Order Online</a>
-                    <a href="kiosk.php" class="btn-hero-secondary ms-2">
-                        Self-Order Kiosk
-                    </a>
+                    <?php if ($is_logged_in): ?>
+                        <a href="menu.php" class="btn-hero">Order Online</a>
+                    <?php else: ?>
+                        <button class="btn-hero" onclick="showLoginRequiredPopup()">Order Online</button>
+                    <?php endif; ?>
+                    <a href="kiosk.php" class="btn-hero-secondary ms-2">Self-Order Kiosk</a>
                 </div>
                 <div class="col-lg-6 hero-image">
                     <img src="images/coffee_mug.png" alt="Premium Coffee">
@@ -185,6 +189,31 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
     </section>
 
     <?php include 'includes/footer.php'; ?>
+
+    <!-- Login Required Popup -->
+    <div id="login-required-popup" class="login-popup-overlay" style="display:none;" onclick="closeLoginPopup(event)">
+        <div class="login-popup-card">
+            <h3 class="login-popup-title">Login Required</h3>
+            <p class="login-popup-message">You must be logged in to save and track your order transactions.</p>
+            <div class="login-popup-actions">
+                <a href="login.php" class="btn-popup-login">Log In</a>
+                <button class="btn-popup-close" onclick="document.getElementById('login-required-popup').style.display='none'">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* Show the login-required popup */
+        function showLoginRequiredPopup() {
+            document.getElementById('login-required-popup').style.display = 'flex';
+        }
+        /* Close popup when clicking outside the card */
+        function closeLoginPopup(event) {
+            if (event.target === document.getElementById('login-required-popup')) {
+                document.getElementById('login-required-popup').style.display = 'none';
+            }
+        }
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/main.js?v=<?php echo time(); ?>"></script>
