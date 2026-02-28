@@ -194,7 +194,7 @@ $is_logged_in  = isset($_SESSION['user_id']);
     <div id="login-required-popup" class="login-popup-overlay" style="display:none;" onclick="closeLoginPopup(event)">
         <div class="login-popup-card">
             <h3 class="login-popup-title">Login Required</h3>
-            <p class="login-popup-message">You must be logged in to save and track your order transactions.</p>
+            <p class="login-popup-message">You must be logged in to save<br>and track your order transactions.</p>
             <div class="login-popup-actions">
                 <a href="login.php" class="btn-popup-login">Log In</a>
                 <button class="btn-popup-close" onclick="document.getElementById('login-required-popup').style.display='none'">Cancel</button>
@@ -216,6 +216,7 @@ $is_logged_in  = isset($_SESSION['user_id']);
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>window.IS_LOGGED_IN = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;</script>
     <script src="js/main.js?v=<?php echo time(); ?>"></script>
     <script src="js/search.js?v=<?php echo time(); ?>"></script>
 

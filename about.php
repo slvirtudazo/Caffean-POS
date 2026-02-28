@@ -225,11 +225,12 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
         <div class="container text-center reveal-up">
             <h2 class="about-cta-title">Come Taste What We've Been Brewing</h2>
             <p class="about-cta-text">Explore our family's menu and find your new favorite daily ritual.</p>
-            <a href="menu.php" class="about-cta-btn">Browse Menu</a>
+            <a href="menu.php" class="about-cta-btn">View All Menu</a>
         </div>
     </section>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>window.IS_LOGGED_IN = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;</script>
     <script src="js/main.js?v=<?php echo time(); ?>"></script>
     <script src="js/search.js?v=<?php echo time(); ?>"></script>
 

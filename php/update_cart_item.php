@@ -3,10 +3,19 @@
 /**
  * Purge Coffee Shop — Update Cart Item AJAX Handler (php/update_cart_item.php)
  * Actions: update_qty | update_option | update_addons | remove
- * FIX #2: update_qty minimum is 1 — quantity can never go below 1 via this handler.
  */
+ob_start();
+error_reporting(0);
+ini_set('display_errors', 0);
+
 require_once 'db_connection.php';
 
+// Load cart sync utility if available
+if (file_exists(__DIR__ . '/sync_cart.php')) {
+    require_once 'sync_cart.php';
+}
+
+ob_clean();
 header('Content-Type: application/json');
 $r = ['success' => false, 'message' => ''];
 
@@ -106,6 +115,11 @@ if (!empty($_SESSION['cart'])) {
     }
 }
 
+// Sync updated cart to DB for logged-in users
+if (isset($_SESSION['user_id']) && function_exists('saveCartToDb')) {
+    saveCartToDb($conn, $_SESSION['user_id']);
+}
+
 $cartCount = array_sum(array_column(array_values($_SESSION['cart'] ?: []), 'quantity'));
 
 /* ── Build response ───────────────────────────────────────── */
@@ -120,4 +134,6 @@ if ($action !== 'remove' && isset($_SESSION['cart'][$pid]) && isset($prices[$pid
     $r['item']       = $opts;
 }
 
+ob_clean();
 echo json_encode($r);
+exit();

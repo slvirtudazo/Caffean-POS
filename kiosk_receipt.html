@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiosk Receipt</title>
+    <!-- Bootstrap 5 CSS Framework -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Define global color variables for theme consistency */
+        :root {
+            --bg-cream: #F9F7F2;
+            --receipt-white: #FFFFFF;
+            --accent-red: #800020;
+            --text-dark: #333333;
+        }
+
+        /* Set page background to cream color */
+        body {
+            background-color: var(--bg-cream);
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: var(--text-dark);
+        }
+
+        /* Style the main receipt container */
+        .receipt-card {
+            background-color: var(--receipt-white);
+            border-top: 5px solid var(--accent-red);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 8px;
+        }
+
+        /* Style header text elements */
+        .shop-name {
+            color: var(--accent-red);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* Style separator lines between sections */
+        .divider {
+            border-top: 1px dashed #cccccc;
+            margin: 15px 0;
+        }
+
+        /* Style total amount text */
+        .total-amount {
+            color: var(--accent-red);
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main container for centering the receipt -->
+    <div class="container">
+        <!-- Receipt card wrapper -->
+        <div class="receipt-card">
+            
+            <!-- Header section containing shop branding -->
+            <div class="text-center mb-4">
+                <h2 class="shop-name">BREW & CO.</h2>
+                <p class="text-muted small mb-0">123 Coffee Lane, Cityville</p>
+                <p class="text-muted small">Order #1024 | 2023-10-27 14:30</p>
+            </div>
+
+            <!-- Order items list section -->
+            <div class="order-items">
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Latte (Large)</span>
+                    <span>$5.50</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Croissant</span>
+                    <span>$3.00</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Extra Shot</span>
+                    <span>$1.00</span>
+                </div>
+            </div>
+
+            <!-- Visual separator line -->
+            <div class="divider"></div>
+
+            <!-- Totals calculation section -->
+            <div class="totals-section">
+                <div class="d-flex justify-content-between mb-1">
+                    <span class="text-muted">Subtotal</span>
+                    <span>$9.50</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-muted">Tax (10%)</span>
+                    <span>$0.95</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fw-bold">Total</span>
+                    <span class="total-amount">$10.45</span>
+                </div>
+            </div>
+
+            <!-- Visual separator line -->
+            <div class="divider"></div>
+
+            <!-- Footer section with payment and thank you message -->
+            <div class="text-center mt-4">
+                <p class="mb-1 small">Paid via Credit Card</p>
+                <p class="shop-name fw-bold mb-3">Thank You!</p>
+                <div class="qr-placeholder bg-light border d-flex align-items-center justify-content-center mx-auto" style="width: 100px; height: 100px;">
+                    <span class="small text-muted">QR Code</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

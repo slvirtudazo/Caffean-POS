@@ -205,6 +205,13 @@ function trackInteraction(productId, action) {
 
 // Initialise cart count on page load
 document.addEventListener('DOMContentLoaded', () => {
+    // Guests never retain cart or interaction data
+    if (!window.IS_LOGGED_IN) {
+        localStorage.removeItem('coffeeCart');
+        localStorage.removeItem('coffeeFavorites');
+        localStorage.removeItem('interactions');
+        cart = [];
+    }
     updateCartCount();
     loadFavoritesForMenu();
 });

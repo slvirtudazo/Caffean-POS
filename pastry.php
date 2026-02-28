@@ -40,6 +40,7 @@ $products_result = mysqli_query(
     <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/pastry-page.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/footer-section.css?v=<?php echo time(); ?>">
     <style>
         .product-category {
             font-family: var(--font-subheading);

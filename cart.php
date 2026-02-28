@@ -161,9 +161,8 @@ if (isset($_SESSION['user_id'])) {
                                                 <img src="<?= htmlspecialchars($item['image_path']) ?>"
                                                     alt="<?= htmlspecialchars($item['name']) ?>" />
                                             <?php else: ?>
-                                                <div class="ci-img-placeholder">
-                                                    <i class="fas fa-mug-hot"></i>
-                                                </div>
+                                                <img src="images/placeholder.png"
+                                                    alt="<?= htmlspecialchars($item['name']) ?>" />
                                             <?php endif; ?>
                                         </div>
 
@@ -184,15 +183,9 @@ if (isset($_SESSION['user_id'])) {
                                         </div>
                                     </div>
 
-                                    <!-- Customize toggle -->
+                                    <!-- Customization options (always visible) -->
                                     <div class="ci-customize">
-                                        <button class="ci-cust-toggle" type="button"
-                                            onclick="toggleCustomize(<?= $pid ?>)">
-                                            <i class="fas fa-sliders me-1"></i>Customize
-                                            <i class="fas fa-chevron-down ci-chev" id="chev-<?= $pid ?>"></i>
-                                        </button>
-
-                                        <div class="ci-cust-fields" id="cust-<?= $pid ?>" style="display:none;">
+                                        <div class="ci-cust-fields" id="cust-<?= $pid ?>">
                                             <div class="row g-2 mt-2">
 
                                                 <!-- FIX #5: first option in array is the default -->
@@ -305,7 +298,11 @@ if (isset($_SESSION['user_id'])) {
                                         <div class="sum-item-line" id="sline-<?= $item['product_id'] ?>">
                                             <span class="sil-name">
                                                 <?= htmlspecialchars($item['name']) ?>
-                                                <span class="sil-qty">×<span id="siqty-<?= $item['product_id'] ?>"><?= $item['quantity'] ?></span></span>
+                                                <span class="sil-qty">× <span id="siqty-<?= $item['product_id'] ?>"><?= $item['quantity'] ?></span></span>
+                                                <!-- Item customization options shown below name -->
+                                                <small class="sil-opts" id="s1opts-<?= $item['product_id'] ?>">
+                                                    <?= htmlspecialchars($item['size'] . ' · ' . $item['temperature'] . ' · Sugar ' . $item['sugar_level']) ?>
+                                                </small>
                                             </span>
                                             <span class="sil-price" id="sitot-<?= $item['product_id'] ?>">
                                                 ₱<?= number_format($item['item_total'], 2) ?>
@@ -321,12 +318,12 @@ if (isset($_SESSION['user_id'])) {
                                         <span id="s1-sub">₱<?= number_format($subtotal, 2) ?></span>
                                     </div>
                                     <div class="sum-calc-row">
-                                        <span>Shipping</span>
+                                        <span>Delivery Fee</span>
                                         <span id="s1-ship">₱<?= number_format($DELIVERY_FEE, 2) ?></span>
                                     </div>
                                     <div class="sum-hr"></div>
                                     <div class="sum-total-row">
-                                        <span>Total</span>
+                                        <span>Total Amount</span>
                                         <span id="s1-total">₱<?= number_format($subtotal + $DELIVERY_FEE, 2) ?></span>
                                     </div>
 
@@ -681,17 +678,21 @@ if (isset($_SESSION['user_id'])) {
             });
         }
 
-        /* ── Sync Summary Card height to first ci-card ──────── */
-        /* Removed — Order Summary now sizes to its own content only */
+        /* ── Sync Summary Card height to single ci-card ─────── */
+        function syncSumHeight() {
+            const cards = document.querySelectorAll('#cart-items-col .ci-card');
+            const sumCard = document.getElementById('s1-sum-card');
+            if (!sumCard) return;
+            if (cards.length === 1) {
+                sumCard.style.minHeight = cards[0].offsetHeight + 'px';
+            } else {
+                sumCard.style.minHeight = '';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', syncSumHeight);
+        window.addEventListener('resize', syncSumHeight);
 
         /* ── Customization Panel ────────────────────────────── */
-        function toggleCustomize(pid) {
-            const panel = document.getElementById('cust-' + pid);
-            const chev = document.getElementById('chev-' + pid);
-            const open = panel.style.display !== 'none';
-            panel.style.display = open ? 'none' : 'block';
-            chev.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
-        }
 
         function updateOption(pid, field, value) {
             const fd = new FormData();
@@ -726,13 +727,19 @@ if (isset($_SESSION['user_id'])) {
         }
 
         function rebuildOptsSummary(pid, item) {
+            // Update the item options preview in the cart card
             const el = document.getElementById('opts-' + pid);
-            if (!el) return;
-            const parts = [item.size, item.temperature, 'Sugar ' + item.sugar_level, item.milk + ' Milk'];
-            if (item.addons && item.addons.length) parts.push(item.addons.join(', '));
-            el.textContent = parts.join(' · ');
+            if (el) {
+                const parts = [item.size, item.temperature, 'Sugar ' + item.sugar_level, item.milk + ' Milk'];
+                if (item.addons && item.addons.length) parts.push(item.addons.join(', '));
+                el.textContent = parts.join(' · ');
+            }
+            // Sync both summary panels (s1 and s2) with short opts format
+            const shortOpts = [item.size, item.temperature, 'Sugar ' + item.sugar_level].join(' · ');
+            const s1el = document.getElementById('s1opts-' + pid);
+            if (s1el) s1el.textContent = shortOpts;
             const s2el = document.getElementById('s2opts-' + pid);
-            if (s2el) s2el.textContent = [item.size, item.temperature, 'Sugar ' + item.sugar_level].join(' · ');
+            if (s2el) s2el.textContent = shortOpts;
         }
 
         /* ── Quantity (FIX #2: clamp at 1, never removes) ──── */
@@ -778,9 +785,11 @@ if (isset($_SESSION['user_id'])) {
         }
 
         document.getElementById('del-modal-confirm').addEventListener('click', function() {
-            if (_pendingDeletePid !== null) {
+            // Capture pid first — closeDeleteModal() nulls _pendingDeletePid
+            const pid = _pendingDeletePid;
+            if (pid !== null) {
                 closeDeleteModal();
-                removeCartItem(_pendingDeletePid);
+                removeCartItem(pid);
             }
         });
 
@@ -798,15 +807,22 @@ if (isset($_SESSION['user_id'])) {
                     method: 'POST',
                     body: fd
                 })
-                .then(r => r.json())
+                .then(r => {
+                    if (!r.ok) throw new Error('Server error ' + r.status);
+                    return r.json();
+                })
                 .then(d => {
                     if (!d.success) return;
                     document.querySelector(`.ci-card[data-pid="${pid}"]`)?.remove();
                     document.getElementById('sline-' + pid)?.remove();
                     subtotal = d.subtotal;
                     refreshTotals();
+                    syncSumHeight();
                     if (typeof updateCartCount === 'function') updateCartCount();
                     if (d.cart_empty) location.reload();
+                })
+                .catch(err => {
+                    console.error('Remove item failed:', err);
                 });
         }
 

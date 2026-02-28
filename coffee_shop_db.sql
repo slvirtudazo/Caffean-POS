@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 28, 2026 at 07:44 AM
+-- Generation Time: Feb 28, 2026 at 02:56 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -296,6 +296,26 @@ INSERT INTO `users` (`user_id`, `full_name`, `email`, `password`, `role`, `creat
 (2, 'Customer', 'customer@purgecoffee.com', '$2a$12$nvPoBAKZQZpBpybEbGlsNeYwwMFn.YcvPM1SqGgM0iR.iHMw2efGW', 'customer', '2026-02-20 02:23:55'),
 (3, 'John Doe', 'johndoe@gmail.com', '$2y$10$31mqhulkg7rPDmyNSwiuj.CAQAqlJGgdknbpSJo0m22QsNKaKcLEO', 'customer', '2026-02-21 07:15:51');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_carts`
+--
+
+CREATE TABLE `user_carts` (
+  `cart_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL DEFAULT 1,
+  `size` varchar(20) NOT NULL DEFAULT 'Short',
+  `temperature` varchar(20) NOT NULL DEFAULT 'Hot',
+  `sugar_level` varchar(10) NOT NULL DEFAULT '0%',
+  `milk` varchar(20) NOT NULL DEFAULT 'Whole',
+  `addons` text DEFAULT NULL,
+  `special_instructions` text DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- Indexes for dumped tables
 --
@@ -356,6 +376,14 @@ ALTER TABLE `users`
   ADD KEY `idx_role` (`role`);
 
 --
+-- Indexes for table `user_carts`
+--
+ALTER TABLE `user_carts`
+  ADD PRIMARY KEY (`cart_id`),
+  ADD UNIQUE KEY `unique_user_product` (`user_id`,`product_id`),
+  ADD KEY `fk_uc_product` (`product_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -402,6 +430,12 @@ ALTER TABLE `users`
   MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
+-- AUTO_INCREMENT for table `user_carts`
+--
+ALTER TABLE `user_carts`
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- Constraints for dumped tables
 --
 
@@ -429,6 +463,13 @@ ALTER TABLE `products`
 --
 ALTER TABLE `product_interactions`
   ADD CONSTRAINT `fk_interactions_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `user_carts`
+--
+ALTER TABLE `user_carts`
+  ADD CONSTRAINT `fk_uc_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_uc_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -74,6 +74,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['email']     = $db_email;
                     $_SESSION['role']      = $role;
 
+                    // Load persisted cart from DB into session on login
+                    if ($role !== 'admin') {
+                        require_once 'php/sync_cart.php';
+                        loadCartFromDb($conn, $user_id);
+                    }
+
                     header('Location: ' . ($role === 'admin'
                         ? 'admin/dashboard.php' : 'index.php'));
                     exit();

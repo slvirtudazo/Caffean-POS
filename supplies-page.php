@@ -9,7 +9,8 @@
 
 require_once 'php/db_connection.php';
 
-$is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+$is_admin      = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+$is_logged_in  = isset($_SESSION['user_id']);
 
 // Supply category IDs
 define('SUPPLY_CAT_IDS', [10, 11, 12]);
@@ -96,7 +97,7 @@ function buildSupplyUrl($overrides = [], $removals = []) {
 }
 
 // Render one product card
-function renderSupplyCard($product, $is_admin) {
+function renderSupplyCard($product, $is_admin, $is_logged_in) {
     $id    = $product['product_id'];
     $name  = htmlspecialchars($product['name']);
     $desc  = htmlspecialchars($product['description']);
@@ -119,7 +120,9 @@ function renderSupplyCard($product, $is_admin) {
     if ($net !== '') echo '<span class="product-net">' . $net . '</span>';
     echo    '</div>';
     if (!$is_admin) {
-        echo '<button class="btn-order" onclick="addToCart(' . $id . ')"><i class="fas fa-plus"></i></button>';
+        // Guest triggers login popup; logged-in user adds to cart directly
+        $onclick = $is_logged_in ? "addToCart($id)" : "showLoginRequiredPopup()";
+        echo '<button class="btn-order" onclick="' . $onclick . '"><i class="fas fa-plus"></i></button>';
     }
     echo   '</div>';
     echo  '</div>';
@@ -140,6 +143,7 @@ function renderSupplyCard($product, $is_admin) {
     <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/supplies-page.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/components.css?v=<?php echo time(); ?>">
 </head>
 
 <body>
@@ -309,7 +313,7 @@ function renderSupplyCard($product, $is_admin) {
                                     <p class="menu-cat-label"><?php echo htmlspecialchars($group_name); ?></p>
                                     <div class="products-grid">
                                         <?php foreach ($items as $product):
-                                            renderSupplyCard($product, $is_admin);
+                                            renderSupplyCard($product, $is_admin, $is_logged_in);
                                         endforeach; ?>
                                     </div>
                                 </div>
@@ -319,7 +323,7 @@ function renderSupplyCard($product, $is_admin) {
                             <!-- Filtered/sorted flat grid -->
                             <div class="products-grid">
                                 <?php while ($product = mysqli_fetch_assoc($products_result)):
-                                    renderSupplyCard($product, $is_admin);
+                                    renderSupplyCard($product, $is_admin, $is_logged_in);
                                 endwhile; ?>
                             </div>
                         <?php endif; ?>
@@ -402,6 +406,33 @@ function renderSupplyCard($product, $is_admin) {
         });
 
         window.addEventListener('load', restoreScrollPosition);
+    </script>
+
+    <!-- Login Required Popup -->
+    <div id="login-required-popup" class="login-popup-overlay" style="display:none;" onclick="closeLoginPopup(event)">
+        <div class="login-popup-card">
+            <h3 class="login-popup-title">Login Required</h3>
+            <p class="login-popup-message">You must be logged in to save and track your order transactions.</p>
+            <div class="login-popup-actions">
+                <a href="login.php" class="btn-popup-login">Log In</a>
+                <button class="btn-popup-close" onclick="document.getElementById('login-required-popup').style.display='none'">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.IS_LOGGED_IN = <?php echo $is_logged_in ? 'true' : 'false'; ?>;
+
+        /* Show login-required popup */
+        function showLoginRequiredPopup() {
+            document.getElementById('login-required-popup').style.display = 'flex';
+        }
+        /* Close popup on overlay click */
+        function closeLoginPopup(event) {
+            if (event.target === document.getElementById('login-required-popup')) {
+                document.getElementById('login-required-popup').style.display = 'none';
+            }
+        }
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

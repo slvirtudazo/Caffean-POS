@@ -409,7 +409,6 @@ if ($category_filter > 0) {
     <!-- Login Required Popup -->
     <div id="login-required-popup" class="login-popup-overlay" style="display:none;" onclick="closeLoginPopup(event)">
         <div class="login-popup-card">
-            <i class="fas fa-lock login-popup-icon"></i>
             <h3 class="login-popup-title">Login Required</h3>
             <p class="login-popup-message">You must be logged in to save and track your order transactions.</p>
             <div class="login-popup-actions">
@@ -433,6 +432,7 @@ if ($category_filter > 0) {
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>window.IS_LOGGED_IN = <?php echo $is_logged_in ? 'true' : 'false'; ?>;</script>
     <script src="js/main.js?v=<?php echo time(); ?>"></script>
     <script src="js/search.js?v=<?php echo time(); ?>"></script>
     <script src="js/menu-page.js?v=<?php echo time(); ?>"></script>
