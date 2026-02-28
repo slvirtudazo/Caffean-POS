@@ -78,10 +78,6 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
             <h1 class="about-hero-title">
                 Our First Leap, Your Best Sip
             </h1>
-            <p class="about-hero-subtitle">
-                Experience the warmth, passion, and rich flavors
-                of our very first coffee venture
-            </p>
             <div class="about-hero-scroll">
                 <i class="fas fa-chevron-down"></i>
             </div>
@@ -201,17 +197,22 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                 <div class="process-step reveal-up" style="--delay: 0s">
                     <div class="process-icon"><i class="fas fa-globe-asia"></i></div>
                     <h4 class="process-title">Ethical Sourcing</h4>
-                    <p class="process-text">We partner directly with farmers in the best coffee-growing regions, ensuring fair trade and premium quality.</p>
+                    <p class="process-text">
+                        We partner directly with farming families, ensuring fair
+                        trade practices that help their communities thrive.
+                    </p>
                 </div>
                 <div class="process-step reveal-up" style="--delay: 0.15s">
                     <div class="process-icon"><i class="fas fa-fire"></i></div>
                     <h4 class="process-title">Small-Batch Roasting</h4>
-                    <p class="process-text">Each batch is roasted in-house with precision, unlocking the unique flavors locked inside every bean.</p>
+                    <p class="process-text">
+                        We roast in small, focused batches to unlock the truest, homegrown flavor of every bean.
+                    </p>
                 </div>
                 <div class="process-step reveal-up" style="--delay: 0.3s">
                     <div class="process-icon"><i class="fas fa-mug-hot"></i></div>
                     <h4 class="process-title">Expert Brewing</h4>
-                    <p class="process-text">Our skilled baristas brew every cup to order, making sure each sip is exactly as it should be — perfect.</p>
+                    <p class="process-text">We pour our hearts into every cup, ensuring your first sip feels exactly like a warm welcome home.</p>
                 </div>
             </div>
         </div>
@@ -222,9 +223,9 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
     ═══════════════════════════════════════════ -->
     <section class="about-cta-section">
         <div class="container text-center reveal-up">
-            <h2 class="about-cta-title">Ready to Experience the Difference?</h2>
-            <p class="about-cta-text">Explore our menu and find your next favorite brew.</p>
-            <a href="menu.php" class="btn-hero">View Our Menu</a>
+            <h2 class="about-cta-title">Come Taste What We've Been Brewing</h2>
+            <p class="about-cta-text">Explore our family's menu and find your new favorite daily ritual.</p>
+            <a href="menu.php" class="about-cta-btn">View All Menu</a>
         </div>
     </section>
 

@@ -111,7 +111,7 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                 </div>
             </div>
             <div class="view-menu-container">
-                <a href="menu.php" class="btn-promo">Shop Now</a>
+                <a href="menu.php" class="btn-promo">Order Now</a>
             </div>
         </div>
     </section>
