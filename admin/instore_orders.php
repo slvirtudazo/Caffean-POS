@@ -148,13 +148,7 @@ include 'includes/header.php';
           <tr>
             <td class="td-id"><?= htmlspecialchars($o['order_number'] ?? '#' . $o['order_id']) ?></td>
             <td><?= htmlspecialchars($o['customer_name']) ?></td>
-            <td>
-              <span class="badge-order-type badge-ot-<?= $o['kiosk_order_type'] ?>">
-                <?= $o['kiosk_order_type'] === 'dine_in'
-                    ? '<i class="fas fa-utensils"></i> Dine In'
-                    : '<i class="fas fa-shopping-bag"></i> Take Out' ?>
-              </span>
-            </td>
+            <td><?= $o['kiosk_order_type'] === 'dine_in' ? 'Dine In' : 'Take Out' ?></td>
             <td><?= date('M d, Y h:i A', strtotime($o['order_date'])) ?></td>
             <td><?= $o['total_items'] ?? 0 ?></td>
             <td>&#8369;<?= number_format($o['total_amount'], 2) ?></td>
@@ -256,10 +250,8 @@ include 'includes/header.php';
     document.getElementById('iv_order_id').textContent  = o.order_number || '#' + o.order_id;
     document.getElementById('iv_customer').textContent  = o.customer_name;
     document.getElementById('iv_mobile').textContent    = o.mobile_number || '—';
-    document.getElementById('iv_order_type').innerHTML  =
-      o.kiosk_order_type === 'dine_in'
-        ? '<i class="fas fa-utensils"></i> Dine In'
-        : '<i class="fas fa-shopping-bag"></i> Take Out';
+    document.getElementById('iv_order_type').textContent  =
+      o.kiosk_order_type === 'dine_in' ? 'Dine In' : 'Take Out';
     document.getElementById('iv_date').textContent      = o.order_date;
     document.getElementById('iv_payment').textContent   = o.payment_method;
     document.getElementById('iv_total').textContent     = '\u20B1' + parseFloat(o.total_amount).toFixed(2);

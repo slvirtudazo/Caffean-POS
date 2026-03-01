@@ -13,6 +13,13 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
   exit();
 }
 
+// Formats an integer ID into a prefixed display string
+function fmt_id($prefix, $id, $date_str = null)
+{
+  $year = $date_str ? date('Y', strtotime($date_str)) : date('Y');
+  return $prefix . '-' . $year . '-' . str_pad($id, 5, '0', STR_PAD_LEFT);
+}
+
 // ── Customers with order stats ────────────────────────────────
 $customers_result = mysqli_query(
   $conn,
@@ -45,6 +52,7 @@ $summary = mysqli_fetch_assoc(mysqli_query(
 $customers_arr = [];
 mysqli_data_seek($customers_result, 0);
 while ($c = mysqli_fetch_assoc($customers_result)) {
+  $c['fmt_id'] = fmt_id('CS', $c['user_id'], $c['created_at']);
   $customers_arr[] = $c;
 }
 
@@ -90,7 +98,7 @@ include 'includes/header.php';
       <?php else: ?>
         <?php foreach ($customers_arr as $c): ?>
           <tr>
-            <td class="td-id">#<?= $c['user_id'] ?></td>
+            <td class="td-id"><?= fmt_id('CS', $c['user_id'], $c['created_at']) ?></td>
             <td><?= htmlspecialchars($c['full_name']) ?></td>
             <td><?= htmlspecialchars($c['email']) ?></td>
             <td><?= date('M d, Y', strtotime($c['created_at'])) ?></td>
@@ -181,7 +189,7 @@ include 'includes/header.php';
     var c = customersMap[userId];
     if (!c) return;
 
-    document.getElementById('vc_id').textContent = '#' + c.user_id;
+    document.getElementById('vc_id').textContent = c.fmt_id;
     document.getElementById('vc_name').textContent = c.full_name;
     document.getElementById('vc_email').textContent = c.email;
     document.getElementById('vc_date').textContent = c.created_at ? c.created_at.split(' ')[0] : '—';

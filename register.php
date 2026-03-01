@@ -179,7 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         oninput="checkStrength(this.value)">
                     <button type="button" class="btn-eye" id="togglePassword"
                         aria-label="Show password">
-                        <i class="fas fa-eye" id="eyeIcon1"></i>
+                        <i class="bi bi-eye-slash" id="eyeIcon1"></i>
                     </button>
                 </div>
                 <div class="invalid-feedback">Password is required.</div>
@@ -192,11 +192,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <!-- Requirements checklist -->
                 <ul class="pwd-req" id="pwdReq">
-                    <li id="req-len"> <i class="fas fa-circle-xmark"></i> At least 8 characters</li>
-                    <li id="req-upper"><i class="fas fa-circle-xmark"></i> One uppercase letter</li>
-                    <li id="req-lower"><i class="fas fa-circle-xmark"></i> One lowercase letter</li>
-                    <li id="req-num"> <i class="fas fa-circle-xmark"></i> One number</li>
-                    <li id="req-sym"> <i class="fas fa-circle-xmark"></i> One special character (@#!…)</li>
+                    <li id="req-len"> <i class="bi bi-x-circle"></i> At least 8 characters</li>
+                    <li id="req-upper"><i class="bi bi-x-circle"></i> One uppercase letter</li>
+                    <li id="req-lower"><i class="bi bi-x-circle"></i> One lowercase letter</li>
+                    <li id="req-num"> <i class="bi bi-x-circle"></i> One number</li>
+                    <li id="req-sym"> <i class="bi bi-x-circle"></i> One special character (@#!…)</li>
                 </ul>
             </div>
 
@@ -211,12 +211,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         oninput="checkMatch()">
                     <button type="button" class="btn-eye" id="toggleConfirm"
                         aria-label="Show confirm password">
-                        <i class="fas fa-eye" id="eyeIcon2"></i>
+                        <i class="bi bi-eye-slash" id="eyeIcon2"></i>
                     </button>
                 </div>
                 <div class="invalid-feedback" id="confirmFeedback">Passwords do not match.</div>
                 <small class="match-ok" id="matchOk">
-                    <i class="fas fa-circle-check"></i> Passwords match!
+                    <i class="bi bi-check-circle"></i> Passwords match!
                 </small>
             </div>
 
@@ -257,15 +257,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // ── Show/Hide passwords ───────────────────────────────────────────
         function toggleEye(btnId, fieldId, iconId) {
             document.getElementById(btnId).addEventListener('click', function() {
-                const f = document.getElementById(fieldId);
-                const i = document.getElementById(iconId);
-                const show = f.type === 'password';
-                f.type = show ? 'text' : 'password';
-                i.classList.toggle('fa-eye', !show);
-                i.classList.toggle('fa-eye-slash', show);
-                this.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+                const field = document.getElementById(fieldId);
+                const icon = document.getElementById(iconId);
+
+                if (field.type === 'password') {
+                    field.type = 'text';
+                    icon.classList.remove('bi-eye-slash');
+                    icon.classList.add('bi-eye');
+                    this.setAttribute('aria-label', 'Hide password');
+                } else {
+                    field.type = 'password';
+                    icon.classList.remove('bi-eye');
+                    icon.classList.add('bi-eye-slash');
+                    this.setAttribute('aria-label', 'Show password');
+                }
             });
         }
+
         toggleEye('togglePassword', 'password', 'eyeIcon1');
         toggleEye('toggleConfirm', 'confirm_password', 'eyeIcon2');
 
@@ -284,11 +292,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 const icon = li.querySelector('i');
                 if (ok) {
                     li.classList.add('req-ok');
-                    icon.className = 'fas fa-circle-check';
+                    icon.className = 'bi bi-check-circle';
                     score++;
                 } else {
                     li.classList.remove('req-ok');
-                    icon.className = 'fas fa-circle-xmark';
+                    icon.className = 'bi bi-x-circle';
                 }
             }
             const fill = document.getElementById('strengthFill');

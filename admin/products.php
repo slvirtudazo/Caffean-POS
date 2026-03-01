@@ -13,6 +13,13 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
   exit();
 }
 
+// Formats an integer ID into a prefixed display string
+function fmt_id($prefix, $id, $date_str = null)
+{
+  $year = $date_str ? date('Y', strtotime($date_str)) : date('Y');
+  return $prefix . '-' . $year . '-' . str_pad($id, 5, '0', STR_PAD_LEFT);
+}
+
 // ── POST Handlers (PRG) ──────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
@@ -174,7 +181,7 @@ include 'includes/header.php';
       <?php else: ?>
         <?php while ($product = mysqli_fetch_assoc($products_result)): ?>
           <tr>
-            <td class="td-id">#<?= $product['product_id'] ?></td>
+            <td class="td-id"><?= fmt_id('PR', $product['product_id'], $product['created_at'] ?? null) ?></td>
             <td><?= htmlspecialchars($product['name']) ?></td>
             <td><?= htmlspecialchars($product['category_name']) ?></td>
             <td>&#8369;<?= number_format($product['price'], 2) ?></td>
@@ -428,6 +435,12 @@ include 'includes/header.php';
 
 <script>
   /* ── Modal helpers ─────────────────────────────────────────── */
+  // Formats integer ID into prefixed display string
+  function fmtId(prefix, id, dateStr) {
+    var year = dateStr ? new Date(dateStr).getFullYear() : new Date().getFullYear();
+    return prefix + '-' + year + '-' + String(id).padStart(5, '0');
+  }
+
   function openModal(id) {
     document.getElementById(id).style.display = 'flex';
   }
@@ -485,7 +498,7 @@ include 'includes/header.php';
   var _baseUrl = '../'; // path from admin/ back to root for images
 
   function viewProduct(p) {
-    document.getElementById('view_product_id').textContent = '#' + p.product_id;
+    document.getElementById('view_product_id').textContent = fmtId('PR', p.product_id, p.created_at);
     document.getElementById('view_name').textContent = p.name;
     document.getElementById('view_category').textContent = p.category_name;
     document.getElementById('view_price').textContent = '\u20B1' + parseFloat(p.price).toFixed(2);
