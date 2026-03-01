@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 28, 2026 at 02:56 PM
+-- Generation Time: Feb 28, 2026 at 10:33 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -111,7 +111,8 @@ INSERT INTO `orders` (`order_id`, `order_number`, `user_id`, `order_date`, `tota
 (1, 'PC-2026-00001', 3, '2026-02-21 17:51:26', 51.00, 'pending', 'GCash', 'test', '2026-02-21 09:51:26', NULL, 'delivery', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0, NULL, NULL),
 (4, 'PC-2026-00004', 3, '2026-02-21 23:35:42', 210.00, 'processing', 'Cash on Delivery', 'Block 6 Lot 17 Crestview Homes, Crestview Avenue, Ula, Tugbok District, Davao City, Davao del Sur 8000', '2026-02-21 15:35:42', '09123456789', 'delivery', 'Block 6 Lot 17 Crestview Homes', 'Crestview Avenue', 'Ula, Tugbok District', 'Davao City', 'Davao del Sur', '8000', 'test', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
 (5, 'PC-2026-00005', 2, '2026-02-28 01:56:46', 210.00, 'pending', 'Cash on Delivery', '123, asd, asd, asd, asd 8000', '2026-02-27 17:56:46', '09603150070', 'delivery', '123', 'asd', 'asd', 'asd', 'asd', '8000', 'asdasdas', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(6, 'PC-2026-00006', NULL, '2026-02-28 01:58:47', 160.00, 'completed', 'Cash', 'Dine In', '2026-02-27 17:58:47', '09603150070', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Jane Smith');
+(6, 'PC-2026-00006', NULL, '2026-02-28 01:58:47', 160.00, 'completed', 'Cash', 'Dine In', '2026-02-27 17:58:47', '09603150070', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Jane Smith'),
+(11, 'PC-2026-00007', 3, '2026-03-01 05:23:56', 735.00, 'pending', 'Cash on Delivery', 'Pickup: Diversion Road, Matina Balusong (Main) on 2026-03-20 at 15:30', '2026-02-28 21:23:56', '09603150070', 'pickup', '', '', '', '', '', '', '', 'Diversion Road, Matina Balusong (Main)', '2026-03-20', '15:30:00', '', 0.00, 0, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -140,7 +141,11 @@ CREATE TABLE `order_items` (
 INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price_at_time`, `size`, `temperature`, `sugar_level`, `milk_type`, `addons`, `special_instructions`) VALUES
 (2, 4, 55, 1, 160.00, NULL, NULL, NULL, NULL, NULL, NULL),
 (3, 5, 55, 1, 160.00, NULL, NULL, NULL, NULL, NULL, NULL),
-(4, 6, 55, 1, 160.00, 'Tall', 'Iced', '50%', 'Skim', NULL, 'asdasd');
+(4, 6, 55, 1, 160.00, 'Tall', 'Iced', '50%', 'Skim', NULL, 'asdasd'),
+(5, 11, 20, 1, 220.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
+(6, 11, 34, 1, 150.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
+(7, 11, 38, 1, 205.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
+(8, 11, 55, 1, 160.00, 'Short', 'Hot', '0%', 'Whole', '', '');
 
 -- --------------------------------------------------------
 
@@ -317,6 +322,23 @@ CREATE TABLE `user_carts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Dumping data for table `user_carts`
+--
+
+INSERT INTO `user_carts` (`cart_id`, `user_id`, `product_id`, `quantity`, `size`, `temperature`, `sugar_level`, `milk`, `addons`, `special_instructions`, `updated_at`) VALUES
+(254, 2, 55, 6, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-02-28 15:26:00'),
+(255, 2, 3, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-02-28 15:26:00'),
+(256, 2, 66, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-02-28 15:26:00'),
+(257, 2, 69, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-02-28 15:26:00'),
+(258, 2, 9, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-02-28 15:26:00'),
+(259, 2, 2, 6, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-02-28 15:26:00'),
+(260, 2, 67, 2, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-02-28 15:26:00'),
+(561, 3, 55, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-02-28 21:10:00'),
+(562, 3, 20, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-02-28 21:10:00'),
+(563, 3, 34, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-02-28 21:10:00'),
+(564, 3, 38, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-02-28 21:10:00');
+
+--
 -- Indexes for dumped tables
 --
 
@@ -403,13 +425,13 @@ ALTER TABLE `contact_messages`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -433,7 +455,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `user_carts`
 --
 ALTER TABLE `user_carts`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=565;
 
 --
 -- Constraints for dumped tables

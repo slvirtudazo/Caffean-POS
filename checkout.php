@@ -2,6 +2,7 @@
 /**
  * Purge Coffee Shop — Checkout Page
  * Collects customer info, order type, address/pickup, and payment method.
+ * Shows an order confirmation receipt dialog with save-as-PNG option.
  */
 require_once 'php/db_connection.php';
 
@@ -23,7 +24,7 @@ if (empty($_SESSION['cart'])) {
     exit();
 }
 
-/* ── Session cart normalisation ─────────────────────────────── */
+/* Normalise session cart */
 foreach ($_SESSION['cart'] as $pid => &$v) {
     if (!is_array($v)) {
         $v = [
@@ -48,7 +49,7 @@ mysqli_stmt_execute($user_stmt);
 $user_info = mysqli_fetch_assoc(mysqli_stmt_get_result($user_stmt));
 mysqli_stmt_close($user_stmt);
 
-/* ── Fetch cart products ─────────────────────────────────────── */
+/* Fetch cart products */
 $cart_items   = [];
 $subtotal     = 0.0;
 $DELIVERY_FEE = 50.0;
@@ -73,7 +74,7 @@ while ($p = mysqli_fetch_assoc($res)) {
     $cart_items[]              = $p;
 }
 
-$min_date = date('Y-m-d'); // Prevent past pickup dates
+$min_date = date('Y-m-d');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -89,11 +90,15 @@ $min_date = date('Y-m-d'); // Prevent past pickup dates
     <link rel="stylesheet" href="css/buttons.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/checkout.css?v=<?php echo time(); ?>">
+    <!-- Bootstrap Icons for receipt placeholder -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <!-- html2canvas for receipt PNG export -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 
 <body>
 
-    <!-- ── Navbar ────────────────────────────────────────────── -->
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="index.php">
@@ -129,7 +134,7 @@ $min_date = date('Y-m-d'); // Prevent past pickup dates
         </div>
     </nav>
 
-    <!-- ── Checkout Section ──────────────────────────────────── -->
+    <!-- Checkout Section -->
     <section class="checkout-page">
         <div class="container">
 
@@ -143,24 +148,23 @@ $min_date = date('Y-m-d'); // Prevent past pickup dates
 
                     <!-- Customer Information -->
                     <div class="checkout-card">
-                        <h3><i class="fas fa-user me-2"></i>Customer Information</h3>
+                        <h3><i class="fas fa-user"></i>Customer Information</h3>
                         <div class="row g-3">
                             <div class="col-12">
                                 <label class="form-label">Full Name *</label>
                                 <input type="text" id="co-name" class="form-control"
                                     value="<?= htmlspecialchars($user_info['full_name'] ?? '') ?>"
-                                    placeholder="Enter your full name"
+                                    placeholder="John Doe"
                                     autocomplete="name" />
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Email Address *</label>
                                 <input type="email" id="co-email" class="form-control"
                                     value="<?= htmlspecialchars($user_info['email'] ?? '') ?>"
-                                    placeholder="example@gmail.com"
+                                    placeholder="johndoe@gmail.com"
                                     autocomplete="email" />
                             </div>
                             <div class="col-md-6">
-                                <!-- Digits only, 11 chars, enforced via JS -->
                                 <label class="form-label">Mobile Number *</label>
                                 <input type="tel" id="co-mobile" class="form-control"
                                     placeholder="09XXXXXXXXX"
@@ -173,9 +177,8 @@ $min_date = date('Y-m-d'); // Prevent past pickup dates
 
                     <!-- Order Type -->
                     <div class="checkout-card">
-                        <h3><i class="fas fa-location-dot me-2"></i>Order Type</h3>
+                        <h3><i class="fas fa-location-dot"></i>Order Type</h3>
 
-                        <!-- Same card-radio layout as payment; height matches input fields via .order-type-options -->
                         <div class="payment-options order-type-options">
                             <div class="payment-option">
                                 <input type="radio" name="order_type" id="order-delivery"
@@ -195,7 +198,7 @@ $min_date = date('Y-m-d'); // Prevent past pickup dates
                             </div>
                         </div>
 
-                        <!-- Delivery Address Fields — mt-3 adds the gap below options -->
+                        <!-- Delivery Address Fields -->
                         <div id="delivery-fields" class="mt-3">
                             <div class="row g-3">
                                 <div class="col-md-6">
@@ -228,7 +231,6 @@ $min_date = date('Y-m-d'); // Prevent past pickup dates
                                         autocomplete="address-level1" />
                                 </div>
                                 <div class="col-md-6">
-                                    <!-- PH ZIP codes are 4 digits; digits only via JS -->
                                     <label class="form-label">ZIP Code *</label>
                                     <input type="text" id="del-zip" class="form-control"
                                         placeholder="e.g. 8000"
@@ -261,13 +263,11 @@ $min_date = date('Y-m-d'); // Prevent past pickup dates
                                     </select>
                                 </div>
                                 <div class="col-md-6">
-                                    <!-- min set server-side to prevent past dates -->
                                     <label class="form-label">Pickup Date *</label>
                                     <input type="date" id="pick-date" class="form-control"
                                         min="<?= $min_date ?>" />
                                 </div>
                                 <div class="col-md-6">
-                                    <!-- Slots 8:00 AM – 8:00 PM built by JS -->
                                     <label class="form-label">Pickup Time *</label>
                                     <select id="pick-time" class="form-select">
                                         <option value="">Select Time</option>
@@ -279,8 +279,7 @@ $min_date = date('Y-m-d'); // Prevent past pickup dates
 
                     <!-- Payment Method -->
                     <div class="checkout-card">
-                        <h3><i class="fas fa-credit-card me-2"></i>Payment Method</h3>
-                        <!-- CSS :checked handles all active states — no JS needed here -->
+                        <h3><i class="fas fa-credit-card"></i>Payment Method</h3>
                         <div class="payment-options">
                             <div class="payment-option">
                                 <input type="radio" name="payment_method" id="pay-cod"
@@ -349,7 +348,6 @@ $min_date = date('Y-m-d'); // Prevent past pickup dates
                                 <span>Subtotal</span>
                                 <span>₱<?= number_format($subtotal, 2) ?></span>
                             </div>
-                            <!-- Fee row hidden for pickup (free), updated by switchOrderType() -->
                             <div class="sum-calc-row" id="co-fee-row">
                                 <span>Delivery Fee</span>
                                 <span id="co-fee">₱<?= number_format($DELIVERY_FEE, 2) ?></span>
@@ -374,6 +372,129 @@ $min_date = date('Y-m-d'); // Prevent past pickup dates
         </div>
     </section>
 
+    <!-- Order Confirmation Receipt Dialog -->
+    <div class="receipt-overlay" id="receipt-overlay">
+        <div class="receipt-dialog">
+
+            <!-- Capturable receipt area -->
+            <div class="receipt-content" id="receipt-content">
+
+                <!-- Shop logo and name -->
+                <div class="receipt-logo-wrap">
+                    <img src="images/coffee_beans_logo.png" alt="Purge Coffee" class="receipt-logo-img" />
+                    <span class="receipt-logo-name">Purge Coffee</span>
+                </div>
+
+                <hr class="receipt-divider" />
+
+                <!-- Heading -->
+                <div class="receipt-thank-you">Thank you for your purchase!</div>
+                <div class="receipt-subline">Your order has been received and is being processed.</div>
+
+                <!-- Order number box with copy button -->
+                <div class="receipt-order-box">
+                    <div class="receipt-order-box-inner">
+                        <span class="receipt-order-label">Order number</span>
+                        <span class="receipt-order-num" id="r-order-num">—</span>
+                    </div>
+                    <button class="receipt-copy-btn" onclick="copyOrderNum()" title="Copy order number">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+
+                <!-- Status badge + date -->
+                <div class="receipt-status-row">
+                    <span class="receipt-status-badge">Order Confirmed</span>
+                    <span class="receipt-datetime" id="r-datetime">—</span>
+                </div>
+
+                <hr class="receipt-divider" />
+
+                <!-- Customer section -->
+                <div class="receipt-section-hd">Customer</div>
+                <div class="receipt-info-row">
+                    <span class="r-key">Name</span>
+                    <span class="r-val" id="r-name">—</span>
+                </div>
+                <div class="receipt-info-row">
+                    <span class="r-key">Email</span>
+                    <span class="r-val" id="r-email">—</span>
+                </div>
+                <div class="receipt-info-row">
+                    <span class="r-key">Mobile</span>
+                    <span class="r-val" id="r-mobile">—</span>
+                </div>
+
+                <hr class="receipt-divider" />
+
+                <!-- Order details section -->
+                <div class="receipt-section-hd">Order Details</div>
+                <div class="receipt-info-row">
+                    <span class="r-key">Type</span>
+                    <span class="r-val" id="r-type">—</span>
+                </div>
+                <div class="receipt-info-row" id="r-address-row" style="display:none;">
+                    <span class="r-key">Address</span>
+                    <span class="r-val" id="r-address">—</span>
+                </div>
+                <div class="receipt-info-row" id="r-branch-row" style="display:none;">
+                    <span class="r-key">Branch</span>
+                    <span class="r-val" id="r-branch">—</span>
+                </div>
+                <div class="receipt-info-row" id="r-pickup-row" style="display:none;">
+                    <span class="r-key">Pickup</span>
+                    <span class="r-val" id="r-pickup">—</span>
+                </div>
+                <div class="receipt-info-row">
+                    <span class="r-key">Payment</span>
+                    <span class="r-val" id="r-payment">—</span>
+                </div>
+                <div class="receipt-info-row" id="r-notes-row" style="display:none;">
+                    <span class="r-key">Delivery Notes</span>
+                    <span class="r-val r-val-note" id="r-del-notes">—</span>
+                </div>
+
+                <hr class="receipt-divider" />
+
+                <!-- Items section -->
+                <div class="receipt-section-hd">Order Summary</div>
+                <div id="r-items"></div>
+
+                <hr class="receipt-divider" />
+
+                <!-- Totals -->
+                <div class="receipt-amount-row">
+                    <span>Subtotal</span>
+                    <span id="r-subtotal">—</span>
+                </div>
+                <div class="receipt-amount-row" id="r-fee-row">
+                    <span>Delivery Fee</span>
+                    <span id="r-fee">—</span>
+                </div>
+                <hr class="receipt-divider" />
+                <div class="receipt-total-row">
+                    <span>Total Amount</span>
+                    <span id="r-total">—</span>
+                </div>
+
+                <hr class="receipt-divider" />
+                <div class="receipt-footer-note">Thank you for choosing Purge Coffee!
+                    <i class="bi bi-emoji-smile"></i>
+                </div>
+            </div>
+
+            <!-- Action buttons — excluded from PNG capture -->
+            <div class="receipt-actions">
+                <button class="btn-receipt-close" onclick="closeReceipt()">
+                    Close
+                </button>
+                <button class="btn-receipt-save" onclick="saveReceiptPng()">
+                    Save Receipt
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/main.js"></script>
     <script src="js/search.js?v=<?php echo time(); ?>"></script>
@@ -382,24 +503,36 @@ $min_date = date('Y-m-d'); // Prevent past pickup dates
         const subtotal     = <?= $subtotal ?>;
         let   orderType    = 'delivery';
 
-        /* ── Format number with commas ─────────────────────── */
+        /* PHP cart items passed to JS for receipt rendering */
+        const cartItems = <?= json_encode(array_map(function($i) {
+            return [
+                'name'        => $i['name'],
+                'quantity'    => $i['quantity'],
+                'size'        => $i['size'],
+                'temperature' => $i['temperature'],
+                'sugar_level' => $i['sugar_level'],
+                'item_total'  => $i['item_total'],
+                'image_path'             => $i['image_path'] ?? '',
+                'special_instructions'   => $i['special_instructions'] ?? ''
+            ];
+        }, $cart_items)) ?>;
+
+        /* Format number with commas */
         function fmt(n) {
-            return n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            return parseFloat(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         }
 
-        /* ── Order Type Switch ─────────────────────────────── */
+        /* Toggle delivery/pickup fields and fee */
         function switchOrderType(type) {
             orderType = type;
             const isDel = type === 'delivery';
             document.getElementById('delivery-fields').style.display = isDel ? 'block' : 'none';
             document.getElementById('pickup-fields').style.display   = isDel ? 'none'  : 'block';
-            // Update fee row and total: delivery = ₱50, pickup = free
-            const feeRow = document.getElementById('co-fee-row');
-            feeRow.style.display = isDel ? 'flex' : 'none';
+            document.getElementById('co-fee-row').style.display      = isDel ? 'flex'  : 'none';
             document.getElementById('co-total').textContent = '₱' + fmt(subtotal + (isDel ? DELIVERY_FEE : 0));
         }
 
-        /* ── Digits-only enforcement (mobile + ZIP) ────────── */
+        /* Enforce digits-only input (mobile, ZIP) */
         function digitsOnly(el) {
             el.addEventListener('keydown', function(e) {
                 const ctrl = e.ctrlKey || e.metaKey;
@@ -417,15 +550,16 @@ $min_date = date('Y-m-d'); // Prevent past pickup dates
                 this.value   = (this.value + digits).slice(0, max);
             });
         }
+
         digitsOnly(document.getElementById('co-mobile'));
         digitsOnly(document.getElementById('del-zip'));
 
-        /* ── Validate email format ─────────────────────────── */
+        /* Email format validation */
         function validEmail(v) {
             return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
         }
 
-        /* ── Place Order ───────────────────────────────────── */
+        /* Place order — validates, submits, shows receipt on success */
         function placeOrder() {
             clearAlert();
             const name    = document.getElementById('co-name').value.trim();
@@ -468,8 +602,8 @@ $min_date = date('Y-m-d'); // Prevent past pickup dates
             }
 
             const btn = document.getElementById('btn-place-order');
-            btn.disabled    = true;
-            btn.innerHTML   = '<i class="fas fa-spinner fa-spin me-2"></i>Placing Order…';
+            btn.disabled  = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Placing Order…';
 
             const fd = new FormData();
             Object.entries(data).forEach(([k, v]) => fd.append(k, v));
@@ -478,7 +612,9 @@ $min_date = date('Y-m-d'); // Prevent past pickup dates
                 .then(r => r.json())
                 .then(d => {
                     if (d.success) {
-                        window.location.href = 'order_success.php?order_id=' + d.order_id;
+                        /* Show receipt dialog before redirecting */
+                        buildReceipt(d.order_id, data);
+                        document.getElementById('receipt-overlay').classList.add('open');
                     } else {
                         showAlert(d.message || 'Something went wrong. Please try again.');
                         btn.disabled  = false;
@@ -492,7 +628,126 @@ $min_date = date('Y-m-d'); // Prevent past pickup dates
                 });
         }
 
-        /* ── Inline Alert ──────────────────────────────────── */
+        /* Generate randomised order number: ORD-YYYY-XXXXX */
+        function genOrderNum(orderId) {
+            const year   = new Date().getFullYear();
+            const pad    = String(orderId).padStart(3, '0');
+            const rand   = String(Math.floor(10 + Math.random() * 90));
+            return 'ORD-' + year + '-' + rand + pad;
+        }
+
+        /* Copy order number to clipboard */
+        let _orderNumStr = '';
+        function copyOrderNum() {
+            if (!_orderNumStr) return;
+            navigator.clipboard.writeText(_orderNumStr).then(() => {
+                const btn = document.querySelector('.receipt-copy-btn');
+                btn.innerHTML = '<i class="fas fa-check"></i>';
+                setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i>'; }, 2000);
+            });
+        }
+
+        /* Populate receipt dialog with order data */
+        function buildReceipt(orderId, data) {
+            const isDel  = data.order_type === 'delivery';
+            const total  = subtotal + (isDel ? DELIVERY_FEE : 0);
+            const now    = new Date();
+
+            /* Randomised formatted order number */
+            _orderNumStr = genOrderNum(orderId);
+            document.getElementById('r-order-num').textContent = _orderNumStr;
+
+            /* Datetime */
+            const dateStr = now.toLocaleDateString('en-PH', {
+                year: 'numeric', month: 'long', day: 'numeric'
+            }) + ' at ' + now.toLocaleTimeString('en-PH', {
+                hour: '2-digit', minute: '2-digit'
+            });
+            document.getElementById('r-datetime').textContent = dateStr;
+
+            /* Customer */
+            document.getElementById('r-name').textContent   = data.name;
+            document.getElementById('r-email').textContent  = data.email;
+            document.getElementById('r-mobile').textContent = data.mobile;
+
+            /* Order details */
+            document.getElementById('r-type').textContent    = isDel ? 'Delivery' : 'Pickup';
+            document.getElementById('r-payment').textContent = data.payment_method;
+
+            if (isDel) {
+                /* Format address in 3 lines: house+street / barangay+city / province+zip */
+                const addrLines = [
+                    [data.house_unit, data.street_name].filter(Boolean).join(', '),
+                    [data.barangay, data.city_municipality].filter(Boolean).join(', '),
+                    [data.province, data.zip_code].filter(Boolean).join(', ')
+                ].filter(Boolean);
+                document.getElementById('r-address').innerHTML          = addrLines.join('<br>');
+                document.getElementById('r-address-row').style.display  = 'flex';
+                document.getElementById('r-branch-row').style.display   = 'none';
+                document.getElementById('r-pickup-row').style.display   = 'none';
+                /* Delivery notes (optional) */
+                const notes = (data.delivery_notes || '').trim();
+                document.getElementById('r-del-notes').textContent       = notes || 'None';
+                document.getElementById('r-notes-row').style.display     = 'flex';
+            } else {
+                document.getElementById('r-branch').textContent          = data.pickup_branch;
+                document.getElementById('r-pickup').textContent          = data.pickup_date + ' at ' + data.pickup_time;
+                document.getElementById('r-branch-row').style.display   = 'flex';
+                document.getElementById('r-pickup-row').style.display   = 'flex';
+                document.getElementById('r-address-row').style.display  = 'none';
+                document.getElementById('r-notes-row').style.display    = 'none';
+            }
+
+            /* Items with thumbnails */
+            const itemsEl = document.getElementById('r-items');
+            itemsEl.innerHTML = cartItems.map(item => {
+                const imgHtml = item.image_path
+                    ? `<img class="receipt-item-img" src="${item.image_path}" alt="${item.name}" crossorigin="anonymous" />`
+                    : `<div class="receipt-item-img-placeholder"><i class="bi bi-cup-hot"></i></div>`;
+                const siNote = item.special_instructions
+                    ? `<div class="receipt-item-si">${item.special_instructions}</div>` : '';
+                return `
+                <div class="receipt-item">
+                    ${imgHtml}
+                    <div class="receipt-item-detail">
+                        <div class="receipt-item-name">${item.name}</div>
+                        <div class="receipt-item-meta">${item.size} · ${item.temperature} · Sugar ${item.sugar_level}</div>
+                        <div class="receipt-item-qty">Qty: ${item.quantity}</div>
+                        ${siNote}
+                    </div>
+                    <div class="receipt-item-price">₱${fmt(item.item_total)}</div>
+                </div>`;
+            }).join('');
+
+            /* Totals */
+            document.getElementById('r-subtotal').textContent = '₱' + fmt(subtotal);
+            if (isDel) {
+                document.getElementById('r-fee').textContent        = '₱' + fmt(DELIVERY_FEE);
+                document.getElementById('r-fee-row').style.display  = 'flex';
+            } else {
+                document.getElementById('r-fee-row').style.display  = 'none';
+            }
+            document.getElementById('r-total').textContent = '₱' + fmt(total);
+        }
+
+        /* Save receipt as PNG using html2canvas */
+        function saveReceiptPng() {
+            const el = document.getElementById('receipt-content');
+            html2canvas(el, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }).then(canvas => {
+                const link  = document.createElement('a');
+                link.href   = canvas.toDataURL('image/png');
+                link.download = 'purge-coffee-receipt.png';
+                link.click();
+            });
+        }
+
+        /* Close receipt dialog and redirect to account page */
+        function closeReceipt() {
+            document.getElementById('receipt-overlay').classList.remove('open');
+            window.location.href = 'account.php';
+        }
+
+        /* Inline alert helper */
         function showAlert(msg) {
             const zone = document.getElementById('s2-alert-zone');
             zone.innerHTML = `<div class="alert-error">
@@ -507,13 +762,13 @@ $min_date = date('Y-m-d'); // Prevent past pickup dates
             document.getElementById('s2-alert-zone').innerHTML = '';
         }
 
-        /* ── Pickup time slots: 8:00 AM – 8:00 PM only ────── */
+        /* Build pickup time slots 8:00 AM – 8:00 PM */
         (function buildTimeSlots() {
             const sel = document.getElementById('pick-time');
             if (!sel) return;
             for (let h = 8; h <= 20; h++) {
                 ['00', '30'].forEach(m => {
-                    if (h === 20 && m === '30') return; // last slot is 8:00 PM
+                    if (h === 20 && m === '30') return;
                     const val   = `${String(h).padStart(2, '0')}:${m}`;
                     const ampm  = h < 12 ? 'AM' : 'PM';
                     const hr12  = h > 12 ? h - 12 : h;
