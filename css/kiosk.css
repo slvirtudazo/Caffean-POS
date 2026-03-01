@@ -79,11 +79,13 @@ body.kiosk-no-scroll {
     margin: 0 auto;
 }
 
-.k-bar-left, .k-bar-right {
+.k-bar-left,
+.k-bar-right {
     flex: 1;
     display: flex;
     align-items: center;
-    min-width: 0; /* Allows text truncation if necessary */
+    min-width: 0;
+    /* Allows text truncation if necessary */
 }
 
 .k-bar-left {
@@ -99,7 +101,8 @@ body.kiosk-no-scroll {
     align-items: center;
     justify-content: center;
     max-width: 640px;
-    flex: 0 1 auto; /* Take required space, perfectly center aligning content */
+    flex: 0 1 auto;
+    /* Take required space, perfectly center aligning content */
     width: 100%;
 }
 
@@ -289,7 +292,8 @@ body.kiosk-no-scroll {
 /* Fixed-height viewport panel — sidebar stays put, only products scroll */
 .kiosk-menu-wrap {
     display: flex;
-    height: calc(100vh - 130px - 80px); /* minus navbar+progress, minus cart bar */
+    height: calc(100vh - 130px - 80px);
+    /* minus navbar+progress, minus cart bar */
     background: var(--ivory-cream);
     overflow: hidden;
 }
@@ -539,8 +543,15 @@ body.kiosk-no-scroll {
 
 /* Slide-down animation for active filters bar */
 @keyframes kioskFilterSlideDown {
-    from { opacity: 0; transform: translateY(-8px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Active filters bar — sticky at very top of products scroll container */
@@ -777,7 +788,8 @@ body.kiosk-no-scroll {
     background: var(--deep-maroon);
     color: #fff;
     padding: 1rem 0;
-    display: none; /* Changed to block dynamically */
+    display: none;
+    /* Changed to block dynamically */
     z-index: 200;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
 }
@@ -1697,81 +1709,167 @@ body.kiosk-no-scroll {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
 /* ── Back warning dialog ──────────────────────────────────────── */
+/* ── Delete Item Dialog — matches admin modal design ─────────── */
 .kiosk-dialog-overlay {
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.65);
+    background: rgba(28, 28, 28, 0.45);
     z-index: 9999;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(4px);
 }
 
 .kiosk-dialog-overlay.active {
     display: flex;
 }
 
-.kiosk-dialog {
-    background: var(--bg-card, #1e1e1e);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 1.25rem;
-    padding: 2.5rem 2rem 2rem;
-    max-width: 420px;
+/* Admin-style modal card */
+.kd-modal {
+    background: #fff;
     width: 90%;
-    text-align: center;
-    animation: fadeInUp 0.25s ease both;
+    max-width: 520px;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(42, 0, 0, 0.10);
+    overflow: hidden;
+    animation: fadeInUp 0.22s ease both;
 }
 
-.kiosk-dialog-icon {
-    font-size: 2.5rem;
-    color: var(--accent, #c8a97e);
-    margin-bottom: 1rem;
-}
-
-.kiosk-dialog-title {
-    font-family: var(--font-heading, 'Playfair Display', serif);
-    font-size: 1.5rem;
-    color: var(--text-primary, #fff);
-    margin-bottom: 0.65rem;
-}
-
-.kiosk-dialog-msg {
-    font-size: 0.92rem;
-    color: var(--text-muted, #aaa);
-    margin-bottom: 1.75rem;
-    line-height: 1.55;
-}
-
-.kiosk-dialog-actions {
+/* Header row: icon + title left, X right */
+.kd-modal-header {
     display: flex;
-    gap: 0.75rem;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 28px;
+    border-bottom: 1px solid rgba(42, 0, 0, 0.08);
+    background: rgba(245, 241, 232, 0.4);
 }
 
-.kiosk-dialog-btn {
-    flex: 1;
-    max-width: 160px;
-    padding: 0.75rem 1rem;
+.kd-modal-header h3 {
+    font-family: var(--font-subheading);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--deep-maroon);
+    letter-spacing: 0.3px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.kd-modal-icon {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.kd-modal-close {
+    background: none;
     border: none;
-    border-radius: 0.65rem;
-    font-size: 0.95rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--deep-maroon);
+    cursor: pointer;
+    line-height: 1;
+    padding: 5px;
+    border-radius: 5px;
+    transition: background 0.22s ease;
+}
+
+.kd-modal-close:hover {
+    background: rgba(42, 0, 0, 0.06);
+}
+
+/* Body */
+.kd-modal-body {
+    padding: 24px 28px;
+}
+
+.kd-modal-subtitle {
+    font-family: var(--font-subheading);
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--text-muted, #7a6a5a);
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Footer: buttons right-aligned */
+.kd-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 20px 28px;
+    border-top: 1px solid rgba(42, 0, 0, 0.08);
+    background: rgba(245, 241, 232, 0.25);
+}
+
+/* Cancel button — outlined */
+.kd-btn-cancel {
+    background: transparent;
+    color: var(--text-muted, #7a6a5a);
+    border: 1.5px solid var(--text-muted, #7a6a5a);
+    padding: 10px 22px;
+    border-radius: 50px;
+    font-family: var(--font-subheading);
+    font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
-    transition: opacity 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.22s ease;
 }
 
-.kiosk-dialog-btn:hover {
-    opacity: 0.85;
+.kd-btn-cancel:hover {
+    background: rgba(42, 0, 0, 0.04);
+    color: var(--dark-brown);
+    border-color: var(--dark-brown);
 }
 
-.kiosk-dialog-cancel {
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--text-primary, #fff);
+/* Go Back confirm button — maroon (non-destructive warning) */
+.kd-btn-goback {
+    background: var(--deep-maroon, #2A0000);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-family: var(--font-subheading);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.22s ease;
 }
 
-.kiosk-dialog-confirm {
-    background: var(--accent, #c8a97e);
-    color: #1a1209;
+.kd-btn-goback:hover {
+    background: var(--burgundy-wine, #5B1312);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(42, 0, 0, 0.20);
+}
+
+/* Delete button — filled red */
+.kd-btn-delete {
+    background: #DC0000;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-family: var(--font-subheading);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.22s ease;
+}
+
+.kd-btn-delete:hover {
+    background: #B30000;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(42, 0, 0, 0.20);
 }

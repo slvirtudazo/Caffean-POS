@@ -359,25 +359,37 @@ function kioskProductImage($product)
     </div>
 
     <div class="kiosk-dialog-overlay" id="delete-dialog-overlay">
-        <div class="kiosk-dialog">
-            <div class="kiosk-dialog-icon" style="color:#c0392b;"><i class="fas fa-trash-alt"></i></div>
-            <h2 class="kiosk-dialog-title">Remove Item?</h2>
-            <p class="kiosk-dialog-msg">Are you sure you want to remove this item from your cart?</p>
-            <div class="kiosk-dialog-actions">
-                <button class="kiosk-dialog-btn kiosk-dialog-cancel" onclick="closeDeleteDialog()">Cancel</button>
-                <button class="kiosk-dialog-btn kiosk-dialog-confirm" onclick="confirmDeleteItem()" style="background:#c0392b; color:#fff;">Remove</button>
+        <div class="kd-modal">
+            <div class="kd-modal-header">
+                <h3><i class="fas fa-trash kd-modal-icon"></i> Remove Item</h3>
+                <button class="kd-modal-close" onclick="closeDeleteDialog()">&#x2715;</button>
+            </div>
+            <div class="kd-modal-body">
+                <p class="kd-modal-subtitle">Are you sure you want to remove this item from your cart? This cannot be undone.</p>
+            </div>
+            <div class="kd-modal-footer">
+                <button class="kd-btn-cancel" onclick="closeDeleteDialog()">Cancel</button>
+                <button class="kd-btn-delete" onclick="confirmDeleteItem()">
+                    <i class="fas fa-trash"></i> Remove Item
+                </button>
             </div>
         </div>
     </div>
 
     <div class="kiosk-dialog-overlay" id="back-dialog-overlay">
-        <div class="kiosk-dialog">
-            <div class="kiosk-dialog-icon"><i class="fas fa-triangle-exclamation"></i></div>
-            <h2 class="kiosk-dialog-title">Go Back?</h2>
-            <p class="kiosk-dialog-msg">You have items in your cart. Are you sure you want to go back?</p>
-            <div class="kiosk-dialog-actions">
-                <button class="kiosk-dialog-btn kiosk-dialog-cancel" onclick="closeBackDialog()">Stay</button>
-                <button class="kiosk-dialog-btn kiosk-dialog-confirm" onclick="confirmGoBack()">Go Back</button>
+        <div class="kd-modal">
+            <div class="kd-modal-header">
+                <h3><i class="fas fa-triangle-exclamation kd-modal-icon"></i> Go Back?</h3>
+                <button class="kd-modal-close" onclick="closeBackDialog()">&#x2715;</button>
+            </div>
+            <div class="kd-modal-body">
+                <p class="kd-modal-subtitle">You have items in your cart. Are you sure you want to go back?</p>
+            </div>
+            <div class="kd-modal-footer">
+                <button class="kd-btn-cancel" onclick="closeBackDialog()">Stay</button>
+                <button class="kd-btn-goback" onclick="confirmGoBack()">
+                    <i class="fas fa-arrow-left"></i> Go Back
+                </button>
             </div>
         </div>
     </div>
@@ -385,7 +397,7 @@ function kioskProductImage($product)
     <div class="kiosk-cart-bar" id="kiosk-cart-bar">
         <div class="kiosk-bar-wrapper">
             <div class="k-bar-left"></div>
-            
+
             <div class="k-bar-center kiosk-progress-inner">
                 <div class="k-cart-step">
                     <div class="cart-bar-left">
@@ -414,9 +426,9 @@ function kioskProductImage($product)
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         /* ── State ───────────────────────────────────────────────────── */
-        let kioskOrderType  = 'dine_in';
-        let kioskPayment    = 'Cash';
-        let kioskCart       = {};
+        let kioskOrderType = 'dine_in';
+        let kioskPayment = 'Cash';
+        let kioskCart = {};
         let kioskCurrentCat = 'all'; // 'all' | category id string
         let kioskCurrentSort = null; // null | 'low' | 'high' | 'popular'
 
@@ -873,10 +885,10 @@ function kioskProductImage($product)
 
         /* Build and show/hide the active filters bar */
         function updateKioskActiveHeader() {
-            const header    = document.getElementById('kiosk-active-header');
+            const header = document.getElementById('kiosk-active-header');
             const sectionTitle = document.querySelector('.kiosk-section-title');
-            const hasCat    = kioskCurrentCat !== 'all';
-            const hasSort   = kioskCurrentSort !== null;
+            const hasCat = kioskCurrentCat !== 'all';
+            const hasSort = kioskCurrentSort !== null;
 
             if (!hasCat && !hasSort) {
                 header.classList.remove('visible');
@@ -887,8 +899,16 @@ function kioskProductImage($product)
             /* Hide "ALL MENU" title when any filter is active */
             if (sectionTitle) sectionTitle.style.display = 'none';
 
-            const sortLabels = { low: 'Price: Low to High', high: 'Price: High to Low', popular: 'Best Sellers' };
-            const sortIcons  = { low: 'fa-arrow-down', high: 'fa-arrow-up', popular: 'fa-fire' };
+            const sortLabels = {
+                low: 'Price: Low to High',
+                high: 'Price: High to Low',
+                popular: 'Best Sellers'
+            };
+            const sortIcons = {
+                low: 'fa-arrow-down',
+                high: 'fa-arrow-up',
+                popular: 'fa-fire'
+            };
 
             let html = '<span class="kiosk-filter-label">Active Filters:</span>';
 
@@ -948,6 +968,7 @@ function kioskProductImage($product)
             });
             scrollToCategory('all');
         }
+
         function startNewOrder() {
             kioskCart = {};
             kioskOrderType = 'dine_in';
