@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 01, 2026 at 10:31 PM
+-- Generation Time: Mar 02, 2026 at 03:40 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -126,7 +126,9 @@ INSERT INTO `orders` (`order_id`, `order_number`, `user_id`, `order_date`, `tota
 (22, 'PC-2026-00018', 3, '2026-03-01 13:51:39', 530.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 05:51:39', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'Beside the shoe rack', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
 (23, 'PC-2026-00019', 3, '2026-03-01 13:54:21', 210.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 05:54:21', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
 (24, 'PC-2026-00020', 3, '2026-03-01 13:55:50', 235.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 05:55:50', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(25, 'PC-2026-00021', 3, '2026-03-01 13:57:04', 225.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 05:57:04', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL);
+(25, 'PC-2026-00021', 3, '2026-03-01 13:57:04', 225.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 05:57:04', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
+(26, 'PC-2026-00022', 3, '2026-03-02 05:43:36', 690.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 21:43:36', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'asd', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
+(27, 'PC-2026-00023', 3, '2026-03-02 08:48:53', 705.00, 'pending', 'GCash', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-02 00:48:53', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -183,7 +185,10 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price_at
 (29, 22, 55, 3, 160.00, 'Venti', 'Iced', '100%', 'Almond', 'Extra Espresso Shot, Whipped Cream', 'Add a small note'),
 (30, 23, 55, 1, 160.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
 (31, 24, 5, 1, 185.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
-(32, 25, 2, 1, 175.00, 'Short', 'Hot', '0%', 'Whole', '', '');
+(32, 25, 2, 1, 175.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
+(33, 26, 55, 4, 160.00, 'Venti', 'Iced', '100%', 'Almond', 'Extra Espresso Shot, Whipped Cream', 'Add a small note'),
+(34, 27, 2, 1, 175.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
+(35, 27, 55, 3, 160.00, 'Venti', 'Iced', '100%', 'Almond', 'Extra Espresso Shot, Whipped Cream', 'Add a small note');
 
 -- --------------------------------------------------------
 
@@ -345,7 +350,7 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`user_id`, `full_name`, `email`, `mobile_number`, `profile_image`, `house_unit`, `street_name`, `barangay`, `city_municipality`, `province`, `zip_code`, `password`, `role`, `created_at`) VALUES
 (1, 'Samantha Virtudazo', 'admin@purgecoffee.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '$2a$12$F4wbKxPcOnhD6K5An76ke.4gS2.m9JQTH88Q8NZYUzGwNaYhY6YKC', 'admin', '2026-02-20 02:12:15'),
 (2, 'Customer', 'customer@purgecoffee.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '$2a$12$nvPoBAKZQZpBpybEbGlsNeYwwMFn.YcvPM1SqGgM0iR.iHMw2efGW', 'customer', '2026-02-20 02:23:55'),
-(3, 'John Doe', 'johndoe@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '$2y$10$31mqhulkg7rPDmyNSwiuj.CAQAqlJGgdknbpSJo0m22QsNKaKcLEO', 'customer', '2026-02-21 07:15:51');
+(3, 'John Doe', 'johndoe@gmail.com', '09603150070', 'uploads/avatars/avatar_3_1772412807.jpg', '17', 'Blk 6 Lot', '', 'Davao City', 'Davao del Sur', '8000', '$2y$10$QIGd50QI/MzcG7QnQ.j.xeHGaNP65fxatJA/KEfRiKekeye/GooB6', 'customer', '2026-02-21 07:15:51');
 
 -- --------------------------------------------------------
 
@@ -468,13 +473,13 @@ ALTER TABLE `contact_messages`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `products`

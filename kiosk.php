@@ -155,10 +155,17 @@ function kioskProductImage($product)
                                 6 => 'fa-cake-candles',
                                 7 => 'fa-bread-slice',
                                 8 => 'fa-burger',
-                                9 => 'fa-plus-circle'
+                                9 => 'fa-plus-circle',
+                            ];
+                            /* Name-based fallback for categories beyond ID 9 */
+                            $cat_icons_by_name = [
+                                'Coffee Beans'      => 'fa-seedling',
+                                'Milk & Creamers'   => 'fa-droplet',
+                                'Brewing Equipment' => 'fa-flask',
                             ];
                             foreach ($categories_map as $cid => $cat):
-                                $icon = $cat_icons[$cid] ?? 'fa-circle';
+                                $icon = $cat_icons[$cid]
+                                    ?? ($cat_icons_by_name[$cat['name']] ?? 'fa-circle');
                             ?>
                                 <div class="kiosk-cat-item category-item" id="catbtn-<?= $cid ?>"
                                     onclick="scrollToCategory(<?= $cid ?>)">
@@ -201,8 +208,12 @@ function kioskProductImage($product)
                         <div class="kiosk-cat-label"><?= htmlspecialchars($cat['name']) ?></div>
                         <div class="kiosk-products-grid">
                             <?php foreach ($cat['products'] as $idx => $product): ?>
-                                <div class="kiosk-product-card" data-price="<?= $product['price'] ?>" data-idx="<?= $idx ?>">
-                                    <?php $img = kioskProductImage($product); ?>
+                                <?php $img = kioskProductImage($product); ?>
+                                <div class="kiosk-product-card"
+                                    data-price="<?= $product['price'] ?>"
+                                    data-idx="<?= $idx ?>"
+                                    data-pid="<?= $product['product_id'] ?>">
+
                                     <img src="<?= $img ?>"
                                         alt="<?= htmlspecialchars($product['name']) ?>"
                                         class="kiosk-prod-img"
@@ -210,15 +221,26 @@ function kioskProductImage($product)
                                     <div class="kiosk-prod-img-placeholder" style="display:none;">
                                         <i class="fas fa-mug-hot"></i>
                                     </div>
+
                                     <div class="kiosk-prod-info">
                                         <div class="kiosk-prod-name"><?= htmlspecialchars($product['name']) ?></div>
                                         <div class="kiosk-prod-desc"><?= htmlspecialchars($product['description'] ?? '') ?></div>
                                         <div class="kiosk-prod-footer">
                                             <span class="kiosk-prod-price">₱<?= number_format($product['price'], 2) ?></span>
-                                            <button class="btn-kiosk-add"
-                                                onclick="kioskAddToCart(<?= $product['product_id'] ?>, '<?= addslashes(htmlspecialchars($product['name'])) ?>', <?= $product['price'] ?>, '<?= $img ?>')">
-                                                <i class="fas fa-plus"></i>
-                                            </button>
+
+                                            <!-- Qty selector — always visible, minus disabled at 0 -->
+                                            <div class="kpf-qty-row" id="kpf-<?= $product['product_id'] ?>">
+                                                <button class="kpf-qty-btn" disabled
+                                                    id="kpf-minus-<?= $product['product_id'] ?>"
+                                                    onclick="kioskCardQty(<?= $product['product_id'] ?>, -1)">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+                                                <span class="kpf-qty-num" id="kpf-num-<?= $product['product_id'] ?>">0</span>
+                                                <button class="kpf-qty-btn kpf-plus"
+                                                    onclick="kioskCardQty(<?= $product['product_id'] ?>, 1, '<?= addslashes(htmlspecialchars($product['name'])) ?>', <?= $product['price'] ?>, '<?= $img ?>')">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -233,7 +255,7 @@ function kioskProductImage($product)
 
     <div class="kiosk-step" id="step3">
         <div class="kiosk-cart-page">
-            <h1 class="kiosk-page-title">Your Cart</h1>
+            <h1 class="kiosk-page-title">Shopping Cart</h1>
             <div id="step3-content"></div>
         </div>
     </div>
@@ -268,7 +290,9 @@ function kioskProductImage($product)
                                 <input type="text" id="co-name" class="kiosk-co-input" placeholder="e.g. Juan">
                             </div>
                             <div class="col-6">
-                                <label class="kiosk-co-label">Mobile <span class="kiosk-co-optional">(Optional)</span></label>
+                                <label class="kiosk-co-label">
+                                    Mobile <span class="kiosk-co-optional">(Optional)</span>
+                                </label>
                                 <input type="tel" id="co-mobile" class="kiosk-co-input" placeholder="09XXXXXXXXX" maxlength="11">
                             </div>
                         </div>
@@ -305,8 +329,8 @@ function kioskProductImage($product)
                 </div>
 
                 <div class="kiosk-co-right">
-                    <div class="kiosk-co-card kiosk-co-summary-card">
-                        <div class="kiosk-co-card-title">
+                    <div class="kiosk-co-summary-card">
+                        <div class="k-co-sum-title">
                             <i class="fas fa-receipt"></i> Order Summary
                         </div>
                         <div id="co-sum-items"></div>
@@ -315,12 +339,14 @@ function kioskProductImage($product)
                             <span>Total</span>
                             <span id="co-sum-total">₱0.00</span>
                         </div>
-                        <button class="btn-kiosk-main mt-3" onclick="placeKioskOrder()">
-                            <i class="fas fa-check-circle me-2"></i>Place Order
-                        </button>
-                        <button class="btn-kiosk-back mt-2" onclick="goToStep(3)">
-                            <i class="fas fa-arrow-left me-1"></i> Back to Cart
-                        </button>
+                        <div class="k-co-sum-actions">
+                            <button class="btn-kiosk-main" onclick="placeKioskOrder()">
+                                <i class="fas fa-check-circle me-2"></i>Place Order
+                            </button>
+                            <button class="btn-kiosk-back mt-2" onclick="goToStep(3)">
+                                <i class="fas fa-arrow-left me-1"></i> Back to Cart
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -329,32 +355,58 @@ function kioskProductImage($product)
     </div>
 
     <div class="kiosk-step" id="step5">
-        <div class="kiosk-confirm-page">
-            <div class="kiosk-confirm-icon">
-                <i class="fas fa-check"></i>
-            </div>
-            <h1 class="kiosk-confirm-h1">Order Placed!</h1>
-            <p class="kiosk-confirm-sub" id="confirm-greeting">Thank you! Your order is being prepared.</p>
+        <div class="kiosk-receipt-page">
+            <div class="kiosk-receipt-card">
+                <div class="kiosk-receipt-content" id="confirm-receipt">
 
-            <div class="kiosk-order-number-box">
-                <div class="kon-label">Your Order Number</div>
-                <div class="kon-number" id="confirm-order-num">#000</div>
-                <div class="kon-type" id="confirm-order-type"></div>
-            </div>
+                    <div class="kiosk-receipt-logo">
+                        <img src="images/coffee_beans_logo.png" alt="Purge Coffee">
+                        <span>Purge Coffee</span>
+                    </div>
 
-            <div class="kiosk-wait-notice">
-                <i class="fas fa-bell"></i>
-                <span>Please wait for your number to be called at the claim counter. Keep this receipt with you.</span>
-            </div>
+                    <h2 class="kiosk-receipt-heading" id="confirm-greeting">Thank you for your order!</h2>
+                    <p class="kiosk-receipt-subline">Your order has been received and is being prepared.</p>
 
-            <div class="kiosk-receipt" id="confirm-receipt">
-                <div class="kiosk-receipt-title">Receipt</div>
-                <div id="receipt-details"></div>
-            </div>
+                    <div class="kiosk-receipt-order-box">
+                        <div>
+                            <div class="kiosk-receipt-order-label">Order Number</div>
+                            <div class="kiosk-receipt-order-num" id="confirm-order-num">—</div>
+                        </div>
+                        <button class="kiosk-receipt-copy-btn" onclick="copyOrderNum()" title="Copy">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
 
-            <button class="btn-kiosk-new-order" onclick="startNewOrder()">
-                <i class="fas fa-rotate-left me-2"></i>New Order
-            </button>
+                    <div class="kiosk-receipt-status-row">
+                        <span class="kiosk-receipt-status-badge">Order Confirmed</span>
+                        <span class="kiosk-receipt-datetime" id="confirm-datetime"></span>
+                    </div>
+
+                    <hr class="kiosk-receipt-divider">
+
+                    <div class="kiosk-receipt-section-hd">Order Details</div>
+                    <div id="receipt-order-details"></div>
+
+                    <hr class="kiosk-receipt-divider">
+
+                    <div class="kiosk-receipt-section-hd">Order Summary</div>
+                    <div id="receipt-items"></div>
+
+                    <hr class="kiosk-receipt-divider" style="margin-top:10px;">
+
+                    <div id="receipt-totals"></div>
+
+                    <div class="kiosk-receipt-footer-note">
+                        Thank you for choosing Purge Coffee! &#128578;
+                    </div>
+
+                </div>
+                <div class="kiosk-receipt-actions">
+                    <button class="btn-kiosk-new-order" onclick="startNewOrder()">
+                        <i class="fas fa-rotate-left"></i> New Order
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -394,28 +446,32 @@ function kioskProductImage($product)
         </div>
     </div>
 
+    <!-- Cart bar — visible only on step 2 (Menu) -->
     <div class="kiosk-cart-bar" id="kiosk-cart-bar">
-        <div class="kiosk-bar-wrapper">
-            <div class="k-bar-left"></div>
+        <div class="kcb-wrapper">
+            <!-- Left: empty spacer — mirrors k-bar-left -->
+            <div class="kcb-bar-left"></div>
 
-            <div class="k-bar-center kiosk-progress-inner">
-                <div class="k-cart-step">
-                    <div class="cart-bar-left">
-                        <div class="cart-bar-count" id="cbar-count">0</div>
-                        <span class="cart-bar-label">items in cart</span>
+            <!-- Center: 5-column grid mirroring progress dots — col 1 = count, col 3 = subtotal -->
+            <div class="kcb-bar-center">
+                <div class="kcb-col">
+                    <div class="kcb-left">
+                        <span class="kcb-count" id="cbar-count">0</span>
+                        <span class="kcb-label">items in cart</span>
                     </div>
                 </div>
-                <div class="k-cart-step"></div>
-                <div class="k-cart-step">
-                    <span class="cart-bar-total" id="cbar-total">₱0.00</span>
+                <div class="kcb-col"></div>
+                <div class="kcb-col">
+                    <span class="kcb-total" id="cbar-total">₱0.00</span>
                 </div>
-                <div class="k-cart-step"></div>
-                <div class="k-cart-step"></div>
+                <div class="kcb-col"></div>
+                <div class="kcb-col"></div>
             </div>
 
-            <div class="k-bar-right">
-                <button class="btn-view-cart" onclick="goToStep(3)">
-                    View Cart <i class="fas fa-arrow-right ms-1"></i>
+            <!-- Right: Continue button — mirrors k-bar-right (Back button) -->
+            <div class="kcb-bar-right">
+                <button class="kcb-btn" id="kcb-btn" onclick="goToStep(3)" disabled>
+                    Continue <i class="fas fa-arrow-right ms-1"></i>
                 </button>
             </div>
         </div>
@@ -444,10 +500,10 @@ function kioskProductImage($product)
             document.getElementById('step' + n).classList.add('active');
             currentStep = n;
 
-            /* Lock body scroll on step 1 (Type tab has no scroll) */
+            /* Lock body scroll on step 1 */
             document.body.classList.toggle('kiosk-no-scroll', n === 1);
 
-            /* update progress dots — kp1-kp5 */
+            /* Update progress dots */
             for (let i = 1; i <= 5; i++) {
                 const dot = document.getElementById('kp' + i);
                 if (dot) {
@@ -457,25 +513,14 @@ function kioskProductImage($product)
                 }
             }
 
-            /* sync cart totals */
+            /* Show cart bar only on step 2 (Menu), sync totals */
             updateCartBar();
-
-            /* SHOW CART DETAILS BAR ONLY ON STEP 2 (Menu) */
             const cartBar = document.getElementById('kiosk-cart-bar');
-            if (cartBar) {
-                if (n === 2) {
-                    cartBar.style.display = 'block';
-                } else {
-                    cartBar.style.display = 'none';
-                }
-            }
+            if (cartBar) cartBar.style.display = (n === 2) ? 'block' : 'none';
 
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            /* render step-specific content */
+            /* Render step-specific content */
             if (n === 3) renderCartStep();
             if (n === 4) renderCheckoutSummary();
         }
@@ -521,138 +566,179 @@ function kioskProductImage($product)
             goToStep(2);
         }
 
-        /* ── Step 2: add to kiosk cart ───────────────────────────────── */
-        function kioskAddToCart(pid, name, price, img) {
-            if (kioskCart[pid]) {
-                kioskCart[pid].qty++;
-            } else {
-                kioskCart[pid] = {
-                    name,
-                    price,
-                    qty: 1,
-                    size: 'Short',
-                    temp: 'Hot',
-                    sugar: '0%',
-                    milk: 'Whole',
-                    notes: '',
-                    img
-                };
-            }
-            updateCartBar();
-            showToast(name + ' has been added to your cart!');
+        /* ── Step 2: inline card qty selector ───────────────────────── */
+
+        /* Update qty display and minus-button disabled state */
+        function setCardUI(pid, qty) {
+            const numEl   = document.getElementById('kpf-num-' + pid);
+            const minusEl = document.getElementById('kpf-minus-' + pid);
+            if (numEl) numEl.textContent = qty;
+            if (minusEl) minusEl.disabled = (qty === 0);
         }
 
-        /* Recalc totals and update floating bar */
+        /* Unified handler for both - and + on every card */
+        function kioskCardQty(pid, delta, name, price, img) {
+            const current = kioskCart[pid] ? kioskCart[pid].qty : 0;
+            const next = Math.max(0, current + delta);
+
+            if (next === 0) {
+                /* Remove from cart */
+                delete kioskCart[pid];
+            } else if (!kioskCart[pid]) {
+                /* First add — create cart entry */
+                kioskCart[pid] = {
+                    name, price, qty: next,
+                    size: 'Short', temp: 'Hot',
+                    sugar: '0%', milk: 'Whole',
+                    notes: '', img
+                };
+                showToast((name || 'Item') + ' added to cart!');
+            } else {
+                kioskCart[pid].qty = next;
+            }
+
+            setCardUI(pid, next);
+            updateCartBar();
+        }
+
+        /* Legacy aliases */
+        function kioskCardAdd(pid, name, price, img) {
+            kioskCardQty(pid, 1, name, price, img);
+        }
+        function kioskAddToCart(pid, name, price, img) {
+            kioskCardQty(pid, 1, name, price, img);
+        }
+
+        /* Recalculate totals, update the cart bar, and toggle Continue button */
         function updateCartBar() {
             const totalQty = Object.values(kioskCart).reduce((s, i) => s + i.qty, 0);
             const totalAmt = Object.values(kioskCart).reduce((s, i) => s + i.price * i.qty, 0);
-
-            document.getElementById('cbar-count').textContent = totalQty;
-            document.getElementById('cbar-total').textContent = '₱' + totalAmt.toFixed(2);
+            const countEl = document.getElementById('cbar-count');
+            const totalEl = document.getElementById('cbar-total');
+            const btn     = document.getElementById('kcb-btn');
+            if (countEl) countEl.textContent = totalQty;
+            if (totalEl) totalEl.textContent = '₱' + totalAmt.toFixed(2);
+            /* Enable Continue button only when at least one item is in the cart */
+            if (btn) btn.disabled = (totalQty === 0);
         }
 
-        /* ── Step 3: render cart ─────────────────────────────────────── */
+        /* ── Step 3: render cart with online cart design ─────────── */
         function renderCartStep() {
             const wrap = document.getElementById('step3-content');
             const items = Object.entries(kioskCart);
 
             if (!items.length) {
                 wrap.innerHTML = `
-            <div class="kiosk-empty">
-                <i class="fas fa-shopping-cart"></i>
-                <h3>Your cart is empty</h3>
-                <p>Go back to browse our menu.</p>
-                <button class="btn-kiosk-main mt-3" style="width:auto; display:inline-block; padding:0.75rem 2rem;"
-                    onclick="goToStep(2)">Browse Menu</button>
-            </div>`;
+                <div class="kiosk-empty">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h3>Your cart is empty</h3>
+                    <p>Go back to browse our menu.</p>
+                    <button class="btn-kiosk-main mt-3" style="width:auto;display:inline-block;padding:0.75rem 2rem;"
+                        onclick="goToStep(2)">Browse Menu</button>
+                </div>`;
                 return;
             }
 
             let subtotal = 0;
             items.forEach(([pid, it]) => subtotal += it.price * it.qty);
 
+            /* Build cart item cards using online ci-card style */
             let cardsHtml = '';
             items.forEach(([pid, it]) => {
-                const imgHtml = it.img ?
-                    `<img src="${it.img}" alt="${it.name}" class="k-ci-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-               <div class="k-ci-img-ph" style="display:none;"><i class="fas fa-mug-hot"></i></div>` :
-                    `<div class="k-ci-img-ph"><i class="fas fa-mug-hot"></i></div>`;
+                const imgHtml = it.img
+                    ? `<img src="${it.img}" alt="${it.name}" class="k-ci-img"
+                           onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                       <div class="k-ci-img-ph" style="display:none;"><i class="fas fa-mug-hot"></i></div>`
+                    : `<div class="k-ci-img-ph"><i class="fas fa-mug-hot"></i></div>`;
 
                 cardsHtml += `
-        <div class="k-ci-card" id="kci-${pid}">
-            <div class="k-ci-top">
-                ${imgHtml}
-                <div class="k-ci-info">
-                    <div class="k-ci-name">${it.name}</div>
-                    <div class="k-ci-price">₱${it.price.toFixed(2)}</div>
-                </div>
-                <button class="k-ci-del" onclick="confirmDeleteKioskItem(${pid})"><i class="fas fa-trash-alt"></i></button>
-            </div>
+                <div class="k-ci-card" id="kci-${pid}">
+                    <div class="k-ci-top">
+                        ${imgHtml}
+                        <div class="k-ci-info">
+                            <div class="k-ci-name">${it.name}</div>
+                            <div class="k-ci-price">₱${it.price.toFixed(2)}</div>
+                        </div>
+                        <button class="k-ci-del" onclick="confirmDeleteKioskItem(${pid})">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
 
-            <div class="k-ci-cust-panel">
-                <div class="row g-2 mt-1">
-                    <div class="col-6 col-md-3">
-                        <label class="k-cust-lbl">Size</label>
-                        <select class="k-cust-sel" onchange="updateKioskOpt(${pid},'size',this.value)">
-                            ${['Short','Tall','Grande','Venti'].map(s=>`<option${it.size===s?' selected':''}>${s}</option>`).join('')}
-                        </select>
+                    <div class="k-ci-cust-panel">
+                        <div class="row g-2">
+                            <div class="col-6 col-md-3">
+                                <label class="k-cust-lbl">Size</label>
+                                <select class="k-cust-sel" onchange="updateKioskOpt(${pid},'size',this.value)">
+                                    ${['Short','Tall','Grande','Venti'].map(s=>`<option${it.size===s?' selected':''}>${s}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="k-cust-lbl">Temperature</label>
+                                <select class="k-cust-sel" onchange="updateKioskOpt(${pid},'temp',this.value)">
+                                    ${['Hot','Iced','Blended'].map(t=>`<option${it.temp===t?' selected':''}>${t}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="k-cust-lbl">Sugar Level</label>
+                                <select class="k-cust-sel" onchange="updateKioskOpt(${pid},'sugar',this.value)">
+                                    ${['0%','25%','50%','75%','100%'].map(s=>`<option${it.sugar===s?' selected':''}>${s}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="k-cust-lbl">Milk</label>
+                                <select class="k-cust-sel" onchange="updateKioskOpt(${pid},'milk',this.value)">
+                                    ${['Whole','Skim','Oat','Almond','Soy'].map(m=>`<option${it.milk===m?' selected':''}>${m}</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="k-cust-lbl">Instructions (Optional)</label>
+                                <textarea class="k-cust-ta" rows="2"
+                                    placeholder="e.g. extra hot, less ice..."
+                                    onchange="updateKioskOpt(${pid},'notes',this.value)">${it.notes}</textarea>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-6 col-md-3">
-                        <label class="k-cust-lbl">Temperature</label>
-                        <select class="k-cust-sel" onchange="updateKioskOpt(${pid},'temp',this.value)">
-                            ${['Hot','Iced','Blended'].map(t=>`<option${it.temp===t?' selected':''}>${t}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <label class="k-cust-lbl">Sugar Level</label>
-                        <select class="k-cust-sel" onchange="updateKioskOpt(${pid},'sugar',this.value)">
-                            ${['0%','25%','50%','75%','100%'].map(s=>`<option${it.sugar===s?' selected':''}>${s}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div class="col-6 col-md-3">
-                        <label class="k-cust-lbl">Milk</label>
-                        <select class="k-cust-sel" onchange="updateKioskOpt(${pid},'milk',this.value)">
-                            ${['Whole','Skim','Oat','Almond','Soy'].map(m=>`<option${it.milk===m?' selected':''}>${m}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div class="col-12">
-                        <label class="k-cust-lbl">Instructions (Optional)</label>
-                        <textarea class="k-cust-ta" rows="2"
-                            placeholder="e.g. extra hot, less ice..."
-                            onchange="updateKioskOpt(${pid},'notes',this.value)">${it.notes}</textarea>
-                    </div>
-                </div>
-            </div>
 
-            <div class="k-qty-row">
-                <button class="k-qty-btn" onclick="changeKioskQty(${pid},-1)"><i class="fas fa-minus"></i></button>
-                <span class="k-qty-num" id="kqty-${pid}">${it.qty}</span>
-                <button class="k-qty-btn" onclick="changeKioskQty(${pid},1)"><i class="fas fa-plus"></i></button>
-            </div>
-        </div>`;
+                    <div class="k-qty-row">
+                        <div class="k-qty-wrap">
+                            <button class="k-qty-btn" onclick="changeKioskQty(${pid},-1)">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span class="k-qty-num" id="kqty-${pid}">${it.qty}</span>
+                            <button class="k-qty-btn" onclick="changeKioskQty(${pid},1)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
             });
 
+            /* Two-column layout: items left, summary right */
             wrap.innerHTML = `
-        <div class="kiosk-cart-layout">
-            <div>${cardsHtml}</div>
-            <div>
-                <div class="kiosk-sum-card">
-                    <div class="kiosk-sum-title">Order Summary</div>
-                    <div id="k-sum-lines"></div>
-                    <hr class="k-sum-hr">
-                    <div class="k-sum-total">
-                        <span>Total</span>
-                        <span id="k-sum-total">₱${subtotal.toFixed(2)}</span>
+            <div class="row g-4">
+                <div class="col-lg-8">${cardsHtml}</div>
+                <div class="col-lg-4">
+                    <div class="kiosk-sum-card">
+                        <div class="kiosk-sum-title">
+                            <i class="fas fa-receipt me-2"></i>Order Summary
+                        </div>
+                        <div id="k-sum-lines"></div>
+                        <hr class="k-sum-hr">
+                        <div class="k-sum-total">
+                            <span>Total</span>
+                            <span id="k-sum-total">₱${subtotal.toFixed(2)}</span>
+                        </div>
+                        <div class="k-sum-actions">
+                            <button class="btn-kiosk-main" onclick="goToStep(4)">
+                                <i class="fas fa-arrow-right me-1"></i> Proceed to Checkout
+                            </button>
+                            <button class="btn-kiosk-back mt-2" onclick="goToStep(2)">
+                                <i class="fas fa-arrow-left me-1"></i> Add More Items
+                            </button>
+                        </div>
                     </div>
-                    <button class="btn-kiosk-main mt-3" onclick="goToStep(4)">
-                        <i class="fas fa-arrow-right me-1"></i> Proceed to Checkout
-                    </button>
-                    <button class="btn-kiosk-back mt-2" onclick="goToStep(2)">
-                        <i class="fas fa-arrow-left me-1"></i> Add More Items
-                    </button>
                 </div>
-            </div>
-        </div>`;
+            </div>`;
 
             renderSummaryLines();
         }
@@ -666,7 +752,10 @@ function kioskProductImage($product)
             Object.entries(kioskCart).forEach(([pid, it]) => {
                 const line = it.price * it.qty;
                 total += line;
-                html += `<div class="k-sum-line"><span>${it.name} ×${it.qty}</span><span>₱${line.toFixed(2)}</span></div>`;
+                html += `<div class="k-sum-line">
+                    <span>${it.name} <span class="k-sum-qty">×${it.qty}</span></span>
+                    <span>₱${line.toFixed(2)}</span>
+                </div>`;
             });
             el.innerHTML = html;
             const tot = document.getElementById('k-sum-total');
@@ -698,6 +787,7 @@ function kioskProductImage($product)
 
         function removeKioskItem(pid) {
             delete kioskCart[pid];
+            setCardUI(pid, 0);
             updateCartBar();
             renderCartStep();
         }
@@ -707,6 +797,7 @@ function kioskProductImage($product)
             kioskCart[pid].qty = Math.max(1, kioskCart[pid].qty + delta);
             const el = document.getElementById('kqty-' + pid);
             if (el) el.textContent = kioskCart[pid].qty;
+            setCardUI(pid, kioskCart[pid].qty);
             updateCartBar();
             renderSummaryLines();
         }
@@ -721,17 +812,20 @@ function kioskProductImage($product)
             /* Update order type display */
             const badge = document.getElementById('co-order-type-display');
             badge.innerHTML = kioskOrderType === 'dine_in' ?
-                '<i class="fas fa-utensils"></i> Dine In' :
-                '<i class="fas fa-shopping-bag"></i> Take Out';
+                '<i class="fas fa-utensils me-1"></i> Dine In' :
+                '<i class="fas fa-shopping-bag me-1"></i> Take Out';
 
-            /* Summary items */
+            /* Build summary item lines */
             const sumItems = document.getElementById('co-sum-items');
             let total = 0;
             let html = '';
             Object.entries(kioskCart).forEach(([pid, it]) => {
                 const line = it.price * it.qty;
                 total += line;
-                html += `<div class="k-sum-line"><span>${it.name} ×${it.qty}</span><span>₱${line.toFixed(2)}</span></div>`;
+                html += `<div class="k-sum-line">
+                    <span>${it.name} <span class="k-sum-qty">×${it.qty}</span></span>
+                    <span>₱${line.toFixed(2)}</span>
+                </div>`;
             });
             sumItems.innerHTML = html;
             document.getElementById('co-sum-total').textContent = '₱' + total.toFixed(2);
@@ -792,38 +886,85 @@ function kioskProductImage($product)
                 });
         }
 
-        /* ── Step 5: show confirmation ───────────────────────────────── */
+        /* ── Step 5: show confirmation receipt ───────────────────────── */
         function showConfirmation(data) {
-            document.getElementById('confirm-order-num').textContent = '#' + String(data.order_id).padStart(3, '0');
+            /* Order number */
+            const orderNumEl = document.getElementById('confirm-order-num');
+            const orderNum = 'ORD-' + new Date().getFullYear() + '-' + String(data.order_id).padStart(5, '0');
+            orderNumEl.textContent = orderNum;
+            orderNumEl.dataset.num = orderNum;
+
+            /* Greeting */
             document.getElementById('confirm-greeting').textContent =
                 (data.customer_name && data.customer_name !== 'Guest') ?
-                `Thank you, ${data.customer_name}! Your order is being prepared.` :
-                'Thank you! Your order is being prepared.';
-            document.getElementById('confirm-order-type').textContent =
-                data.kiosk_order_type === 'dine_in' ? '🍽 Dine In' : '🛍 Take Out';
+                `Thank you, ${data.customer_name}!` : 'Thank you for your order!';
 
-            /* Receipt */
-            let itemsHtml = '<div class="kr-items">';
+            /* Datetime */
+            document.getElementById('confirm-datetime').textContent = data.order_date || new Date().toLocaleString();
+
+            /* Order details rows */
+            const orderType = data.kiosk_order_type === 'dine_in' ? 'Dine In' : 'Take Out';
+            document.getElementById('receipt-order-details').innerHTML = `
+                <div class="kiosk-receipt-info-row">
+                    <span class="r-key">Type</span>
+                    <span class="r-val">${orderType}</span>
+                </div>
+                <div class="kiosk-receipt-info-row">
+                    <span class="r-key">Payment</span>
+                    <span class="r-val">${data.payment_method}</span>
+                </div>`;
+
+            /* Item rows */
+            let itemsHtml = '';
+            let subtotal = 0;
             data.items.forEach(it => {
-                itemsHtml += `<div class="kr-item-line">
-            <span>${it.name} ×${it.qty}</span>
-            <span>₱${it.subtotal.toFixed(2)}</span>
-        </div>`;
-            });
-            itemsHtml += '</div>';
+                subtotal += it.subtotal;
+                const imgHtml = it.image_path
+                    ? `<img src="${it.image_path}" alt="${it.name}" class="kiosk-receipt-item-img"
+                           onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                       <div class="kiosk-receipt-item-img-ph" style="display:none;"><i class="fas fa-mug-hot"></i></div>`
+                    : `<div class="kiosk-receipt-item-img-ph"><i class="fas fa-mug-hot"></i></div>`;
 
-            document.getElementById('receipt-details').innerHTML = `
-        <div class="kr-detail-row"><span class="kr-lbl">Order #</span><span>#${String(data.order_id).padStart(3,'0')}</span></div>
-        <div class="kr-detail-row"><span class="kr-lbl">Date</span><span>${data.order_date}</span></div>
-        <div class="kr-detail-row"><span class="kr-lbl">Type</span><span>${data.kiosk_order_type === 'dine_in' ? 'Dine In' : 'Take Out'}</span></div>
-        <div class="kr-detail-row"><span class="kr-lbl">Payment</span><span>${data.payment_method}</span></div>
-        ${itemsHtml}
-        <div class="kr-total"><span>Total</span><span>₱${parseFloat(data.total).toFixed(2)}</span></div>`;
+                const meta = [it.size, it.temp, it.sugar ? `Sugar ${it.sugar}` : null]
+                    .filter(Boolean).join(' · ');
+
+                itemsHtml += `
+                <div class="kiosk-receipt-item">
+                    ${imgHtml}
+                    <div class="kiosk-receipt-item-detail">
+                        <div class="kiosk-receipt-item-name">${it.name}</div>
+                        ${meta ? `<div class="kiosk-receipt-item-meta">${meta}</div>` : ''}
+                        <div class="kiosk-receipt-item-qty">Qty: ${it.qty}</div>
+                    </div>
+                    <div class="kiosk-receipt-item-price">₱${it.subtotal.toFixed(2)}</div>
+                </div>`;
+            });
+            document.getElementById('receipt-items').innerHTML = itemsHtml;
+
+            /* Totals */
+            document.getElementById('receipt-totals').innerHTML = `
+                <div class="kiosk-receipt-amount-row">
+                    <span>Subtotal</span>
+                    <span>₱${subtotal.toFixed(2)}</span>
+                </div>
+                <hr class="kiosk-receipt-divider" style="margin:8px 0;">
+                <div class="kiosk-receipt-total-row">
+                    <span>Total Amount</span>
+                    <span>₱${parseFloat(data.total).toFixed(2)}</span>
+                </div>`;
 
             /* Clear cart and go to step 5 */
             kioskCart = {};
-            updateCartBar();
             goToStep(5);
+        }
+
+        /* Copy order number to clipboard */
+        function copyOrderNum() {
+            const num = document.getElementById('confirm-order-num').dataset.num || '';
+            if (navigator.clipboard && num) {
+                navigator.clipboard.writeText(num);
+                showToast('Order number copied!');
+            }
         }
 
         /* ── Utilities ───────────────────────────────────────────────── */

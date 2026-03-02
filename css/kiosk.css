@@ -3,7 +3,7 @@
  * Self-order kiosk flow styles matching main site theme.
  */
 
-/* Lock body scroll when on step 1 (Type tab fits exactly in viewport) */
+/* Lock body scroll on step 1 — fits viewport exactly */
 body.kiosk-no-scroll {
     overflow: hidden;
 }
@@ -13,7 +13,7 @@ body.kiosk-no-scroll {
     display: none;
     min-height: calc(100vh - 135px);
     animation: fadeInUp 0.35s ease both;
-    padding-bottom: 80px;
+    padding-bottom: 40px;
 }
 
 .kiosk-step.active {
@@ -21,7 +21,7 @@ body.kiosk-no-scroll {
 }
 
 #step2 {
-    padding-bottom: 90px;
+    padding-bottom: 0;
 }
 
 /* Step 1 fills exact viewport — no scroll, no overflow */
@@ -107,6 +107,27 @@ body.kiosk-no-scroll {
 }
 
 /* ── Progress bar ────────────────────────────────────────────── */
+
+/* Back button in progress bar */
+.btn-view-cart {
+    background: transparent;
+    border: 1.5px solid rgba(255, 255, 255, 0.45);
+    color: #fff;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-subheading);
+    font-weight: 600;
+    font-size: 0.82rem;
+    letter-spacing: 0.2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-view-cart:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.8);
+}
+
 .kiosk-progress {
     background: var(--deep-maroon);
     padding: 1rem 0;
@@ -208,6 +229,134 @@ body.kiosk-no-scroll {
     font-weight: 400;
 }
 
+/* ── Bottom cart bar — visible only on step 2 ────────────────── */
+.kiosk-cart-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--deep-maroon);
+    color: #fff;
+    padding: 0 1.5rem;
+    height: 64px;
+    display: none;
+    z-index: 200;
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.08),
+                0 -8px 24px rgba(0, 0, 0, 0.22);
+}
+
+/* Mirrors .kiosk-bar-wrapper — same padding already on .kiosk-cart-bar */
+.kcb-wrapper {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    gap: 0;
+}
+
+/* Empty spacer — mirrors k-bar-left (flex: 1) */
+.kcb-bar-left {
+    flex: 1;
+}
+
+/* 5-column center — mirrors k-bar-center (max-width 640px, flex 0 1 auto) */
+.kcb-bar-center {
+    display: flex;
+    align-items: center;
+    max-width: 640px;
+    width: 100%;
+    flex: 0 1 auto;
+}
+
+/* Each column = one progress step slot */
+.kcb-col {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Col 1: left-aligned like the step 1 dot */
+.kcb-col:first-child {
+    justify-content: flex-start;
+}
+
+/* Left cluster: count badge + label */
+.kcb-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Right section — mirrors k-bar-right (flex: 1, end) */
+.kcb-bar-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+/* Count badge — matches progress dot active style */
+.kcb-count {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--burgundy-wine);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: var(--font-subheading);
+    transition: all 0.25s ease;
+}
+
+.kcb-label {
+    font-family: var(--font-subheading);
+    font-size: 0.88rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Column 3: subtotal — centered within its slot, aligning with step 3 dot */
+.kcb-total {
+    font-family: var(--font-subheading);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+}
+
+/* Right: Continue to Cart button */
+.kcb-btn {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    color: #fff;
+    padding: 0.45rem 1.1rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-subheading);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.kcb-btn:hover {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.7);
+}
+
+/* Dimmed and unclickable when cart is empty */
+.kcb-btn:disabled {
+    opacity: 0.38;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 /* ── STEP 1 – Welcome / Order Type ───────────────────────────── */
 .welcome-section {
     padding: 3rem 1rem;
@@ -292,8 +441,7 @@ body.kiosk-no-scroll {
 /* Fixed-height viewport panel — sidebar stays put, only products scroll */
 .kiosk-menu-wrap {
     display: flex;
-    height: calc(100vh - 130px - 80px);
-    /* minus navbar+progress, minus cart bar */
+    height: calc(100vh - 130px - 64px);
     background: var(--ivory-cream);
     overflow: hidden;
 }
@@ -510,11 +658,10 @@ body.kiosk-no-scroll {
     color: var(--burgundy-wine);
 }
 
-/* Products area — matches menu-content spacing */
-/* Products area — independent scroll, no top padding (header sits flush) */
+/* Products area — independent scroll, flush with sidebar top */
 .kiosk-products-area {
     flex: 1;
-    padding: 0 var(--spacing-md);
+    padding: 2rem var(--spacing-md) 0;
     overflow-y: auto;
     overflow-x: hidden;
     overscroll-behavior: contain;
@@ -536,7 +683,7 @@ body.kiosk-no-scroll {
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--burgundy-wine);
-    padding-top: 0.4rem;
+    padding-top: 0;
     margin-bottom: 0.5rem;
     font-weight: 700;
 }
@@ -684,17 +831,19 @@ body.kiosk-no-scroll {
 .kiosk-product-card {
     background: #fff;
     border-radius: var(--radius-md);
+    border: 1px solid transparent;
     overflow: hidden;
     box-shadow: var(--shadow-sm);
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: all 0.22s ease;
     display: flex;
     flex-direction: column;
 }
 
 .kiosk-product-card:hover {
     transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
+    border-color: rgba(42, 0, 0, 0.12);
+    box-shadow: 0 6px 22px rgba(42, 0, 0, 0.13);
 }
 
 .kiosk-prod-img {
@@ -733,7 +882,7 @@ body.kiosk-no-scroll {
 
 .kiosk-prod-desc {
     font-size: 0.75rem;
-    color: #888;
+    color: var(--dark-brown);
     font-family: var(--font-body);
     font-weight: 400;
     line-height: 1.4;
@@ -759,158 +908,121 @@ body.kiosk-no-scroll {
     color: var(--burgundy-wine);
 }
 
-.btn-kiosk-add {
-    background: var(--deep-maroon);
-    color: #fff;
-    border: none;
-    width: 32px;
-    height: 32px;
+/* Qty selector — always visible on every product card */
+.kpf-qty-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(42, 0, 0, 0.05);
+    border-radius: 50px;
+    padding: 3px 6px;
+}
+
+.kpf-qty-btn {
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
+    border: 1.5px solid rgba(42, 0, 0, 0.18);
+    background: #fff;
+    color: var(--deep-maroon);
+    font-size: 0.65rem;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background 0.2s ease;
+    transition: all 0.18s;
     flex-shrink: 0;
 }
 
-.btn-kiosk-add:hover {
-    background: var(--burgundy-wine);
-}
-
-/* ── Floating cart bar ───────────────────────────────────────── */
-.kiosk-cart-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+/* Active + button — filled dark to signal "add" */
+.kpf-qty-btn.kpf-plus {
     background: var(--deep-maroon);
+    border-color: var(--deep-maroon);
     color: #fff;
-    padding: 1rem 0;
-    display: none;
-    /* Changed to block dynamically */
-    z-index: 200;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
 }
 
-.kiosk-cart-bar.visible {
-    transform: translateY(0);
-}
-
-/* New flex class for vertical alignment to progress dots */
-.k-cart-step {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-}
-
-.cart-bar-left {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-/* Count badge — matches active kp-dot style */
-.cart-bar-count {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
+.kpf-qty-btn.kpf-plus:hover {
     background: var(--burgundy-wine);
-    border: 2px solid rgba(255, 255, 255, 0.5);
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
+    border-color: var(--burgundy-wine);
+}
+
+/* Minus button hover (when enabled) */
+.kpf-qty-btn:not(.kpf-plus):not(:disabled):hover {
+    background: var(--deep-maroon);
+    border-color: var(--deep-maroon);
     color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
+}
+
+/* Minus disabled — qty is 0 */
+.kpf-qty-btn:disabled {
+    opacity: 0.28;
+    cursor: not-allowed;
+}
+
+.kpf-qty-num {
+    font-family: var(--font-subheading);
     font-weight: 700;
-    font-family: var(--font-subheading);
-    transition: all 0.3s ease;
-}
-
-.cart-bar-label {
-    font-family: var(--font-subheading);
-    font-size: 0.95rem;
-}
-
-.cart-bar-total {
-    font-family: var(--font-subheading);
-    font-size: 1.1rem;
-    font-weight: 700;
-}
-
-/* View Cart and Back Buttons */
-.btn-view-cart {
-    background: transparent;
-    border: 1.5px solid rgba(255, 255, 255, 0.45);
-    color: #fff;
-    padding: 0.35rem 0.85rem;
-    border-radius: var(--radius-sm);
-    font-family: var(--font-subheading);
-    font-weight: 600;
-    font-size: 0.82rem;
-    letter-spacing: 0.2px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-view-cart:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+    color: var(--deep-maroon);
+    min-width: 16px;
+    text-align: center;
 }
 
 /* ── STEP 3 – Cart Review ────────────────────────────────────── */
 .kiosk-cart-page {
-    max-width: 960px;
+    max-width: 1060px;
     margin: 0 auto;
-    padding: 1.5rem 1.5rem 3rem;
+    padding: 2rem 1.5rem 3rem;
 }
 
+/* Title — matches online cart-pg-title */
 .kiosk-page-title {
-    font-family: var(--font-heading);
-    font-size: clamp(1.6rem, 3vw, 2.2rem);
-    color: var(--deep-maroon);
-    margin-bottom: 1.25rem;
+    font-family: var(--font-subheading);
+    font-size: 42px;
+    font-weight: 700;
     text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    color: var(--deep-maroon);
+    margin-top: 8px;
+    margin-bottom: 44px;
 }
 
-.kiosk-cart-layout {
-    display: grid;
-    grid-template-columns: 1fr 320px;
-    gap: 1.5rem;
-    align-items: start;
-}
-
-/* Cart item card */
+/* Cart item card — matches online ci-card */
 .k-ci-card {
     background: #fff;
-    border-radius: var(--radius-md);
-    padding: 1.25rem;
-    box-shadow: var(--shadow-sm);
-    margin-bottom: 1rem;
+    border-radius: 14px;
+    border: 1px solid rgba(42, 0, 0, 0.07);
+    box-shadow: 0 1px 6px rgba(42, 0, 0, 0.06);
+    padding: 22px 24px;
+    margin-bottom: 14px;
+    transition: box-shadow 0.2s ease;
 }
 
+.k-ci-card:hover {
+    box-shadow: 0 4px 18px rgba(42, 0, 0, 0.1);
+}
+
+/* Top row — image + info + delete */
 .k-ci-top {
     display: flex;
-    gap: 1rem;
     align-items: flex-start;
+    gap: 16px;
 }
 
 .k-ci-img {
-    width: 72px;
-    height: 72px;
-    border-radius: var(--radius-sm);
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
     object-fit: cover;
     flex-shrink: 0;
     background: var(--light-beige);
 }
 
 .k-ci-img-ph {
-    width: 72px;
-    height: 72px;
-    border-radius: var(--radius-sm);
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
     background: var(--light-beige);
     display: flex;
     align-items: center;
@@ -922,200 +1034,257 @@ body.kiosk-no-scroll {
 
 .k-ci-info {
     flex: 1;
+    min-width: 0;
 }
 
 .k-ci-name {
-    font-family: var(--font-heading);
-    font-size: 1rem;
-    font-weight: 600;
+    font-family: var(--font-subheading);
+    font-size: 1.15rem;
+    font-weight: 700;
     color: var(--deep-maroon);
-    margin-bottom: 0.2rem;
+    margin-bottom: 3px;
 }
 
 .k-ci-price {
-    font-size: 0.85rem;
-    color: var(--burgundy-wine);
+    font-family: var(--font-subheading);
+    font-size: 0.95rem;
     font-weight: 600;
-    font-family: var(--font-body);
+    color: var(--burgundy-wine);
 }
 
+/* Delete button */
 .k-ci-del {
     background: none;
     border: none;
-    color: #c0392b;
-    font-size: 1rem;
+    color: #CF0F0F;
+    font-size: 0.9rem;
     cursor: pointer;
-    padding: 0.25rem;
-    transition: color 0.2s;
+    padding: 4px 6px;
+    border-radius: 6px;
+    transition: color 0.18s, background 0.18s;
 }
 
 .k-ci-del:hover {
-    color: #922b21;
+    color: #a71006;
+    background: rgba(207, 15, 15, 0.08);
 }
 
-/* Customize toggle — removed; panel is always visible */
-.k-ci-cust-toggle {
-    display: none;
-}
-
+/* Customize section — matches online ci-customize */
 .k-ci-cust-panel {
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
-    border-top: 1px dashed var(--warm-sand);
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(42, 0, 0, 0.06);
 }
 
+/* Labels — uppercase matching online cust-lbl */
 .k-cust-lbl {
+    display: block;
+    font-family: var(--font-subheading);
     font-size: 0.75rem;
     font-weight: 600;
-    color: var(--dark-brown);
-    display: block;
-    margin-bottom: 0.3rem;
-    font-family: var(--font-body);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgba(60, 21, 24, 0.65);
+    margin-bottom: 5px;
+    padding-top: 10px;
 }
 
-.k-cust-sel {
+/* Selects and textarea — matches online cust-sel/cust-ta */
+.k-cust-sel,
+.k-cust-ta {
     width: 100%;
-    padding: 0.45rem 0.7rem;
-    border: 1px solid #ddd;
-    border-radius: var(--radius-sm);
-    font-size: 0.82rem;
+    border: 1px solid rgba(42, 0, 0, 0.13);
+    border-radius: 8px;
+    padding: 8px 10px;
     font-family: var(--font-body);
-    background: #fff;
+    font-size: 0.83rem;
+    font-weight: 500;
     color: var(--dark-brown);
+    background: #fafafa;
+    transition: border-color 0.18s;
+}
+
+.k-cust-sel:focus,
+.k-cust-ta:focus {
+    outline: none;
+    border-color: var(--deep-maroon);
+    box-shadow: 0 0 0 3px rgba(42, 0, 0, 0.06);
+    background: #fff;
 }
 
 .k-cust-ta {
-    width: 100%;
-    padding: 0.5rem 0.7rem;
-    border: 1px solid #ddd;
-    border-radius: var(--radius-sm);
-    font-size: 0.82rem;
-    font-family: var(--font-body);
     resize: none;
 }
 
-/* Quantity row */
+/* Quantity row — pill style matching online */
 .k-qty-row {
-    display: flex;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(42, 0, 0, 0.06);
+}
+
+.k-qty-wrap {
+    display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
-    margin-top: 0.85rem;
+    gap: 10px;
+    background: rgba(42, 0, 0, 0.04);
+    border-radius: 50px;
+    padding: 4px 8px;
 }
 
 .k-qty-btn {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    background: var(--light-beige);
-    border: 1px solid var(--warm-sand);
+    border: 1.5px solid rgba(42, 0, 0, 0.18);
+    background: #fff;
     color: var(--deep-maroon);
-    font-size: 0.85rem;
+    font-size: 0.72rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s;
+    transition: all 0.18s;
 }
 
 .k-qty-btn:hover {
-    background: var(--warm-sand);
+    background: var(--deep-maroon);
+    border-color: var(--deep-maroon);
+    color: #fff;
 }
 
 .k-qty-num {
     font-family: var(--font-subheading);
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 0.92rem;
     color: var(--deep-maroon);
-    min-width: 24px;
+    min-width: 20px;
     text-align: center;
 }
 
-/* Cart order summary */
+/* Cart order summary card — matches online sum-card */
 .kiosk-sum-card {
     background: #fff;
-    border-radius: var(--radius-md);
-    padding: 1.5rem;
-    box-shadow: var(--shadow-sm);
-    position: sticky;
-    top: 110px;
+    border-radius: 14px;
+    border: 1px solid rgba(42, 0, 0, 0.07);
+    box-shadow: 0 1px 6px rgba(42, 0, 0, 0.06);
+    padding: 22px;
     display: flex;
     flex-direction: column;
+    position: sticky;
+    top: 110px;
 }
 
+/* Summary title — uppercase matching online sum-title */
 .kiosk-sum-title {
-    font-family: var(--font-heading);
-    font-size: 1.2rem;
+    font-family: var(--font-subheading);
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
     color: var(--deep-maroon);
-    margin-bottom: 1rem;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(42, 0, 0, 0.07);
 }
 
+/* Summary item lines */
 .k-sum-line {
     display: flex;
     justify-content: space-between;
-    font-size: 0.88rem;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(42, 0, 0, 0.04);
     font-family: var(--font-body);
-    color: var(--dark-brown);
-    padding: 0.3rem 0;
+    font-size: 0.88rem;
+    color: var(--deep-maroon);
+    font-weight: 600;
 }
 
+.k-sum-line:last-child {
+    border-bottom: none;
+}
+
+.k-sum-line .k-sum-qty {
+    font-weight: 400;
+    color: var(--dark-brown);
+    margin-left: 3px;
+}
+
+/* Divider and total row */
 .k-sum-hr {
     border: none;
-    border-top: 1px solid var(--warm-sand);
-    margin: 0.75rem 0;
+    border-top: 1px solid rgba(42, 0, 0, 0.08);
+    margin: 10px 0;
 }
 
 .k-sum-total {
     display: flex;
     justify-content: space-between;
     font-family: var(--font-subheading);
+    font-size: 1rem;
     font-weight: 700;
-    font-size: 1.1rem;
     color: var(--deep-maroon);
-    margin-bottom: 1rem;
+    padding: 6px 0 2px;
 }
 
+.k-sum-actions {
+    margin-top: auto;
+    padding-top: 20px;
+}
+
+/* Main CTA button — pill style matching online btn-cart-main */
 .btn-kiosk-main {
+    display: block;
     width: 100%;
     background: var(--deep-maroon);
     color: var(--ivory-cream);
+    padding: 13px 20px;
     border: none;
-    padding: 0.85rem;
-    border-radius: var(--radius-sm);
+    border-radius: 50px;
     font-family: var(--font-subheading);
-    font-weight: 700;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: background 0.2s ease;
-    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
     text-align: center;
+    cursor: pointer;
     text-decoration: none;
-    margin-bottom: 0.5rem;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    letter-spacing: 0.3px;
+    margin-bottom: 10px;
 }
 
 .btn-kiosk-main:hover {
     background: var(--burgundy-wine);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
 }
 
+/* Back/secondary button — pill style matching online btn-cart-back */
 .btn-kiosk-back {
+    display: block;
     width: 100%;
     background: transparent;
-    color: var(--dark-brown);
-    border: 1px solid var(--warm-sand);
-    padding: 0.75rem;
-    border-radius: var(--radius-sm);
+    color: var(--deep-maroon);
+    padding: 11px 20px;
+    border: 1.5px solid rgba(42, 0, 0, 0.18);
+    border-radius: 50px;
     font-family: var(--font-subheading);
     font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: block;
+    font-weight: 600;
     text-align: center;
+    cursor: pointer;
     text-decoration: none;
+    transition: all 0.2s;
 }
 
 .btn-kiosk-back:hover {
-    background: var(--light-beige);
+    background: rgba(42, 0, 0, 0.04);
+    border-color: var(--deep-maroon);
+    color: var(--deep-maroon);
 }
 
+/* Empty cart state */
 .kiosk-empty {
     text-align: center;
     padding: 4rem 2rem;
@@ -1126,6 +1295,7 @@ body.kiosk-no-scroll {
     font-size: 3.5rem;
     color: var(--warm-sand);
     margin-bottom: 1rem;
+    display: block;
 }
 
 .kiosk-empty h3 {
@@ -1140,14 +1310,13 @@ body.kiosk-no-scroll {
 }
 
 /* ── STEP 4 – Checkout ───────────────────────────────────────── */
-/* ── STEP 4 – Checkout ───────────────────────────────────────── */
 .kiosk-checkout-page {
-    max-width: 1000px;
+    max-width: 1060px;
     margin: 0 auto;
-    padding: 1.75rem 1.5rem 4rem;
+    padding: 2rem 1.5rem 4rem;
 }
 
-/* Two-column grid: left (info) | right (summary) */
+/* Two-column grid: left | right sticky summary */
 .kiosk-co-layout {
     display: grid;
     grid-template-columns: 1fr 320px;
@@ -1177,64 +1346,78 @@ body.kiosk-no-scroll {
     top: 110px;
 }
 
+/* Section cards — matches online checkout-card */
 .kiosk-co-card {
     background: #fff;
-    border-radius: var(--radius-md);
-    padding: 1.5rem;
-    box-shadow: var(--shadow-sm);
+    border-radius: 14px;
+    border: 1px solid rgba(42, 0, 0, 0.07);
+    box-shadow: 0 1px 6px rgba(42, 0, 0, 0.06);
+    padding: 26px 28px;
 }
 
-/* Summary card — flex column so buttons sit naturally at bottom */
-.kiosk-co-summary-card {
-    display: flex;
-    flex-direction: column;
-}
-
+/* Card title — uppercase matching online checkout h3 */
 .kiosk-co-card-title {
-    font-family: var(--font-heading);
-    font-size: 1.1rem;
+    font-family: var(--font-subheading);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     color: var(--deep-maroon);
-    margin-bottom: 1rem;
+    margin-bottom: 16px;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 8px;
 }
 
-/* Muted helper text for optional labels */
+.kiosk-co-card-title i {
+    font-size: 0.95rem;
+    opacity: 0.8;
+}
+
+/* Optional label text */
 .kiosk-co-optional {
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     color: #aaa;
     font-family: var(--font-body);
     font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
 }
 
+/* Form labels — uppercase matching online form-label */
 .kiosk-co-label {
-    font-size: 0.8rem;
+    font-family: var(--font-subheading);
+    font-size: 0.75rem;
     font-weight: 600;
-    color: var(--dark-brown);
-    font-family: var(--font-body);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: rgba(42, 0, 0, 0.6);
     display: block;
-    margin-bottom: 0.35rem;
+    margin-bottom: 6px;
 }
 
+/* Inputs — matches online form-control */
 .kiosk-co-input {
     width: 100%;
-    padding: 0.6rem 0.9rem;
-    border: 1px solid #ddd;
-    border-radius: var(--radius-sm);
+    border: 1px solid rgba(42, 0, 0, 0.14);
+    border-radius: 9px;
     font-family: var(--font-body);
-    font-size: 0.9rem;
-    background: var(--ivory-cream);
+    font-size: 0.85rem;
+    font-weight: 500;
     color: var(--dark-brown);
-    transition: border-color 0.2s;
+    padding: 10px 14px;
+    background: #fafafa;
+    transition: border-color 0.18s, box-shadow 0.18s;
 }
 
 .kiosk-co-input:focus {
     outline: none;
-    border-color: var(--burgundy-wine);
+    border-color: var(--deep-maroon);
+    box-shadow: 0 0 0 3px rgba(42, 0, 0, 0.07);
+    background: #fff;
 }
 
-/* Order type — muted read-only, signals already selected */
+/* Order type display — muted read-only */
 .k-order-type-muted {
     display: inline-flex;
     align-items: center;
@@ -1250,7 +1433,7 @@ body.kiosk-no-scroll {
     font-size: 0.9rem;
 }
 
-/* Payment options — 4 equal columns */
+/* Payment options — matches online payment-option style */
 .k-pay-opts {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -1258,13 +1441,19 @@ body.kiosk-no-scroll {
 }
 
 .k-pay-opt {
-    border: 2px solid var(--warm-sand);
-    border-radius: var(--radius-md);
-    padding: 1rem;
+    position: relative;
+    border: 1.5px solid rgba(42, 0, 0, 0.13);
+    border-radius: 10px;
+    padding: 13px 12px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.18s ease;
     text-align: center;
-    background: var(--ivory-cream);
+    background: #fafafa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 6px;
 }
 
 .k-pay-opt input {
@@ -1272,15 +1461,18 @@ body.kiosk-no-scroll {
 }
 
 .k-pay-opt:hover {
-    border-color: var(--burgundy-wine);
+    border-color: var(--deep-maroon);
+    background: rgba(42, 0, 0, 0.03);
+    color: var(--deep-maroon);
 }
 
 .k-pay-opt.active {
     border-color: var(--deep-maroon);
-    background: var(--light-beige);
+    background: rgba(42, 0, 0, 0.06);
+    box-shadow: 0 0 0 3px rgba(42, 0, 0, 0.07);
 }
 
-/* Disabled — unclickable, visually muted */
+/* Disabled payment option */
 .k-pay-disabled {
     opacity: 0.35;
     pointer-events: none;
@@ -1288,198 +1480,396 @@ body.kiosk-no-scroll {
 }
 
 .k-pay-opt i {
-    font-size: 1.6rem;
-    display: block;
-    color: var(--burgundy-wine);
-    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+    color: rgba(42, 0, 0, 0.4);
+    transition: color 0.18s;
+}
+
+.k-pay-opt.active i {
+    color: var(--deep-maroon);
 }
 
 .k-pay-name {
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     font-weight: 600;
     font-family: var(--font-subheading);
+    color: rgba(42, 0, 0, 0.65);
+    transition: color 0.18s;
+}
+
+.k-pay-opt.active .k-pay-name {
     color: var(--deep-maroon);
 }
 
-/* Order type badge — kept for backward compat, hidden in kiosk */
-.k-order-type-badge {
-    display: none;
+/* Checkout summary card */
+.kiosk-co-summary-card {
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid rgba(42, 0, 0, 0.07);
+    box-shadow: 0 1px 6px rgba(42, 0, 0, 0.06);
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
 }
 
-@media (max-width: 768px) {
-    .kiosk-co-layout {
-        grid-template-columns: 1fr;
-        gap: 1.25rem 0;
-    }
-
-    .kiosk-co-right {
-        position: static;
-    }
-
-    .k-pay-opts {
-        grid-template-columns: repeat(2, 1fr);
-    }
+.k-co-sum-title {
+    font-family: var(--font-subheading);
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--deep-maroon);
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(42, 0, 0, 0.07);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-/* ── STEP 5 – Confirmation ───────────────────────────────────── */
-.kiosk-confirm-page {
-    max-width: 600px;
+.k-co-sum-title i {
+    font-size: 0.95rem;
+    opacity: 0.8;
+}
+
+#co-sum-items .k-sum-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(42, 0, 0, 0.04);
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    color: var(--deep-maroon);
+    font-weight: 600;
+}
+
+#co-sum-items .k-sum-line:last-child {
+    border-bottom: none;
+}
+
+.k-co-sum-actions {
+    margin-top: auto;
+    padding-top: 14px;
+}
+/* ── STEP 5 – Receipt / Confirmation ────────────────────────── */
+.kiosk-receipt-page {
+    max-width: 680px;
     margin: 0 auto;
-    padding: 3rem 1.5rem;
-    text-align: center;
+    padding: 2rem 1.5rem 4rem;
 }
 
-.kiosk-confirm-icon {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--deep-maroon), var(--burgundy-wine));
+/* Receipt card — white, clean, matching online receipt-dialog */
+.kiosk-receipt-card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 4px 24px rgba(42, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Receipt content area */
+.kiosk-receipt-content {
+    padding: 32px 44px 26px;
+}
+
+/* Logo header */
+.kiosk-receipt-logo {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 1.5rem;
-    font-size: 2.5rem;
-    color: #fff;
+    gap: 9px;
+    margin-bottom: 12px;
 }
 
-.kiosk-confirm-h1 {
-    font-family: var(--font-heading);
-    font-size: 2rem;
-    color: var(--deep-maroon);
-    margin-bottom: 0.5rem;
+.kiosk-receipt-logo img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
 }
 
-.kiosk-confirm-sub {
-    color: #888;
-    font-family: var(--font-body);
-    margin-bottom: 2rem;
-}
-
-/* Order number display */
-.kiosk-order-number-box {
-    background: var(--deep-maroon);
-    color: var(--ivory-cream);
-    border-radius: var(--radius-lg);
-    padding: 2rem;
-    margin-bottom: 1.5rem;
-}
-
-.kon-label {
-    font-size: 0.75rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--warm-sand);
-    font-family: var(--font-body);
-    margin-bottom: 0.5rem;
-}
-
-.kon-number {
+.kiosk-receipt-logo span {
     font-family: var(--font-main);
-    font-size: 4rem;
-    color: #fff;
+    font-size: 1.5rem;
+    color: var(--deep-maroon);
     line-height: 1;
 }
 
-.kon-type {
-    margin-top: 0.75rem;
-    font-size: 0.85rem;
-    color: var(--warm-sand);
-    font-family: var(--font-body);
-}
-
-/* Receipt details */
-.kiosk-receipt {
-    background: #fff;
-    border-radius: var(--radius-md);
-    padding: 1.5rem;
-    box-shadow: var(--shadow-sm);
-    text-align: left;
-    margin-bottom: 1.5rem;
-}
-
-.kiosk-receipt-title {
-    font-family: var(--font-heading);
-    font-size: 1rem;
-    color: var(--deep-maroon);
-    margin-bottom: 0.75rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--warm-sand);
-}
-
-.kr-detail-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.85rem;
-    font-family: var(--font-body);
-    color: var(--dark-brown);
-    padding: 0.3rem 0;
-}
-
-.kr-lbl {
-    color: #888;
-}
-
-.kr-items {
-    margin: 0.75rem 0;
-}
-
-.kr-item-line {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.85rem;
-    font-family: var(--font-body);
-    padding: 0.25rem 0;
-    color: var(--dark-brown);
-}
-
-.kr-total {
-    display: flex;
-    justify-content: space-between;
+/* Thank you heading */
+.kiosk-receipt-heading {
     font-family: var(--font-subheading);
+    font-size: 1.45rem;
     font-weight: 700;
-    font-size: 1rem;
     color: var(--deep-maroon);
-    margin-top: 0.5rem;
-    padding-top: 0.5rem;
-    border-top: 1px solid var(--warm-sand);
+    text-align: center;
+    margin-bottom: 4px;
 }
 
-.kiosk-wait-notice {
-    background: var(--light-beige);
-    border: 1px solid var(--warm-sand);
-    border-radius: var(--radius-md);
-    padding: 1rem 1.25rem;
-    margin-bottom: 1.5rem;
+.kiosk-receipt-subline {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    color: rgba(42, 0, 0, 0.45);
+    text-align: center;
+    margin-bottom: 14px;
+}
+
+/* Order number box with copy button */
+.kiosk-receipt-order-box {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    font-family: var(--font-body);
-    font-size: 0.88rem;
-    color: var(--dark-brown);
-    text-align: left;
+    justify-content: space-between;
+    border: 1px solid rgba(42, 0, 0, 0.12);
+    border-radius: 10px;
+    padding: 11px 14px;
+    margin: 0 auto 8px;
+    max-width: 300px;
 }
 
-.kiosk-wait-notice i {
-    color: var(--burgundy-wine);
-    font-size: 1.2rem;
+.kiosk-receipt-order-label {
+    font-family: var(--font-subheading);
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: rgba(42, 0, 0, 0.42);
+    margin-bottom: 2px;
+}
+
+.kiosk-receipt-order-num {
+    font-family: var(--font-subheading);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--deep-maroon);
+    letter-spacing: 0.3px;
+}
+
+.kiosk-receipt-copy-btn {
+    background: rgba(42, 0, 0, 0.05);
+    border: none;
+    border-radius: 7px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(42, 0, 0, 0.5);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.18s;
     flex-shrink: 0;
 }
 
+.kiosk-receipt-copy-btn:hover {
+    background: rgba(42, 0, 0, 0.1);
+    color: var(--deep-maroon);
+}
+
+/* Status + datetime row */
+.kiosk-receipt-status-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.kiosk-receipt-status-badge {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: #2e7d32;
+    background: #e8f5e9;
+    padding: 4px 12px;
+    border-radius: 50px;
+}
+
+.kiosk-receipt-datetime {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--dark-brown);
+}
+
+/* Dashed divider */
+.kiosk-receipt-divider {
+    border: none;
+    border-top: 1.5px dashed rgba(42, 0, 0, 0.18);
+    margin: 14px 0;
+}
+
+/* Section headers */
+.kiosk-receipt-section-hd {
+    font-family: var(--font-subheading);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--deep-maroon);
+    margin-bottom: 8px;
+}
+
+/* Key-value info rows */
+.kiosk-receipt-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding: 4px 0;
+}
+
+.kiosk-receipt-info-row .r-key {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--dark-brown);
+    flex-shrink: 0;
+}
+
+.kiosk-receipt-info-row .r-val {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--dark-brown);
+    text-align: right;
+}
+
+/* Item rows with thumbnail */
+.kiosk-receipt-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(42, 0, 0, 0.05);
+}
+
+.kiosk-receipt-item:last-child {
+    border-bottom: none;
+}
+
+.kiosk-receipt-item-img {
+    width: 52px;
+    height: 52px;
+    border-radius: 9px;
+    object-fit: cover;
+    background: var(--light-beige);
+    flex-shrink: 0;
+}
+
+.kiosk-receipt-item-img-ph {
+    width: 52px;
+    height: 52px;
+    border-radius: 9px;
+    background: var(--light-beige);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(42, 0, 0, 0.3);
+    font-size: 1.2rem;
+}
+
+.kiosk-receipt-item-detail {
+    flex: 1;
+    min-width: 0;
+}
+
+.kiosk-receipt-item-name {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--deep-maroon);
+    line-height: 1.3;
+}
+
+.kiosk-receipt-item-meta {
+    font-family: var(--font-body);
+    font-size: 0.76rem;
+    color: rgba(42, 0, 0, 0.4);
+    margin-top: 2px;
+}
+
+.kiosk-receipt-item-qty {
+    font-family: var(--font-body);
+    font-size: 0.76rem;
+    color: rgba(42, 0, 0, 0.4);
+    margin-top: 2px;
+}
+
+.kiosk-receipt-item-price {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--deep-maroon);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Subtotal rows */
+.kiosk-receipt-amount-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--deep-maroon);
+    padding: 3px 0;
+}
+
+/* Grand total row */
+.kiosk-receipt-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--deep-maroon);
+    padding: 5px 0 2px;
+}
+
+/* Footer thank-you note */
+.kiosk-receipt-footer-note {
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: rgba(42, 0, 0, 0.35);
+    margin-top: 14px;
+}
+
+/* Receipt action bar */
+.kiosk-receipt-actions {
+    padding: 16px 44px 22px;
+    border-top: 1px solid rgba(42, 0, 0, 0.07);
+    background: rgba(245, 241, 232, 0.3);
+}
+
+/* New Order button */
 .btn-kiosk-new-order {
+    display: block;
+    width: 100%;
     background: var(--deep-maroon);
     color: var(--ivory-cream);
     border: none;
-    padding: 0.9rem 2.5rem;
-    border-radius: var(--radius-sm);
+    padding: 13px 20px;
+    border-radius: 50px;
     font-family: var(--font-subheading);
-    font-weight: 700;
-    font-size: 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
 }
 
 .btn-kiosk-new-order:hover {
     background: var(--burgundy-wine);
+    transform: translateY(-1px);
 }
 
 /* ── Order Queue Display page ────────────────────────────────── */
@@ -1637,7 +2027,7 @@ body.kiosk-no-scroll {
 @media (max-width: 768px) {
     .kiosk-menu-wrap {
         height: auto;
-        min-height: calc(100vh - 130px);
+        min-height: calc(100vh - 130px - 64px);
         overflow: visible;
     }
 
@@ -1678,10 +2068,6 @@ body.kiosk-no-scroll {
         width: 100%;
     }
 
-    .kiosk-cart-layout {
-        grid-template-columns: 1fr;
-    }
-
     .kiosk-sum-card {
         position: static;
     }
@@ -1707,6 +2093,37 @@ body.kiosk-no-scroll {
 
     .kiosk-products-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Step 4 checkout */
+    .kiosk-co-layout {
+        grid-template-columns: 1fr;
+        gap: 1.25rem 0;
+    }
+
+    .kiosk-co-right {
+        position: static;
+    }
+
+    .k-pay-opts {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .kiosk-co-card {
+        padding: 20px;
+    }
+
+    /* Step 5 receipt */
+    .kiosk-receipt-content {
+        padding: 28px 22px 22px;
+    }
+
+    .kiosk-receipt-actions {
+        padding: 14px 20px 20px;
+    }
+
+    .kiosk-receipt-order-box {
+        max-width: 100%;
     }
 }
 
