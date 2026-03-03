@@ -39,6 +39,10 @@ function addToCart(productId) {
                 }
                 localStorage.setItem('coffeeCart', JSON.stringify(cart));
                 updateCartCount();
+
+                /* Highlight card border when item is in cart */
+                const card = document.querySelector(`.product-card[data-product-id="${productId}"]`);
+                if (card) card.classList.add('in-cart');
             } else {
                 // FIX #1: error — show message only, do NOT update cart or navigate
                 showNotification(data.message || 'Could not add product to cart.', 'error');
@@ -81,6 +85,86 @@ function removeFromCart(productId) {
     localStorage.setItem('coffeeCart', JSON.stringify(cart));
     updateCartCount();
     showNotification('Product removed from cart', 'info');
+}
+
+/**
+ * Update qty display, minus-button state, and in-cart highlight for a menu card
+ */
+function setMenuCardUI(pid, qty) {
+    const numEl = document.getElementById('mpf-num-' + pid);
+    const minusEl = document.getElementById('mpf-minus-' + pid);
+    if (numEl) numEl.textContent = qty;
+    if (minusEl) minusEl.disabled = qty === 0;
+    const card = document.querySelector(`.product-card[data-product-id="${pid}"]`);
+    if (card) card.classList.toggle('in-cart', qty > 0);
+}
+
+/**
+ * Handle qty changes on menu product cards (logged-in users only)
+ * Adds, updates, or removes item from session cart via AJAX
+ */
+function menuCardQty(pid, delta) {
+    const numEl = document.getElementById('mpf-num-' + pid);
+    const current = numEl ? parseInt(numEl.textContent) || 0 : 0;
+    const next = Math.max(0, current + delta);
+
+    if (next === 0) {
+        /* Remove from cart */
+        const fd = new FormData();
+        fd.append('action', 'remove');
+        fd.append('product_id', pid);
+        fetch('php/update_cart_item.php', { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    setMenuCardUI(pid, 0);
+                    updateCartCountDisplay(data.cart_count);
+                    cart = cart.filter(i => i.id !== pid);
+                    localStorage.setItem('coffeeCart', JSON.stringify(cart));
+                }
+            })
+            .catch(() => { });
+
+    } else if (current === 0) {
+        /* First add */
+        const fd = new FormData();
+        fd.append('product_id', pid);
+        fd.append('quantity', 1);
+        fd.append('ajax', '1');
+        fetch('php/add_to_cart.php', { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    setMenuCardUI(pid, 1);
+                    updateCartCountDisplay(data.cart_count);
+                    animateCartIcon();
+                    trackInteraction(pid, 'add_to_cart');
+                    cart.push({ id: pid, quantity: 1 });
+                    localStorage.setItem('coffeeCart', JSON.stringify(cart));
+                } else {
+                    showNotification(data.message || 'Could not add to cart.', 'error');
+                }
+            })
+            .catch(() => { });
+
+    } else {
+        /* Update quantity */
+        const fd = new FormData();
+        fd.append('action', 'update_qty');
+        fd.append('product_id', pid);
+        fd.append('quantity', next);
+        fetch('php/update_cart_item.php', { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    setMenuCardUI(pid, next);
+                    updateCartCountDisplay(data.cart_count);
+                    const item = cart.find(i => i.id === pid);
+                    if (item) { item.quantity = next; localStorage.setItem('coffeeCart', JSON.stringify(cart)); }
+                }
+            })
+            .catch(() => { });
+    }
 }
 
 function updateQuantity(productId, newQuantity) {
@@ -214,4 +298,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     updateCartCount();
     loadFavoritesForMenu();
+
+    /* Restore in-cart border highlights from saved cart */
+    cart.forEach(item => {
+        if (item.quantity > 0) {
+            const card = document.querySelector(`.product-card[data-product-id="${item.id}"]`);
+            if (card) card.classList.add('in-cart');
+        }
+    });
+
+    /* Init menu card qty selectors from server session cart */
+    if (window.serverCart) {
+        Object.entries(window.serverCart).forEach(([pid, qty]) => {
+            if (qty > 0) setMenuCardUI(parseInt(pid), qty);
+        });
+    }
 });

@@ -518,7 +518,10 @@ function kioskProductImage($product)
             const cartBar = document.getElementById('kiosk-cart-bar');
             if (cartBar) cartBar.style.display = (n === 2) ? 'block' : 'none';
 
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
 
             /* Render step-specific content */
             if (n === 3) renderCartStep();
@@ -570,10 +573,14 @@ function kioskProductImage($product)
 
         /* Update qty display and minus-button disabled state */
         function setCardUI(pid, qty) {
-            const numEl   = document.getElementById('kpf-num-' + pid);
+            const numEl = document.getElementById('kpf-num-' + pid);
             const minusEl = document.getElementById('kpf-minus-' + pid);
             if (numEl) numEl.textContent = qty;
             if (minusEl) minusEl.disabled = (qty === 0);
+
+            /* Highlight card border when qty > 0 */
+            const card = document.querySelector(`.kiosk-product-card[data-pid="${pid}"]`);
+            if (card) card.classList.toggle('in-cart', qty > 0);
         }
 
         /* Unified handler for both - and + on every card */
@@ -587,10 +594,15 @@ function kioskProductImage($product)
             } else if (!kioskCart[pid]) {
                 /* First add — create cart entry */
                 kioskCart[pid] = {
-                    name, price, qty: next,
-                    size: 'Short', temp: 'Hot',
-                    sugar: '0%', milk: 'Whole',
-                    notes: '', img
+                    name,
+                    price,
+                    qty: next,
+                    size: 'Short',
+                    temp: 'Hot',
+                    sugar: '0%',
+                    milk: 'Whole',
+                    notes: '',
+                    img
                 };
                 showToast((name || 'Item') + ' added to cart!');
             } else {
@@ -605,6 +617,7 @@ function kioskProductImage($product)
         function kioskCardAdd(pid, name, price, img) {
             kioskCardQty(pid, 1, name, price, img);
         }
+
         function kioskAddToCart(pid, name, price, img) {
             kioskCardQty(pid, 1, name, price, img);
         }
@@ -615,7 +628,7 @@ function kioskProductImage($product)
             const totalAmt = Object.values(kioskCart).reduce((s, i) => s + i.price * i.qty, 0);
             const countEl = document.getElementById('cbar-count');
             const totalEl = document.getElementById('cbar-total');
-            const btn     = document.getElementById('kcb-btn');
+            const btn = document.getElementById('kcb-btn');
             if (countEl) countEl.textContent = totalQty;
             if (totalEl) totalEl.textContent = '₱' + totalAmt.toFixed(2);
             /* Enable Continue button only when at least one item is in the cart */
@@ -645,11 +658,11 @@ function kioskProductImage($product)
             /* Build cart item cards using online ci-card style */
             let cardsHtml = '';
             items.forEach(([pid, it]) => {
-                const imgHtml = it.img
-                    ? `<img src="${it.img}" alt="${it.name}" class="k-ci-img"
+                const imgHtml = it.img ?
+                    `<img src="${it.img}" alt="${it.name}" class="k-ci-img"
                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                       <div class="k-ci-img-ph" style="display:none;"><i class="fas fa-mug-hot"></i></div>`
-                    : `<div class="k-ci-img-ph"><i class="fas fa-mug-hot"></i></div>`;
+                       <div class="k-ci-img-ph" style="display:none;"><i class="fas fa-mug-hot"></i></div>` :
+                    `<div class="k-ci-img-ph"><i class="fas fa-mug-hot"></i></div>`;
 
                 cardsHtml += `
                 <div class="k-ci-card" id="kci-${pid}">
@@ -919,11 +932,11 @@ function kioskProductImage($product)
             let subtotal = 0;
             data.items.forEach(it => {
                 subtotal += it.subtotal;
-                const imgHtml = it.image_path
-                    ? `<img src="${it.image_path}" alt="${it.name}" class="kiosk-receipt-item-img"
+                const imgHtml = it.image_path ?
+                    `<img src="${it.image_path}" alt="${it.name}" class="kiosk-receipt-item-img"
                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                       <div class="kiosk-receipt-item-img-ph" style="display:none;"><i class="fas fa-mug-hot"></i></div>`
-                    : `<div class="kiosk-receipt-item-img-ph"><i class="fas fa-mug-hot"></i></div>`;
+                       <div class="kiosk-receipt-item-img-ph" style="display:none;"><i class="fas fa-mug-hot"></i></div>` :
+                    `<div class="kiosk-receipt-item-img-ph"><i class="fas fa-mug-hot"></i></div>`;
 
                 const meta = [it.size, it.temp, it.sugar ? `Sugar ${it.sugar}` : null]
                     .filter(Boolean).join(' · ');

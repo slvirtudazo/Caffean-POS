@@ -242,7 +242,7 @@ body.kiosk-no-scroll {
     display: none;
     z-index: 200;
     box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.08),
-                0 -8px 24px rgba(0, 0, 0, 0.22);
+        0 -8px 24px rgba(0, 0, 0, 0.22);
 }
 
 /* Mirrors .kiosk-bar-wrapper — same padding already on .kiosk-cart-bar */
@@ -844,6 +844,12 @@ body.kiosk-no-scroll {
     transform: translateY(-3px);
     border-color: rgba(42, 0, 0, 0.12);
     box-shadow: 0 6px 22px rgba(42, 0, 0, 0.13);
+}
+
+/* Highlight card when qty > 0 */
+.kiosk-product-card.in-cart {
+    border-color: var(--deep-maroon);
+    box-shadow: 0 0 0 1px var(--deep-maroon), var(--shadow-sm);
 }
 
 .kiosk-prod-img {
@@ -1553,6 +1559,7 @@ body.kiosk-no-scroll {
     margin-top: auto;
     padding-top: 14px;
 }
+
 /* ── STEP 5 – Receipt / Confirmation ────────────────────────── */
 .kiosk-receipt-page {
     max-width: 680px;

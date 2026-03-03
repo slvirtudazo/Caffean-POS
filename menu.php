@@ -107,7 +107,8 @@ if ($category_filter > 0) {
     <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/menu-page.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="css/components.css?v=<?php echo time(); ?>"></head>
+    <link rel="stylesheet" href="css/components.css?v=<?php echo time(); ?>">
+</head>
 
 <body>
 
@@ -187,7 +188,10 @@ if ($category_filter > 0) {
                                     6 => 'fa-cake-candles',
                                     7 => 'fa-bread-slice',
                                     8 => 'fa-burger',
-                                    9 => 'fa-plus-circle'
+                                    9 => 'fa-plus-circle',
+                                    10 => 'fa-seedling',
+                                    11 => 'fa-droplet',
+                                    12 => 'fa-flask',
                                 ];
 
                                 mysqli_data_seek($categories_result, 0);
@@ -274,9 +278,17 @@ if ($category_filter > 0) {
                         echo   '<div class="product-footer">';
                         echo    '<span class="product-price">₱' . $price . '</span>';
                         if (!$is_admin) {
-                            // Guest sees button that triggers login popup; logged-in user adds to cart directly
-                            $onclick = $is_logged_in ? "addToCart($id)" : "showLoginRequiredPopup()";
-                            echo '<button class="btn-order" onclick="' . $onclick . '"><i class="fas fa-plus"></i></button>';
+                            if ($is_logged_in) {
+                                // Logged-in: inline qty selector matching kiosk style
+                                echo '<div class="kpf-qty-row" id="mpf-' . $id . '">';
+                                echo  '<button class="kpf-qty-btn" disabled id="mpf-minus-' . $id . '" onclick="menuCardQty(' . $id . ', -1)"><i class="fas fa-minus"></i></button>';
+                                echo  '<span class="kpf-qty-num" id="mpf-num-' . $id . '">0</span>';
+                                echo  '<button class="kpf-qty-btn kpf-plus" onclick="menuCardQty(' . $id . ', 1)"><i class="fas fa-plus"></i></button>';
+                                echo '</div>';
+                            } else {
+                                // Guest: single button triggers login popup
+                                echo '<button class="btn-order" onclick="showLoginRequiredPopup()"><i class="fas fa-plus"></i></button>';
+                            }
                         }
                         echo   '</div>';
                         echo  '</div>';
@@ -432,7 +444,21 @@ if ($category_filter > 0) {
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>window.IS_LOGGED_IN = <?php echo $is_logged_in ? 'true' : 'false'; ?>;</script>
+    <script>
+        window.IS_LOGGED_IN = <?php echo $is_logged_in ? 'true' : 'false'; ?>;
+    </script>
+    <?php
+    // Embed per-product quantities from session cart for UI init
+    $cart_qtys = [];
+    if (!empty($_SESSION['cart'])) {
+        foreach ($_SESSION['cart'] as $pid => $opts) {
+            $cart_qtys[(int)$pid] = is_array($opts) ? (int)$opts['quantity'] : (int)$opts;
+        }
+    }
+    ?>
+    <script>
+        window.serverCart = <?php echo json_encode($cart_qtys); ?>;
+    </script>
     <script src="js/main.js?v=<?php echo time(); ?>"></script>
     <script src="js/search.js?v=<?php echo time(); ?>"></script>
     <script src="js/menu-page.js?v=<?php echo time(); ?>"></script>

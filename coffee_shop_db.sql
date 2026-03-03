@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 02, 2026 at 03:40 AM
+-- Generation Time: Mar 02, 2026 at 11:14 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -377,14 +377,8 @@ CREATE TABLE `user_carts` (
 --
 
 INSERT INTO `user_carts` (`cart_id`, `user_id`, `product_id`, `quantity`, `size`, `temperature`, `sugar_level`, `milk`, `addons`, `special_instructions`, `updated_at`) VALUES
-(254, 2, 55, 6, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-02-28 15:26:00'),
-(255, 2, 3, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-02-28 15:26:00'),
-(256, 2, 66, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-02-28 15:26:00'),
-(257, 2, 69, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-02-28 15:26:00'),
-(258, 2, 9, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-02-28 15:26:00'),
-(259, 2, 2, 6, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-02-28 15:26:00'),
-(260, 2, 67, 2, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-02-28 15:26:00'),
-(721, 3, 55, 3, 'Venti', 'Iced', '100%', 'Almond', '[\"Extra Espresso Shot\",\"Whipped Cream\"]', 'Add a small note', '2026-03-01 05:51:03');
+(721, 3, 55, 3, 'Venti', 'Iced', '100%', 'Almond', '[\"Extra Espresso Shot\",\"Whipped Cream\"]', 'Add a small note', '2026-03-01 05:51:03'),
+(742, 2, 2, 6, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-03-02 02:43:07');
 
 --
 -- Indexes for dumped tables
@@ -503,7 +497,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `user_carts`
 --
 ALTER TABLE `user_carts`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=722;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=743;
 
 --
 -- Constraints for dumped tables
