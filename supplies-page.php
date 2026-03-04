@@ -108,6 +108,15 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
            : 'images/placeholder.png';
 
     echo '<div class="product-card" data-product-id="' . $id . '">';
+
+    // Favorite heart button — top-right corner of card
+    if (!$is_admin) {
+        $onclick = $is_logged_in ? "toggleFav(event,$id,this)" : "event.stopPropagation();showLoginRequiredPopup()";
+        echo '<button class="fav-card-btn" onclick="' . $onclick . '" title="Save to favorites" aria-label="Save to favorites">';
+        echo  '<i class="far fa-heart"></i>';
+        echo '</button>';
+    }
+
     echo  '<div class="product-image-wrapper">';
     echo   '<img src="' . $img . '" alt="' . $name . '" class="product-image">';
     echo  '</div>';
@@ -438,6 +447,52 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/main.js?v=<?php echo time(); ?>"></script>
     <script src="js/search.js?v=<?php echo time(); ?>"></script>
+
+    <script>
+        /* ── Favorites: toggle + initial state ───────────────── */
+
+        // Toggle favorite on heart button click
+        function toggleFav(e, productId, btn) {
+            e.stopPropagation();
+            if (!window.IS_LOGGED_IN) { showLoginRequiredPopup(); return; }
+
+            const fd = new FormData();
+            fd.append('action', 'toggle');
+            fd.append('product_id', productId);
+
+            fetch('favorites.php', { method: 'POST', body: fd })
+                .then(r => r.json())
+                .then(d => {
+                    if (!d.success) return;
+                    const icon = btn.querySelector('i');
+                    const isNowActive = d.state === 'added';
+                    btn.classList.toggle('active', isNowActive);
+                    icon.className = isNowActive ? 'fas fa-heart' : 'far fa-heart';
+                    btn.classList.add('pop');
+                    btn.addEventListener('animationend', () => btn.classList.remove('pop'), { once: true });
+                });
+        }
+
+        // On page load, mark cards the user has already favorited
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!window.IS_LOGGED_IN) return;
+            const ids = [...document.querySelectorAll('.product-card[data-product-id]')]
+                        .map(c => c.dataset.productId).join(',');
+            if (!ids) return;
+            fetch(`favorites.php?action=batch&ids=${ids}`)
+                .then(r => r.json())
+                .then(d => {
+                    if (!d.favorited) return;
+                    d.favorited.forEach(pid => {
+                        const card = document.querySelector(`.product-card[data-product-id="${pid}"]`);
+                        const btn  = card?.querySelector('.fav-card-btn');
+                        if (!btn) return;
+                        btn.classList.add('active');
+                        btn.querySelector('i').className = 'fas fa-heart';
+                    });
+                });
+        });
+    </script>
 </body>
 
 </html>

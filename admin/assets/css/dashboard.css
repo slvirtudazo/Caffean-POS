@@ -4,39 +4,17 @@
    Global/shared styles are in admin.css.
    ============================================================ */
 
-/* ── Message Alert Button ────────────────────────────────────── */
-.dash-msg-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--burgundy-wine);
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 50px;
-  font-family: var(--font-subheading);
-  font-size: 0.85rem;
-  font-weight: 600;
-  transition: all var(--transition);
-  white-space: nowrap;
-}
-
-.dash-msg-btn:hover {
-  background: var(--deep-maroon);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(91, 19, 18, 0.25);
-}
-
 /* ── Stat Cards (Enhanced) ───────────────────────────────────── */
 .stat-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   margin-bottom: 24px;
 }
 
 @media (max-width: 1280px) {
   .stat-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -77,16 +55,16 @@
   transform: translateY(-2px);
 }
 
+/* Stat card icon — no background, icon only */
 .stat-card-icon {
   width: 42px;
   height: 42px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, rgba(91, 19, 18, 0.1), rgba(91, 19, 18, 0.05));
+  background: none;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--burgundy-wine);
-  font-size: 1.05rem;
+  font-size: 1.3rem;
 }
 
 .stat-card-body {
@@ -321,16 +299,16 @@
   flex-shrink: 0;
 }
 
+/* Trending icon — no background, image/icon only */
 .trending-icon {
   width: 38px;
   height: 38px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, rgba(91, 19, 18, 0.08), rgba(226, 217, 200, 0.4));
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
   flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 8px;
 }
 
 .trending-info {
@@ -435,31 +413,23 @@
   padding: 14px 18px;
   color: var(--dark-brown);
   vertical-align: middle;
+  white-space: nowrap;
 }
 
 .dash-orders-table .td-id {
-  font-weight: 600;
+  font-weight: 700 !important;
   color: var(--text-muted);
+  text-align: center;
+}
+
+/* Center the Order No. column header */
+.dash-orders-table thead th.th-order-no {
+  text-align: center;
 }
 
 .td-customer {
   display: flex;
   align-items: center;
-  gap: 10px;
-}
-
-.td-customer-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--burgundy-wine), var(--dark-brown));
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  font-weight: 700;
-  flex-shrink: 0;
 }
 
 .td-amount {
@@ -498,24 +468,22 @@
   color: #c0392b;
 }
 
-/* Type badges */
+/* Type badges — text + icon only, no background */
 .badge-type {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 4px 10px;
-  border-radius: 50px;
   font-size: 0.72rem;
   font-weight: 600;
+  background: none;
+  color: var(--dark-brown);
 }
 
 .badge-delivery {
-  background: rgba(91, 19, 18, 0.07);
   color: var(--burgundy-wine);
 }
 
 .badge-pickup {
-  background: rgba(42, 0, 0, 0.06);
   color: var(--dark-brown);
 }
 

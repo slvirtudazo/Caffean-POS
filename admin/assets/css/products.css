@@ -146,43 +146,48 @@
   color: #fff;
 }
 
-/* ── Edit Product Modal — viewport-fitted, no page scroll ───── */
-#editProductModal .modal {
+/* ── Edit/Add Product Modal — viewport-fitted, footer always visible ── */
+#editProductModal .modal,
+#addProductModal .modal {
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 35px); 
+  max-height: min(750px, calc(100vh - 16px));
   height: auto;
 }
 
-#editProductModal .modal-body {
+#editProductModal .modal-header,
+#addProductModal .modal-header {
+  flex-shrink: 0;
+}
+
+#editProductModal .modal-footer,
+#addProductModal .modal-footer {
+  flex-shrink: 0;
+}
+
+#editProductModal .modal-body,
+#addProductModal .modal-body {
   flex: 1 1 auto;
   overflow-y: auto;
   overscroll-behavior: contain;
-  /* Shrink form-group spacing so everything fits neatly */
   padding-top: 18px;
   padding-bottom: 4px;
 }
 
-#editProductModal .modal-body .form-group {
+#editProductModal .modal-body .form-group,
+#addProductModal .modal-body .form-group {
   margin-bottom: 14px;
 }
 
-#editProductModal .img-thumb-row {
-  padding-bottom: 16px;
-  margin-bottom: 16px;
-}
-
-#editProductModal .modal-footer {
-  flex-shrink: 0;    /* footer never squishes */
-}
-
-#editProductModal .modal-header {
-  flex-shrink: 0;    /* header never squishes */
+#editProductModal .img-thumb-row,
+#addProductModal .img-thumb-row {
+  padding-bottom: 14px;
+  margin-bottom: 14px;
 }
 
 textarea.form-control {
-  min-height: 72px;
-  max-height: 72px;
+  min-height: 64px;
+  max-height: 64px;
 }
 
 .view-img-wrap {

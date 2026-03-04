@@ -1,108 +1,188 @@
-/* Account Page - Modern Grid Dashboard (Purge Coffee) */
+/* Account Page — Purge Coffee */
 
+/* ── Customer navbar height token ────────────────────────── */
+:root {
+    --acct-navbar-h: 72px;
+}
+
+/* ── Page wrapper ─────────────────────────────────────────── */
 .acct-page {
     background: var(--ivory-cream);
-    min-height: calc(100vh - 80px);
-    padding: var(--spacing-lg) 0 var(--spacing-xxl);
+    min-height: calc(100vh - var(--acct-navbar-h));
+    padding: 0;
 }
 
 .acct-dashboard {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 var(--spacing-md);
-    display: grid;
-    grid-template-columns: 260px 1fr;
-    gap: var(--spacing-lg);
-    align-items: start;
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
 }
 
-/* ================== SIDEBAR ================== */
+/* ── SIDEBAR ──────────────────────────────────────────────── */
 .acct-sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    background: var(--ivory-cream);
+    border-right: 1px solid rgba(42, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-md);
+    padding: 36px 12px 20px;
+    position: sticky;
+    top: var(--acct-navbar-h);
+    height: calc(100vh - var(--acct-navbar-h));
+    overflow: hidden;
 }
 
 .acct-nav {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
+    width: 100%;
+    flex: 1;
 }
 
 .acct-nav-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 14px 20px;
-    border-radius: 50px;
+    gap: 14px;
+    padding: 18px 20px;
     font-family: var(--font-subheading);
-    font-size: 1rem;
+    font-size: 0.88rem;
     font-weight: 500;
-    color: var(--deep-maroon);
+    color: var(--dark-brown);
+    border-radius: 50px;
+    background: transparent;
     text-decoration: none;
-    transition: all var(--transition-fast);
+    transition: background 0.18s ease, color 0.18s ease;
 }
 
 .acct-nav-item i {
-    font-size: 1.15rem;
+    font-size: 1rem;
+    color: inherit;
+    flex-shrink: 0;
+    width: 20px;
+    text-align: center;
+    -webkit-text-stroke: 0.5px currentColor;
+}
+
+/* Outline/fill icon toggle */
+.acct-ic-fill {
+    display: none !important;
+}
+
+.acct-ic-out {
+    display: inline !important;
+}
+
+.acct-nav-item:hover .acct-ic-fill {
+    display: inline !important;
+}
+
+.acct-nav-item:hover .acct-ic-out {
+    display: none !important;
+}
+
+.acct-nav-item.active .acct-ic-fill {
+    display: inline !important;
+}
+
+.acct-nav-item.active .acct-ic-out {
+    display: none !important;
+}
+
+.acct-nav-item.active i {
+    -webkit-text-stroke: 0;
+}
+
+.acct-nav-text {
+    flex: 1;
+    line-height: 1;
 }
 
 .acct-nav-item:hover {
     background: rgba(42, 0, 0, 0.05);
+    color: var(--burgundy-wine);
 }
 
 .acct-nav-item.active {
-    background: var(--deep-maroon);
+    background: var(--burgundy-wine);
     color: #fff;
     font-weight: 600;
 }
 
-/* Logout Button */
-.acct-logout-btn {
+.acct-nav-item:not(.active):active {
+    background: rgba(91, 19, 18, 0.12);
+    color: var(--burgundy-wine);
+}
+
+.acct-nav-item.active:active {
+    background: var(--dark-brown);
+}
+
+/* Logout block — pinned to bottom with separator */
+.acct-sidebar-logout {
+    padding-top: 30px;
+    padding-bottom: 20px;
+    border-top: 1px solid rgba(42, 0, 0, 0.08);
+    margin-top: 8px;
+}
+
+.acct-logout-link {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 14px;
-    border: 1px solid var(--deep-maroon);
-    border-radius: 50px;
-    color: var(--deep-maroon);
-    font-family: var(--font-subheading);
-    font-weight: 600;
-    text-decoration: none;
-    transition: all var(--transition-fast);
+    gap: 15px;
     background: transparent;
+    color: var(--deep-maroon);
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-family: var(--font-subheading);
+    font-size: 0.95rem;
+    font-weight: 500;
+    border: none;
+    text-decoration: none;
+    transition: all var(--transition);
 }
 
-.acct-logout-btn:hover {
-    background: var(--deep-maroon);
-    color: #fff;
+.acct-logout-link:hover {
+    background: rgba(42, 0, 0, 0.05);
+    color: var(--burgundy-wine);
 }
 
+/* Icon stroke for misc page elements */
+.btn-page i,
+.acct-view-all i,
+.avatar-edit-icon i,
+.acct-empty-state i,
+.member-badge i {
+    -webkit-text-stroke: 0.5px currentColor;
+}
 
-/* ================== MAIN CONTENT ================== */
+/* ── MAIN CONTENT ─────────────────────────────────────────── */
 .acct-main {
+    flex: 1;
+    min-width: 0;
+    padding: 36px 40px;
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg);
 }
 
-.acct-card {
+.acct-main-card {
     background: #fff;
     border-radius: var(--radius-lg);
-    border: 1px solid rgba(42, 0, 0, 0.15);
-    box-shadow: 0 4px 12px rgba(42, 0, 0, 0.02);
+    border: 1px solid rgba(42, 0, 0, 0.1);
+    box-shadow: 0 6px 24px rgba(42, 0, 0, 0.06);
     overflow: hidden;
 }
 
-/* Top Profile Card */
+/* ── PROFILE SUMMARY ──────────────────────────────────────── */
 .acct-profile-summary {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--spacing-lg);
+    padding: var(--spacing-md) var(--spacing-lg);
     flex-wrap: wrap;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-md);
+    border-bottom: 1px solid rgba(42, 0, 0, 0.07);
 }
 
 .profile-left {
@@ -168,26 +248,26 @@
     font-size: 0.95rem;
     color: var(--dark-brown);
     opacity: 0.8;
-    margin: 0 0 12px 0;
+    margin: 0 0 10px 0;
 }
 
 .member-badge {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: #FFF8F1;
-    color: #C07040;
-    padding: 6px 12px;
+    background: var(--deep-maroon);
+    color: #fff;
+    padding: 6px 14px;
     border-radius: 50px;
     font-family: var(--font-subheading);
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     font-weight: 700;
     letter-spacing: 0.5px;
 }
 
 .profile-stats {
     display: flex;
-    gap: 2rem;
+    gap: 4rem;
 }
 
 .stat-col {
@@ -199,7 +279,7 @@
 
 .stat-lbl {
     font-family: var(--font-subheading);
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     font-weight: 700;
     letter-spacing: 0.5px;
     color: var(--dark-brown);
@@ -209,19 +289,19 @@
 
 .stat-val {
     font-family: var(--font-subheading);
-    font-size: 1.6rem;
+    font-size: 1.45rem;
     font-weight: 700;
     color: var(--deep-maroon);
     line-height: 1;
 }
 
-/* Bottom Card Header */
+/* ── CARD HEADER ──────────────────────────────────────────── */
 .acct-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: var(--spacing-md) var(--spacing-lg);
-    border-bottom: 1px solid rgba(42, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(42, 0, 0, 0.07);
 }
 
 .acct-card-header h3 {
@@ -251,106 +331,215 @@
     display: none;
 }
 
-
-/* Orders Table */
+/* ── TABLE WRAPPER ────────────────────────────────────────── */
 .table-responsive {
     width: 100%;
     overflow-x: auto;
 }
 
-.acct-orders-table {
+/* ── SHARED TABLE BASE ────────────────────────────────────── */
+.acct-orders-table,
+.acct-fav-table {
     width: 100%;
     border-collapse: collapse;
     font-family: var(--font-subheading);
+    table-layout: fixed;
 }
 
-.acct-orders-table th {
+/* ── TABLE HEADERS — matches admin-table th exactly ──────── */
+.acct-orders-table th,
+.acct-fav-table th {
+    background: rgba(245, 241, 232, 0.5);
+    padding: 14px 20px;
+    text-align: center;
+    font-family: var(--font-subheading);
     font-size: 0.7rem;
     font-weight: 700;
-    color: rgba(42, 0, 0, 0.5);
-    padding: 16px 24px;
-    text-align: left;
-    border-bottom: 1px solid rgba(42, 0, 0, 0.1);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid rgba(42, 0, 0, 0.08);
+    white-space: nowrap;
 }
 
-.acct-orders-table td {
-    padding: 20px 24px;
+/* ── SORTABLE HEADER — exact match of admin-table th[data-sort] */
+.acct-orders-table th[data-sort],
+.acct-fav-table th[data-sort] {
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.18s ease, background 0.18s ease;
+}
+
+/* Default ⇅ indicator on all sortable headers */
+.acct-orders-table th[data-sort]::after,
+.acct-fav-table th[data-sort]::after {
+    content: ' ⇅';
+    font-size: 0.65rem;
+    opacity: 0.45;
+}
+
+/* Hover state — matches admin-table th[data-sort]:hover */
+.acct-orders-table th[data-sort]:hover,
+.acct-fav-table th[data-sort]:hover {
+    color: var(--deep-maroon);
+    background: rgba(245, 241, 232, 0.85);
+}
+
+/* Active sort state — matches admin-table th.sort-asc / sort-desc */
+.acct-orders-table th[data-sort].sort-asc,
+.acct-orders-table th[data-sort].sort-desc,
+.acct-fav-table th[data-sort].sort-asc,
+.acct-fav-table th[data-sort].sort-desc {
+    color: var(--burgundy-wine);
+    background: rgba(91, 19, 18, 0.05);
+}
+
+/* ↑ when ascending */
+.acct-orders-table th[data-sort].sort-asc::after,
+.acct-fav-table th[data-sort].sort-asc::after {
+    content: ' ↑';
+    opacity: 1;
+}
+
+/* ↓ when descending */
+.acct-orders-table th[data-sort].sort-desc::after,
+.acct-fav-table th[data-sort].sort-desc::after {
+    content: ' ↓';
+    opacity: 1;
+}
+
+/* ── TABLE DATA ROWS ──────────────────────────────────────── */
+.acct-orders-table td,
+.acct-fav-table td {
+    padding: 15px 20px;
     border-bottom: 1px solid rgba(42, 0, 0, 0.06);
-    vertical-align: middle;
+    font-family: var(--font-subheading);
     font-size: 0.9rem;
+    font-weight: 400;
+    letter-spacing: 0.3px;
     color: var(--dark-brown);
+    vertical-align: middle;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
+/* Remove bottom border on last row */
+.acct-orders-table tbody tr:last-child td,
+.acct-fav-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Row hover — matches admin */
+.acct-orders-table tbody tr,
+.acct-fav-table tbody tr {
+    transition: background 0.15s ease;
+}
+
+.acct-orders-table tbody tr:hover,
+.acct-fav-table tbody tr:hover {
+    background: rgba(245, 241, 232, 0.4);
+}
+
+/* ── ORDERS TABLE column widths ───────────────────────────── */
+.acct-orders-table th:nth-child(1),
+.acct-orders-table td:nth-child(1) {
+    width: 18%;
+}
+
+.acct-orders-table th:nth-child(2),
+.acct-orders-table td:nth-child(2) {
+    width: 14%;
+}
+
+.acct-orders-table th:nth-child(3),
+.acct-orders-table td:nth-child(3) {
+    width: 10%;
+}
+
+.acct-orders-table th:nth-child(4),
+.acct-orders-table td:nth-child(4) {
+    width: 14%;
+}
+
+.acct-orders-table th:nth-child(5),
+.acct-orders-table td:nth-child(5) {
+    width: 16%;
+}
+
+.acct-orders-table th:nth-child(6),
+.acct-orders-table td:nth-child(6) {
+    width: 14%;
+}
+
+.acct-orders-table th:nth-child(7),
+.acct-orders-table td:nth-child(7) {
+    width: 14%;
+}
+
+/* Order ID — bold 700, all other order fields 400 (inherited) */
 .td-id {
     font-weight: 700;
 }
 
-.td-date {
-    opacity: 0.8;
-}
-
-.td-items {
-    opacity: 0.8;
-}
-
-.td-type {
-    opacity: 0.8;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.td-payment {
-    opacity: 0.8;
-}
-
 .td-amount {
-    font-weight: 700;
     color: var(--deep-maroon);
 }
 
+/* Type column icon spacing */
+.acct-orders-table td:nth-child(4) i {
+    margin-right: 4px;
+    vertical-align: middle;
+}
+
+/* ── STATUS BADGES — matches admin .badge ─────────────────── */
 .status-badge {
     display: inline-block;
-    padding: 5px 12px;
+    padding: 5px 11px;
     border-radius: 50px;
-    font-size: 0.65rem;
-    font-weight: 800;
+    font-size: 0.7rem;
+    font-family: var(--font-subheading);
+    font-weight: 700;
     letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
 }
 
 .status-pending {
-    background: #FFF3CD;
-    color: #856404;
+    background: #fef7e0;
+    color: #b06000;
 }
 
 .status-completed {
-    background: #E8F5E9;
-    color: #2E7D32;
+    background: #e6f4ea;
+    color: #1e7e34;
 }
 
 .status-cancelled {
-    background: #FDECEA;
-    color: #C62828;
+    background: #fce8e6;
+    color: #c0392b;
 }
 
 .status-processing {
-    background: #E3F2FD;
-    color: #1565C0;
+    background: #e8f0fe;
+    color: #1a73e8;
 }
 
+/* ── PAGINATION ───────────────────────────────────────────── */
 .acct-pagination {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 24px;
-    border-top: 1px solid rgba(42, 0, 0, 0.1);
+    padding: 14px 24px;
+    border-top: 1px solid rgba(42, 0, 0, 0.07);
 }
 
 .page-info {
     font-family: var(--font-body);
     font-size: 0.85rem;
+    font-weight: 700;
     color: var(--dark-brown);
-    opacity: 0.8;
 }
 
 .btn-page {
@@ -371,8 +560,312 @@
     background: rgba(42, 0, 0, 0.05);
 }
 
+.btn-page:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
+}
 
-/* Forms inside Profile Settings Tab */
+.fav-page-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* ── EMPTY STATES ─────────────────────────────────────────── */
+.acct-empty-state {
+    padding: 3rem;
+    text-align: center;
+    color: rgba(42, 0, 0, 0.35);
+}
+
+.acct-empty-state i {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    display: block;
+}
+
+/* Favorites empty state — mirrors cart empty state */
+.fav-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 5rem 1rem 3rem;
+    max-width: 560px;
+    margin: 0 auto;
+}
+
+.fav-empty-state i {
+    font-size: 3.8rem;
+    color: var(--burgundy-wine);
+    margin-bottom: 1.8rem;
+    display: block;
+}
+
+.fav-empty-state h2 {
+    font-family: var(--font-subheading);
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: var(--deep-maroon);
+    margin-bottom: 0.75rem;
+    letter-spacing: 1px;
+}
+
+.fav-empty-state p {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 500;
+    color: #7a6f65;
+    line-height: 1.6;
+    margin-bottom: 2.2rem;
+}
+
+/* ── FAVORITES TABLE — balanced equal column widths ──────── */
+/* All 5 columns use consistent 20% width for even spacing    */
+.acct-fav-table th,
+.acct-fav-table td {
+    text-align: center;
+}
+
+.acct-fav-table th:nth-child(1),
+.acct-fav-table td:nth-child(1) {
+    width: 14%;
+}
+
+.acct-fav-table th:nth-child(2),
+.acct-fav-table td:nth-child(2) {
+    width: 26%;
+}
+
+.acct-fav-table th:nth-child(3),
+.acct-fav-table td:nth-child(3) {
+    width: 22%;
+}
+
+.acct-fav-table th:nth-child(4),
+.acct-fav-table td:nth-child(4) {
+    width: 20%;
+}
+
+.acct-fav-table th:nth-child(5),
+.acct-fav-table td:nth-child(5) {
+    width: 18%;
+}
+
+/* Product name — bold 700 */
+.td-fav-name {
+    font-weight: 700;
+}
+
+/* Price — deep maroon color */
+.td-fav-price {
+    color: var(--deep-maroon);
+    font-weight: 600;
+}
+
+/* Product image */
+.fav-product-img {
+    width: 58px;
+    height: 58px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid rgba(42, 0, 0, 0.1);
+}
+
+/* Action buttons wrapper */
+.fav-td-action {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Action buttons — exact admin btn-icon-view / btn-icon-delete style */
+.fav-btn-cart,
+.fav-btn-remove {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #fff;
+    transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Cart — blue */
+.fav-btn-cart {
+    background: #3A9AFF;
+}
+
+.fav-btn-cart:hover {
+    background: #257BE0;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(42, 0, 0, 0.15);
+}
+
+/* Remove — red */
+.fav-btn-remove {
+    background: #DC0000;
+}
+
+.fav-btn-remove:hover {
+    background: #B30000;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(42, 0, 0, 0.15);
+}
+
+/* ── FAVORITES DELETE MODAL ───────────────────────────────── */
+.acct-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9000;
+}
+
+.acct-modal {
+    background: #fff;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 420px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.acct-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 24px;
+    border-bottom: 1px solid rgba(42, 0, 0, 0.08);
+    font-family: var(--font-subheading);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--deep-maroon);
+}
+
+.acct-modal-header i {
+    margin-right: 8px;
+}
+
+.acct-modal-close {
+    background: none;
+    border: none;
+    color: rgba(42, 0, 0, 0.45);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 6px;
+    transition: color 0.15s ease, background 0.15s ease;
+}
+
+.acct-modal-close:hover {
+    color: var(--deep-maroon);
+    background: rgba(42, 0, 0, 0.06);
+}
+
+.acct-modal-body {
+    padding: 20px 24px;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--dark-brown);
+    line-height: 1.6;
+    border-bottom: 1px solid rgba(42, 0, 0, 0.08);
+}
+
+.acct-modal-body strong {
+    color: var(--deep-maroon);
+}
+
+.acct-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 24px;
+}
+
+.acct-modal-btn-cancel {
+    background: transparent;
+    border: 1.5px solid rgba(42, 0, 0, 0.2);
+    border-radius: 50px;
+    padding: 8px 20px;
+    font-family: var(--font-subheading);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--dark-brown);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.acct-modal-btn-cancel:hover {
+    border-color: var(--deep-maroon);
+    color: var(--deep-maroon);
+}
+
+.acct-modal-btn-delete {
+    background: #DC0000;
+    border: none;
+    border-radius: 50px;
+    padding: 8px 20px;
+    font-family: var(--font-subheading);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.acct-modal-btn-delete:hover {
+    background: #B30000;
+    transform: translateY(-1px);
+}
+
+/* ── TOAST ────────────────────────────────────────────────── */
+.fav-toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--deep-maroon);
+    color: #fff;
+    font-family: var(--font-subheading);
+    font-size: 0.88rem;
+    font-weight: 600;
+    padding: 12px 24px;
+    border-radius: 50px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 9999;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.fav-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.fav-toast.fav-toast-error {
+    background: #c0392b;
+}
+
+/* ── PROFILE SETTINGS FORM ────────────────────────────────── */
 .acct-form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -415,6 +908,11 @@
     border-color: var(--burgundy-wine);
 }
 
+.acct-form-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
 .acct-btn-save {
     background: var(--deep-maroon);
     color: #fff;
@@ -431,10 +929,43 @@
     background: var(--burgundy-wine);
 }
 
-/* Responsive Adjustments */
+/* ── RESPONSIVE ───────────────────────────────────────────── */
 @media (max-width: 992px) {
     .acct-dashboard {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+    }
+
+    .acct-sidebar {
+        width: 100%;
+        position: relative;
+        top: 0;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid rgba(42, 0, 0, 0.08);
+        padding: 20px 16px;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        overflow: visible;
+    }
+
+    .acct-nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 4px;
+        flex: 0;
+    }
+
+    .acct-sidebar-logout {
+        margin-top: 0;
+        margin-left: auto;
+        padding-top: 0;
+        border-top: none;
+    }
+
+    .acct-main {
+        padding: 20px 20px;
     }
 
     .profile-stats {
@@ -444,6 +975,23 @@
 }
 
 @media (max-width: 600px) {
+    .acct-sidebar {
+        padding: 16px 12px;
+    }
+
+    .acct-nav {
+        width: 100%;
+    }
+
+    .acct-sidebar-logout {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .acct-main {
+        padding: 16px 12px;
+    }
+
     .profile-stats {
         flex-wrap: wrap;
         gap: 1rem;

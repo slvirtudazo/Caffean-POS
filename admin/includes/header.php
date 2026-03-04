@@ -18,15 +18,8 @@ $page_css_map = [
     'orders.php'         => 'orders.css',
     'instore_orders.php' => 'orders.css',
     'customers.php'      => 'customers.css',
-    'messages.php'       => 'messages.css',
 ];
 $page_css_file = $page_css_map[$current_page] ?? null;
-
-// Unread message count for sidebar badge
-$_unread_row   = mysqli_fetch_assoc(mysqli_query($conn,
-    "SELECT COUNT(*) AS c FROM contact_messages WHERE is_read = 0"
-));
-$_unread_count = (int)($_unread_row['c'] ?? 0);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -45,6 +38,7 @@ $_unread_count = (int)($_unread_row['c'] ?? 0);
   <?php endif; ?>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 
   <style>
     /* Unread badge inside sidebar link */
@@ -143,8 +137,8 @@ $_unread_count = (int)($_unread_row['c'] ?? 0);
             <span style="font-size:0.7rem;color:var(--text-muted);font-family:var(--font-subheading);">Administrator</span>
           </div>
         </div>
-        <a href="<?= BASE_URL ?>/php/logout.php" class="btn-logout" title="Logout">
-          <i class="fas fa-sign-out-alt"></i> Log Out
+        <a href="<?= BASE_URL ?>/" target="_blank" class="btn-ghost">
+          <i class="fas fa-arrow-up-right-from-square"></i> View Store
         </a>
       </div>
     </div>
@@ -158,55 +152,64 @@ $_unread_count = (int)($_unread_row['c'] ?? 0);
         <li>
           <a href="<?= BASE_URL ?>/admin/dashboard.php"
             <?= $current_page === 'dashboard.php' ? 'class="active"' : '' ?>>
-            <span class="snav-icon"><i class="fas fa-chart-bar"></i></span>
+            <span class="snav-icon">
+              <i class="far fa-chart-bar snav-ic-out"></i>
+              <i class="fas fa-chart-bar snav-ic-fill"></i>
+            </span>
             <span class="snav-text">Dashboard</span>
           </a>
         </li>
         <li>
           <a href="<?= BASE_URL ?>/admin/products.php"
             <?= $current_page === 'products.php' ? 'class="active"' : '' ?>>
-            <span class="snav-icon"><i class="fas fa-box-open"></i></span>
+            <span class="snav-icon">
+              <i class="fas fa-box-open snav-ic-out"></i>
+              <i class="fas fa-box-open snav-ic-fill"></i>
+            </span>
             <span class="snav-text">Products</span>
           </a>
         </li>
         <li>
           <a href="<?= BASE_URL ?>/admin/orders.php"
             <?= $current_page === 'orders.php' ? 'class="active"' : '' ?>>
-            <span class="snav-icon"><i class="fas fa-receipt"></i></span>
+            <span class="snav-icon">
+              <i class="far fa-file-lines snav-ic-out"></i>
+              <i class="fas fa-file-lines snav-ic-fill"></i>
+            </span>
             <span class="snav-text">Online Orders</span>
           </a>
         </li>
         <li>
           <a href="<?= BASE_URL ?>/admin/instore_orders.php"
             <?= $current_page === 'instore_orders.php' ? 'class="active"' : '' ?>>
-            <span class="snav-icon"><i class="fas fa-cash-register"></i></span>
+            <span class="snav-icon">
+              <i class="far fa-building snav-ic-out"></i>
+              <i class="fas fa-building snav-ic-fill"></i>
+            </span>
             <span class="snav-text">In-Store Orders</span>
           </a>
         </li>
         <li>
           <a href="<?= BASE_URL ?>/admin/customers.php"
             <?= $current_page === 'customers.php' ? 'class="active"' : '' ?>>
-            <span class="snav-icon"><i class="fas fa-users"></i></span>
+            <span class="snav-icon">
+              <i class="far fa-user snav-ic-out"></i>
+              <i class="fas fa-user snav-ic-fill"></i>
+            </span>
             <span class="snav-text">Customers</span>
           </a>
         </li>
-        <li>
-          <a href="<?= BASE_URL ?>/admin/messages.php"
-            <?= $current_page === 'messages.php' ? 'class="active"' : '' ?>>
-            <span class="snav-icon"><i class="fas fa-envelope"></i></span>
-            <span class="snav-text">Messages</span>
-            <?php if ($_unread_count > 0): ?>
-              <span class="sidebar-badge"><?= $_unread_count ?></span>
-            <?php endif; ?>
-          </a>
-        </li>
-        <li>
-          <a href="<?= BASE_URL ?>/" target="_blank">
-            <span class="snav-icon"><i class="fas fa-external-link-alt"></i></span>
-            <span class="snav-text">View Store</span>
-          </a>
-        </li>
       </ul>
+
+      <!-- Logout pinned to sidebar bottom -->
+      <div class="sidebar-logout">
+        <a href="<?= BASE_URL ?>/php/logout.php" class="sidebar-logout-btn">
+          <span class="snav-icon">
+            <i class="fas fa-right-from-bracket"></i>
+          </span>
+          <span class="snav-text">Log Out</span>
+        </a>
+      </div>
     </aside>
 
     <!-- Main content area -->

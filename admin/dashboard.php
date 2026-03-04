@@ -40,11 +40,6 @@ $stats['revenue'] = (float)mysqli_fetch_assoc(mysqli_query($conn,
     "SELECT COALESCE(SUM(total_amount), 0) AS r FROM orders WHERE status = 'completed'"
 ))['r'];
 
-// Unread contact messages
-$stats['messages'] = (int)mysqli_fetch_assoc(mysqli_query($conn,
-    "SELECT COUNT(*) AS c FROM contact_messages WHERE is_read = 0"
-))['c'];
-
 // ── Revenue chart: last 7 days ────────────────────────────────
 $chart_labels = [];
 $chart_data   = [];
@@ -128,12 +123,6 @@ include 'includes/header.php';
     <h1>Dashboard</h1>
     <p>Overview of key metrics, sales analytics, and recent activity</p>
   </div>
-  <?php if ($stats['messages'] > 0): ?>
-    <a href="messages.php" class="btn-primary dash-msg-btn">
-      <i class="fas fa-envelope"></i>
-      <?= $stats['messages'] ?> Unread Message<?= $stats['messages'] > 1 ? 's' : '' ?>
-    </a>
-  <?php endif; ?>
 </div>
 
 <!-- Stat cards -->
@@ -201,18 +190,6 @@ include 'includes/header.php';
     <div class="stat-card-bar"></div>
   </div>
 
-  <div class="stat-card stat-card--inquiries">
-    <div class="stat-card-top">
-      <div class="stat-card-icon"><i class="fas fa-envelope"></i></div>
-      <span class="stat-card-label">Unread<br>Inquiries</span>
-    </div>
-    <div class="stat-card-body">
-      <span class="stat-card-value"><?= number_format($stats['messages']) ?></span>
-      <a href="messages.php" class="stat-card-link">View messages &rarr;</a>
-    </div>
-    <div class="stat-card-bar"></div>
-  </div>
-
 </div>
 
 <!-- Analytics + Trending grid -->
@@ -238,12 +215,9 @@ include 'includes/header.php';
       <?php if (empty($trending)): ?>
         <li class="trending-empty">No product data yet.</li>
       <?php else: ?>
-        <?php
-        $icons = ['☕', '🧋', '🍵', '🥐', '🍰'];
-        foreach ($trending as $i => $item): ?>
+        <?php foreach ($trending as $i => $item): ?>
           <li class="trending-item">
             <div class="trending-rank"><?= $i + 1 ?></div>
-            <div class="trending-icon"><?= $icons[$i % 5] ?></div>
             <div class="trending-info">
               <span class="trending-name"><?= htmlspecialchars($item['name']) ?></span>
               <span class="trending-price">&#8369;<?= number_format($item['price'], 2) ?></span>
@@ -275,7 +249,7 @@ include 'includes/header.php';
       <table class="dash-orders-table">
         <thead>
           <tr>
-            <th>#</th>
+            <th class="th-order-no">Order No.</th>
             <th>Customer</th>
             <th>Date &amp; Time</th>
             <th>Type</th>
@@ -289,10 +263,7 @@ include 'includes/header.php';
           <?php foreach ($recent_orders as $ro): ?>
             <tr>
               <td class="td-id"><?= htmlspecialchars($ro['order_number'] ?? '#' . $ro['order_id']) ?></td>
-              <td class="td-customer">
-                <div class="td-customer-avatar"><?= strtoupper(substr($ro['customer_name'], 0, 1)) ?></div>
-                <span><?= htmlspecialchars($ro['customer_name']) ?></span>
-              </td>
+              <td><?= htmlspecialchars($ro['customer_name']) ?></td>
               <td><?= date('M j, Y · g:i A', strtotime($ro['order_date'])) ?></td>
               <td>
                 <?php if ($ro['is_kiosk']): ?>

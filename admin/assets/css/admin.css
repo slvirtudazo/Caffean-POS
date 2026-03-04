@@ -134,14 +134,14 @@ body {
 .nav-right {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 30px;
 }
 
 .btn-ghost {
   font-family: var(--font-subheading);
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  color: var(--text-muted);
+  color: var(--deep-maroon);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -149,7 +149,7 @@ body {
 }
 
 .btn-ghost:hover {
-  color: var(--deep-maroon);
+  color: var(--text-muted);
 }
 
 .admin-chip {
@@ -190,7 +190,7 @@ body {
   padding: 8px 20px;
   border-radius: 50px;
   font-family: var(--font-subheading);
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 500;
   border: 2px solid var(--deep-maroon);
   transition: all var(--transition);
@@ -199,6 +199,12 @@ body {
 .btn-logout:hover {
   background: var(--burgundy-wine);
   color: #fff;
+}
+
+/* Thickness on all Bootstrap icons in navbar/logout */
+.btn-logout i,
+.nav-right i {
+  -webkit-text-stroke: 0.5px currentColor;
 }
 
 /* ================================================================
@@ -225,13 +231,42 @@ body {
   flex-shrink: 0;
 }
 
-/* ── Nav List ──────────────────────────────────────────────── */
+/* Nav list fills available space, pushing logout to bottom */
 .sidebar-nav {
   list-style: none;
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  flex: 1;
+}
+
+/* ── Sidebar logout block ───────────────────────────────────── */
+.sidebar-logout {
+  padding-top: 12px;
+  border-top: 1px solid rgba(42, 0, 0, 0.08);
+  margin-top: 8px;
+}
+
+.sidebar-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 14px;
+  font-family: var(--font-subheading);
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--dark-brown);
+  border-radius: 50px;
+  background: transparent;
+  transition: background 0.18s ease, color 0.18s ease;
+  text-decoration: none;
+  width: 100%;
+}
+
+.sidebar-logout-btn:hover {
+  background: rgba(42, 0, 0, 0.05);
+  color: var(--burgundy-wine);
 }
 
 .sidebar-nav li {
@@ -247,24 +282,56 @@ body {
   font-size: 0.88rem;
   font-weight: 500;
   color: var(--dark-brown);
-  border-radius: 15px;
+  border-radius: 50px;
   background: transparent;
   transition: background 0.18s ease, color 0.18s ease;
   text-decoration: none;
 }
 
 .snav-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: rgba(42, 0, 0, 0.06);
+  width: 30px;
+  height: 30px;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.82rem;
-  color: rgba(60, 21, 24, 0.5);
+  font-size: 1rem;
+  color: inherit;
   flex-shrink: 0;
-  transition: all 0.18s ease;
+  transition: color 0.18s ease;
+}
+
+/* Icon outline/fill toggle */
+.snav-icon i {
+  -webkit-text-stroke: 0.5px currentColor;
+}
+
+.snav-ic-fill {
+  display: none !important;
+}
+
+.snav-ic-out {
+  display: inline !important;
+}
+
+.sidebar-nav a:hover .snav-ic-fill {
+  display: inline !important;
+}
+
+.sidebar-nav a:hover .snav-ic-out {
+  display: none !important;
+}
+
+.sidebar-nav a.active .snav-ic-fill {
+  display: inline !important;
+}
+
+.sidebar-nav a.active .snav-ic-out {
+  display: none !important;
+}
+
+.sidebar-nav a.active .snav-icon i {
+  -webkit-text-stroke: 0;
 }
 
 .snav-text {
@@ -278,11 +345,6 @@ body {
   color: var(--burgundy-wine);
 }
 
-.sidebar-nav a:hover .snav-icon {
-  background: rgba(91, 19, 18, 0.1);
-  color: var(--burgundy-wine);
-}
-
 /* ── Active ────────────────────────────────────────────────── */
 .sidebar-nav a.active {
   background: var(--burgundy-wine);
@@ -290,9 +352,14 @@ body {
   font-weight: 600;
 }
 
-.sidebar-nav a.active .snav-icon {
-  background: rgba(255, 255, 255, 0.18);
-  color: #fff;
+/* ── Clicked ───────────────────────────────────────────────── */
+.sidebar-nav a:not(.active):active {
+  background: rgba(91, 19, 18, 0.12);
+  color: var(--burgundy-wine);
+}
+
+.sidebar-nav a.active:active {
+  background: var(--dark-brown);
 }
 
 /* ── Unread badge ──────────────────────────────────────────── */
@@ -578,6 +645,7 @@ body {
   color: var(--dark-brown);
   vertical-align: middle;
   text-align: center;
+  white-space: nowrap;
 }
 
 /* Actions cell: keep centered */
@@ -897,9 +965,12 @@ body {
   background: var(--card);
   width: 90%;
   max-width: 520px;
+  max-height: 90vh;
   border-radius: var(--radius);
   box-shadow: var(--shadow-md);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .modal-header {
@@ -909,6 +980,7 @@ body {
   padding: 20px 28px;
   border-bottom: 1px solid var(--border);
   background: rgba(245, 241, 232, 0.4);
+  flex-shrink: 0;
 }
 
 .modal-header h3 {
@@ -938,6 +1010,8 @@ body {
 
 .modal-body {
   padding: 24px 28px;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .modal-footer {
@@ -947,6 +1021,7 @@ body {
   padding: 20px 28px;
   border-top: 1px solid var(--border);
   background: rgba(245, 241, 232, 0.25);
+  flex-shrink: 0;
 }
 
 .modal-subtitle {
@@ -972,6 +1047,7 @@ body {
 
 .modal-lg {
   max-width: 680px !important;
+  max-height: 90vh;
 }
 
 /* ── FORMS ───────────────────────────────────────────────────── */
@@ -1200,10 +1276,11 @@ textarea.form-control {
   color: var(--text-muted);
 }
 
-.td-id {
+.td-id,
+.admin-table td.td-id {
   color: rgba(60, 21, 24, 0.6);
   font-family: var(--font-subheading);
-  font-weight: 700;
+  font-weight: 700 !important;
 }
 
 .td-actions {

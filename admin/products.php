@@ -115,7 +115,7 @@ $products_result = mysqli_query(
   "SELECT p.*, c.name AS category_name
      FROM products p
      JOIN categories c ON p.category_id = c.category_id
-     ORDER BY c.name, p.name"
+     ORDER BY p.product_id DESC"
 );
 
 $categories_result = mysqli_query($conn, "SELECT * FROM categories ORDER BY name");
