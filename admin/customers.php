@@ -66,6 +66,13 @@ include 'includes/header.php';
   </div>
 </div>
 
+<div class="toolbar">
+  <div class="search-box">
+    <span class="search-icon"><i class="fas fa-search"></i></span>
+    <input type="text" id="customersSearch" placeholder="Search customers..." />
+  </div>
+</div>
+
 <div class="card">
   <div class="card-header">
     <h2>All Customers</h2>
@@ -87,7 +94,7 @@ include 'includes/header.php';
     </thead>
     <tbody>
       <?php if ($total_customers === 0): ?>
-        <tr>
+        <tr class="empty-row">
           <td colspan="8">
             <div class="empty-state">
               <i class="fas fa-users"></i>
@@ -124,6 +131,13 @@ include 'includes/header.php';
       <?php endif; ?>
     </tbody>
   </table>
+  <div id="customersTable-pagination" class="admin-pagination">
+    <span class="page-info">Page 1 of 1</span>
+    <div class="page-btns">
+      <button class="btn-page btn-prev"><i class="fas fa-chevron-left"></i></button>
+      <button class="btn-page btn-next"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </div>
 </div>
 
 <!-- ══ VIEW CUSTOMER MODAL ═══════════════════════════════════ -->
@@ -224,8 +238,10 @@ include 'includes/header.php';
       });
   });
 
-  /* ── Sorting ─────────────────────────────────────────────── */
-  initSortableTable('customersTable');
+  /* ── Sorting (default desc on Registered col 3) + search + pagination */
+  initSortableTable('customersTable', 3);
+  initTableSearch('customersSearch', 'customersTable');
+  initTablePagination('customersTable', 10);
 </script>
 
 <?php include 'includes/footer.php'; ?>

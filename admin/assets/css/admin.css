@@ -201,7 +201,6 @@ body {
   color: #fff;
 }
 
-/* Thickness on all Bootstrap icons in navbar/logout */
 .btn-logout i,
 .nav-right i {
   -webkit-text-stroke: 0.5px currentColor;
@@ -231,7 +230,7 @@ body {
   flex-shrink: 0;
 }
 
-/* ── SIDEBAR PROFILE — avatar, name, role at top ────────────── */
+/* ── SIDEBAR PROFILE ────────────────────────────────────────── */
 .admin-sidebar-profile {
   display: flex;
   flex-direction: column;
@@ -239,23 +238,21 @@ body {
   text-align: center;
   padding: 0 0 12px;
   border-bottom: 1px solid rgba(42, 0, 0, 0.07);
-  margin-bottom: 12px;
-  gap: 10px;
+  margin-bottom: 15px;
+  gap: 14px;
 }
 
-/* Avatar wrap — clickable, matches customer acct-avatar-wrap */
 .admin-avatar-wrap {
   width: 88px;
   height: 88px;
   position: relative;
-  cursor: pointer;
   flex-shrink: 0;
 }
 
 .admin-sidebar-avatar {
   width: 100%;
   height: 100%;
-  border-radius: 16px;
+  border-radius: 50%;
   background: var(--deep-maroon);
   color: #fff;
   display: flex;
@@ -264,26 +261,8 @@ body {
   font-family: var(--font-heading);
   font-size: 2.2rem;
   font-weight: 600;
-  border: 2px solid var(--deep-maroon);
   object-fit: cover;
-}
-
-/* Pencil edit badge on avatar */
-.admin-avatar-edit-icon {
-  position: absolute;
-  bottom: -6px;
-  right: -6px;
-  background: #fff;
-  color: var(--deep-maroon);
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  border: 1px solid rgba(42, 0, 0, 0.15);
-  box-shadow: var(--shadow-sm);
+  aspect-ratio: 1 / 1;
 }
 
 .admin-sidebar-info h2 {
@@ -302,7 +281,6 @@ body {
   margin: 0;
 }
 
-/* Nav list fills available space, pushing logout to bottom */
 .sidebar-nav {
   list-style: none;
   width: 100%;
@@ -312,7 +290,6 @@ body {
   flex: 1;
 }
 
-/* ── Sidebar logout block ───────────────────────────────────── */
 .sidebar-logout {
   padding-top: 8px;
   border-top: 1px solid rgba(42, 0, 0, 0.08);
@@ -372,7 +349,6 @@ body {
   transition: color 0.18s ease;
 }
 
-/* Icon outline/fill toggle */
 .snav-icon i {
   -webkit-text-stroke: 0.5px currentColor;
 }
@@ -410,20 +386,17 @@ body {
   line-height: 1;
 }
 
-/* ── Hover ─────────────────────────────────────────────────── */
 .sidebar-nav a:hover {
   background: rgba(42, 0, 0, 0.05);
   color: var(--burgundy-wine);
 }
 
-/* ── Active ────────────────────────────────────────────────── */
 .sidebar-nav a.active {
   background: var(--burgundy-wine);
   color: #fff;
   font-weight: 600;
 }
 
-/* ── Clicked ───────────────────────────────────────────────── */
 .sidebar-nav a:not(.active):active {
   background: rgba(91, 19, 18, 0.12);
   color: var(--burgundy-wine);
@@ -433,7 +406,6 @@ body {
   background: var(--dark-brown);
 }
 
-/* ── Unread badge ──────────────────────────────────────────── */
 .sidebar-badge {
   display: inline-flex;
   align-items: center;
@@ -463,7 +435,6 @@ body {
   min-width: 0;
 }
 
-/* ── PAGE HEADER ─────────────────────────────────────────────── */
 .page-header {
   margin-bottom: 32px;
   display: flex;
@@ -532,7 +503,6 @@ body {
   opacity: 1;
 }
 
-/* ── STAT CARD SUB-COMPONENTS (dashboard-style, shared) ─────── */
 .stat-card-top {
   display: flex;
   align-items: center;
@@ -588,7 +558,6 @@ body {
   opacity: 0.3;
 }
 
-/* ── STAT CARD HEADER ROW (title + icon inline) ─────────────── */
 .stat-header {
   display: flex;
   align-items: center;
@@ -621,7 +590,6 @@ body {
   opacity: 0.8;
 }
 
-/* ── STAT CARD BODY ─────────────────────────────────────────── */
 .stat-body {
   display: flex;
   flex-direction: column;
@@ -672,7 +640,6 @@ body {
   border-collapse: collapse;
 }
 
-/* ── Column headers: centered ─────────────────────────────── */
 .admin-table th {
   background: rgba(245, 241, 232, 0.5);
   padding: 14px 16px;
@@ -687,7 +654,6 @@ body {
   white-space: nowrap;
 }
 
-/* ── Sortable column header styles ───────────────────────── */
 .admin-table th[data-sort] {
   cursor: pointer;
   user-select: none;
@@ -705,7 +671,6 @@ body {
   background: rgba(91, 19, 18, 0.05);
 }
 
-/* ── Data rows: left-aligned ──────────────────────────────── */
 .admin-table td {
   padding: 15px 16px;
   border-bottom: 1px solid var(--border);
@@ -719,7 +684,6 @@ body {
   white-space: nowrap;
 }
 
-/* Actions cell: keep centered */
 .admin-table td.td-actions {
   text-align: center;
 }
@@ -728,7 +692,6 @@ body {
   text-align: center;
 }
 
-/* Force all inline elements inside td to inherit weight 400 */
 .admin-table td strong,
 .admin-table td b {
   font-weight: 400 !important;
@@ -1618,7 +1581,10 @@ textarea.form-control {
   border-radius: var(--radius);
   padding: 28px 32px;
   box-shadow: var(--shadow-sm);
-  max-width: 680px;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .ps-section-hd {
@@ -1633,8 +1599,9 @@ textarea.form-control {
 
 .ps-form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  column-gap: 16px;
+  row-gap: 18px;
   margin-bottom: 24px;
 }
 
@@ -1642,6 +1609,11 @@ textarea.form-control {
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+/* Allow fields to naturally stretch across both grid columns */
+.ps-field.full-width {
+  grid-column: 1 / -1;
 }
 
 .ps-field label {
@@ -1701,7 +1673,134 @@ textarea.form-control {
 .ps-form-actions {
   display: flex;
   justify-content: flex-end;
-  margin-top: 8px;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+/* Discard button — secondary action */
+.ps-btn-discard {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1.5px solid var(--text-muted);
+  padding: 12px 22px;
+  border-radius: 50px;
+  font-family: var(--font-subheading);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.ps-btn-discard:hover {
+  background: rgba(42, 0, 0, 0.04);
+  color: var(--dark-brown);
+  border-color: var(--dark-brown);
+}
+
+.ps-settings-row {
+  display: flex;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.ps-settings-row > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Alert zone above each card */
+.ps-alert-zone {
+  margin-bottom: 4px;
+}
+
+/* Avatar upload widget in Account Information card */
+.ps-avatar-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(42, 0, 0, 0.06);
+}
+
+/* Wrap: not overflow:hidden so pencil badge can extend outside circle */
+.ps-avatar-wrap {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  aspect-ratio: 1 / 1;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.ps-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.ps-avatar-initial {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--burgundy-wine), var(--deep-maroon));
+  color: #fff;
+  font-family: var(--font-subheading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Pencil badge — bottom-right of avatar circle */
+.ps-avatar-pencil {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1.5px solid rgba(42, 0, 0, 0.15);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--deep-maroon);
+  font-size: 0.6rem;
+  transition: background var(--transition), color var(--transition);
+  pointer-events: none;
+}
+
+.ps-avatar-wrap:hover .ps-avatar-pencil {
+  background: var(--deep-maroon);
+  color: #fff;
+}
+
+.ps-avatar-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ps-avatar-hint {
+  font-family: var(--font-subheading);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--dark-brown);
+}
+
+.ps-avatar-hint-sub {
+  font-family: var(--font-subheading);
+  font-size: 0.75rem;
+  color: var(--text-muted);
 }
 
 .ps-btn-save {
@@ -1718,6 +1817,66 @@ textarea.form-control {
 
 .ps-btn-save:hover {
   background: var(--burgundy-wine);
+}
+
+/* Outer frame container — wraps dashboard and insights content */
+.ins-outer-frame {
+  background: var(--card);
+  border: 1px solid rgba(42, 0, 0, 0.1);
+  box-shadow: 0 6px 24px rgba(42, 0, 0, 0.06);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+/* Inside the outer frame, add spacing between stat grid and analytics */
+.ins-outer-frame .stat-grid {
+  margin-bottom: 20px;
+}
+
+/* Pagination controls — matches customer account .acct-pagination style */
+.admin-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-top: 1px solid rgba(42, 0, 0, 0.07);
+  font-family: var(--font-subheading);
+}
+
+.admin-pagination .page-info {
+  font-family: var(--font-subheading);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--dark-brown);
+}
+
+.admin-pagination .btn-prev,
+.admin-pagination .btn-next {
+  background: #fff;
+  border: 1px solid rgba(42, 0, 0, 0.15);
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--deep-maroon);
+  cursor: pointer;
+  margin-left: 6px;
+  font-size: 0.85rem;
+  transition: background var(--transition);
+}
+
+.admin-pagination .btn-prev:hover:not(:disabled),
+.admin-pagination .btn-next:hover:not(:disabled) {
+  background: rgba(42, 0, 0, 0.05);
+}
+
+.admin-pagination .btn-prev:disabled,
+.admin-pagination .btn-next:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
 
 @media (max-width: 768px) {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 04, 2026 at 08:00 PM
+-- Generation Time: Mar 05, 2026 at 04:24 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -375,7 +375,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `full_name`, `email`, `mobile_number`, `profile_image`, `house_unit`, `street_name`, `barangay`, `city_municipality`, `province`, `zip_code`, `password`, `role`, `created_at`) VALUES
-(1, 'Samantha Virtudazo', 'admin@purgecoffee.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '$2a$12$F4wbKxPcOnhD6K5An76ke.4gS2.m9JQTH88Q8NZYUzGwNaYhY6YKC', 'admin', '2026-02-20 02:12:15'),
+(1, 'Samantha Lewis Virtudazo', 'admin@purgecoffee.com', '', 'uploads/avatars/avatar_1_1772720738.jpg', '', '', '', '', '', '', '$2a$12$F4wbKxPcOnhD6K5An76ke.4gS2.m9JQTH88Q8NZYUzGwNaYhY6YKC', 'admin', '2026-02-20 02:12:15'),
 (2, 'Customer', 'customer@purgecoffee.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '$2a$12$nvPoBAKZQZpBpybEbGlsNeYwwMFn.YcvPM1SqGgM0iR.iHMw2efGW', 'customer', '2026-02-20 02:23:55'),
 (3, 'John Doe', 'johndoe@gmail.com', '09603150070', 'uploads/avatars/avatar_3_1772412807.jpg', '17', 'Blk 6 Lot', '', 'Davao City', 'Davao del Sur', '8000', '$2y$10$QIGd50QI/MzcG7QnQ.j.xeHGaNP65fxatJA/KEfRiKekeye/GooB6', 'customer', '2026-02-21 07:15:51');
 
@@ -404,8 +404,7 @@ CREATE TABLE `user_carts` (
 --
 
 INSERT INTO `user_carts` (`cart_id`, `user_id`, `product_id`, `quantity`, `size`, `temperature`, `sugar_level`, `milk`, `addons`, `special_instructions`, `updated_at`) VALUES
-(751, 2, 63, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-03-03 03:52:49'),
-(763, 3, 2, 2, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-03-04 16:55:36');
+(751, 2, 63, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-03-03 03:52:49');
 
 --
 -- Indexes for dumped tables
@@ -503,7 +502,7 @@ ALTER TABLE `contact_messages`
 -- AUTO_INCREMENT for table `favorites`
 --
 ALTER TABLE `favorites`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `orders`
@@ -539,7 +538,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `user_carts`
 --
 ALTER TABLE `user_carts`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=764;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=765;
 
 --
 -- Constraints for dumped tables

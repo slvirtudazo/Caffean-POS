@@ -52,7 +52,11 @@
 
 .stat-card:hover {
   box-shadow: 0 8px 28px rgba(42, 0, 0, 0.12);
-  transform: translateY(-2px);
+}
+
+/* Accent bar hidden */
+.stat-card-bar {
+  display: none;
 }
 
 /* Stat card icon — no background, icon only */
@@ -183,15 +187,9 @@
   opacity: 0.7;
 }
 
-/* Accent bar at bottom of each card */
-.stat-card-bar {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(to right, var(--burgundy-wine), transparent);
-  opacity: 0.3;
+/* Inside the outer frame, add spacing between stat grid and analytics */
+.ins-outer-frame .stat-grid {
+  margin-bottom: 20px;
 }
 
 /* ── Analytics + Trending Layout ─────────────────────────────── */
@@ -438,7 +436,7 @@
 }
 
 .td-amount {
-  font-weight: 700;
+  font-weight: 400;
   color: var(--deep-maroon);
 }
 

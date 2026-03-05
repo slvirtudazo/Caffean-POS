@@ -113,6 +113,13 @@ include 'includes/header.php';
   <a href="?status=cancelled"  class="tab <?= $status_filter === 'cancelled'  ? 'active' : '' ?>">Cancelled    <span class="tab-count"><?= $counts['cancelled']  ?></span></a>
 </div>
 
+<div class="toolbar">
+  <div class="search-box">
+    <span class="search-icon"><i class="fas fa-search"></i></span>
+    <input type="text" id="instoreSearch" placeholder="Search orders..." />
+  </div>
+</div>
+
 <div class="card">
   <div class="card-header">
     <h2><?= $status_filter === 'all' ? 'All' : ucfirst($status_filter) ?> In-Store Orders</h2>
@@ -135,7 +142,7 @@ include 'includes/header.php';
     </thead>
     <tbody>
       <?php if ($total_orders === 0): ?>
-        <tr>
+        <tr class="empty-row">
           <td colspan="9">
             <div class="empty-state">
               <i class="fas fa-cash-register"></i>
@@ -173,6 +180,13 @@ include 'includes/header.php';
       <?php endif; ?>
     </tbody>
   </table>
+  <div id="instoreTable-pagination" class="admin-pagination">
+    <span class="page-info">Page 1 of 1</span>
+    <div class="page-btns">
+      <button class="btn-page btn-prev"><i class="fas fa-chevron-left"></i></button>
+      <button class="btn-page btn-next"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </div>
 </div>
 
 <!-- View In-Store Order Modal -->
@@ -291,7 +305,9 @@ include 'includes/header.php';
       document.querySelectorAll('.modal-overlay').forEach(function (o) { o.style.display = 'none'; });
   });
 
-  initSortableTable('instoreTable');
+  initSortableTable('instoreTable', 3);
+  initTableSearch('instoreSearch', 'instoreTable');
+  initTablePagination('instoreTable', 10);
 </script>
 
 <?php include 'includes/footer.php'; ?>

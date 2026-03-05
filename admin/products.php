@@ -170,7 +170,7 @@ include 'includes/header.php';
     </thead>
     <tbody>
       <?php if ($total_products === 0): ?>
-        <tr>
+        <tr class="empty-row">
           <td colspan="6">
             <div class="empty-state">
               <i class="fas fa-box-open"></i>
@@ -209,6 +209,13 @@ include 'includes/header.php';
       <?php endif; ?>
     </tbody>
   </table>
+  <div id="productsTable-pagination" class="admin-pagination">
+    <span class="page-info">Page 1 of 1</span>
+    <div class="page-btns">
+      <button class="btn-page btn-prev"><i class="fas fa-chevron-left"></i></button>
+      <button class="btn-page btn-next"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </div>
 </div>
 
 <!-- ══ VIEW PRODUCT MODAL ════════════════════════════════════ -->
@@ -331,7 +338,7 @@ include 'includes/header.php';
 <div class="modal-overlay" id="editProductModal" style="display:none;">
   <div class="modal">
     <div class="modal-header">
-      <h3>Edit Product</h3>
+      <h3>Update Product</h3>
       <button class="modal-close" onclick="closeModal('editProductModal')">&#x2715;</button>
     </div>
     <form method="POST" enctype="multipart/form-data">
@@ -353,7 +360,7 @@ include 'includes/header.php';
             </div>
           </div>
           <div class="img-thumb-meta">
-            <span class="img-thumb-label">Upload Product Image</span>
+            <span class="img-thumb-label">Update Product Image</span>
             <span class="img-thumb-hint">Accepted formats: JPG, PNG, WEBP (Max 5MB)</span>
             <button type="button" class="img-remove-btn" id="edit_img_remove" style="display:none;"
               onclick="removeImage('edit_image_input','edit_img_preview','edit_img_placeholder','edit_img_remove','edit_thumb_wrap')">
@@ -558,17 +565,23 @@ include 'includes/header.php';
     openModal('deleteProductModal');
   }
 
-  /* ── Live search filter ────────────────────────────────────── */
+  /* ── Live search — updates data-search-match, re-renders page ─ */
   function filterTable(term) {
     var rows = document.querySelectorAll('#productsTable tbody tr');
     var q = term.toLowerCase();
-    rows.forEach(function(row) {
-      row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+    rows.forEach(function (row) {
+      if (row.classList.contains('empty-row')) return;
+      row.dataset.searchMatch = (!q || row.textContent.toLowerCase().includes(q)) ? 'true' : 'false';
     });
+    if (window._pgState && window._pgState['productsTable']) {
+      window._pgState['productsTable'].page = 1;
+      window._pgState['productsTable'].renderPage();
+    }
   }
 
-  /* ── Sorting ───────────────────────────────────────────────── */
-  initSortableTable('productsTable');
+  /* ── Sorting (default desc on ID col 0) + pagination ──────── */
+  initSortableTable('productsTable', 0);
+  initTablePagination('productsTable', 10);
 </script>
 
 <?php include 'includes/footer.php'; ?>

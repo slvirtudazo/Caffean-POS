@@ -125,6 +125,9 @@ include 'includes/header.php';
   </div>
 </div>
 
+<!-- All dashboard content in one outer frame -->
+<div class="ins-outer-frame">
+
 <!-- Stat cards -->
 <div class="stat-grid">
 
@@ -136,7 +139,6 @@ include 'includes/header.php';
     <div class="stat-card-body">
       <span class="stat-card-value">&#8369;<?= number_format($stats['revenue'], 2) ?></span>
     </div>
-    <div class="stat-card-bar"></div>
   </div>
 
   <div class="stat-card stat-card--orders">
@@ -147,7 +149,6 @@ include 'includes/header.php';
     <div class="stat-card-body">
       <span class="stat-card-value"><?= number_format($stats['orders']) ?></span>
     </div>
-    <div class="stat-card-bar"></div>
   </div>
 
   <div class="stat-card stat-card--customers">
@@ -167,7 +168,6 @@ include 'includes/header.php';
         </div>
       </div>
     </div>
-    <div class="stat-card-bar"></div>
   </div>
 
   <div class="stat-card stat-card--inventory">
@@ -187,12 +187,11 @@ include 'includes/header.php';
         </div>
       </div>
     </div>
-    <div class="stat-card-bar"></div>
   </div>
 
 </div>
 
-<!-- Analytics + Trending grid -->
+<!-- Analytics + Trending grid, Recent orders -->
 <div class="dash-analytics-grid">
 
   <div class="dash-panel dash-panel--chart">
@@ -267,10 +266,9 @@ include 'includes/header.php';
               <td><?= date('M j, Y · g:i A', strtotime($ro['order_date'])) ?></td>
               <td>
                 <?php if ($ro['is_kiosk']): ?>
-                  <span class="badge-type badge-pickup"><i class="fas fa-cash-register"></i> Kiosk</span>
+                  <span class="badge-type badge-pickup">Kiosk</span>
                 <?php else: ?>
                   <span class="badge-type badge-<?= $ro['order_type'] ?>">
-                    <i class="fas fa-<?= $ro['order_type'] === 'pickup' ? 'store' : 'truck' ?>"></i>
                     <?= ucfirst($ro['order_type']) ?>
                   </span>
                 <?php endif; ?>
@@ -295,6 +293,8 @@ include 'includes/header.php';
     </div>
   <?php endif; ?>
 </div>
+
+</div><!-- /.ins-outer-frame -->
 
 <script>
   (function () {

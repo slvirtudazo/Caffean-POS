@@ -128,6 +128,13 @@ include 'includes/header.php';
   <a href="?status=cancelled" class="tab <?= $status_filter === 'cancelled'  ? 'active' : '' ?>">Cancelled <span class="tab-count"><?= $counts['cancelled']  ?></span></a>
 </div>
 
+<div class="toolbar">
+  <div class="search-box">
+    <span class="search-icon"><i class="fas fa-search"></i></span>
+    <input type="text" id="ordersSearch" placeholder="Search orders..." />
+  </div>
+</div>
+
 <div class="card">
   <div class="card-header">
     <h2><?= ucfirst($status_filter) ?> Orders</h2>
@@ -149,7 +156,7 @@ include 'includes/header.php';
     </thead>
     <tbody>
       <?php if ($total_orders === 0): ?>
-        <tr>
+        <tr class="empty-row">
           <td colspan="8">
             <div class="empty-state">
               <i class="fas fa-inbox"></i>
@@ -186,6 +193,13 @@ include 'includes/header.php';
       <?php endif; ?>
     </tbody>
   </table>
+  <div id="ordersTable-pagination" class="admin-pagination">
+    <span class="page-info">Page 1 of 1</span>
+    <div class="page-btns">
+      <button class="btn-page btn-prev"><i class="fas fa-chevron-left"></i></button>
+      <button class="btn-page btn-next"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </div>
 </div>
 
 <!-- View Order Modal -->
@@ -311,7 +325,9 @@ include 'includes/header.php';
       });
   });
 
-  initSortableTable('ordersTable');
+  initSortableTable('ordersTable', 2);
+  initTableSearch('ordersSearch', 'ordersTable');
+  initTablePagination('ordersTable', 10);
 </script>
 
 <?php include 'includes/footer.php'; ?>

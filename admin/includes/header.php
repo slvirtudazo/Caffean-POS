@@ -81,9 +81,84 @@ $page_css_file = $page_css_map[$current_page] ?? null;
     .admin-table th[data-sort].sort-desc::after { content: ' ↓'; opacity: 0.9; }
   </style>
 
-  <!-- Shared sortable table utility used by all admin table pages -->
+  <!-- Shared table utilities: sorting, pagination, search -->
   <script>
-    function initSortableTable(tableId) {
+    /* Global pagination state keyed by tableId */
+    window._pgState = {};
+
+    /* ── Pagination: show 10 rows per page ──────────────────────── */
+    function initTablePagination(tableId, pageSize) {
+      pageSize = pageSize || 10;
+      var table = document.getElementById(tableId);
+      var pgEl  = document.getElementById(tableId + '-pagination');
+      if (!table) return;
+
+      window._pgState[tableId] = { page: 1, pageSize: pageSize };
+
+      function renderPage() {
+        var state   = window._pgState[tableId];
+        var allRows = Array.from(table.querySelectorAll('tbody tr')).filter(function (r) {
+          return !r.classList.contains('empty-row');
+        });
+        var visRows = allRows.filter(function (r) { return r.dataset.searchMatch !== 'false'; });
+        var total   = Math.max(1, Math.ceil(visRows.length / state.pageSize));
+        if (state.page > total) state.page = total;
+
+        var start = (state.page - 1) * state.pageSize;
+        var end   = start + state.pageSize;
+
+        /* Hide all, then show current page's matching rows */
+        allRows.forEach(function (r) { r.style.display = 'none'; });
+        visRows.slice(start, end).forEach(function (r) { r.style.display = ''; });
+
+        if (pgEl) {
+          pgEl.querySelector('.page-info').textContent = 'Page ' + state.page + ' of ' + total;
+          pgEl.querySelector('.btn-prev').disabled = state.page <= 1;
+          pgEl.querySelector('.btn-next').disabled = state.page >= total;
+        }
+      }
+
+      if (pgEl) {
+        pgEl.querySelector('.btn-prev').addEventListener('click', function () {
+          if (window._pgState[tableId].page > 1) {
+            window._pgState[tableId].page--;
+            renderPage();
+          }
+        });
+        pgEl.querySelector('.btn-next').addEventListener('click', function () {
+          var s   = window._pgState[tableId];
+          var all = Array.from(table.querySelectorAll('tbody tr')).filter(function (r) {
+            return !r.classList.contains('empty-row') && r.dataset.searchMatch !== 'false';
+          });
+          var total = Math.max(1, Math.ceil(all.length / s.pageSize));
+          if (s.page < total) { s.page++; renderPage(); }
+        });
+      }
+
+      window._pgState[tableId].renderPage = renderPage;
+      renderPage();
+    }
+
+    /* ── Search: filter rows, reset to page 1 ──────────────────── */
+    function initTableSearch(inputId, tableId) {
+      var input = document.getElementById(inputId);
+      if (!input) return;
+      input.addEventListener('input', function () {
+        var q     = this.value.toLowerCase();
+        var table = document.getElementById(tableId);
+        Array.from(table.querySelectorAll('tbody tr')).forEach(function (r) {
+          if (r.classList.contains('empty-row')) return;
+          r.dataset.searchMatch = (!q || r.textContent.toLowerCase().includes(q)) ? 'true' : 'false';
+        });
+        if (window._pgState && window._pgState[tableId]) {
+          window._pgState[tableId].page = 1;
+          window._pgState[tableId].renderPage();
+        }
+      });
+    }
+
+    /* ── Sortable table with default desc sort on init ─────────── */
+    function initSortableTable(tableId, defaultColIdx) {
       var table = document.getElementById(tableId);
       if (!table) return;
       var headers    = table.querySelectorAll('thead th[data-sort]');
@@ -92,8 +167,57 @@ $page_css_file = $page_css_map[$current_page] ?? null;
 
       function parseAdminDate(str) {
         if (!str) return 0;
-        var d = new Date(str.replace(',', ''));
+        var d = new Date(str.replace(',', '').replace('·', ''));
         return isNaN(d) ? 0 : d.getTime();
+      }
+
+      /* Extract numeric value from prefixed IDs like "PR-2026-00090" → 90 */
+      function parseId(str) {
+        var m = str.match(/(\d+)$/);
+        return m ? parseInt(m[1], 10) : 0;
+      }
+
+      /* Core sort: sorts all non-empty rows by given col/type/dir */
+      function sortRows(col, type, dir) {
+        var tbody = table.querySelector('tbody');
+        var rows  = Array.from(tbody.querySelectorAll('tr')).filter(function (r) {
+          return !r.classList.contains('empty-row') && !r.querySelector('.empty-state');
+        });
+        if (!rows.length) return;
+
+        rows.sort(function (a, b) {
+          var aT = a.cells[col] ? a.cells[col].textContent.trim() : '';
+          var bT = b.cells[col] ? b.cells[col].textContent.trim() : '';
+          var cmp = 0;
+
+          if (type === 'number') {
+            /* Handle prefixed IDs (e.g. "PR-2026-00090") and plain numbers */
+            var aHasPrefix = /^[A-Z]+-/.test(aT);
+            var bHasPrefix = /^[A-Z]+-/.test(bT);
+            if (aHasPrefix || bHasPrefix) {
+              cmp = parseId(aT) - parseId(bT);
+            } else {
+              cmp = (parseFloat(aT.replace(/[^0-9.-]/g, '')) || 0) -
+                    (parseFloat(bT.replace(/[^0-9.-]/g, '')) || 0);
+            }
+          } else if (type === 'date') {
+            cmp = parseAdminDate(aT) - parseAdminDate(bT);
+          } else if (type === 'text') {
+            /* Also handle prefixed IDs sorted as text (e.g. "OO-2026-00029") */
+            var aNum = /^[A-Z]+-/.test(aT) ? parseId(aT) : null;
+            var bNum = /^[A-Z]+-/.test(bT) ? parseId(bT) : null;
+            if (aNum !== null && bNum !== null) {
+              cmp = aNum - bNum;
+            } else {
+              cmp = aT.toLowerCase().localeCompare(bT.toLowerCase());
+            }
+          } else {
+            cmp = aT.toLowerCase().localeCompare(bT.toLowerCase());
+          }
+          return dir === 'asc' ? cmp : -cmp;
+        });
+
+        rows.forEach(function (r) { tbody.appendChild(r); });
       }
 
       headers.forEach(function (th) {
@@ -108,63 +232,26 @@ $page_css_file = $page_css_map[$current_page] ?? null;
           });
           th.classList.add(currentDir === 'asc' ? 'sort-asc' : 'sort-desc');
 
-          var tbody = table.querySelector('tbody');
-          var rows  = Array.from(tbody.querySelectorAll('tr')).filter(function (r) {
-            return !r.querySelector('.empty-state');
-          });
-          if (!rows.length) return;
+          sortRows(col, type, currentDir);
 
-          rows.sort(function (a, b) {
-            var aT = a.cells[col] ? a.cells[col].textContent.trim() : '';
-            var bT = b.cells[col] ? b.cells[col].textContent.trim() : '';
-            var cmp = 0;
-
-            if (type === 'number') {
-              cmp = (parseFloat(aT.replace(/[^0-9.-]/g, '')) || 0) -
-                    (parseFloat(bT.replace(/[^0-9.-]/g, '')) || 0);
-            } else if (type === 'date') {
-              cmp = parseAdminDate(aT) - parseAdminDate(bT);
-            } else {
-              cmp = aT.toLowerCase().localeCompare(bT.toLowerCase());
-            }
-            return currentDir === 'asc' ? cmp : -cmp;
-          });
-
-          rows.forEach(function (r) { tbody.appendChild(r); });
+          /* Reset pagination to page 1 after sort */
+          if (window._pgState && window._pgState[tableId]) {
+            window._pgState[tableId].page = 1;
+            window._pgState[tableId].renderPage();
+          }
         });
       });
-    }
-    /* ── ADMIN AVATAR EDIT ────────────────────────────────────── */
-    function openAdminAvatarEdit() {
-      document.getElementById('adminAvatarFileInput').click();
-    }
 
-    function previewAdminAvatar(input) {
-      if (!input.files || !input.files[0]) return;
-      const reader = new FileReader();
-      reader.onload = e => {
-        const wrap    = document.querySelector('.admin-avatar-wrap');
-        let img       = document.getElementById('adminAvatarPreview');
-        const initial = document.getElementById('adminAvatarInitial');
-        if (!img) {
-          img = document.createElement('img');
-          img.id        = 'adminAvatarPreview';
-          img.className = 'admin-sidebar-avatar';
-          if (initial) initial.replaceWith(img);
-          else wrap.insertBefore(img, wrap.firstChild);
+      /* Apply default desc sort on the specified column, actually sorting rows */
+      if (typeof defaultColIdx === 'number') {
+        var defaultTh = table.querySelector('thead th:nth-child(' + (defaultColIdx + 1) + ')');
+        if (defaultTh && defaultTh.dataset.sort) {
+          currentCol = defaultColIdx;
+          currentDir = 'desc';
+          defaultTh.classList.add('sort-desc');
+          sortRows(defaultColIdx, defaultTh.dataset.sort, 'desc');
         }
-        img.src = e.target.result;
-
-        // Auto-save avatar using stored name + email from data attrs
-        const fd = new FormData();
-        fd.append('full_name', wrap.dataset.name  || '');
-        fd.append('email',     wrap.dataset.email || '');
-        fd.append('avatar',    input.files[0]);
-        fetch('<?= BASE_URL ?>/php/update_profile.php', { method: 'POST', body: fd })
-          .then(r => r.json())
-          .then(d => { if (!d.success) console.warn('Avatar save:', d.message); });
-      };
-      reader.readAsDataURL(input.files[0]);
+      }
     }
   </script>
 </head>
@@ -193,16 +280,12 @@ $page_css_file = $page_css_map[$current_page] ?? null;
 
       <!-- ── PROFILE INFO — avatar, name, role ────────────────── -->
       <div class="admin-sidebar-profile">
-        <div class="admin-avatar-wrap" onclick="openAdminAvatarEdit()" title="Change photo"
-             data-name="<?= $admin_name ?>"
-             data-email="<?= $admin_email ?>">
+        <div class="admin-avatar-wrap">
           <?php if ($admin_avatar_src): ?>
             <img src="<?= $admin_avatar_src ?>" alt="Profile" class="admin-sidebar-avatar" id="adminAvatarPreview" />
           <?php else: ?>
             <div class="admin-sidebar-avatar" id="adminAvatarInitial"><?= $admin_initial ?></div>
           <?php endif; ?>
-          <div class="admin-avatar-edit-icon"><i class="bi bi-pencil-fill"></i></div>
-          <input type="file" id="adminAvatarFileInput" accept="image/*" style="display:none" onchange="previewAdminAvatar(this)" />
         </div>
         <div class="admin-sidebar-info">
           <h2><?= $admin_name ?></h2>
