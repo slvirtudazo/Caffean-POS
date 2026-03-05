@@ -215,7 +215,7 @@ include 'includes/header.php';
 <div class="modal-overlay" id="viewProductModal" style="display:none;">
   <div class="modal">
     <div class="modal-header">
-      <h3><i class="fas fa-eye modal-icon"></i>Product Details</h3>
+      <h3>Product Details</h3>
       <button class="modal-close" onclick="closeModal('viewProductModal')">&#x2715;</button>
     </div>
     <div class="modal-body">
@@ -258,7 +258,7 @@ include 'includes/header.php';
 <div class="modal-overlay" id="addProductModal" style="display:none;">
   <div class="modal">
     <div class="modal-header">
-      <h3><i class="fas fa-plus modal-icon"></i>Add New Product</h3>
+      <h3>Add New Product</h3>
       <button class="modal-close" onclick="closeModal('addProductModal')">&#x2715;</button>
     </div>
     <form method="POST" enctype="multipart/form-data">
@@ -321,7 +321,7 @@ include 'includes/header.php';
       </div>
       <div class="modal-footer">
         <button type="button" class="btn-cancel" onclick="closeModal('addProductModal')">Cancel</button>
-        <button type="submit" class="btn-primary"><i class="fas fa-plus"></i> Add Product</button>
+        <button type="submit" class="btn-primary">Add Product</button>
       </div>
     </form>
   </div>
@@ -331,7 +331,7 @@ include 'includes/header.php';
 <div class="modal-overlay" id="editProductModal" style="display:none;">
   <div class="modal">
     <div class="modal-header">
-      <h3><i class="fas fa-pen modal-icon"></i>Edit Product</h3>
+      <h3>Edit Product</h3>
       <button class="modal-close" onclick="closeModal('editProductModal')">&#x2715;</button>
     </div>
     <form method="POST" enctype="multipart/form-data">
@@ -403,7 +403,7 @@ include 'includes/header.php';
       </div>
       <div class="modal-footer">
         <button type="button" class="btn-cancel" onclick="closeModal('editProductModal')">Cancel</button>
-        <button type="submit" class="btn-update"><i class="fas fa-floppy-disk"></i> Update Product</button>
+        <button type="submit" class="btn-update">Update Product</button>
       </div>
     </form>
   </div>
@@ -413,7 +413,7 @@ include 'includes/header.php';
 <div class="modal-overlay" id="deleteProductModal" style="display:none;">
   <div class="modal">
     <div class="modal-header">
-      <h3><i class="fas fa-trash modal-icon"></i>Delete Product</h3>
+      <h3>Delete Product</h3>
       <button class="modal-close" onclick="closeModal('deleteProductModal')">&#x2715;</button>
     </div>
     <form method="POST">
@@ -427,7 +427,7 @@ include 'includes/header.php';
       </div>
       <div class="modal-footer">
         <button type="button" class="btn-cancel" onclick="closeModal('deleteProductModal')">Cancel</button>
-        <button type="submit" class="btn-delete"><i class="fas fa-trash"></i> Delete Product</button>
+        <button type="submit" class="btn-delete">Delete Product</button>
       </div>
     </form>
   </div>

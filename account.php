@@ -42,7 +42,7 @@ mysqli_stmt_execute($stmt);
 $stats = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 mysqli_stmt_close($stmt);
 
-/* Fetch full order history — DESC by date (most recent first) for default load */
+/* Fetch full order history — DESC by date for default load */
 $stmt = mysqli_prepare($conn,
     "SELECT o.order_id, o.total_amount, o.status, o.order_date,
      o.payment_method, o.order_type,
@@ -59,12 +59,75 @@ mysqli_stmt_close($stmt);
 $orders_arr = [];
 while ($row = mysqli_fetch_assoc($orders_result)) $orders_arr[] = $row;
 
+/* ── INSIGHTS DATA ───────────────────────────────────────────── */
+
+/* Spending by month — last 6 months */
+$spend_labels = [];
+$spend_data   = [];
+for ($i = 5; $i >= 0; $i--) {
+    $y = date('Y', strtotime("-$i months"));
+    $m = date('m', strtotime("-$i months"));
+    $spend_labels[] = date('M Y', strtotime("-$i months"));
+    $row = mysqli_fetch_assoc(mysqli_prepare_and_execute($conn,
+        "SELECT COALESCE(SUM(total_amount),0) AS s FROM orders
+         WHERE user_id = ? AND YEAR(order_date)=? AND MONTH(order_date)=?
+         AND status != 'cancelled'",
+        "iii", [$user_id, $y, $m]));
+    $spend_data[] = (float)($row['s'] ?? 0);
+}
+
+/* Top 5 ordered items */
+$stmt = mysqli_prepare($conn,
+    "SELECT p.name, SUM(oi.quantity) AS qty, COALESCE(p.image_path,'') AS img
+     FROM order_items oi
+     JOIN orders o ON oi.order_id = o.order_id
+     JOIN products p ON oi.product_id = p.product_id
+     WHERE o.user_id = ?
+     GROUP BY oi.product_id
+     ORDER BY qty DESC LIMIT 5");
+mysqli_stmt_bind_param($stmt, "i", $user_id);
+mysqli_stmt_execute($stmt);
+$top_items = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
+mysqli_stmt_close($stmt);
+
+/* Order type breakdown */
+$stmt = mysqli_prepare($conn,
+    "SELECT order_type, COUNT(*) AS cnt FROM orders WHERE user_id = ? GROUP BY order_type");
+mysqli_stmt_bind_param($stmt, "i", $user_id);
+mysqli_stmt_execute($stmt);
+$type_rows = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
+mysqli_stmt_close($stmt);
+$type_data = [];
+foreach ($type_rows as $r) $type_data[ucfirst($r['order_type'])] = (int)$r['cnt'];
+
+/* Payment method breakdown */
+$stmt = mysqli_prepare($conn,
+    "SELECT payment_method, COUNT(*) AS cnt FROM orders WHERE user_id = ? GROUP BY payment_method");
+mysqli_stmt_bind_param($stmt, "i", $user_id);
+mysqli_stmt_execute($stmt);
+$pay_rows = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
+mysqli_stmt_close($stmt);
+$pay_data = [];
+foreach ($pay_rows as $r) $pay_data[$r['payment_method']] = (int)$r['cnt'];
+
+/* Average order value */
+$avg_order = $stats['total_orders'] > 0
+    ? round($stats['total_spent'] / $stats['total_orders'], 2)
+    : 0;
+
+/* Helper: prepare + bind + execute in one call */
+function mysqli_prepare_and_execute($conn, $sql, $types, $params) {
+    $stmt = mysqli_prepare($conn, $sql);
+    if ($types && $params) mysqli_stmt_bind_param($stmt, $types, ...$params);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    mysqli_stmt_close($stmt);
+    return $res;
+}
+
 /* Helpers */
-$initials    = strtoupper(substr($user['full_name'] ?? 'U', 0, 1));
-$avatar_src  = !empty($user['profile_image']) ? htmlspecialchars($user['profile_image']) : '';
-$member_date = !empty($user['created_at'])
-    ? strtoupper(date('F Y', strtotime($user['created_at'])))
-    : '—';
+$initials   = strtoupper(substr($user['full_name'] ?? 'U', 0, 1));
+$avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_image']) : '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -79,8 +142,9 @@ $member_date = !empty($user['created_at'])
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/search.css" />
     <link rel="stylesheet" href="css/account-page.css?v=<?php echo time(); ?>" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
-<body>
+<body class="page-account">
 
     <!-- ── NAVBAR ─────────────────────────────────────────────── -->
     <nav class="navbar navbar-expand-lg sticky-top">
@@ -141,23 +205,41 @@ $member_date = !empty($user['created_at'])
         <div class="acct-dashboard">
 
             <aside class="acct-sidebar">
+
+                <!-- ── PROFILE INFO — avatar, name, badge ──────────── -->
+                <div class="acct-sidebar-profile">
+                    <div class="acct-avatar-wrap" onclick="openAvatarEdit()" title="Change photo">
+                        <?php if ($avatar_src): ?>
+                            <img src="<?= $avatar_src ?>" alt="Profile" class="acct-avatar-img" id="avatarPreview" />
+                        <?php else: ?>
+                            <div class="acct-avatar-initial" id="avatarInitial"><?= $initials ?></div>
+                        <?php endif; ?>
+                        <div class="avatar-edit-icon"><i class="bi bi-pencil-fill"></i></div>
+                        <input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="previewAvatar(this)" />
+                    </div>
+                    <div class="profile-details">
+                        <h2><?= htmlspecialchars($user['full_name'] ?? '—') ?></h2>
+                        <p class="profile-email"><?= htmlspecialchars($user['email'] ?? '—') ?></p>
+                    </div>
+                </div>
+
                 <nav class="acct-nav">
-                    <a href="#" class="acct-nav-item active" onclick="openTab('orders', this)">
+                    <a href="#" class="acct-nav-item active" onclick="openTab('orders', this); return false;">
                         <i class="far fa-clock acct-ic-out"></i>
                         <i class="fas fa-clock acct-ic-fill"></i>
                         <span class="acct-nav-text">Order History</span>
                     </a>
-                    <a href="#" class="acct-nav-item" onclick="openTab('favorites', this)">
+                    <a href="#" class="acct-nav-item" onclick="openTab('favorites', this); return false;">
                         <i class="far fa-heart acct-ic-out"></i>
                         <i class="fas fa-heart acct-ic-fill"></i>
                         <span class="acct-nav-text">Favorites</span>
                     </a>
-                    <a href="#" class="acct-nav-item" onclick="alert('Insights coming soon!')">
+                    <a href="#" class="acct-nav-item" onclick="openTab('insights', this); return false;">
                         <i class="fas fa-chart-line acct-ic-out"></i>
                         <i class="fas fa-chart-line acct-ic-fill"></i>
                         <span class="acct-nav-text">Insights</span>
                     </a>
-                    <a href="#" class="acct-nav-item" onclick="openTab('profile', this)">
+                    <a href="#" class="acct-nav-item" onclick="openTab('profile', this); return false;">
                         <i class="fas fa-gear acct-ic-out"></i>
                         <i class="fas fa-gear acct-ic-fill"></i>
                         <span class="acct-nav-text">Profile Settings</span>
@@ -172,47 +254,28 @@ $member_date = !empty($user['created_at'])
             </aside>
 
             <main class="acct-main">
-                <div class="acct-main-card">
 
-                    <!-- ── PROFILE SUMMARY ──────────────────────────────── -->
-                    <div class="acct-profile-summary">
-                        <div class="profile-left">
-                            <div class="acct-avatar-wrap" onclick="openAvatarEdit()" title="Change photo">
-                                <?php if ($avatar_src): ?>
-                                    <img src="<?= $avatar_src ?>" alt="Profile" class="acct-avatar-img" id="avatarPreview" />
-                                <?php else: ?>
-                                    <div class="acct-avatar-initial" id="avatarInitial"><?= $initials ?></div>
-                                <?php endif; ?>
-                                <div class="avatar-edit-icon"><i class="bi bi-pencil-fill"></i></div>
-                                <input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="previewAvatar(this)" />
-                            </div>
-                            <div class="profile-details">
-                                <h2><?= htmlspecialchars($user['full_name'] ?? '—') ?></h2>
-                                <p class="profile-email"><?= htmlspecialchars($user['email'] ?? '—') ?></p>
-                                <span class="member-badge">
-                                    <i class="bi bi-calendar3"></i> MEMBER SINCE <?= $member_date ?>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="profile-stats">
-                            <div class="stat-col">
-                                <span class="stat-lbl">TOTAL ORDERS</span>
-                                <span class="stat-val"><?= number_format($stats['total_orders']) ?></span>
-                            </div>
-                            <div class="stat-col">
-                                <span class="stat-lbl">TOTAL SPENT</span>
-                                <span class="stat-val">&#8369;<?= number_format($stats['total_spent'], 0) ?></span>
-                            </div>
-                            <div class="stat-col">
-                                <span class="stat-lbl">COMPLETED</span>
-                                <span class="stat-val"><?= number_format($stats['completed_orders']) ?></span>
-                            </div>
-                            <div class="stat-col">
-                                <span class="stat-lbl">PENDING</span>
-                                <span class="stat-val"><?= number_format($stats['pending_orders']) ?></span>
-                            </div>
-                        </div>
+                <!-- ── STATS BAR ────────────────────────────────────── -->
+                <div class="acct-stats-bar">
+                    <div class="stat-col">
+                        <span class="stat-lbl">TOTAL ORDERS</span>
+                        <span class="stat-val"><?= number_format($stats['total_orders']) ?></span>
                     </div>
+                    <div class="stat-col">
+                        <span class="stat-lbl">TOTAL SPENT</span>
+                        <span class="stat-val">&#8369;<?= number_format($stats['total_spent'], 0) ?></span>
+                    </div>
+                    <div class="stat-col">
+                        <span class="stat-lbl">COMPLETED</span>
+                        <span class="stat-val"><?= number_format($stats['completed_orders']) ?></span>
+                    </div>
+                    <div class="stat-col">
+                        <span class="stat-lbl">PENDING</span>
+                        <span class="stat-val"><?= number_format($stats['pending_orders']) ?></span>
+                    </div>
+                </div>
+
+                <div class="acct-main-card">
 
                     <!-- ── ORDERS TAB ───────────────────────────────────── -->
                     <div class="acct-tab-panel" id="panel-orders">
@@ -221,7 +284,6 @@ $member_date = !empty($user['created_at'])
                                 <h3>Recent Orders</h3>
                                 <p>Showing <?= count($orders_arr) ?> total orders from your history</p>
                             </div>
-                            <a href="menu.php" class="acct-view-all">View All <i class="bi bi-arrow-right"></i></a>
                         </div>
 
                         <?php if (empty($orders_arr)): ?>
@@ -231,11 +293,9 @@ $member_date = !empty($user['created_at'])
                             </div>
                         <?php else: ?>
                             <div class="table-responsive">
-                                <!-- ordersTable: PHP outputs rows already sorted by order_date DESC -->
                                 <table class="acct-orders-table" id="ordersTable">
                                     <thead>
                                         <tr>
-                                            <!-- CSS ::after adds ⇅/↑/↓ indicators via sort-asc/sort-desc classes -->
                                             <th data-sort="text">ORDER ID</th>
                                             <th data-sort="date">DATE</th>
                                             <th data-sort="number">ITEMS</th>
@@ -252,7 +312,6 @@ $member_date = !empty($user['created_at'])
                                             $orderId    = fmt_id('OR', $o['order_id'], $o['order_date']);
                                         ?>
                                             <tr>
-                                                <!-- td-id: bold 700 via CSS -->
                                                 <td class="td-id" data-value="<?= htmlspecialchars($orderId) ?>"><?= $orderId ?></td>
                                                 <td data-value="<?= $o['order_date'] ?>"><?= date('M d, Y', strtotime($o['order_date'])) ?></td>
                                                 <td data-value="<?= (int)$o['item_count'] ?>"><?= $o['item_count'] ?> item<?= $o['item_count'] != 1 ? 's' : '' ?></td>
@@ -287,10 +346,8 @@ $member_date = !empty($user['created_at'])
                                 <h3>Favorites</h3>
                                 <p id="fav-subtitle">Loading your wishlist…</p>
                             </div>
-                            <a href="menu.php" class="acct-view-all">View All <i class="bi bi-arrow-right"></i></a>
                         </div>
 
-                        <!-- Table renders here via JS -->
                         <div id="fav-body">
                             <div class="acct-empty-state">
                                 <i class="bi bi-heart"></i>
@@ -298,11 +355,148 @@ $member_date = !empty($user['created_at'])
                             </div>
                         </div>
 
-                        <!-- Pagination renders here via JS -->
                         <div id="fav-pagination" class="acct-pagination" style="display:none;">
                             <span class="page-info" id="fav-page-info"></span>
                             <div class="fav-page-controls" id="fav-page-controls"></div>
                         </div>
+                    </div>
+
+                    <!-- ── INSIGHTS TAB ──────────────────────────────────── -->
+                    <div class="acct-tab-panel hidden" id="panel-insights">
+                        <div class="acct-card-header">
+                            <div>
+                                <h3>Insights</h3>
+                                <p>A summary of your spending and ordering activity</p>
+                            </div>
+                        </div>
+
+                        <div class="ins-body">
+
+                            <!-- Row 1: Spending chart + avg order value card -->
+                            <div class="ins-row ins-row--chart">
+
+                                <!-- Spending over time -->
+                                <div class="ins-panel ins-panel--chart">
+                                    <div class="ins-panel-header">
+                                        <span class="ins-panel-title">Spending Over Time</span>
+                                        <span class="ins-panel-sub">Last 6 months</span>
+                                    </div>
+                                    <div class="ins-chart-wrap">
+                                        <canvas id="insSpendChart"></canvas>
+                                    </div>
+                                </div>
+
+                                <!-- Summary stat cards -->
+                                <div class="ins-panel ins-panel--summary">
+                                    <div class="ins-panel-header">
+                                        <span class="ins-panel-title">Summary</span>
+                                    </div>
+                                    <div class="ins-summary-list">
+                                        <div class="ins-summary-item">
+                                            <span class="ins-summary-lbl">Average Order Value</span>
+                                            <span class="ins-summary-val">&#8369;<?= number_format($avg_order, 2) ?></span>
+                                        </div>
+                                        <div class="ins-summary-item">
+                                            <span class="ins-summary-lbl">Total Orders</span>
+                                            <span class="ins-summary-val"><?= number_format($stats['total_orders']) ?></span>
+                                        </div>
+                                        <div class="ins-summary-item">
+                                            <span class="ins-summary-lbl">Total Spent</span>
+                                            <span class="ins-summary-val">&#8369;<?= number_format($stats['total_spent'], 2) ?></span>
+                                        </div>
+                                        <div class="ins-summary-item">
+                                            <span class="ins-summary-lbl">Cancelled Orders</span>
+                                            <span class="ins-summary-val"><?= number_format($stats['cancelled_orders']) ?></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Row 2: Top items + Order type + Payment breakdown -->
+                            <div class="ins-row ins-row--bottom">
+
+                                <!-- Top ordered items -->
+                                <div class="ins-panel ins-panel--top-items">
+                                    <div class="ins-panel-header">
+                                        <span class="ins-panel-title">Top Ordered Items</span>
+                                    </div>
+                                    <?php if (empty($top_items)): ?>
+                                        <div class="acct-empty-state"><i class="bi bi-cup-hot"></i><p>No orders yet.</p></div>
+                                    <?php else: ?>
+                                        <ul class="ins-top-list">
+                                            <?php foreach ($top_items as $i => $item): ?>
+                                                <li class="ins-top-item">
+                                                    <span class="ins-top-rank"><?= $i + 1 ?></span>
+                                                    <span class="ins-top-name"><?= htmlspecialchars($item['name']) ?></span>
+                                                    <span class="ins-top-qty"><?= number_format($item['qty']) ?> ordered</span>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    <?php endif; ?>
+                                </div>
+
+                                <!-- Order type doughnut -->
+                                <div class="ins-panel ins-panel--donut">
+                                    <div class="ins-panel-header">
+                                        <span class="ins-panel-title">Order Type</span>
+                                    </div>
+                                    <?php if (empty($type_data)): ?>
+                                        <div class="acct-empty-state"><i class="bi bi-truck"></i><p>No data yet.</p></div>
+                                    <?php else: ?>
+                                        <div class="ins-donut-wrap">
+                                            <canvas id="insTypeChart"></canvas>
+                                        </div>
+                                        <ul class="ins-legend">
+                                            <?php
+                                            $type_colors = ['Delivery' => '#5B1312', 'Pickup' => '#b07830'];
+                                            $total_types = array_sum($type_data);
+                                            foreach ($type_data as $label => $cnt):
+                                                $color = $type_colors[$label] ?? '#c4a882';
+                                                $pct = $total_types > 0 ? round($cnt / $total_types * 100) : 0;
+                                            ?>
+                                                <li class="ins-legend-item">
+                                                    <span class="ins-legend-dot" style="background:<?= $color ?>"></span>
+                                                    <span class="ins-legend-lbl"><?= htmlspecialchars($label) ?></span>
+                                                    <span class="ins-legend-val"><?= $pct ?>%</span>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    <?php endif; ?>
+                                </div>
+
+                                <!-- Payment method doughnut -->
+                                <div class="ins-panel ins-panel--donut">
+                                    <div class="ins-panel-header">
+                                        <span class="ins-panel-title">Payment Methods</span>
+                                    </div>
+                                    <?php if (empty($pay_data)): ?>
+                                        <div class="acct-empty-state"><i class="bi bi-credit-card"></i><p>No data yet.</p></div>
+                                    <?php else: ?>
+                                        <div class="ins-donut-wrap">
+                                            <canvas id="insPayChart"></canvas>
+                                        </div>
+                                        <ul class="ins-legend">
+                                            <?php
+                                            $pay_palette = ['#5B1312','#b07830','#3a7a5b','#1a6ea8','#7a3a7a'];
+                                            $total_pays  = array_sum($pay_data);
+                                            $pi = 0;
+                                            foreach ($pay_data as $label => $cnt):
+                                                $color = $pay_palette[$pi++ % count($pay_palette)];
+                                                $pct = $total_pays > 0 ? round($cnt / $total_pays * 100) : 0;
+                                            ?>
+                                                <li class="ins-legend-item">
+                                                    <span class="ins-legend-dot" style="background:<?= $color ?>"></span>
+                                                    <span class="ins-legend-lbl"><?= htmlspecialchars($label) ?></span>
+                                                    <span class="ins-legend-val"><?= $pct ?>%</span>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    <?php endif; ?>
+                                </div>
+
+                            </div>
+                        </div><!-- /ins-body -->
                     </div>
 
                     <!-- ── PROFILE SETTINGS TAB ──────────────────────────── -->
@@ -329,7 +523,7 @@ $member_date = !empty($user['created_at'])
                                 </div>
                                 <div class="acct-field">
                                     <label>Mobile Number</label>
-                                    <input type="tel" name="mobile_number" value="<?= htmlspecialchars($user['mobile_number'] ?? '') ?>" maxlength="11" />
+                                    <input type="tel" name="mobile_number" value="<?= htmlspecialchars($user['mobile_number'] ?? '') ?>" placeholder="+63 9XX XXX XXXX" maxlength="16" pattern="(\+63|0)[0-9]{10}" title="Format: +63 9XX XXX XXXX or 09XXXXXXXXX" />
                                 </div>
                             </div>
 
@@ -380,17 +574,140 @@ $member_date = !empty($user['created_at'])
     <script src="js/main.js?v=<?php echo time(); ?>"></script>
     <script src="js/search.js?v=<?php echo time(); ?>"></script>
     <script>
-        /* ── TAB NAVIGATION ────────────────────────────────────── */
+        /* ── INSIGHTS DATA from PHP ─────────────────────────────── */
+        const insSpendLabels = <?= json_encode($spend_labels) ?>;
+        const insSpendData   = <?= json_encode($spend_data) ?>;
+        const insTypeLabels  = <?= json_encode(array_keys($type_data)) ?>;
+        const insTypeData    = <?= json_encode(array_values($type_data)) ?>;
+        const insPayLabels   = <?= json_encode(array_keys($pay_data)) ?>;
+        const insPayData     = <?= json_encode(array_values($pay_data)) ?>;
+
+        /* ── TAB NAVIGATION ─────────────────────────────────────── */
+        let insightsInitialized = false;
+
         function openTab(name, element) {
             document.querySelectorAll('.acct-nav-item').forEach(el => el.classList.remove('active'));
             if (element) element.classList.add('active');
             document.querySelectorAll('.acct-tab-panel').forEach(p => p.classList.add('hidden'));
             document.getElementById('panel-' + name).classList.remove('hidden');
             if (name === 'favorites') loadFavorites(favPage);
+            if (name === 'insights' && !insightsInitialized) {
+                initInsightsCharts();
+                insightsInitialized = true;
+            }
         }
 
-        /* ── SORTABLE TABLE — mirrors admin initSortableTable ───── */
-        /* Uses data-value on each td for accurate sort comparison   */
+        /* ── INSIGHTS CHARTS ────────────────────────────────────── */
+        function initInsightsCharts() {
+            /* Shared chart defaults matching admin dashboard style */
+            const FONT   = 'Outfit';
+            const MAROON = '#5B1312';
+            const MUTED  = '#7a6a5a';
+
+            /* Spending line chart */
+            const spendCtx = document.getElementById('insSpendChart');
+            if (spendCtx && insSpendLabels.length) {
+                const grad = spendCtx.getContext('2d').createLinearGradient(0, 0, 0, 220);
+                grad.addColorStop(0, 'rgba(91,19,18,0.18)');
+                grad.addColorStop(1, 'rgba(91,19,18,0.0)');
+                new Chart(spendCtx, {
+                    type: 'line',
+                    data: {
+                        labels: insSpendLabels,
+                        datasets: [{
+                            label: 'Spent (₱)',
+                            data: insSpendData,
+                            borderColor: MAROON,
+                            borderWidth: 2.5,
+                            pointBackgroundColor: MAROON,
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            fill: true,
+                            backgroundColor: grad,
+                            tension: 0.42
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: '#2A0000',
+                                titleColor: '#e8d5b0',
+                                bodyColor: '#fff',
+                                borderColor: 'rgba(255,255,255,0.1)',
+                                borderWidth: 1,
+                                padding: 12,
+                                callbacks: { label: c => '  ₱' + c.parsed.y.toLocaleString('en-PH', { minimumFractionDigits: 2 }) }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                border: { display: false },
+                                ticks: { color: MUTED, font: { family: FONT, size: 11 } }
+                            },
+                            y: {
+                                grid: { color: 'rgba(42,0,0,0.06)' },
+                                border: { display: false, dash: [4, 4] },
+                                ticks: {
+                                    color: MUTED,
+                                    font: { family: FONT, size: 11 },
+                                    callback: v => '₱' + (v >= 1000 ? (v / 1000).toFixed(1) + 'k' : v)
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            /* Shared doughnut options */
+            const doughnutOpts = (labels) => ({
+                type: 'doughnut',
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '68%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#2A0000',
+                            titleColor: '#e8d5b0',
+                            bodyColor: '#fff',
+                            padding: 10,
+                            callbacks: { label: c => `  ${labels[c.dataIndex]}: ${c.parsed}` }
+                        }
+                    }
+                }
+            });
+
+            /* Order type doughnut */
+            const typeCtx = document.getElementById('insTypeChart');
+            if (typeCtx && insTypeLabels.length) {
+                const opts = doughnutOpts(insTypeLabels);
+                opts.data = {
+                    labels: insTypeLabels,
+                    datasets: [{ data: insTypeData, backgroundColor: ['#5B1312','#b07830','#c4a882'], borderWidth: 0, hoverOffset: 4 }]
+                };
+                new Chart(typeCtx, opts);
+            }
+
+            /* Payment method doughnut */
+            const payCtx = document.getElementById('insPayChart');
+            if (payCtx && insPayLabels.length) {
+                const opts = doughnutOpts(insPayLabels);
+                opts.data = {
+                    labels: insPayLabels,
+                    datasets: [{ data: insPayData, backgroundColor: ['#5B1312','#b07830','#3a7a5b','#1a6ea8','#7a3a7a'], borderWidth: 0, hoverOffset: 4 }]
+                };
+                new Chart(payCtx, opts);
+            }
+        }
+
+        /* ── SORTABLE TABLE ─────────────────────────────────────── */
         function initSortableTable(tableId) {
             const table = document.getElementById(tableId);
             if (!table) return;
@@ -403,125 +720,95 @@ $member_date = !empty($user['created_at'])
                     const type = th.dataset.sort;
                     currentDir = (currentCol === col && currentDir === 'asc') ? 'desc' : 'asc';
                     currentCol = col;
-
-                    /* CSS ::after handles ⇅ / ↑ / ↓ via these classes */
-                    table.querySelectorAll('thead th[data-sort]').forEach(h => {
-                        h.classList.remove('sort-asc', 'sort-desc');
-                    });
+                    table.querySelectorAll('thead th[data-sort]').forEach(h => h.classList.remove('sort-asc', 'sort-desc'));
                     th.classList.add(currentDir === 'asc' ? 'sort-asc' : 'sort-desc');
 
                     const tbody = table.querySelector('tbody');
                     const rows  = Array.from(tbody.querySelectorAll('tr'));
-
                     rows.sort((a, b) => {
                         const av = a.cells[col]?.dataset.value ?? '';
                         const bv = b.cells[col]?.dataset.value ?? '';
                         let cmp = 0;
                         if (type === 'number') {
-                            cmp = parseFloat(av) - parseFloat(bv);
+                            cmp = parseFloat(av.replace(/[^0-9.-]/g, '') || 0) - parseFloat(bv.replace(/[^0-9.-]/g, '') || 0);
                         } else if (type === 'date') {
                             cmp = new Date(av) - new Date(bv);
                         } else {
-                            cmp = av.localeCompare(bv, undefined, { sensitivity: 'base' });
+                            cmp = av.toLowerCase().localeCompare(bv.toLowerCase());
                         }
                         return currentDir === 'asc' ? cmp : -cmp;
                     });
-
                     rows.forEach(r => tbody.appendChild(r));
                 });
             });
         }
 
-        /* Init orders table — PHP already outputs rows DESC by date */
         initSortableTable('ordersTable');
 
-        /* ── FAVORITES ─────────────────────────────────────────── */
+        /* ── FAVORITES ──────────────────────────────────────────── */
         let favPage = 1;
-        let favItems = [];      /* current page items for client sort */
         let favSortCol = -1;
         let favSortDir = 'asc';
+        let favAllItems = [];
 
-        /* Loads a page; resets sort state — favorites.php returns DESC by created_at */
         function loadFavorites(page) {
-            favPage    = page;
-            favSortCol = -1;
-            favSortDir = 'asc';
-            fetch(`favorites.php?action=get&page=${page}`)
+            favPage = page || 1;
+            fetch(`favorites.php?page=${favPage}&ajax=1`)
                 .then(r => r.json())
                 .then(d => {
-                    if (!d.success) return;
-                    favItems = d.items;
-                    renderFavTable(favItems);
-                    renderFavPagination(d);
                     document.getElementById('fav-subtitle').textContent =
-                        `You have ${d.total} item${d.total !== 1 ? 's' : ''} in your wishlist`;
+                        `You have ${d.total || 0} item${d.total !== 1 ? 's' : ''} in your wishlist`;
+                    favAllItems = d.items || [];
+                    renderFavTable(favAllItems);
+                    renderFavPagination(d);
+                })
+                .catch(() => {
+                    document.getElementById('fav-body').innerHTML =
+                        '<div class="acct-empty-state"><i class="bi bi-exclamation-circle"></i><p>Failed to load favorites.</p></div>';
                 });
         }
 
-        /* Client-side column sort on current page — mirrors initSortableTable */
-        function sortFavBy(colIdx, type) {
-            favSortDir = (favSortCol === colIdx && favSortDir === 'asc') ? 'desc' : 'asc';
-            favSortCol = colIdx;
-
-            const sorted = [...favItems].sort((a, b) => {
-                let av, bv;
-                switch (colIdx) {
-                    case 1: av = a.name;              bv = b.name;              break;
-                    case 2: av = a.category ?? '';     bv = b.category ?? '';    break;
-                    case 3: av = parseFloat(a.price);  bv = parseFloat(b.price); break;
-                    default: return 0;
-                }
+        function sortFavBy(col, type) {
+            if (favSortCol === col) {
+                favSortDir = favSortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                favSortCol = col;
+                favSortDir = 'asc';
+            }
+            const sorted = [...favAllItems].sort((a, b) => {
+                const keys = ['', 'name', 'category', 'price'];
+                const av = String(a[keys[col]] ?? '');
+                const bv = String(b[keys[col]] ?? '');
                 const cmp = type === 'number'
-                    ? av - bv
-                    : String(av).localeCompare(String(bv), undefined, { sensitivity: 'base' });
+                    ? parseFloat(av) - parseFloat(bv)
+                    : av.toLowerCase().localeCompare(bv.toLowerCase());
                 return favSortDir === 'asc' ? cmp : -cmp;
             });
-
-            /* CSS ::after handles indicators via sort-asc / sort-desc classes */
-            document.querySelectorAll('#fav-body thead th[data-sort]').forEach((th, i) => {
-                th.classList.remove('sort-asc', 'sort-desc');
-                if (i === colIdx) {
-                    th.classList.add(favSortDir === 'asc' ? 'sort-asc' : 'sort-desc');
-                }
-            });
-
             const tbody = document.querySelector('#fav-body tbody');
             if (tbody) tbody.innerHTML = buildFavRows(sorted);
         }
 
-        /* Builds HTML rows for the favorites table */
         function buildFavRows(items) {
             return items.map(item => {
-                const name = item.name.replace(/'/g, "\\'");
-                return `
-                <tr>
-                    <td><img src="${item.image_path || 'images/placeholder.png'}"
-                             alt="${item.name}" class="fav-product-img" /></td>
+                const img = item.image_path
+                    ? `<img src="${item.image_path}" class="fav-product-img" alt="${item.name}">`
+                    : `<div class="fav-product-img" style="background:rgba(42,0,0,0.06);display:flex;align-items:center;justify-content:center;"><i class="bi bi-cup-hot" style="color:var(--dark-brown);opacity:0.4;font-size:1.4rem;"></i></div>`;
+                return `<tr>
+                    <td>${img}</td>
                     <td class="td-fav-name">${item.name}</td>
-                    <td>${item.category ?? '—'}</td>
+                    <td>${item.category || '—'}</td>
                     <td class="td-fav-price">&#8369;${parseFloat(item.price).toFixed(2)}</td>
-                    <td>
-                        <div class="fav-td-action">
-                            <button class="fav-btn-cart"
-                                onclick="favAddToCart(${item.product_id}, '${name}')"
-                                title="Add to cart">
-                                <i class="bi bi-cart-plus"></i>
-                            </button>
-                            <button class="fav-btn-remove"
-                                onclick="openFavDeleteModal(${item.product_id}, '${name}')"
-                                title="Remove">
-                                <i class="bi bi-trash3"></i>
-                            </button>
-                        </div>
-                    </td>
+                    <td><div class="fav-td-action">
+                        <button class="fav-btn-cart" onclick="favAddToCart(${item.product_id},'${item.name.replace(/'/g,"\\'")}')"><i class="bi bi-cart-plus"></i></button>
+                        <button class="fav-btn-remove" onclick="openFavDeleteModal(${item.product_id},'${item.name.replace(/'/g,"\\'")}')"><i class="bi bi-trash3"></i></button>
+                    </div></td>
                 </tr>`;
             }).join('');
         }
 
-        /* Renders the full favorites table with sortable headers */
         function renderFavTable(items) {
             const body = document.getElementById('fav-body');
-            if (!items.length) {
+            if (!items || !items.length) {
                 body.innerHTML = `
                     <div class="fav-empty-state">
                         <i class="bi bi-heart"></i>
@@ -532,8 +819,6 @@ $member_date = !empty($user['created_at'])
                 document.getElementById('fav-pagination').style.display = 'none';
                 return;
             }
-
-            /* No sortable on PRODUCT IMAGE or ACTIONS columns */
             body.innerHTML = `
                 <div class="table-responsive">
                     <table class="acct-fav-table">
@@ -549,7 +834,6 @@ $member_date = !empty($user['created_at'])
                         <tbody>${buildFavRows(items)}</tbody>
                     </table>
                 </div>`;
-
             document.getElementById('fav-pagination').style.display = 'flex';
         }
 
@@ -557,12 +841,10 @@ $member_date = !empty($user['created_at'])
             const total = d.total_pages || 1;
             document.getElementById('fav-page-info').textContent = `Page ${d.page} of ${total}`;
             document.getElementById('fav-page-controls').innerHTML = `
-                <button class="btn-page" onclick="loadFavorites(${d.page - 1})"
-                    ${d.page <= 1 ? 'disabled' : ''}>
+                <button class="btn-page" onclick="loadFavorites(${d.page - 1})" ${d.page <= 1 ? 'disabled' : ''}>
                     <i class="bi bi-chevron-left"></i>
                 </button>
-                <button class="btn-page" onclick="loadFavorites(${d.page + 1})"
-                    ${d.page >= total ? 'disabled' : ''}>
+                <button class="btn-page" onclick="loadFavorites(${d.page + 1})" ${d.page >= total ? 'disabled' : ''}>
                     <i class="bi bi-chevron-right"></i>
                 </button>`;
         }
@@ -611,7 +893,6 @@ $member_date = !empty($user['created_at'])
                 });
         });
 
-        /* Close modal on overlay click */
         document.getElementById('favDeleteModal').addEventListener('click', function(e) {
             if (e.target === this) closeFavDeleteModal();
         });

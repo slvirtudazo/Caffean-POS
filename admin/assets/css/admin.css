@@ -41,7 +41,7 @@ a {
   --maroon-lt: #f5eeee;
 
   /* Layout */
-  --sidebar-w: 240px;
+  --sidebar-w: 260px;
   --navbar-h: 68px;
   --radius: 14px;
   --radius-sm: 8px;
@@ -223,12 +223,83 @@ body {
   border-right: 1px solid rgba(42, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  padding: 36px 12px 20px;
+  padding: 28px 16px 20px 16px;
   position: sticky;
   top: var(--navbar-h);
   height: calc(100vh - var(--navbar-h));
   overflow: hidden;
   flex-shrink: 0;
+}
+
+/* ── SIDEBAR PROFILE — avatar, name, role at top ────────────── */
+.admin-sidebar-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 0 12px;
+  border-bottom: 1px solid rgba(42, 0, 0, 0.07);
+  margin-bottom: 12px;
+  gap: 10px;
+}
+
+/* Avatar wrap — clickable, matches customer acct-avatar-wrap */
+.admin-avatar-wrap {
+  width: 88px;
+  height: 88px;
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.admin-sidebar-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  background: var(--deep-maroon);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 600;
+  border: 2px solid var(--deep-maroon);
+  object-fit: cover;
+}
+
+/* Pencil edit badge on avatar */
+.admin-avatar-edit-icon {
+  position: absolute;
+  bottom: -6px;
+  right: -6px;
+  background: #fff;
+  color: var(--deep-maroon);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  border: 1px solid rgba(42, 0, 0, 0.15);
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-sidebar-info h2 {
+  font-family: var(--font-subheading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--deep-maroon);
+  margin: 0 0 4px 0;
+}
+
+.admin-sidebar-info p {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--dark-brown);
+  opacity: 0.7;
+  margin: 0;
 }
 
 /* Nav list fills available space, pushing logout to bottom */
@@ -237,13 +308,13 @@ body {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   flex: 1;
 }
 
 /* ── Sidebar logout block ───────────────────────────────────── */
 .sidebar-logout {
-  padding-top: 12px;
+  padding-top: 8px;
   border-top: 1px solid rgba(42, 0, 0, 0.08);
   margin-top: 8px;
 }
@@ -251,7 +322,7 @@ body {
 .sidebar-logout-btn {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   padding: 11px 14px;
   font-family: var(--font-subheading);
   font-size: 0.88rem;
@@ -276,7 +347,7 @@ body {
 .sidebar-nav a {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   padding: 11px 14px;
   font-family: var(--font-subheading);
   font-size: 0.88rem;
@@ -387,7 +458,7 @@ body {
 /* ── MAIN CONTENT AREA ─────────────────────────────────────── */
 .admin-wrapper {
   flex: 1;
-  padding: 36px 40px;
+  padding: 36px 28px;
   overflow: auto;
   min-width: 0;
 }
@@ -604,7 +675,7 @@ body {
 /* ── Column headers: centered ─────────────────────────────── */
 .admin-table th {
   background: rgba(245, 241, 232, 0.5);
-  padding: 14px 28px;
+  padding: 14px 16px;
   text-align: center;
   font-family: var(--font-subheading);
   font-size: 0.7rem;
@@ -636,7 +707,7 @@ body {
 
 /* ── Data rows: left-aligned ──────────────────────────────── */
 .admin-table td {
-  padding: 15px 28px;
+  padding: 15px 16px;
   border-bottom: 1px solid var(--border);
   font-family: var(--font-subheading);
   font-size: 0.9rem;
@@ -1278,9 +1349,10 @@ textarea.form-control {
 
 .td-id,
 .admin-table td.td-id {
-  color: rgba(60, 21, 24, 0.6);
+  color: var(--dark-brown);
   font-family: var(--font-subheading);
   font-weight: 700 !important;
+  opacity: 1;
 }
 
 .td-actions {
@@ -1334,11 +1406,11 @@ textarea.form-control {
 /* ── RESPONSIVE ──────────────────────────────────────────────── */
 @media (max-width: 1024px) {
   .admin-sidebar {
-    width: 200px;
+    width: 210px;
   }
 
   :root {
-    --sidebar-w: 200px;
+    --sidebar-w: 210px;
   }
 }
 
@@ -1363,5 +1435,293 @@ textarea.form-control {
 @media (max-width: 480px) {
   .stat-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ── INSIGHTS PAGE ───────────────────────────────────────────── */
+.ins-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Two-column row layouts */
+.ins-row {
+  display: flex;
+  gap: 20px;
+}
+
+.ins-row--chart .ins-panel--chart   { flex: 2; }
+.ins-row--chart .ins-panel--summary { flex: 1; }
+.ins-row--bottom .ins-panel--top-items { flex: 2; }
+.ins-row--bottom .ins-panel--donut     { flex: 1; }
+
+/* Panel base */
+.ins-panel {
+  background: var(--card);
+  border: 1px solid rgba(42, 0, 0, 0.09);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  box-shadow: var(--shadow-sm);
+  min-width: 0;
+}
+
+.ins-panel-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.ins-panel-title {
+  font-family: var(--font-subheading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--deep-maroon);
+}
+
+.ins-panel-sub {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--dark-brown);
+  opacity: 0.55;
+}
+
+.ins-chart-wrap {
+  position: relative;
+  height: 220px;
+}
+
+/* Summary list */
+.ins-summary-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.ins-summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(42, 0, 0, 0.06);
+}
+
+.ins-summary-item:last-child { border-bottom: none; }
+
+.ins-summary-lbl {
+  font-family: var(--font-subheading);
+  font-size: 0.78rem;
+  color: var(--dark-brown);
+  opacity: 0.7;
+}
+
+.ins-summary-val {
+  font-family: var(--font-subheading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--deep-maroon);
+}
+
+/* Top items list */
+.ins-top-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.ins-top-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(42, 0, 0, 0.06);
+}
+
+.ins-top-item:last-child { border-bottom: none; }
+
+.ins-top-rank {
+  font-family: var(--font-subheading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--deep-maroon);
+  opacity: 0.4;
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.ins-top-name {
+  font-family: var(--font-subheading);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--dark-brown);
+  flex: 1;
+}
+
+.ins-top-qty {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--dark-brown);
+  opacity: 0.6;
+}
+
+/* Doughnut */
+.ins-donut-wrap {
+  position: relative;
+  height: 160px;
+  margin-bottom: 16px;
+}
+
+/* Legend */
+.ins-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ins-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ins-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.ins-legend-lbl {
+  font-family: var(--font-subheading);
+  font-size: 0.78rem;
+  color: var(--dark-brown);
+  flex: 1;
+}
+
+.ins-legend-val {
+  font-family: var(--font-subheading);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--deep-maroon);
+}
+
+/* ── PROFILE SETTINGS PAGE ───────────────────────────────────── */
+.ps-card {
+  background: var(--card);
+  border: 1px solid rgba(42, 0, 0, 0.09);
+  border-radius: var(--radius);
+  padding: 28px 32px;
+  box-shadow: var(--shadow-sm);
+  max-width: 680px;
+}
+
+.ps-section-hd {
+  font-family: var(--font-subheading);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--deep-maroon);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(42, 0, 0, 0.06);
+}
+
+.ps-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.ps-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ps-field label {
+  font-family: var(--font-subheading);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: rgba(42, 0, 0, 0.6);
+}
+
+.ps-field input {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  padding: 10px 14px;
+  border: 1px solid rgba(42, 0, 0, 0.15);
+  border-radius: 8px;
+  outline: none;
+  background: #fdfdfd;
+  color: var(--dark-brown);
+  transition: border-color var(--transition);
+}
+
+.ps-field input:focus {
+  border-color: var(--burgundy-wine);
+  box-shadow: 0 0 0 3px rgba(91, 19, 18, 0.08);
+}
+
+/* Password field wrapper with inline toggle button */
+.ps-pw-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ps-pw-wrap input {
+  flex: 1;
+  padding-right: 40px;
+}
+
+.ps-pw-toggle {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(42, 0, 0, 0.4);
+  font-size: 0.85rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  transition: color var(--transition);
+}
+
+.ps-pw-toggle:hover {
+  color: var(--burgundy-wine);
+}
+
+.ps-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.ps-btn-save {
+  background: var(--deep-maroon);
+  color: #fff;
+  font-family: var(--font-subheading);
+  font-weight: 700;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.ps-btn-save:hover {
+  background: var(--burgundy-wine);
+}
+
+@media (max-width: 768px) {
+  .ins-row {
+    flex-direction: column;
   }
 }

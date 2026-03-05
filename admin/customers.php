@@ -130,7 +130,7 @@ include 'includes/header.php';
 <div class="modal-overlay" id="viewCustomerModal" style="display:none;">
   <div class="modal">
     <div class="modal-header">
-      <h3><i class="fas fa-eye modal-icon"></i>Customer Details</h3>
+      <h3>Customer Details</h3>
       <button class="modal-close" onclick="closeModal('viewCustomerModal')">&#x2715;</button>
     </div>
     <div class="modal-body">

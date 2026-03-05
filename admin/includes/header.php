@@ -11,13 +11,30 @@ $admin_name    = isset($_SESSION['full_name']) ? htmlspecialchars($_SESSION['ful
 $admin_initial = strtoupper(substr($admin_name, 0, 1));
 $current_page  = basename($_SERVER['PHP_SELF']);
 
+// Fetch admin's profile image and email from DB
+$admin_avatar_src = '';
+$admin_email      = '';
+if (isset($_SESSION['user_id'])) {
+    $a_stmt = mysqli_prepare($conn, "SELECT profile_image, email FROM users WHERE user_id = ?");
+    mysqli_stmt_bind_param($a_stmt, 'i', $_SESSION['user_id']);
+    mysqli_stmt_execute($a_stmt);
+    $a_row = mysqli_fetch_assoc(mysqli_stmt_get_result($a_stmt));
+    mysqli_stmt_close($a_stmt);
+    if (!empty($a_row['profile_image'])) {
+        $admin_avatar_src = BASE_URL . '/' . htmlspecialchars($a_row['profile_image']);
+    }
+    $admin_email = htmlspecialchars($a_row['email'] ?? '');
+}
+
 // Map each admin page to its page-specific CSS file
 $page_css_map = [
-    'dashboard.php'      => 'dashboard.css',
-    'products.php'       => 'products.css',
-    'orders.php'         => 'orders.css',
-    'instore_orders.php' => 'orders.css',
-    'customers.php'      => 'customers.css',
+    'dashboard.php'        => 'dashboard.css',
+    'products.php'         => 'products.css',
+    'orders.php'           => 'orders.css',
+    'instore_orders.php'   => 'orders.css',
+    'customers.php'        => 'customers.css',
+    'insights.php'         => 'dashboard.css',
+    'profile_settings.php' => null,
 ];
 $page_css_file = $page_css_map[$current_page] ?? null;
 ?>
@@ -117,6 +134,38 @@ $page_css_file = $page_css_map[$current_page] ?? null;
         });
       });
     }
+    /* ── ADMIN AVATAR EDIT ────────────────────────────────────── */
+    function openAdminAvatarEdit() {
+      document.getElementById('adminAvatarFileInput').click();
+    }
+
+    function previewAdminAvatar(input) {
+      if (!input.files || !input.files[0]) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const wrap    = document.querySelector('.admin-avatar-wrap');
+        let img       = document.getElementById('adminAvatarPreview');
+        const initial = document.getElementById('adminAvatarInitial');
+        if (!img) {
+          img = document.createElement('img');
+          img.id        = 'adminAvatarPreview';
+          img.className = 'admin-sidebar-avatar';
+          if (initial) initial.replaceWith(img);
+          else wrap.insertBefore(img, wrap.firstChild);
+        }
+        img.src = e.target.result;
+
+        // Auto-save avatar using stored name + email from data attrs
+        const fd = new FormData();
+        fd.append('full_name', wrap.dataset.name  || '');
+        fd.append('email',     wrap.dataset.email || '');
+        fd.append('avatar',    input.files[0]);
+        fetch('<?= BASE_URL ?>/php/update_profile.php', { method: 'POST', body: fd })
+          .then(r => r.json())
+          .then(d => { if (!d.success) console.warn('Avatar save:', d.message); });
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
   </script>
 </head>
 
@@ -130,13 +179,6 @@ $page_css_file = $page_css_map[$current_page] ?? null;
         <span>purge coffee</span>
       </a>
       <div class="nav-right">
-        <div class="admin-chip">
-          <div class="admin-avatar"><?= $admin_initial ?></div>
-          <div style="display:flex;flex-direction:column;line-height:1.2;">
-            <span class="admin-name"><?= $admin_name ?></span>
-            <span style="font-size:0.7rem;color:var(--text-muted);font-family:var(--font-subheading);">Administrator</span>
-          </div>
-        </div>
         <a href="<?= BASE_URL ?>/" target="_blank" class="btn-ghost">
           <i class="fas fa-arrow-up-right-from-square"></i> View Store
         </a>
@@ -148,6 +190,26 @@ $page_css_file = $page_css_map[$current_page] ?? null;
   <div class="admin-body">
 
     <aside class="admin-sidebar">
+
+      <!-- ── PROFILE INFO — avatar, name, role ────────────────── -->
+      <div class="admin-sidebar-profile">
+        <div class="admin-avatar-wrap" onclick="openAdminAvatarEdit()" title="Change photo"
+             data-name="<?= $admin_name ?>"
+             data-email="<?= $admin_email ?>">
+          <?php if ($admin_avatar_src): ?>
+            <img src="<?= $admin_avatar_src ?>" alt="Profile" class="admin-sidebar-avatar" id="adminAvatarPreview" />
+          <?php else: ?>
+            <div class="admin-sidebar-avatar" id="adminAvatarInitial"><?= $admin_initial ?></div>
+          <?php endif; ?>
+          <div class="admin-avatar-edit-icon"><i class="bi bi-pencil-fill"></i></div>
+          <input type="file" id="adminAvatarFileInput" accept="image/*" style="display:none" onchange="previewAdminAvatar(this)" />
+        </div>
+        <div class="admin-sidebar-info">
+          <h2><?= $admin_name ?></h2>
+          <p>Administrator</p>
+        </div>
+      </div>
+
       <ul class="sidebar-nav">
         <li>
           <a href="<?= BASE_URL ?>/admin/dashboard.php"
@@ -197,6 +259,26 @@ $page_css_file = $page_css_map[$current_page] ?? null;
               <i class="fas fa-user snav-ic-fill"></i>
             </span>
             <span class="snav-text">Customers</span>
+          </a>
+        </li>
+        <li>
+          <a href="<?= BASE_URL ?>/admin/insights.php"
+            <?= $current_page === 'insights.php' ? 'class="active"' : '' ?>>
+            <span class="snav-icon">
+              <i class="fas fa-chart-line snav-ic-out"></i>
+              <i class="fas fa-chart-line snav-ic-fill"></i>
+            </span>
+            <span class="snav-text">Insights</span>
+          </a>
+        </li>
+        <li>
+          <a href="<?= BASE_URL ?>/admin/profile_settings.php"
+            <?= $current_page === 'profile_settings.php' ? 'class="active"' : '' ?>>
+            <span class="snav-icon">
+              <i class="fas fa-gear snav-ic-out"></i>
+              <i class="fas fa-gear snav-ic-fill"></i>
+            </span>
+            <span class="snav-text">Profile Settings</span>
           </a>
         </li>
       </ul>

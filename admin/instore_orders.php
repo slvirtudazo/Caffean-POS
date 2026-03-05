@@ -179,7 +179,7 @@ include 'includes/header.php';
 <div class="modal-overlay" id="viewInstoreModal" style="display:none;">
   <div class="modal modal-lg">
     <div class="modal-header">
-      <h3><i class="fas fa-eye modal-icon"></i>In-Store Order Details</h3>
+      <h3>In-Store Order Details</h3>
       <button class="modal-close" onclick="closeModal('viewInstoreModal')">&#x2715;</button>
     </div>
     <div class="modal-body">
@@ -209,7 +209,7 @@ include 'includes/header.php';
 <div class="modal-overlay" id="updateStatusModal" style="display:none;">
   <div class="modal">
     <div class="modal-header">
-      <h3><i class="fas fa-pen modal-icon"></i>Update Order Status</h3>
+      <h3>Update Order Status</h3>
       <button class="modal-close" onclick="closeModal('updateStatusModal')">&#x2715;</button>
     </div>
     <form method="POST">
@@ -228,9 +228,7 @@ include 'includes/header.php';
       </div>
       <div class="modal-footer">
         <button type="button" class="btn-cancel" onclick="closeModal('updateStatusModal')">Cancel</button>
-        <button type="submit" name="update_status" class="btn-update">
-          <i class="fas fa-check"></i> Update Status
-        </button>
+        <button type="submit" name="update_status" class="btn-update">Update Status</button>
       </div>
     </form>
   </div>

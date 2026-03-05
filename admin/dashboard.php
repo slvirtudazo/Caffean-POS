@@ -131,7 +131,7 @@ include 'includes/header.php';
   <div class="stat-card stat-card--revenue">
     <div class="stat-card-top">
       <div class="stat-card-icon"><i class="fas fa-coins"></i></div>
-      <span class="stat-card-label">Total<br>Revenue</span>
+      <span class="stat-card-label">Total Revenue</span>
     </div>
     <div class="stat-card-body">
       <span class="stat-card-value">&#8369;<?= number_format($stats['revenue'], 2) ?></span>
@@ -142,7 +142,7 @@ include 'includes/header.php';
   <div class="stat-card stat-card--orders">
     <div class="stat-card-top">
       <div class="stat-card-icon"><i class="fas fa-receipt"></i></div>
-      <span class="stat-card-label">Total<br>Orders</span>
+      <span class="stat-card-label">Total Orders</span>
     </div>
     <div class="stat-card-body">
       <span class="stat-card-value"><?= number_format($stats['orders']) ?></span>
@@ -153,7 +153,7 @@ include 'includes/header.php';
   <div class="stat-card stat-card--customers">
     <div class="stat-card-top">
       <div class="stat-card-icon"><i class="fas fa-users"></i></div>
-      <span class="stat-card-label">Registered<br>Customers</span>
+      <span class="stat-card-label">Registered Customers</span>
     </div>
     <div class="stat-card-body">
       <div class="stat-active-inactive">
@@ -173,7 +173,7 @@ include 'includes/header.php';
   <div class="stat-card stat-card--inventory">
     <div class="stat-card-top">
       <div class="stat-card-icon"><i class="fas fa-shopping-cart"></i></div>
-      <span class="stat-card-label">Inventory<br>Status</span>
+      <span class="stat-card-label">Inventory Status</span>
     </div>
     <div class="stat-card-body">
       <div class="stat-active-inactive">
@@ -199,7 +199,7 @@ include 'includes/header.php';
     <div class="dash-panel-header">
       <h3 class="dash-panel-title">Sales Analytics</h3>
       <span class="dash-panel-sub">Last 7 days revenue</span>
-      <a href="orders.php" class="dash-see-all">See all &rarr;</a>
+      <a href="insights.php" class="dash-see-all">View All &rarr;</a>
     </div>
     <div class="dash-chart-wrap">
       <canvas id="salesChart"></canvas>
@@ -209,7 +209,7 @@ include 'includes/header.php';
   <div class="dash-panel dash-panel--trending">
     <div class="dash-panel-header">
       <h3 class="dash-panel-title">Trending Products</h3>
-      <a href="products.php" class="dash-see-all">See all &rarr;</a>
+      <a href="products.php" class="dash-see-all">View All &rarr;</a>
     </div>
     <ul class="trending-list">
       <?php if (empty($trending)): ?>
@@ -237,7 +237,7 @@ include 'includes/header.php';
 <div class="dash-panel dash-panel--orders">
   <div class="dash-panel-header">
     <h3 class="dash-panel-title">Recent Orders</h3>
-    <a href="orders.php" class="dash-see-all">See all &rarr;</a>
+    <a href="orders.php" class="dash-see-all">View All &rarr;</a>
   </div>
   <?php if (empty($recent_orders)): ?>
     <div class="dash-empty-state">
