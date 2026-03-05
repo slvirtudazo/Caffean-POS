@@ -23,7 +23,7 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
     <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
 </head>
 
-<body>
+<body class="page-about">
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg sticky-top">

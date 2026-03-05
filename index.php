@@ -27,7 +27,7 @@ $is_logged_in  = isset($_SESSION['user_id']);
     <link rel="stylesheet" href="css/components.css?v=<?php echo time(); ?>">
 </head>
 
-<body>
+<body class="page-home">
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg sticky-top">

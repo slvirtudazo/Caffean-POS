@@ -7,6 +7,12 @@
  * - .menu-content-sticky-header → right column (active-filters bar)
  */
 
+/* Align navbar to full-width content — matches container-fluid main layout */
+body.page-menu .navbar .container {
+    max-width: none;
+    padding: 0 var(--spacing-md);
+}
+
 /* ===== ROOT TOKEN ===== */
 :root {
     --navbar-height: 70px;

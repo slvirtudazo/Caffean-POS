@@ -592,7 +592,7 @@ function kioskProductImage($product)
                 /* Remove from cart */
                 delete kioskCart[pid];
             } else if (!kioskCart[pid]) {
-                /* First add — create cart entry */
+                /* First add — create cart entry with addons array */
                 kioskCart[pid] = {
                     name,
                     price,
@@ -601,6 +601,7 @@ function kioskProductImage($product)
                     temp: 'Hot',
                     sugar: '0%',
                     milk: 'Whole',
+                    addons: [],
                     notes: '',
                     img
                 };
@@ -611,6 +612,18 @@ function kioskProductImage($product)
 
             setCardUI(pid, next);
             updateCartBar();
+        }
+
+        /* Update add-ons for a kiosk cart item */
+        function updateKioskAddons(pid, checkbox) {
+            if (!kioskCart[pid]) return;
+            if (!kioskCart[pid].addons) kioskCart[pid].addons = [];
+            const val = checkbox.value;
+            if (checkbox.checked) {
+                if (!kioskCart[pid].addons.includes(val)) kioskCart[pid].addons.push(val);
+            } else {
+                kioskCart[pid].addons = kioskCart[pid].addons.filter(a => a !== val);
+            }
         }
 
         /* Legacy aliases */
@@ -682,7 +695,7 @@ function kioskProductImage($product)
                             <div class="col-6 col-md-3">
                                 <label class="k-cust-lbl">Size</label>
                                 <select class="k-cust-sel" onchange="updateKioskOpt(${pid},'size',this.value)">
-                                    ${['Short','Tall','Grande','Venti'].map(s=>`<option${it.size===s?' selected':''}>${s}</option>`).join('')}
+                                    ${[['Short','Short (8 fl oz)'],['Tall','Tall (12 fl oz)'],['Grande','Grande (16 fl oz)'],['Venti','Venti (20 fl oz)']].map(([v,l])=>`<option value="${v}"${it.size===v?' selected':''}>${l}</option>`).join('')}
                                 </select>
                             </div>
                             <div class="col-6 col-md-3">
@@ -702,6 +715,18 @@ function kioskProductImage($product)
                                 <select class="k-cust-sel" onchange="updateKioskOpt(${pid},'milk',this.value)">
                                     ${['Whole','Skim','Oat','Almond','Soy'].map(m=>`<option${it.milk===m?' selected':''}>${m}</option>`).join('')}
                                 </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="k-cust-lbl">Add-ons <span style="font-weight:400;opacity:0.6;">(Optional)</span></label>
+                                <div class="k-addons-grid">
+                                    ${[
+                                        ['Extra Espresso Shot','Extra Espresso Shot (1 fl oz)'],
+                                        ['Vanilla Syrup','Vanilla Syrup (0.5 fl oz)'],
+                                        ['Whipped Cream','Whipped Cream (1 fl oz)'],
+                                        ['Coffee Jelly','Coffee Jelly (1 fl oz)'],
+                                        ['Pearl (Boba)','Pearl (Boba) (1 fl oz)']
+                                    ].map(([v,l])=>`<label class="k-addon-item"><input type="checkbox" value="${v}" ${(it.addons||[]).includes(v)?'checked':''} onchange="updateKioskAddons(${pid},this)">${l}</label>`).join('')}
+                                </div>
                             </div>
                             <div class="col-12">
                                 <label class="k-cust-lbl">Instructions (Optional)</label>

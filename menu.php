@@ -110,7 +110,7 @@ if ($category_filter > 0) {
     <link rel="stylesheet" href="css/components.css?v=<?php echo time(); ?>">
 </head>
 
-<body>
+<body class="page-menu">
 
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">

@@ -140,7 +140,7 @@ body {
 .btn-ghost {
   font-family: var(--font-subheading);
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--deep-maroon);
   display: flex;
   align-items: center;
@@ -289,8 +289,8 @@ body {
 }
 
 .snav-icon {
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   background: transparent;
   display: flex;
   align-items: center;

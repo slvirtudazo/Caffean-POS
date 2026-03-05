@@ -4,6 +4,12 @@
  * Includes Sort By, Active Filters, card hover animations, and fadeInUp
  */
 
+/* Align navbar to full-width content — matches container-fluid main layout */
+body.page-supplies .navbar .container {
+    max-width: none;
+    padding: 0 var(--spacing-md);
+}
+
 /* Root tokens */
 :root {
     --navbar-height: 70px;

@@ -1122,6 +1122,42 @@ body.kiosk-no-scroll {
     resize: none;
 }
 
+/* Add-ons grid — matches online cart addon-item layout */
+.k-addons-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 2px;
+}
+
+.k-addon-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--dark-brown);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(42, 0, 0, 0.1);
+    background: #fafafa;
+    transition: border-color 0.18s, background 0.18s;
+}
+
+.k-addon-item:hover {
+    border-color: var(--burgundy-wine);
+    background: rgba(91, 19, 18, 0.04);
+}
+
+.k-addon-item input[type="checkbox"] {
+    accent-color: var(--deep-maroon);
+    width: 13px;
+    height: 13px;
+    cursor: pointer;
+}
+
 /* Quantity row — pill style matching online */
 .k-qty-row {
     margin-top: 16px;

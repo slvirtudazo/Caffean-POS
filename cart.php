@@ -175,8 +175,15 @@ if (isset($_SESSION['user_id'])) {
                                                 <label class="cust-lbl">Size *</label>
                                                 <select class="cust-sel"
                                                     onchange="updateOption(<?= $pid ?>, 'size', this.value)">
-                                                    <?php foreach (['Short', 'Tall', 'Grande', 'Venti'] as $s): ?>
-                                                        <option value="<?= $s ?>" <?= $item['size'] === $s ? 'selected' : '' ?>><?= $s ?></option>
+                                                    <?php
+                                                    $sizes = [
+                                                        'Short'  => 'Short (8 fl oz)',
+                                                        'Tall'   => 'Tall (12 fl oz)',
+                                                        'Grande' => 'Grande (16 fl oz)',
+                                                        'Venti'  => 'Venti (20 fl oz)',
+                                                    ];
+                                                    foreach ($sizes as $val => $label): ?>
+                                                        <option value="<?= $val ?>" <?= $item['size'] === $val ? 'selected' : '' ?>><?= $label ?></option>
                                                     <?php endforeach; ?>
                                                 </select>
                                             </div>
@@ -212,13 +219,21 @@ if (isset($_SESSION['user_id'])) {
                                                     Add-ons <span class="opt-text">(Optional)</span>
                                                 </label>
                                                 <div class="addons-grid">
-                                                    <?php foreach (['Extra Espresso Shot', 'Vanilla Syrup', 'Whipped Cream', 'Coffee Jelly', 'Pearl (Boba)'] as $addon): ?>
+                                                    <?php
+                                                    $addons = [
+                                                        'Extra Espresso Shot' => 'Extra Espresso Shot (1 fl oz)',
+                                                        'Vanilla Syrup'       => 'Vanilla Syrup (0.5 fl oz)',
+                                                        'Whipped Cream'       => 'Whipped Cream (1 fl oz)',
+                                                        'Coffee Jelly'        => 'Coffee Jelly (1 fl oz)',
+                                                        'Pearl (Boba)'        => 'Pearl (Boba) (1 fl oz)',
+                                                    ];
+                                                    foreach ($addons as $val => $label): ?>
                                                         <label class="addon-item">
                                                             <input type="checkbox"
-                                                                value="<?= $addon ?>"
-                                                                <?= in_array($addon, $item['addons']) ? 'checked' : '' ?>
+                                                                value="<?= $val ?>"
+                                                                <?= in_array($val, $item['addons']) ? 'checked' : '' ?>
                                                                 onchange="updateAddons(<?= $pid ?>)" />
-                                                            <?= $addon ?>
+                                                            <?= $label ?>
                                                         </label>
                                                     <?php endforeach; ?>
                                                 </div>

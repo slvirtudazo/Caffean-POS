@@ -121,31 +121,30 @@
 
 /* Logout block — pinned to bottom with separator */
 .acct-sidebar-logout {
-    padding-top: 30px;
-    padding-bottom: 20px;
-    border-top: 1px solid rgba(42, 0, 0, 0.08);
-    margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(42, 0, 0, 0.08);
+  margin-top: 8px;
 }
 
 .acct-logout-link {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    background: transparent;
-    color: var(--deep-maroon);
-    padding: 8px 20px;
-    border-radius: 50px;
-    font-family: var(--font-subheading);
-    font-size: 0.95rem;
-    font-weight: 500;
-    border: none;
-    text-decoration: none;
-    transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 25px 25px;
+  font-family: var(--font-subheading);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--dark-brown);
+  border-radius: 50px;
+  background: transparent;
+  transition: background 0.18s ease, color 0.18s ease;
+  text-decoration: none;
+  width: 100%;
 }
 
 .acct-logout-link:hover {
-    background: rgba(42, 0, 0, 0.05);
-    color: var(--burgundy-wine);
+  background: rgba(42, 0, 0, 0.05);
+  color: var(--burgundy-wine);
 }
 
 /* Icon stroke for misc page elements */

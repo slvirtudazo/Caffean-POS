@@ -155,7 +155,7 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
     <link rel="stylesheet" href="css/components.css?v=<?php echo time(); ?>">
 </head>
 
-<body>
+<body class="page-supplies">
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg sticky-top">

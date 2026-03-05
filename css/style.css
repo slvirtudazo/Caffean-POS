@@ -384,7 +384,6 @@ p {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: var(--spacing-xl);
-    max-width: 1200px;
     margin: 0 auto;
 }
 
@@ -478,7 +477,6 @@ p {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: var(--spacing-xl);
-    max-width: 1200px;
     margin: 0 auto;
     margin-bottom: var(--spacing-xs);
 }
@@ -542,7 +540,6 @@ p {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--spacing-xl);
-    max-width: 1200px;
     margin: 0 auto;
     margin-bottom: var(--spacing-xs);
 }
@@ -717,6 +714,12 @@ p {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--spacing-lg);
+}
+
+/* Home page — wider container with tighter side padding */
+body.page-home .container {
+    max-width: 1440px;
+    padding: 0 1.25rem;
 }
 
 .text-center {
