@@ -127,7 +127,7 @@ if (isset($_SESSION['user_id'])) {
                 <div class="cart-empty-state">
                     <i class="fas fa-shopping-cart"></i>
                     <h2>Your cart is empty</h2>
-                    <p>Looks like you haven't added any items yet.<br>Discover our delicious roasts and pastries to get started!</p>
+                    <p>Looks like you haven't added any items yet.<br>Discover our delicious drinks and pastries to get started!</p>
                     <a href="menu.php" class="btn-browse-menu">Browse Menu</a>
                 </div>
             <?php else: ?>

@@ -14,7 +14,7 @@ $r = ['success' => false, 'message' => ''];
 
 // Auth and method guards
 if (!isset($_SESSION['user_id'])) {
-    $r['message'] = 'You must be logged in to place an order.';
+    $r['message'] = 'Please log in to manage your cart, favorites, and orders.';
     echo json_encode($r); exit();
 }
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

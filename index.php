@@ -194,7 +194,7 @@ $is_logged_in  = isset($_SESSION['user_id']);
     <div id="login-required-popup" class="login-popup-overlay" style="display:none;" onclick="closeLoginPopup(event)">
         <div class="login-popup-card">
             <h3 class="login-popup-title">Login Required</h3>
-            <p class="login-popup-message">You must be logged in to save<br>and track your order transactions.</p>
+            <p class="login-popup-message">Please log in to manage your<br>cart, favorites, and orders.</p>
             <div class="login-popup-actions">
                 <a href="login.php" class="btn-popup-login">Log In</a>
                 <button class="btn-popup-close" onclick="document.getElementById('login-required-popup').style.display='none'">Cancel</button>
