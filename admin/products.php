@@ -47,12 +47,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $category_id = (int)$_POST['category_id'];
     $description = trim($_POST['description']);
     $price       = (float)$_POST['price'];
+    $net_content = trim($_POST['net_content'] ?? '');
+    $net_content = $net_content !== '' ? $net_content : null;
     $image_path  = handleProductImageUpload('image');
     $stmt = mysqli_prepare(
       $conn,
-      "INSERT INTO products (category_id, name, description, price, image_path, status) VALUES (?,?,?,?,?,1)"
+      "INSERT INTO products (category_id, name, description, price, image_path, net_content, status) VALUES (?,?,?,?,?,?,1)"
     );
-    mysqli_stmt_bind_param($stmt, "issds", $category_id, $name, $description, $price, $image_path);
+    mysqli_stmt_bind_param($stmt, "issdss", $category_id, $name, $description, $price, $image_path, $net_content);
     $_SESSION['flash'] = mysqli_stmt_execute($stmt)
       ? ['type' => 'success', 'msg' => "Product '$name' added successfully!"]
       : ['type' => 'error',   'msg' => 'Error adding product. Please try again.'];
@@ -64,6 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $description = trim($_POST['description']);
     $price       = (float)$_POST['price'];
     $status      = (int)$_POST['status'];
+    $net_content = trim($_POST['net_content'] ?? '');
+    $net_content = $net_content !== '' ? $net_content : null;
     $new_image   = handleProductImageUpload('image');
 
     if ($new_image) {
@@ -75,15 +79,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
       }
       $stmt = mysqli_prepare(
         $conn,
-        "UPDATE products SET name=?, category_id=?, description=?, price=?, status=?, image_path=? WHERE product_id=?"
+        "UPDATE products SET name=?, category_id=?, description=?, price=?, status=?, image_path=?, net_content=? WHERE product_id=?"
       );
-      mysqli_stmt_bind_param($stmt, "sisdisi", $name, $category_id, $description, $price, $status, $new_image, $product_id);
+      mysqli_stmt_bind_param($stmt, "sisdissi", $name, $category_id, $description, $price, $status, $new_image, $net_content, $product_id);
     } else {
       $stmt = mysqli_prepare(
         $conn,
-        "UPDATE products SET name=?, category_id=?, description=?, price=?, status=? WHERE product_id=?"
+        "UPDATE products SET name=?, category_id=?, description=?, price=?, status=?, net_content=? WHERE product_id=?"
       );
-      mysqli_stmt_bind_param($stmt, "sisdii", $name, $category_id, $description, $price, $status, $product_id);
+      mysqli_stmt_bind_param($stmt, "sisdisi", $name, $category_id, $description, $price, $status, $net_content, $product_id);
     }
     $_SESSION['flash'] = mysqli_stmt_execute($stmt)
       ? ['type' => 'success', 'msg' => 'Product updated successfully!']
@@ -247,6 +251,10 @@ include 'includes/header.php';
         <span class="view-value" id="view_price"></span>
       </div>
       <div class="view-detail-group">
+        <span class="view-label">Net Content</span>
+        <span class="view-value" id="view_net_content"></span>
+      </div>
+      <div class="view-detail-group">
         <span class="view-label">Description</span>
         <span class="view-value" id="view_description"></span>
       </div>
@@ -325,6 +333,12 @@ include 'includes/header.php';
           <input type="number" name="price" class="form-control"
             step="0.01" min="0" placeholder="0.00" required />
         </div>
+
+        <div class="form-group">
+          <label class="form-label">Net Content <span style="font-weight:400;color:#888;">(e.g. 12 oz, 250g, 1L)</span></label>
+          <input type="text" name="net_content" class="form-control"
+            placeholder="e.g. 12 oz" />
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn-cancel" onclick="closeModal('addProductModal')">Cancel</button>
@@ -398,6 +412,12 @@ include 'includes/header.php';
           <label class="form-label">Price (&#8369;)</label>
           <input type="number" name="price" id="edit_price" class="form-control"
             step="0.01" min="0" placeholder="0.00" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Net Content <span style="font-weight:400;color:#888;">(e.g. 12 oz, 250g, 1L)</span></label>
+          <input type="text" name="net_content" id="edit_net_content" class="form-control"
+            placeholder="e.g. 12 oz" />
         </div>
 
         <div class="form-group">
@@ -509,6 +529,7 @@ include 'includes/header.php';
     document.getElementById('view_name').textContent = p.name;
     document.getElementById('view_category').textContent = p.category_name;
     document.getElementById('view_price').textContent = '\u20B1' + parseFloat(p.price).toFixed(2);
+    document.getElementById('view_net_content').textContent = p.net_content || '\u2014';
     document.getElementById('view_description').textContent = p.description || '\u2014';
     document.getElementById('view_status').innerHTML = p.status == 1 ?
       '<span class="badge badge-active">Active</span>' :
@@ -533,6 +554,7 @@ include 'includes/header.php';
     document.getElementById('edit_category_id').value = p.category_id;
     document.getElementById('edit_description').value = p.description;
     document.getElementById('edit_price').value = p.price;
+    document.getElementById('edit_net_content').value = p.net_content || '';
     document.getElementById('edit_status').value = p.status;
 
     // Reset file input

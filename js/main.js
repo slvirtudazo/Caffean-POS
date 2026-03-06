@@ -121,6 +121,7 @@ function menuCardQty(pid, delta) {
                     updateCartCountDisplay(data.cart_count);
                     cart = cart.filter(i => i.id !== pid);
                     localStorage.setItem('coffeeCart', JSON.stringify(cart));
+                    showNotification('Removed from cart.', 'info');
                 }
             })
             .catch(() => { });
@@ -141,6 +142,7 @@ function menuCardQty(pid, delta) {
                     trackInteraction(pid, 'add_to_cart');
                     cart.push({ id: pid, quantity: 1 });
                     localStorage.setItem('coffeeCart', JSON.stringify(cart));
+                    showNotification(data.message || 'Added to cart!', 'success');
                 } else {
                     showNotification(data.message || 'Could not add to cart.', 'error');
                 }
@@ -161,6 +163,7 @@ function menuCardQty(pid, delta) {
                     updateCartCountDisplay(data.cart_count);
                     const item = cart.find(i => i.id === pid);
                     if (item) { item.quantity = next; localStorage.setItem('coffeeCart', JSON.stringify(cart)); }
+                    showNotification('Cart updated.', 'info');
                 }
             })
             .catch(() => { });
@@ -200,33 +203,34 @@ function animateCartIcon() {
 }
 
 /**
- * Show notification toast
- * Uses .notification + .notification-{type} CSS classes (style.css / components.css).
- * Slide-in is triggered by the CSS animation on .notification;
- * slide-out is triggered by adding .slide-out after 3 s.
+ * Show notification toast — matches kiosk toast style.
+ * Creates the element once, reuses it; shows/hides via .show class + CSS transition.
  */
 function showNotification(message, type = 'info') {
-    let notification = document.getElementById('notification-toast');
-    if (!notification) {
-        notification = document.createElement('div');
-        notification.id = 'notification-toast';
-        document.body.appendChild(notification);
+    let toast = document.getElementById('notification-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'notification-toast';
+        document.body.appendChild(toast);
     }
 
-    // Cancel any pending hide timer so a rapid second call resets cleanly
+    // Cancel any pending hide timer
     if (currentNotificationTimer) {
         clearTimeout(currentNotificationTimer);
         currentNotificationTimer = null;
     }
 
-    notification.textContent = message;
-    // Re-assigning className re-triggers the slideIn CSS animation
-    notification.className = `notification notification-${type}`;
+    toast.textContent = message;
+
+    // Force reflow so transition re-triggers on rapid calls
+    toast.classList.remove('show');
+    void toast.offsetWidth;
+    toast.classList.add('show');
 
     currentNotificationTimer = setTimeout(() => {
-        notification.classList.add('slide-out');
+        toast.classList.remove('show');
         currentNotificationTimer = null;
-    }, 3000);
+    }, 2200);
 }
 
 /**

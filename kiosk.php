@@ -20,7 +20,7 @@ if (!isset($_SESSION['kiosk_cart'])) $_SESSION['kiosk_cart'] = [];
 /* ── Fetch all active products grouped by category ──────────── */
 $products_res = mysqli_query(
     $conn,
-    "SELECT p.product_id, p.name, p.description, p.price, p.image_path,
+    "SELECT p.product_id, p.name, p.description, p.price, p.image_path, p.net_content,
             c.category_id, c.name AS category_name
      FROM products p
      JOIN categories c ON p.category_id = c.category_id
@@ -43,6 +43,14 @@ function kioskProductImage($product)
     if (!empty($product['image_path'])) return htmlspecialchars($product['image_path']);
     $map = [6 => 'pastry.png', 7 => 'pastry.png', 8 => 'pastry.png'];
     return 'images/' . ($map[$product['category_id']] ?? 'coffee.png');
+}
+
+/* ── Net content helper — DB value or category default ──────── */
+function kioskNetContent($product)
+{
+    if (!empty($product['net_content'])) return htmlspecialchars($product['net_content']);
+    $defaults = [1 => '12 oz', 2 => '16 oz', 3 => '12 oz', 4 => '16 oz', 5 => '12 oz', 9 => '1 oz'];
+    return $defaults[$product['category_id']] ?? '';
 }
 ?>
 <!DOCTYPE html>
@@ -226,7 +234,12 @@ function kioskProductImage($product)
                                         <div class="kiosk-prod-name"><?= htmlspecialchars($product['name']) ?></div>
                                         <div class="kiosk-prod-desc"><?= htmlspecialchars($product['description'] ?? '') ?></div>
                                         <div class="kiosk-prod-footer">
-                                            <span class="kiosk-prod-price">₱<?= number_format($product['price'], 2) ?></span>
+                                            <div class="kiosk-prod-price-wrap">
+                                                <span class="kiosk-prod-price">₱<?= number_format($product['price'], 2) ?></span>
+                                                <?php $knet = kioskNetContent($product); if ($knet): ?>
+                                                <span class="kiosk-prod-net"><?= $knet ?></span>
+                                                <?php endif; ?>
+                                            </div>
 
                                             <!-- Qty selector — always visible, minus disabled at 0 -->
                                             <div class="kpf-qty-row" id="kpf-<?= $product['product_id'] ?>">

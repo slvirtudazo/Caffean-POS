@@ -19,8 +19,12 @@ $show_popular      = isset($_GET['popular'])     && $_GET['popular']     == '1';
 // Validate price_sort value
 if (!in_array($price_sort, ['low', 'high'])) $price_sort = '';
 
+// Supply category IDs — excluded from menu (available on supplies page)
+define('MENU_EXCLUDED_CATS', [10, 11, 12]);
+$excluded_sql = implode(',', MENU_EXCLUDED_CATS);
+
 // Build SQL WHERE clauses
-$where_clauses = ["p.status = 1"];
+$where_clauses = ["p.status = 1", "p.category_id NOT IN ($excluded_sql)"];
 
 if ($category_filter > 0) {
     $where_clauses[] = "p.category_id = $category_filter";
@@ -171,7 +175,7 @@ if ($category_filter > 0) {
                                     <span class="category-count">
                                         <?php
                                         $all_count = mysqli_fetch_assoc(
-                                            mysqli_query($conn, "SELECT COUNT(*) as total FROM products WHERE status = 1")
+                                            mysqli_query($conn, "SELECT COUNT(*) as total FROM products WHERE status = 1 AND category_id NOT IN ($excluded_sql)")
                                         )['total'];
                                         echo $all_count;
                                         ?>
@@ -196,7 +200,9 @@ if ($category_filter > 0) {
 
                                 mysqli_data_seek($categories_result, 0);
                                 while ($category = mysqli_fetch_assoc($categories_result)):
-                                    $cat_id        = $category['category_id'];
+                                    $cat_id = $category['category_id'];
+                                    // Skip supply-only categories (shown on supplies page)
+                                    if (in_array($cat_id, MENU_EXCLUDED_CATS)) continue;
                                     $product_count = mysqli_fetch_assoc(
                                         mysqli_query($conn, "SELECT COUNT(*) as count FROM products WHERE category_id = $cat_id AND status = 1")
                                     )['count'];
@@ -244,30 +250,35 @@ if ($category_filter > 0) {
                     <?php
                     // Resolve image for a product
                     $image_map = [
-                        1 => 'coffee.png',
-                        2 => 'coffee.png',
-                        3 => 'coffee.png',
-                        4 => 'coffee.png',
-                        5 => 'coffee.png',
-                        6 => 'pastry.png',
-                        7 => 'pastry.png',
-                        8 => 'pastry.png',
-                        9 => 'coffee.png'
+                        1 => 'coffee.png', 2 => 'coffee.png', 3 => 'coffee.png',
+                        4 => 'coffee.png', 5 => 'coffee.png', 6 => 'pastry.png',
+                        7 => 'pastry.png', 8 => 'pastry.png', 9 => 'coffee.png',
                     ];
-                    function getProductImage($product, $image_map)
-                    {
+                    function getProductImage($product, $image_map) {
                         return !empty($product['image_path'])
                             ? $product['image_path']
                             : 'images/' . ($image_map[$product['category_id']] ?? 'coffee.png');
                     }
 
+                    // Net content defaults by category (db value takes precedence)
+                    $net_defaults = [
+                        1 => '12 oz', 2 => '16 oz', 3 => '12 oz',
+                        4 => '16 oz', 5 => '12 oz', 9 => '1 oz',
+                    ];
+                    function getNetContent($product, $defaults) {
+                        if (!empty($product['net_content'])) return htmlspecialchars($product['net_content']);
+                        return $defaults[$product['category_id']] ?? '';
+                    }
+
                     // Render a single compact product card
                     function renderProductCard($product, $img_src, $is_admin, $is_logged_in)
                     {
+                        global $net_defaults;
                         $id   = $product['product_id'];
                         $name = htmlspecialchars($product['name']);
                         $desc = htmlspecialchars($product['description']);
                         $price = number_format($product['price'], 2);
+                        $net  = getNetContent($product, $net_defaults);
                         echo '<div class="product-card" data-product-id="' . $id . '">';
 
                         // Favorite heart button — top-right corner of card
@@ -285,7 +296,11 @@ if ($category_filter > 0) {
                         echo   '<h3 class="product-name">' . $name . '</h3>';
                         echo   '<p class="product-description">' . $desc . '</p>';
                         echo   '<div class="product-footer">';
-                        echo    '<span class="product-price">₱' . $price . '</span>';
+                        // Price + net content stacked left
+                        echo    '<div class="product-meta">';
+                        echo     '<span class="product-price">₱' . $price . '</span>';
+                        if ($net !== '') echo '<span class="product-net">' . $net . '</span>';
+                        echo    '</div>';
                         if (!$is_admin) {
                             if ($is_logged_in) {
                                 // Logged-in: inline qty selector matching kiosk style
@@ -494,6 +509,7 @@ if ($category_filter > 0) {
                     icon.className = isNowActive ? 'fas fa-heart' : 'far fa-heart';
                     btn.classList.add('pop');
                     btn.addEventListener('animationend', () => btn.classList.remove('pop'), { once: true });
+                    showNotification(isNowActive ? 'Added to favorites!' : 'Removed from favorites.', isNowActive ? 'success' : 'info');
                 });
         }
 

@@ -907,11 +907,27 @@ body.kiosk-no-scroll {
     gap: 0.5rem;
 }
 
+/* Stacked price + net content wrapper */
+.kiosk-prod-price-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+}
+
 .kiosk-prod-price {
     font-family: var(--font-subheading);
     font-size: 1rem;
     font-weight: 600;
     color: var(--burgundy-wine);
+}
+
+/* Net content label below price */
+.kiosk-prod-net {
+    font-family: var(--font-body);
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: rgba(60, 21, 24, 0.45);
+    letter-spacing: 0.3px;
 }
 
 /* Qty selector — always visible on every product card */

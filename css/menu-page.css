@@ -532,6 +532,22 @@ body.page-menu .navbar .container {
     color: var(--burgundy-wine);
 }
 
+/* Stacked wrapper for price + net content */
+.product-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+/* Net content label below price */
+.product-net {
+    font-family: var(--font-body);
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: rgba(60, 21, 24, 0.45);
+    letter-spacing: 0.3px;
+}
+
 /* Add button — round circle matching kiosk */
 .btn-order {
     background: var(--deep-maroon);

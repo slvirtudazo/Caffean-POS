@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 05, 2026 at 04:24 PM
+-- Generation Time: Mar 06, 2026 at 03:25 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -51,22 +51,6 @@ INSERT INTO `categories` (`category_id`, `name`, `description`, `created_at`) VA
 (10, 'Coffee Beans', 'Premium single-origin and blended coffee beans from top growing regions', '2026-02-28 05:47:42'),
 (11, 'Milk & Creamers', 'Dairy and plant-based milk alternatives for café-quality drinks at home', '2026-02-28 05:47:42'),
 (12, 'Brewing Equipment', 'Professional-grade espresso machines, grinders, and brewing tools', '2026-02-28 05:47:42');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `contact_messages`
---
-
-CREATE TABLE `contact_messages` (
-  `message_id` int(11) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `subject` varchar(255) NOT NULL,
-  `message` text NOT NULL,
-  `is_read` tinyint(1) NOT NULL DEFAULT 0,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -375,7 +359,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `full_name`, `email`, `mobile_number`, `profile_image`, `house_unit`, `street_name`, `barangay`, `city_municipality`, `province`, `zip_code`, `password`, `role`, `created_at`) VALUES
-(1, 'Samantha Lewis Virtudazo', 'admin@purgecoffee.com', '', 'uploads/avatars/avatar_1_1772720738.jpg', '', '', '', '', '', '', '$2a$12$F4wbKxPcOnhD6K5An76ke.4gS2.m9JQTH88Q8NZYUzGwNaYhY6YKC', 'admin', '2026-02-20 02:12:15'),
+(1, 'Samantha Lewis Virtudazo', 'admin@purgecoffee.com', '09603150070', 'uploads/avatars/avatar_1_1772720738.jpg', '', '', '', '', '', '', '$2a$12$F4wbKxPcOnhD6K5An76ke.4gS2.m9JQTH88Q8NZYUzGwNaYhY6YKC', 'admin', '2026-02-20 02:12:15'),
 (2, 'Customer', 'customer@purgecoffee.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '$2a$12$nvPoBAKZQZpBpybEbGlsNeYwwMFn.YcvPM1SqGgM0iR.iHMw2efGW', 'customer', '2026-02-20 02:23:55'),
 (3, 'John Doe', 'johndoe@gmail.com', '09603150070', 'uploads/avatars/avatar_3_1772412807.jpg', '17', 'Blk 6 Lot', '', 'Davao City', 'Davao del Sur', '8000', '$2y$10$QIGd50QI/MzcG7QnQ.j.xeHGaNP65fxatJA/KEfRiKekeye/GooB6', 'customer', '2026-02-21 07:15:51');
 
@@ -415,13 +399,6 @@ INSERT INTO `user_carts` (`cart_id`, `user_id`, `product_id`, `quantity`, `size`
 --
 ALTER TABLE `categories`
   ADD PRIMARY KEY (`category_id`);
-
---
--- Indexes for table `contact_messages`
---
-ALTER TABLE `contact_messages`
-  ADD PRIMARY KEY (`message_id`),
-  ADD KEY `idx_is_read` (`is_read`);
 
 --
 -- Indexes for table `favorites`
@@ -491,12 +468,6 @@ ALTER TABLE `user_carts`
 --
 ALTER TABLE `categories`
   MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
-
---
--- AUTO_INCREMENT for table `contact_messages`
---
-ALTER TABLE `contact_messages`
-  MODIFY `message_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `favorites`

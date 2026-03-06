@@ -129,9 +129,17 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
     if ($net !== '') echo '<span class="product-net">' . $net . '</span>';
     echo    '</div>';
     if (!$is_admin) {
-        // Guest triggers login popup; logged-in user adds to cart directly
-        $onclick = $is_logged_in ? "addToCart($id)" : "showLoginRequiredPopup()";
-        echo '<button class="btn-order" onclick="' . $onclick . '"><i class="fas fa-plus"></i></button>';
+        if ($is_logged_in) {
+            // Logged-in: inline qty selector matching menu/kiosk style
+            echo '<div class="kpf-qty-row" id="spf-' . $id . '">';
+            echo  '<button class="kpf-qty-btn" disabled id="spf-minus-' . $id . '" onclick="supplyCardQty(' . $id . ', -1)"><i class="fas fa-minus"></i></button>';
+            echo  '<span class="kpf-qty-num" id="spf-num-' . $id . '">0</span>';
+            echo  '<button class="kpf-qty-btn kpf-plus" onclick="supplyCardQty(' . $id . ', 1)"><i class="fas fa-plus"></i></button>';
+            echo '</div>';
+        } else {
+            // Guest: single button triggers login popup
+            echo '<button class="btn-order" onclick="showLoginRequiredPopup()"><i class="fas fa-plus"></i></button>';
+        }
     }
     echo   '</div>';
     echo  '</div>';
@@ -445,14 +453,98 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        window.IS_LOGGED_IN = <?php echo $is_logged_in ? 'true' : 'false'; ?>;
+    </script>
+    <?php
+    // Embed per-product quantities from session cart for UI init
+    $cart_qtys = [];
+    if (!empty($_SESSION['cart'])) {
+        foreach ($_SESSION['cart'] as $pid => $opts) {
+            $cart_qtys[(int)$pid] = is_array($opts) ? (int)$opts['quantity'] : (int)$opts;
+        }
+    }
+    ?>
+    <script>
+        window.serverCart = <?php echo json_encode($cart_qtys); ?>;
+    </script>
     <script src="js/main.js?v=<?php echo time(); ?>"></script>
     <script src="js/search.js?v=<?php echo time(); ?>"></script>
 
     <script>
-        /* ── Favorites: toggle + initial state ───────────────── */
+        /* ── Supply card qty UI update ────────────────────────── */
+        function setSupplyCardUI(pid, qty) {
+            const numEl   = document.getElementById('spf-num-' + pid);
+            const minusEl = document.getElementById('spf-minus-' + pid);
+            if (numEl)   numEl.textContent  = qty;
+            if (minusEl) minusEl.disabled   = qty === 0;
+            const card = document.querySelector(`.product-card[data-product-id="${pid}"]`);
+            if (card) card.classList.toggle('in-cart', qty > 0);
+        }
 
-        // Toggle favorite on heart button click
-        function toggleFav(e, productId, btn) {
+        /* ── Supply card qty changes — add/update/remove via AJAX ─ */
+        function supplyCardQty(pid, delta) {
+            const numEl  = document.getElementById('spf-num-' + pid);
+            const current = numEl ? parseInt(numEl.textContent) || 0 : 0;
+            const next    = Math.max(0, current + delta);
+
+            if (next === 0) {
+                const fd = new FormData();
+                fd.append('action', 'remove');
+                fd.append('product_id', pid);
+                fetch('php/update_cart_item.php', { method: 'POST', body: fd })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            setSupplyCardUI(pid, 0);
+                            updateCartCountDisplay(data.cart_count);
+                            showNotification('Removed from cart.', 'info');
+                        }
+                    }).catch(() => {});
+
+            } else if (current === 0) {
+                const fd = new FormData();
+                fd.append('product_id', pid);
+                fd.append('quantity', 1);
+                fd.append('ajax', '1');
+                fetch('php/add_to_cart.php', { method: 'POST', body: fd })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            setSupplyCardUI(pid, 1);
+                            updateCartCountDisplay(data.cart_count);
+                            animateCartIcon();
+                            showNotification(data.message || 'Added to cart!', 'success');
+                        } else {
+                            showNotification(data.message || 'Could not add to cart.', 'error');
+                        }
+                    }).catch(() => {});
+
+            } else {
+                const fd = new FormData();
+                fd.append('action', 'update_qty');
+                fd.append('product_id', pid);
+                fd.append('quantity', next);
+                fetch('php/update_cart_item.php', { method: 'POST', body: fd })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            setSupplyCardUI(pid, next);
+                            updateCartCountDisplay(data.cart_count);
+                            showNotification('Cart updated.', 'info');
+                        }
+                    }).catch(() => {});
+            }
+        }
+
+        /* ── Restore qty selectors from session cart on page load ─ */
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.serverCart) {
+                Object.entries(window.serverCart).forEach(([pid, qty]) => {
+                    if (qty > 0) setSupplyCardUI(parseInt(pid), qty);
+                });
+            }
+        });
             e.stopPropagation();
             if (!window.IS_LOGGED_IN) { showLoginRequiredPopup(); return; }
 
@@ -470,8 +562,8 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
                     icon.className = isNowActive ? 'fas fa-heart' : 'far fa-heart';
                     btn.classList.add('pop');
                     btn.addEventListener('animationend', () => btn.classList.remove('pop'), { once: true });
+                    showNotification(isNowActive ? 'Added to favorites!' : 'Removed from favorites.', isNowActive ? 'success' : 'info');
                 });
-        }
 
         // On page load, mark cards the user has already favorited
         document.addEventListener('DOMContentLoaded', () => {
