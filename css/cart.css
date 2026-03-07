@@ -427,13 +427,18 @@
     padding: 6px 0 2px;
 }
 
-.sum-bottom {
+/* Groups totals + buttons so they push down together */
+.sum-footer-wrap {
     margin-top: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.sum-bottom {
     padding-top: 14px;
 }
 
 .sum-actions {
-    margin-top: auto;
     padding-top: 20px;
 }
 
@@ -492,8 +497,7 @@
 .cart-modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(20, 10, 10, 0.4);
-    backdrop-filter: blur(2px);
+    background: rgba(28, 28, 28, 0.45);
     display: none;
     align-items: center;
     justify-content: center;
@@ -505,35 +509,28 @@
 .cart-modal {
     background: #fff;
     width: 90%;
-    max-width: 460px;
-    border-radius: 16px;
-    box-shadow: var(--shadow-lg);
+    max-width: 520px;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(42, 0, 0, 0.10);
     overflow: hidden;
-    animation: modalSlideUp 0.22s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@keyframes modalSlideUp {
-    from { opacity: 0; transform: translateY(24px) scale(0.97); }
-    to   { opacity: 1; transform: translateY(0)   scale(1); }
+    animation: fadeInUp 0.22s ease both;
 }
 
 .cart-modal-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 18px 24px;
-    border-bottom: 1px solid rgba(42, 0, 0, 0.07);
-    background: rgba(245, 241, 232, 0.5);
+    padding: 20px 28px;
+    border-bottom: 1px solid rgba(42, 0, 0, 0.08);
+    background: rgba(245, 241, 232, 0.4);
 }
 
 .cart-modal-header h3 {
     font-family: var(--font-subheading);
-    font-size: 0.98rem;
+    font-size: 1rem;
     font-weight: 700;
     color: var(--deep-maroon);
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    letter-spacing: 0.3px;
     margin: 0;
 }
 
@@ -541,75 +538,86 @@
     background: none;
     border: none;
     font-size: 1rem;
+    font-weight: 700;
     color: var(--deep-maroon);
     cursor: pointer;
+    line-height: 1;
     padding: 5px;
-    border-radius: 6px;
-    transition: background 0.18s;
+    border-radius: 5px;
+    transition: background 0.22s ease;
 }
 
 .cart-modal-close:hover { background: rgba(42, 0, 0, 0.06); }
 
 .cart-modal-body {
-    padding: 22px 24px;
-    font-family: var(--font-body);
-    font-size: 0.88rem;
-    color: rgba(42, 0, 0, 0.62);
+    padding: 24px 28px;
+}
+
+.cart-modal-subtitle {
+    font-family: var(--font-subheading);
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--text-muted, #7a6a5a);
+    margin: 0;
     line-height: 1.6;
 }
 
-.cart-modal-body strong {
-    color: var(--deep-maroon);
+.cart-modal-subtitle strong {
     font-weight: 600;
+    color: var(--deep-maroon);
 }
 
 .cart-modal-footer {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    padding: 16px 24px;
-    border-top: 1px solid rgba(42, 0, 0, 0.07);
+    padding: 20px 28px;
+    border-top: 1px solid rgba(42, 0, 0, 0.08);
     background: rgba(245, 241, 232, 0.25);
 }
 
 .cart-modal-btn-cancel {
     background: transparent;
-    color: rgba(42, 0, 0, 0.55);
-    border: 1.5px solid rgba(42, 0, 0, 0.2);
-    padding: 9px 22px;
+    color: #9b1c1c;
+    border: 1.5px solid #9b1c1c;
+    padding: 10px 22px;
     border-radius: 50px;
     font-family: var(--font-subheading);
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.22s ease;
 }
 
 .cart-modal-btn-cancel:hover {
-    background: rgba(42, 0, 0, 0.04);
-    color: var(--dark-brown);
-    border-color: var(--dark-brown);
+    background: rgba(155, 28, 28, 0.07);
+    color: #7b1111;
+    border-color: #7b1111;
 }
 
 .cart-modal-btn-delete {
-    background: var(--burgundy-wine);
+    background: #DC0000;
     color: #fff;
     border: none;
-    padding: 9px 20px;
+    padding: 10px 20px;
     border-radius: 50px;
     font-family: var(--font-subheading);
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.18s;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
+    transition: all 0.22s ease;
 }
 
 .cart-modal-btn-delete:hover {
-    background: var(--deep-maroon);
-    box-shadow: 0 4px 12px rgba(42, 0, 0, 0.2);
+    background: #B30000;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(42, 0, 0, 0.20);
 }
 
 /* Responsive */

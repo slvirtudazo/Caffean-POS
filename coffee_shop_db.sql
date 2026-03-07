@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 07, 2026 at 05:15 AM
+-- Generation Time: Mar 07, 2026 at 09:31 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -127,7 +127,9 @@ INSERT INTO `orders` (`order_id`, `order_number`, `user_id`, `order_date`, `tota
 (26, 'PC-2026-00022', 3, '2026-03-02 05:43:36', 690.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 21:43:36', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'asd', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
 (27, 'PC-2026-00023', 3, '2026-03-02 08:48:53', 705.00, 'pending', 'GCash', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-02 00:48:53', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
 (28, 'PC-2026-00024', 3, '2026-03-03 12:53:25', 875.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-03 04:53:25', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(29, 'PC-2026-00025', 3, '2026-03-04 20:44:00', 735.00, 'pending', 'GCash', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-04 12:44:00', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL);
+(29, 'PC-2026-00025', 3, '2026-03-04 20:44:00', 735.00, 'pending', 'GCash', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-04 12:44:00', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
+(30, 'PC-2026-00026', 3, '2026-03-07 13:36:23', 385.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-07 05:36:23', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'test', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
+(31, 'PC-2026-00027', 3, '2026-03-07 13:39:18', 190.00, 'pending', 'Bank Transfer', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-07 05:39:18', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'asdas', '', NULL, NULL, '', 0.00, 0, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -192,7 +194,10 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price_at
 (37, 28, 3, 1, 140.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
 (38, 28, 55, 1, 160.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
 (39, 29, 2, 3, 175.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
-(40, 29, 55, 1, 160.00, 'Short', 'Hot', '0%', 'Whole', '', '');
+(40, 29, 55, 1, 160.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
+(41, 30, 2, 1, 175.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
+(42, 30, 55, 1, 160.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
+(43, 31, 3, 1, 140.00, 'Short', 'Hot', '0%', 'Whole', '', '');
 
 -- --------------------------------------------------------
 
@@ -382,7 +387,12 @@ CREATE TABLE `user_carts` (
 
 INSERT INTO `user_carts` (`cart_id`, `user_id`, `product_id`, `quantity`, `size`, `temperature`, `sugar_level`, `milk`, `addons`, `special_instructions`, `updated_at`) VALUES
 (751, 2, 63, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-03-03 03:52:49'),
-(816, 3, 63, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-03-06 03:26:08');
+(858, 3, 2, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-03-07 08:16:53'),
+(859, 3, 3, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-03-07 08:16:53'),
+(860, 3, 9, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-03-07 08:16:53'),
+(861, 3, 6, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-03-07 08:16:53'),
+(862, 3, 7, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-03-07 08:16:53'),
+(863, 3, 4, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-03-07 08:16:53');
 
 --
 -- Indexes for dumped tables
@@ -467,19 +477,19 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `favorites`
 --
 ALTER TABLE `favorites`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -503,7 +513,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `user_carts`
 --
 ALTER TABLE `user_carts`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=817;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=864;
 
 --
 -- Constraints for dumped tables

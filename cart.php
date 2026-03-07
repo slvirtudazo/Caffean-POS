@@ -287,35 +287,37 @@ if (isset($_SESSION['user_id'])) {
                                     </div>
                                 <?php endforeach; ?>
                             </div>
-                            <div class="sum-bottom">
-                                <div class="sum-hr"></div>
-                                <div class="sum-calc-row">
-                                    <span>Subtotal</span>
-                                    <span id="s1-sub">₱<?= number_format($subtotal, 2) ?></span>
+                            <div class="sum-footer-wrap">
+                                <div class="sum-bottom">
+                                    <div class="sum-hr"></div>
+                                    <div class="sum-calc-row">
+                                        <span>Subtotal</span>
+                                        <span id="s1-sub">₱<?= number_format($subtotal, 2) ?></span>
+                                    </div>
+                                    <div class="sum-calc-row">
+                                        <span>Delivery Fee</span>
+                                        <span id="s1-ship">₱<?= number_format($DELIVERY_FEE, 2) ?></span>
+                                    </div>
+                                    <div class="sum-hr"></div>
+                                    <div class="sum-total-row">
+                                        <span>Total Amount</span>
+                                        <span id="s1-total">₱<?= number_format($subtotal + $DELIVERY_FEE, 2) ?></span>
+                                    </div>
                                 </div>
-                                <div class="sum-calc-row">
-                                    <span>Delivery Fee</span>
-                                    <span id="s1-ship">₱<?= number_format($DELIVERY_FEE, 2) ?></span>
+                                <div class="sum-actions">
+                                    <?php if (isset($_SESSION['user_id'])): ?>
+                                        <a href="checkout.php" class="btn-cart-main text-center text-decoration-none">
+                                            Proceed to Checkout <i class="fas fa-arrow-right ms-1"></i>
+                                        </a>
+                                    <?php else: ?>
+                                        <a href="login.php" class="btn-cart-main text-center text-decoration-none">
+                                            Login to Checkout
+                                        </a>
+                                    <?php endif; ?>
+                                    <button class="btn-cart-back mt-2" onclick="window.location.href='menu.php'">
+                                        <i class="fas fa-arrow-left me-1"></i> Continue Shopping
+                                    </button>
                                 </div>
-                                <div class="sum-hr"></div>
-                                <div class="sum-total-row">
-                                    <span>Total Amount</span>
-                                    <span id="s1-total">₱<?= number_format($subtotal + $DELIVERY_FEE, 2) ?></span>
-                                </div>
-                            </div>
-                            <div class="sum-actions">
-                                <?php if (isset($_SESSION['user_id'])): ?>
-                                    <a href="checkout.php" class="btn-cart-main text-center text-decoration-none">
-                                        Proceed to Checkout <i class="fas fa-arrow-right ms-1"></i>
-                                    </a>
-                                <?php else: ?>
-                                    <a href="login.php" class="btn-cart-main text-center text-decoration-none">
-                                        Login to Checkout
-                                    </a>
-                                <?php endif; ?>
-                                <button class="btn-cart-back mt-2" onclick="window.location.href='menu.php'">
-                                    <i class="fas fa-arrow-left me-1"></i> Continue Shopping
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -329,18 +331,15 @@ if (isset($_SESSION['user_id'])) {
     <div class="cart-modal-overlay" id="cart-del-modal" role="dialog" aria-modal="true">
         <div class="cart-modal">
             <div class="cart-modal-header">
-                <h3><i class="fas fa-trash-alt"></i> Remove Item</h3>
+                <h3>Remove Item</h3>
                 <button class="cart-modal-close" onclick="closeDeleteModal()" title="Close">&#x2715;</button>
             </div>
             <div class="cart-modal-body">
-                Are you sure you want to remove <strong id="del-modal-name">this item</strong> from your cart?
-                This action cannot be undone.
+                <p class="cart-modal-subtitle">Are you sure you want to remove <strong id="del-modal-name">this item</strong> from your cart? This cannot be undone.</p>
             </div>
             <div class="cart-modal-footer">
                 <button class="cart-modal-btn-cancel" onclick="closeDeleteModal()">Cancel</button>
-                <button class="cart-modal-btn-delete" id="del-modal-confirm">
-                    <i class="fas fa-trash-alt"></i> Remove Item
-                </button>
+                <button class="cart-modal-btn-delete" id="del-modal-confirm">Remove Item</button>
             </div>
         </div>
     </div>

@@ -282,36 +282,16 @@ function kioskNetContent($product)
 
                     <div class="kiosk-co-card">
                         <div class="kiosk-co-card-title">
-                            <i class="fas fa-location-dot"></i> Order Type
+                            <i class="fas fa-bell-concierge"></i> Choose a Service Type
                         </div>
-                        <!-- Read-only tiles — active state set by renderCheckoutSummary() -->
                         <div class="k-ot-opts">
-                            <div class="k-ot-opt" id="co-ot-dine">
-                                <span class="pay-icon"><i class="fas fa-utensils"></i></span>
-                                Dine In
+                            <div class="k-ot-opt" id="co-svc-table" onclick="selectServiceType('table')">
+                                <span class="pay-icon"><i class="fas fa-table-cells-large"></i></span>
+                                Serve at your table
                             </div>
-                            <div class="k-ot-opt" id="co-ot-take">
-                                <span class="pay-icon"><i class="fas fa-shopping-bag"></i></span>
-                                Take Out
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="kiosk-co-card">
-                        <div class="kiosk-co-card-title">
-                            <i class="fas fa-user"></i> Your Name
-                            <span class="kiosk-co-optional">(Optional)</span>
-                        </div>
-                        <div class="row g-3">
-                            <div class="col-6">
-                                <label class="kiosk-co-label">Name</label>
-                                <input type="text" id="co-name" class="kiosk-co-input" placeholder="e.g. Juan">
-                            </div>
-                            <div class="col-6">
-                                <label class="kiosk-co-label">
-                                    Mobile <span class="kiosk-co-optional">(Optional)</span>
-                                </label>
-                                <input type="tel" id="co-mobile" class="kiosk-co-input" placeholder="09XXXXXXXXX" maxlength="11">
+                            <div class="k-ot-opt" id="co-svc-counter" onclick="selectServiceType('counter')">
+                                <span class="pay-icon"><i class="fas fa-hand-holding"></i></span>
+                                Pick up at the counter
                             </div>
                         </div>
                     </div>
@@ -321,25 +301,25 @@ function kioskNetContent($product)
                             <i class="fas fa-credit-card"></i> Payment Method
                         </div>
                         <div class="k-pay-opts">
-                            <label class="k-pay-opt active" onclick="selectPayment(this, 'Cash')">
-                                <input type="radio" name="k_payment" value="Cash" checked>
+                            <label class="k-pay-opt active" onclick="selectPayment(this, 'Pay at the counter (Cash)')">
+                                <input type="radio" name="k_payment" value="Pay at the counter (Cash)" checked>
                                 <span class="pay-icon"><i class="fas fa-money-bills"></i></span>
-                                <div class="k-pay-name">Cash</div>
+                                <div class="k-pay-name">Pay at the counter (Cash)</div>
                             </label>
-                            <label class="k-pay-opt k-pay-disabled">
-                                <input type="radio" name="k_payment" value="Credit/Debit Card" disabled>
-                                <span class="pay-icon"><i class="fas fa-credit-card"></i></span>
-                                <div class="k-pay-name">Card</div>
-                            </label>
-                            <label class="k-pay-opt k-pay-disabled">
-                                <input type="radio" name="k_payment" value="Tap-to-Pay (GCash)" disabled>
+                            <label class="k-pay-opt" onclick="selectPayment(this, 'GCash')">
+                                <input type="radio" name="k_payment" value="GCash">
                                 <span class="pay-icon"><i class="fas fa-mobile-screen-button"></i></span>
                                 <div class="k-pay-name">GCash</div>
                             </label>
-                            <label class="k-pay-opt k-pay-disabled">
-                                <input type="radio" name="k_payment" value="Tap-to-Pay (Maya)" disabled>
+                            <label class="k-pay-opt" onclick="selectPayment(this, 'Maya')">
+                                <input type="radio" name="k_payment" value="Maya">
                                 <span class="pay-icon"><i class="fas fa-wallet"></i></span>
                                 <div class="k-pay-name">Maya</div>
+                            </label>
+                            <label class="k-pay-opt" onclick="selectPayment(this, 'Bank Transfer')">
+                                <input type="radio" name="k_payment" value="Bank Transfer">
+                                <span class="pay-icon"><i class="fas fa-building-columns"></i></span>
+                                <div class="k-pay-name">Bank Transfer</div>
                             </label>
                         </div>
                     </div>
@@ -351,6 +331,8 @@ function kioskNetContent($product)
                         <div class="k-co-sum-title">
                             <i class="fas fa-receipt"></i> Order Summary
                         </div>
+                        <div class="k-sum-order-type-row" id="co-sum-order-type"></div>
+                        <hr class="k-sum-hr k-sum-hr--order-type">
                         <div class="k-sum-lines-wrap" id="co-sum-items"></div>
                         <hr class="k-sum-hr">
                         <div class="k-sum-calc-row">
@@ -439,17 +421,15 @@ function kioskNetContent($product)
     <div class="kiosk-dialog-overlay" id="delete-dialog-overlay">
         <div class="kd-modal">
             <div class="kd-modal-header">
-                <h3><i class="fas fa-trash kd-modal-icon"></i> Remove Item</h3>
+                <h3>Remove Item</h3>
                 <button class="kd-modal-close" onclick="closeDeleteDialog()">&#x2715;</button>
             </div>
             <div class="kd-modal-body">
-                <p class="kd-modal-subtitle">Are you sure you want to remove this item from your cart? This cannot be undone.</p>
+                <p class="kd-modal-subtitle">Are you sure you want to remove <strong id="kd-del-name">this item</strong> from your cart? This cannot be undone.</p>
             </div>
             <div class="kd-modal-footer">
                 <button class="kd-btn-cancel" onclick="closeDeleteDialog()">Cancel</button>
-                <button class="kd-btn-delete" onclick="confirmDeleteItem()">
-                    <i class="fas fa-trash"></i> Remove Item
-                </button>
+                <button class="kd-btn-delete" onclick="confirmDeleteItem()">Remove Item</button>
             </div>
         </div>
     </div>
@@ -511,7 +491,8 @@ function kioskNetContent($product)
     <script>
         /* ── State ───────────────────────────────────────────────────── */
         let kioskOrderType = 'dine_in';
-        let kioskPayment = 'Cash';
+        let kioskServiceType = 'table'; // 'table' | 'counter'
+        let kioskPayment = 'Pay at the counter (Cash)';
         let kioskCart = {};
         let kioskCurrentCat = 'all'; // 'all' | category id string
         let kioskCurrentSort = null; // null | 'low' | 'high' | 'popular'
@@ -863,6 +844,9 @@ function kioskNetContent($product)
         /* Show delete confirmation dialog */
         function confirmDeleteKioskItem(pid) {
             deleteTarget = pid;
+            const name = kioskCart[pid]?.name || 'this item';
+            const nameEl = document.getElementById('kd-del-name');
+            if (nameEl) nameEl.textContent = name;
             document.getElementById('delete-dialog-overlay').classList.add('active');
         }
 
@@ -902,11 +886,28 @@ function kioskNetContent($product)
             kioskCart[pid][field] = value;
         }
 
+        /* Activate service type option */
+        function selectServiceType(type) {
+            kioskServiceType = type;
+            document.getElementById('co-svc-table').classList.toggle('active', type === 'table');
+            document.getElementById('co-svc-counter').classList.toggle('active', type === 'counter');
+        }
+
         /* ── Step 4: render checkout summary ────────────────────────── */
         function renderCheckoutSummary() {
-            /* Highlight the already-selected order type tile */
-            document.getElementById('co-ot-dine').classList.toggle('active', kioskOrderType === 'dine_in');
-            document.getElementById('co-ot-take').classList.toggle('active', kioskOrderType === 'take_out');
+            /* Highlight service type tiles */
+            document.getElementById('co-svc-table').classList.toggle('active', kioskServiceType === 'table');
+            document.getElementById('co-svc-counter').classList.toggle('active', kioskServiceType === 'counter');
+
+            /* Inject order type row into summary */
+            const isDineIn = kioskOrderType === 'dine_in';
+            const otIcon = isDineIn ? 'fa-utensils' : 'fa-bag-shopping';
+            const otLabel = isDineIn ? 'Dine In' : 'Take Out';
+            document.getElementById('co-sum-order-type').innerHTML = `
+                <div class="k-sum-ot-row">
+                    <span class="k-sum-ot-label"><i class="fas fa-location-dot"></i> Order Type</span>
+                    <span class="k-sum-ot-val"><i class="fas ${otIcon}"></i> ${otLabel}</span>
+                </div>`;
 
             /* Build summary item lines with specs */
             const sumItems = document.getElementById('co-sum-items');
@@ -939,17 +940,8 @@ function kioskNetContent($product)
 
         /* ── Step 4: place order via AJAX ────────────────────────────── */
         function placeKioskOrder() {
-            const name = document.getElementById('co-name').value.trim();
-            const mobile = document.getElementById('co-mobile').value.trim();
-
             if (!Object.keys(kioskCart).length) {
                 showAlert('step4-alert', 'Your cart is empty.', 'danger');
-                return;
-            }
-
-            /* Validate mobile if provided */
-            if (mobile && !/^09\d{9}$/.test(mobile)) {
-                showAlert('step4-alert', 'Please enter a valid Philippine mobile number (09XXXXXXXXX).', 'danger');
                 return;
             }
 
@@ -959,9 +951,10 @@ function kioskNetContent($product)
 
             const fd = new FormData();
             fd.append('kiosk_order_type', kioskOrderType);
+            fd.append('service_type', kioskServiceType);
             fd.append('payment_method', kioskPayment);
-            fd.append('customer_name', name || 'Guest');
-            fd.append('mobile', mobile);
+            fd.append('customer_name', 'Guest');
+            fd.append('mobile', '');
             fd.append('cart', JSON.stringify(kioskCart));
 
             fetch('php/kiosk_place_order.php', {
@@ -1247,7 +1240,8 @@ function kioskNetContent($product)
         function startNewOrder() {
             kioskCart = {};
             kioskOrderType = 'dine_in';
-            kioskPayment = 'Cash';
+            kioskServiceType = 'table';
+            kioskPayment = 'Pay at the counter (Cash)';
             updateCartBar();
             goToStep(1);
         }
