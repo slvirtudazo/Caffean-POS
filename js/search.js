@@ -117,9 +117,6 @@ function searchProductsAjax(searchTerm) {
                     </div>
                     <div class="result-actions">
                         <span class="result-price">₱${parseFloat(product.price).toFixed(2)}</span>
-                        <button class="btn-order-small" onclick="addToCart(${product.product_id}); closeSearchOverlay();">
-                            <i class="fas fa-shopping-cart"></i> Add
-                        </button>
                     </div>
                 `;
                 resultsContainer.appendChild(resultItem);

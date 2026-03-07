@@ -3,10 +3,10 @@
  * Full redesign with animations, effects, and typography.
  */
 
-/* About page — wider container with tighter side padding */
+/* About page — wider container with adjusted side padding */
 body.page-about .container {
     max-width: 1440px;
-    padding: 0 1.25rem;
+    padding: 0 4.5rem;
 }
 
 /* ═══════════════════════════════════════════

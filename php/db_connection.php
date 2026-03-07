@@ -1,26 +1,23 @@
 <?php
 
+// Database credentials
 $host = "localhost";
 $user = "root";
 $pass = "";
-$db = "coffee_shop_db";
+$db   = "coffee_shop_db";
 
-// Create connection
+// Open connection
 $conn = mysqli_connect($host, $user, $pass, $db);
 
-// Check connection
+// Abort on failure
 if (!$conn) {
-    die("ERROR: Database connection failed! " . mysqli_connect_error());
+    die(json_encode(['success' => false, 'message' => 'Database connection failed.']));
 }
 
-// For handling special characters/symbols
+// Use utf8mb4 for full Unicode and emoji support
 mysqli_set_charset($conn, "utf8mb4");
 
-// Check if a session is already active to avoid errors
-if (session_status() == PHP_SESSION_NONE) {
+// Start session once per request
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
-// echo "Connected successfully!"; 
-
-?>

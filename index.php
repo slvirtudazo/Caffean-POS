@@ -81,7 +81,7 @@ $is_logged_in  = isset($_SESSION['user_id']);
                     <?php else: ?>
                         <button class="btn-hero" onclick="showLoginRequiredPopup()">Order Online</button>
                     <?php endif; ?>
-                    <a href="kiosk.php" class="btn-hero-secondary ms-2">Self-Order Kiosk</a>
+                    <a href="<?= $is_admin ? 'menu.php' : 'kiosk.php' ?>" class="btn-hero-secondary ms-2">Self-Order Kiosk</a>
                 </div>
                 <div class="col-lg-6 hero-image">
                     <img src="images/coffee_mug.png" alt="Premium Coffee">
