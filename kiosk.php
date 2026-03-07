@@ -103,11 +103,7 @@ function kioskNetContent($product)
                     <span class="kp-lbl">Done</span>
                 </div>
             </div>
-            <div class="k-bar-right">
-                <button class="btn-view-cart" onclick="goBack()">
-                    <i class="fas fa-arrow-left me-1"></i> Back
-                </button>
-            </div>
+            <div class="k-bar-right"></div>
         </div>
     </div>
 
@@ -204,6 +200,7 @@ function kioskNetContent($product)
                     </div>
 
                 </div>
+
             </div>
 
             <div class="kiosk-products-area" id="kiosk-products-area">
@@ -287,8 +284,16 @@ function kioskNetContent($product)
                         <div class="kiosk-co-card-title">
                             <i class="fas fa-location-dot"></i> Order Type
                         </div>
-                        <div class="k-order-type-muted" id="co-order-type-display">
-                            <i class="fas fa-utensils"></i> Dine In
+                        <!-- Read-only tiles — active state set by renderCheckoutSummary() -->
+                        <div class="k-ot-opts">
+                            <div class="k-ot-opt" id="co-ot-dine">
+                                <span class="pay-icon"><i class="fas fa-utensils"></i></span>
+                                Dine In
+                            </div>
+                            <div class="k-ot-opt" id="co-ot-take">
+                                <span class="pay-icon"><i class="fas fa-shopping-bag"></i></span>
+                                Take Out
+                            </div>
                         </div>
                     </div>
 
@@ -318,22 +323,22 @@ function kioskNetContent($product)
                         <div class="k-pay-opts">
                             <label class="k-pay-opt active" onclick="selectPayment(this, 'Cash')">
                                 <input type="radio" name="k_payment" value="Cash" checked>
-                                <i class="fas fa-money-bills"></i>
+                                <span class="pay-icon"><i class="fas fa-money-bills"></i></span>
                                 <div class="k-pay-name">Cash</div>
                             </label>
                             <label class="k-pay-opt k-pay-disabled">
                                 <input type="radio" name="k_payment" value="Credit/Debit Card" disabled>
-                                <i class="fas fa-credit-card"></i>
+                                <span class="pay-icon"><i class="fas fa-credit-card"></i></span>
                                 <div class="k-pay-name">Card</div>
                             </label>
                             <label class="k-pay-opt k-pay-disabled">
                                 <input type="radio" name="k_payment" value="Tap-to-Pay (GCash)" disabled>
-                                <i class="fas fa-mobile-screen-button"></i>
+                                <span class="pay-icon"><i class="fas fa-mobile-screen-button"></i></span>
                                 <div class="k-pay-name">GCash</div>
                             </label>
                             <label class="k-pay-opt k-pay-disabled">
                                 <input type="radio" name="k_payment" value="Tap-to-Pay (Maya)" disabled>
-                                <i class="fas fa-wallet"></i>
+                                <span class="pay-icon"><i class="fas fa-wallet"></i></span>
                                 <div class="k-pay-name">Maya</div>
                             </label>
                         </div>
@@ -346,10 +351,15 @@ function kioskNetContent($product)
                         <div class="k-co-sum-title">
                             <i class="fas fa-receipt"></i> Order Summary
                         </div>
-                        <div id="co-sum-items"></div>
+                        <div class="k-sum-lines-wrap" id="co-sum-items"></div>
+                        <hr class="k-sum-hr">
+                        <div class="k-sum-calc-row">
+                            <span>Subtotal</span>
+                            <span id="co-sum-subtotal">₱0.00</span>
+                        </div>
                         <hr class="k-sum-hr">
                         <div class="k-sum-total">
-                            <span>Total</span>
+                            <span>Total Amount</span>
                             <span id="co-sum-total">₱0.00</span>
                         </div>
                         <div class="k-co-sum-actions">
@@ -397,6 +407,9 @@ function kioskNetContent($product)
 
                     <hr class="kiosk-receipt-divider">
 
+                    <!-- Customer section (populated by showConfirmation if name/mobile provided) -->
+                    <div id="receipt-customer"></div>
+
                     <div class="kiosk-receipt-section-hd">Order Details</div>
                     <div id="receipt-order-details"></div>
 
@@ -405,7 +418,7 @@ function kioskNetContent($product)
                     <div class="kiosk-receipt-section-hd">Order Summary</div>
                     <div id="receipt-items"></div>
 
-                    <hr class="kiosk-receipt-divider" style="margin-top:10px;">
+                    <hr class="kiosk-receipt-divider kiosk-receipt-divider--top">
 
                     <div id="receipt-totals"></div>
 
@@ -444,17 +457,15 @@ function kioskNetContent($product)
     <div class="kiosk-dialog-overlay" id="back-dialog-overlay">
         <div class="kd-modal">
             <div class="kd-modal-header">
-                <h3><i class="fas fa-triangle-exclamation kd-modal-icon"></i> Go Back?</h3>
+                <h3>Abandon Order?</h3>
                 <button class="kd-modal-close" onclick="closeBackDialog()">&#x2715;</button>
             </div>
             <div class="kd-modal-body">
-                <p class="kd-modal-subtitle">You have items in your cart. Are you sure you want to go back?</p>
+                <p class="kd-modal-subtitle">The items in your cart will be cleared and your progress will be lost. Are you sure you want to leave?</p>
             </div>
             <div class="kd-modal-footer">
-                <button class="kd-btn-cancel" onclick="closeBackDialog()">Stay</button>
-                <button class="kd-btn-goback" onclick="confirmGoBack()">
-                    <i class="fas fa-arrow-left"></i> Go Back
-                </button>
+                <button class="kd-btn-cancel" onclick="confirmGoBack()">Leave &amp; Clear Cart</button>
+                <button class="kd-btn-goback" onclick="closeBackDialog()">Keep Ordering</button>
             </div>
         </div>
     </div>
@@ -462,8 +473,12 @@ function kioskNetContent($product)
     <!-- Cart bar — visible only on step 2 (Menu) -->
     <div class="kiosk-cart-bar" id="kiosk-cart-bar">
         <div class="kcb-wrapper">
-            <!-- Left: empty spacer — mirrors k-bar-left -->
-            <div class="kcb-bar-left"></div>
+            <!-- Left: Back button — mirrors k-bar-left -->
+            <div class="kcb-bar-left">
+                <button class="kcb-back-btn" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+            </div>
 
             <!-- Center: 5-column grid mirroring progress dots — col 1 = count, col 3 = subtotal -->
             <div class="kcb-bar-center">
@@ -483,7 +498,7 @@ function kioskNetContent($product)
 
             <!-- Right: Continue button — mirrors k-bar-right (Back button) -->
             <div class="kcb-bar-right">
-                <button class="kcb-btn" id="kcb-btn" onclick="goToStep(3)" disabled>
+                <button class="kcb-continue-btn" id="kcb-btn" onclick="goToStep(3)" disabled>
                     Continue <i class="fas fa-arrow-right ms-1"></i>
                 </button>
             </div>
@@ -503,6 +518,16 @@ function kioskNetContent($product)
 
         /* Step 1 is default — lock body scroll immediately */
         document.body.classList.add('kiosk-no-scroll');
+
+        /* Show cart bar on step 1 with center/right hidden */
+        document.addEventListener('DOMContentLoaded', function () {
+            const cartBar = document.getElementById('kiosk-cart-bar');
+            const cartBarCenter = document.querySelector('.kcb-bar-center');
+            const kcbBtn = document.getElementById('kcb-btn');
+            if (cartBar) cartBar.style.display = 'block';
+            if (cartBarCenter) cartBarCenter.classList.add('kcb-hidden');
+            if (kcbBtn) kcbBtn.parentElement.classList.add('kcb-hidden');
+        });
 
         /* ── Step navigation ─────────────────────────────────────────── */
         /* ── Step navigation ─────────────────────────────────────────── */
@@ -526,10 +551,14 @@ function kioskNetContent($product)
                 }
             }
 
-            /* Show cart bar only on step 2 (Menu), sync totals */
+            /* Show cart bar on steps 1 & 2; fade center/right on step 1 */
             updateCartBar();
             const cartBar = document.getElementById('kiosk-cart-bar');
-            if (cartBar) cartBar.style.display = (n === 2) ? 'block' : 'none';
+            const cartBarCenter = document.querySelector('.kcb-bar-center');
+            const cartBarRight = document.getElementById('kcb-btn');
+            if (cartBar) cartBar.style.display = (n === 1 || n === 2) ? 'block' : 'none';
+            if (cartBarCenter) cartBarCenter.classList.toggle('kcb-hidden', n === 1);
+            if (cartBarRight) cartBarRight.parentElement.classList.toggle('kcb-hidden', n === 1);
 
             window.scrollTo({
                 top: 0,
@@ -541,39 +570,31 @@ function kioskNetContent($product)
             if (n === 4) renderCheckoutSummary();
         }
 
-        /* Store the intended back target for dialog confirmation */
-        let backTarget = null;
-
-        /* Go back — warn if cart has items, navigate freely if empty */
+        /* Go back — free navigation on steps 2-4, cart preserved.
+           Only show abandon dialog when on step 1 with items in cart. */
         function goBack() {
-            const hasItems = Object.keys(kioskCart).length > 0;
-            backTarget = currentStep <= 1 ? 'home' : currentStep - 1;
-
-            if (hasItems) {
+            if (currentStep > 1) {
+                goToStep(currentStep - 1);
+                return;
+            }
+            /* On step 1 — leaving the kiosk entirely */
+            if (Object.keys(kioskCart).length > 0) {
                 document.getElementById('back-dialog-overlay').classList.add('active');
             } else {
-                executeGoBack();
+                window.location.href = 'index.php';
             }
         }
 
-        /* Execute the back navigation after confirmation */
+        /* Confirmed leave — clear cart then exit to home */
         function confirmGoBack() {
             closeBackDialog();
-            executeGoBack();
+            kioskCart = {};
+            window.location.href = 'index.php';
         }
 
-        /* Close warning dialog */
+        /* Close abandon dialog */
         function closeBackDialog() {
             document.getElementById('back-dialog-overlay').classList.remove('active');
-        }
-
-        /* Perform the actual navigation */
-        function executeGoBack() {
-            if (backTarget === 'home') {
-                window.location.href = 'index.php';
-            } else {
-                goToStep(backTarget);
-            }
         }
 
         /* ── Step 1: select order type ───────────────────────────────── */
@@ -603,9 +624,11 @@ function kioskNetContent($product)
 
             if (next === 0) {
                 /* Remove from cart */
+                const removedName = kioskCart[pid]?.name || name || 'Product';
                 delete kioskCart[pid];
+                showToast(removedName + ' removed from your cart.');
             } else if (!kioskCart[pid]) {
-                /* First add — create cart entry with addons array */
+                /* First add — create cart entry with defaults */
                 kioskCart[pid] = {
                     name,
                     price,
@@ -618,9 +641,11 @@ function kioskNetContent($product)
                     notes: '',
                     img
                 };
-                showToast((name || 'Item') + ' added to cart!');
+                showToast((name || 'Product') + ' added to your cart.');
             } else {
+                /* Qty update — increase or decrease */
                 kioskCart[pid].qty = next;
+                showToast(delta > 0 ? 'Product quantity increased.' : 'Product quantity decreased.');
             }
 
             setCardUI(pid, next);
@@ -668,12 +693,11 @@ function kioskNetContent($product)
 
             if (!items.length) {
                 wrap.innerHTML = `
-                <div class="kiosk-empty">
+                <div class="cart-empty-state">
                     <i class="fas fa-shopping-cart"></i>
-                    <h3>Your cart is empty</h3>
-                    <p>Go back to browse our menu.</p>
-                    <button class="btn-kiosk-main mt-3" style="width:auto;display:inline-block;padding:0.75rem 2rem;"
-                        onclick="goToStep(2)">Browse Menu</button>
+                    <h2>Your cart is empty</h2>
+                    <p>Looks like you haven't added any items yet.<br>Discover our delicious drinks and pastries to get started!</p>
+                    <button class="btn-browse-menu" onclick="goToStep(2)">Browse Menu</button>
                 </div>`;
                 return;
             }
@@ -690,6 +714,10 @@ function kioskNetContent($product)
                        <div class="k-ci-img-ph" style="display:none;"><i class="fas fa-mug-hot"></i></div>` :
                     `<div class="k-ci-img-ph"><i class="fas fa-mug-hot"></i></div>`;
 
+                /* Build specs preview line — matches online ci-opts-preview */
+                const specsText = [it.size, it.temp, it.sugar ? `Sugar ${it.sugar}` : null, it.milk ? `${it.milk} Milk` : null]
+                    .filter(Boolean).join(' · ');
+
                 cardsHtml += `
                 <div class="k-ci-card" id="kci-${pid}">
                     <div class="k-ci-top">
@@ -697,6 +725,7 @@ function kioskNetContent($product)
                         <div class="k-ci-info">
                             <div class="k-ci-name">${it.name}</div>
                             <div class="k-ci-price">₱${it.price.toFixed(2)}</div>
+                            ${specsText ? `<div class="k-ci-opts-preview">${specsText}</div>` : ''}
                         </div>
                         <button class="k-ci-del" onclick="confirmDeleteKioskItem(${pid})">
                             <i class="fas fa-trash-alt"></i>
@@ -730,7 +759,7 @@ function kioskNetContent($product)
                                 </select>
                             </div>
                             <div class="col-12">
-                                <label class="k-cust-lbl">Add-ons <span style="font-weight:400;opacity:0.6;">(Optional)</span></label>
+                                <label class="k-cust-lbl">Add-ons <span class="k-cust-optional">(Optional)</span></label>
                                 <div class="k-addons-grid">
                                     ${[
                                         ['Extra Espresso Shot','Extra Espresso Shot (1 fl oz)'],
@@ -742,9 +771,9 @@ function kioskNetContent($product)
                                 </div>
                             </div>
                             <div class="col-12">
-                                <label class="k-cust-lbl">Instructions (Optional)</label>
+                                <label class="k-cust-lbl">Instructions <span class="k-cust-optional">(Optional)</label>
                                 <textarea class="k-cust-ta" rows="2"
-                                    placeholder="e.g. extra hot, less ice..."
+                                    placeholder="Add any special requests..."
                                     onchange="updateKioskOpt(${pid},'notes',this.value)">${it.notes}</textarea>
                             </div>
                         </div>
@@ -765,27 +794,35 @@ function kioskNetContent($product)
             });
 
             /* Two-column layout: items left, summary right */
+            const singleItem = items.length === 1 ? ' k-single-item' : '';
             wrap.innerHTML = `
-            <div class="row g-4">
-                <div class="col-lg-8">${cardsHtml}</div>
-                <div class="col-lg-4">
+            <div class="row g-4${singleItem}">
+                <div class="col-lg-7">${cardsHtml}</div>
+                <div class="col-lg-5 kiosk-sum-col">
                     <div class="kiosk-sum-card">
                         <div class="kiosk-sum-title">
                             <i class="fas fa-receipt me-2"></i>Order Summary
                         </div>
-                        <div id="k-sum-lines"></div>
-                        <hr class="k-sum-hr">
-                        <div class="k-sum-total">
-                            <span>Total</span>
-                            <span id="k-sum-total">₱${subtotal.toFixed(2)}</span>
-                        </div>
-                        <div class="k-sum-actions">
-                            <button class="btn-kiosk-main" onclick="goToStep(4)">
-                                <i class="fas fa-arrow-right me-1"></i> Proceed to Checkout
-                            </button>
-                            <button class="btn-kiosk-back mt-2" onclick="goToStep(2)">
-                                <i class="fas fa-arrow-left me-1"></i> Add More Items
-                            </button>
+                        <div class="k-sum-lines-wrap" id="k-sum-lines"></div>
+                        <div class="k-sum-footer">
+                            <hr class="k-sum-hr">
+                            <div class="k-sum-calc-row">
+                                <span>Subtotal</span>
+                                <span>₱${subtotal.toFixed(2)}</span>
+                            </div>
+                            <hr class="k-sum-hr">
+                            <div class="k-sum-total">
+                                <span>Total Amount</span>
+                                <span id="k-sum-total">₱${subtotal.toFixed(2)}</span>
+                            </div>
+                            <div class="k-sum-actions">
+                                <button class="btn-kiosk-main" onclick="goToStep(4)">
+                                    Proceed to Checkout <i class="fas fa-arrow-right ms-1"></i>
+                                </button>
+                                <button class="btn-kiosk-back mt-2" onclick="goToStep(2)">
+                                    <i class="fas fa-arrow-left me-1"></i> Add More Items
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -803,14 +840,21 @@ function kioskNetContent($product)
             Object.entries(kioskCart).forEach(([pid, it]) => {
                 const line = it.price * it.qty;
                 total += line;
+                const opts = [it.size, it.temp, it.sugar ? `Sugar ${it.sugar}` : null]
+                    .filter(Boolean).join(' · ');
                 html += `<div class="k-sum-line">
-                    <span>${it.name} <span class="k-sum-qty">×${it.qty}</span></span>
+                    <div>
+                        <div>${it.name} <span class="k-sum-qty">×${it.qty}</span></div>
+                        ${opts ? `<span class="k-sum-opts">${opts}</span>` : ''}
+                    </div>
                     <span>₱${line.toFixed(2)}</span>
                 </div>`;
             });
             el.innerHTML = html;
-            const tot = document.getElementById('k-sum-total');
-            if (tot) tot.textContent = '₱' + total.toFixed(2);
+            /* Update both subtotal and total displays */
+            document.querySelectorAll('#k-sum-total, #k-sum-subtotal').forEach(el => {
+                el.textContent = '₱' + total.toFixed(2);
+            });
         }
 
         /* ── Cart item operations ────────────────────────────────────── */
@@ -860,25 +904,29 @@ function kioskNetContent($product)
 
         /* ── Step 4: render checkout summary ────────────────────────── */
         function renderCheckoutSummary() {
-            /* Update order type display */
-            const badge = document.getElementById('co-order-type-display');
-            badge.innerHTML = kioskOrderType === 'dine_in' ?
-                '<i class="fas fa-utensils me-1"></i> Dine In' :
-                '<i class="fas fa-shopping-bag me-1"></i> Take Out';
+            /* Highlight the already-selected order type tile */
+            document.getElementById('co-ot-dine').classList.toggle('active', kioskOrderType === 'dine_in');
+            document.getElementById('co-ot-take').classList.toggle('active', kioskOrderType === 'take_out');
 
-            /* Build summary item lines */
+            /* Build summary item lines with specs */
             const sumItems = document.getElementById('co-sum-items');
             let total = 0;
             let html = '';
             Object.entries(kioskCart).forEach(([pid, it]) => {
                 const line = it.price * it.qty;
                 total += line;
+                const opts = [it.size, it.temp, it.sugar ? `Sugar ${it.sugar}` : null]
+                    .filter(Boolean).join(' · ');
                 html += `<div class="k-sum-line">
-                    <span>${it.name} <span class="k-sum-qty">×${it.qty}</span></span>
+                    <div>
+                        <div>${it.name} <span class="k-sum-qty">×${it.qty}</span></div>
+                        ${opts ? `<span class="k-sum-opts">${opts}</span>` : ''}
+                    </div>
                     <span>₱${line.toFixed(2)}</span>
                 </div>`;
             });
             sumItems.innerHTML = html;
+            document.getElementById('co-sum-subtotal').textContent = '₱' + total.toFixed(2);
             document.getElementById('co-sum-total').textContent = '₱' + total.toFixed(2);
         }
 
@@ -948,10 +996,28 @@ function kioskNetContent($product)
             /* Greeting */
             document.getElementById('confirm-greeting').textContent =
                 (data.customer_name && data.customer_name !== 'Guest') ?
-                `Thank you, ${data.customer_name}!` : 'Thank you for your order!';
+                `Thank you, ${data.customer_name}!` : 'Thank you for your purchase!';
 
             /* Datetime */
             document.getElementById('confirm-datetime').textContent = data.order_date || new Date().toLocaleString();
+
+            /* Customer section — shown only if name or mobile provided */
+            const name = (data.customer_name && data.customer_name !== 'Guest') ? data.customer_name : '';
+            const mob  = data.mobile || '';
+            let custHtml = '';
+            if (name || mob) {
+                custHtml = `<div class="kiosk-receipt-section-hd">Customer</div>`;
+                if (name) custHtml += `<div class="kiosk-receipt-info-row">
+                    <span class="r-key">Name</span>
+                    <span class="r-val">${name}</span>
+                </div>`;
+                if (mob) custHtml += `<div class="kiosk-receipt-info-row">
+                    <span class="r-key">Mobile</span>
+                    <span class="r-val">${mob}</span>
+                </div>`;
+                custHtml += `<hr class="kiosk-receipt-divider">`;
+            }
+            document.getElementById('receipt-customer').innerHTML = custHtml;
 
             /* Order details rows */
             const orderType = data.kiosk_order_type === 'dine_in' ? 'Dine In' : 'Take Out';
@@ -965,7 +1031,7 @@ function kioskNetContent($product)
                     <span class="r-val">${data.payment_method}</span>
                 </div>`;
 
-            /* Item rows */
+            /* Item rows with thumbnail + specs */
             let itemsHtml = '';
             let subtotal = 0;
             data.items.forEach(it => {
@@ -992,13 +1058,13 @@ function kioskNetContent($product)
             });
             document.getElementById('receipt-items').innerHTML = itemsHtml;
 
-            /* Totals */
+            /* Totals — kiosk has no delivery fee */
             document.getElementById('receipt-totals').innerHTML = `
                 <div class="kiosk-receipt-amount-row">
                     <span>Subtotal</span>
                     <span>₱${subtotal.toFixed(2)}</span>
                 </div>
-                <hr class="kiosk-receipt-divider" style="margin:8px 0;">
+                <hr class="kiosk-receipt-divider kiosk-receipt-divider--compact">
                 <div class="kiosk-receipt-total-row">
                     <span>Total Amount</span>
                     <span>₱${parseFloat(data.total).toFixed(2)}</span>
@@ -1019,17 +1085,34 @@ function kioskNetContent($product)
         }
 
         /* ── Utilities ───────────────────────────────────────────────── */
+        let kioskToastTimer = null; // tracks active toast timer for cancellation
+
         function showToast(msg) {
             const t = document.getElementById('kiosk-toast');
+
+            // Cancel any pending hide timer so rapid calls re-animate cleanly
+            if (kioskToastTimer) {
+                clearTimeout(kioskToastTimer);
+                kioskToastTimer = null;
+            }
+
             t.textContent = msg;
+
+            // Force reflow to re-trigger transition on rapid successive calls
+            t.classList.remove('show');
+            void t.offsetWidth;
             t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 2200);
+
+            kioskToastTimer = setTimeout(() => {
+                t.classList.remove('show');
+                kioskToastTimer = null;
+            }, 2200);
         }
 
         function showAlert(containerId, msg, type) {
             const el = document.getElementById(containerId);
             if (!el) return;
-            el.innerHTML = `<div class="alert alert-${type} py-2 px-3" style="font-size:0.88rem;">${msg}</div>`;
+            el.innerHTML = `<div class="alert alert-${type} py-2 px-3" class="kiosk-alert">${msg}</div>`;
             setTimeout(() => el.innerHTML = '', 4000);
         }
 

@@ -172,7 +172,7 @@ if (isset($_SESSION['user_id'])) {
                                     <div class="ci-cust-fields" id="cust-<?= $pid ?>">
                                         <div class="row g-2 mt-1">
                                             <div class="col-6 col-md-3">
-                                                <label class="cust-lbl">Size *</label>
+                                                <label class="cust-lbl">Size</label>
                                                 <select class="cust-sel"
                                                     onchange="updateOption(<?= $pid ?>, 'size', this.value)">
                                                     <?php
@@ -188,7 +188,7 @@ if (isset($_SESSION['user_id'])) {
                                                 </select>
                                             </div>
                                             <div class="col-6 col-md-3">
-                                                <label class="cust-lbl">Temperature *</label>
+                                                <label class="cust-lbl">Temperature</label>
                                                 <select class="cust-sel"
                                                     onchange="updateOption(<?= $pid ?>, 'temperature', this.value)">
                                                     <?php foreach (['Hot', 'Iced', 'Blended'] as $t): ?>
@@ -197,7 +197,7 @@ if (isset($_SESSION['user_id'])) {
                                                 </select>
                                             </div>
                                             <div class="col-6 col-md-3">
-                                                <label class="cust-lbl">Sugar Level *</label>
+                                                <label class="cust-lbl">Sugar Level</label>
                                                 <select class="cust-sel"
                                                     onchange="updateOption(<?= $pid ?>, 'sugar_level', this.value)">
                                                     <?php foreach (['0%', '25%', '50%', '75%', '100%'] as $sl): ?>
@@ -206,7 +206,7 @@ if (isset($_SESSION['user_id'])) {
                                                 </select>
                                             </div>
                                             <div class="col-6 col-md-3">
-                                                <label class="cust-lbl">Milk *</label>
+                                                <label class="cust-lbl">Milk</label>
                                                 <select class="cust-sel"
                                                     onchange="updateOption(<?= $pid ?>, 'milk', this.value)">
                                                     <?php foreach (['Whole', 'Skim', 'Oat', 'Almond', 'None'] as $m): ?>
@@ -240,7 +240,7 @@ if (isset($_SESSION['user_id'])) {
                                             </div>
                                             <div class="col-12">
                                                 <label class="cust-lbl">
-                                                    Special Instructions <span class="opt-text">(Optional)</span>
+                                                    Instructions <span class="opt-text">(Optional)</span>
                                                 </label>
                                                 <textarea class="cust-ta" rows="2"
                                                     placeholder="Add any special requests..."

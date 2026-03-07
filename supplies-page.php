@@ -453,9 +453,6 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        window.IS_LOGGED_IN = <?php echo $is_logged_in ? 'true' : 'false'; ?>;
-    </script>
     <?php
     // Embed per-product quantities from session cart for UI init
     $cart_qtys = [];
@@ -484,9 +481,12 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
 
         /* ── Supply card qty changes — add/update/remove via AJAX ─ */
         function supplyCardQty(pid, delta) {
-            const numEl  = document.getElementById('spf-num-' + pid);
+            const numEl   = document.getElementById('spf-num-' + pid);
             const current = numEl ? parseInt(numEl.textContent) || 0 : 0;
             const next    = Math.max(0, current + delta);
+
+            // Get product name from card for notification messages
+            const name = document.querySelector(`.product-card[data-product-id="${pid}"] .product-name`)?.textContent?.trim() || 'Product';
 
             if (next === 0) {
                 const fd = new FormData();
@@ -498,7 +498,7 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
                         if (data.success) {
                             setSupplyCardUI(pid, 0);
                             updateCartCountDisplay(data.cart_count);
-                            showNotification('Removed from cart.', 'info');
+                            showNotification(name + ' removed from your cart.', 'info');
                         }
                     }).catch(() => {});
 
@@ -514,7 +514,7 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
                             setSupplyCardUI(pid, 1);
                             updateCartCountDisplay(data.cart_count);
                             animateCartIcon();
-                            showNotification(data.message || 'Added to cart!', 'success');
+                            showNotification(name + ' added to your cart.', 'success');
                         } else {
                             showNotification(data.message || 'Could not add to cart.', 'error');
                         }
@@ -531,20 +531,14 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
                         if (data.success) {
                             setSupplyCardUI(pid, next);
                             updateCartCountDisplay(data.cart_count);
-                            showNotification('Cart updated.', 'info');
+                            showNotification(delta > 0 ? 'Product quantity increased.' : 'Product quantity decreased.', 'info');
                         }
                     }).catch(() => {});
             }
         }
 
-        /* ── Restore qty selectors from session cart on page load ─ */
-        document.addEventListener('DOMContentLoaded', () => {
-            if (window.serverCart) {
-                Object.entries(window.serverCart).forEach(([pid, qty]) => {
-                    if (qty > 0) setSupplyCardUI(parseInt(pid), qty);
-                });
-            }
-        });
+        /* ── Toggle favorite on heart button click ────────────── */
+        function toggleFav(e, productId, btn) {
             e.stopPropagation();
             if (!window.IS_LOGGED_IN) { showLoginRequiredPopup(); return; }
 
@@ -562,11 +556,23 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
                     icon.className = isNowActive ? 'fas fa-heart' : 'far fa-heart';
                     btn.classList.add('pop');
                     btn.addEventListener('animationend', () => btn.classList.remove('pop'), { once: true });
-                    showNotification(isNowActive ? 'Added to favorites!' : 'Removed from favorites.', isNowActive ? 'success' : 'info');
-                });
 
-        // On page load, mark cards the user has already favorited
+                    // Get product name from card for notification
+                    const card  = document.querySelector(`.product-card[data-product-id="${productId}"]`);
+                    const pName = card?.querySelector('.product-name')?.textContent?.trim() || 'Product';
+                    showNotification(isNowActive ? pName + ' added to your favorites.' : pName + ' removed from your favorites.', isNowActive ? 'success' : 'info');
+                });
+        }
+
+        /* ── Restore qty selectors from session cart on page load ─ */
         document.addEventListener('DOMContentLoaded', () => {
+            if (window.serverCart) {
+                Object.entries(window.serverCart).forEach(([pid, qty]) => {
+                    if (qty > 0) setSupplyCardUI(parseInt(pid), qty);
+                });
+            }
+
+            // Mark already-favorited cards on page load
             if (!window.IS_LOGGED_IN) return;
             const ids = [...document.querySelectorAll('.product-card[data-product-id]')]
                         .map(c => c.dataset.productId).join(',');

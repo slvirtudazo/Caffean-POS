@@ -48,7 +48,7 @@ if (empty($cart) || !is_array($cart)) {
 
 // Validate products from DB (active only)
 $ids   = implode(',', array_map('intval', array_keys($cart)));
-$res   = mysqli_query($conn, "SELECT product_id, name, price FROM products WHERE product_id IN ($ids) AND status = 1");
+$res   = mysqli_query($conn, "SELECT product_id, name, price, image_path FROM products WHERE product_id IN ($ids) AND status = 1");
 $prods = [];
 while ($p = mysqli_fetch_assoc($res)) $prods[$p['product_id']] = $p;
 
@@ -123,9 +123,13 @@ try {
         }
 
         $items_response[] = [
-            'name'     => $p['name'],
-            'qty'      => $qty,
-            'subtotal' => round($price * $qty, 2),
+            'name'       => $p['name'],
+            'qty'        => $qty,
+            'subtotal'   => round($price * $qty, 2),
+            'size'       => $size,
+            'temp'       => $temp,
+            'sugar'      => $sugar,
+            'image_path' => $p['image_path'] ?? null,
         ];
     }
     mysqli_stmt_close($stmt_items);
@@ -137,6 +141,7 @@ try {
         'order_number'     => $order_number,
         'order_date'       => date('F d, Y · g:i A'),
         'customer_name'    => $customer_name,
+        'mobile'           => $mobile,
         'payment_method'   => $payment_method,
         'kiosk_order_type' => $kiosk_order_type,
         'total'            => $total,

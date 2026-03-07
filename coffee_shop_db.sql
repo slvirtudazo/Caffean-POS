@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 06, 2026 at 03:25 AM
+-- Generation Time: Mar 07, 2026 at 05:15 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -64,13 +64,6 @@ CREATE TABLE `favorites` (
   `product_id` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `favorites`
---
-
-INSERT INTO `favorites` (`id`, `user_id`, `product_id`, `created_at`) VALUES
-(11, 3, 4, '2026-03-04 17:02:36');
 
 -- --------------------------------------------------------
 
@@ -388,7 +381,8 @@ CREATE TABLE `user_carts` (
 --
 
 INSERT INTO `user_carts` (`cart_id`, `user_id`, `product_id`, `quantity`, `size`, `temperature`, `sugar_level`, `milk`, `addons`, `special_instructions`, `updated_at`) VALUES
-(751, 2, 63, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-03-03 03:52:49');
+(751, 2, 63, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-03-03 03:52:49'),
+(816, 3, 63, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-03-06 03:26:08');
 
 --
 -- Indexes for dumped tables
@@ -473,7 +467,7 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `favorites`
 --
 ALTER TABLE `favorites`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `orders`
@@ -509,7 +503,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `user_carts`
 --
 ALTER TABLE `user_carts`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=765;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=817;
 
 --
 -- Constraints for dumped tables

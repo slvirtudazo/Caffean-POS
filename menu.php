@@ -509,7 +509,11 @@ if ($category_filter > 0) {
                     icon.className = isNowActive ? 'fas fa-heart' : 'far fa-heart';
                     btn.classList.add('pop');
                     btn.addEventListener('animationend', () => btn.classList.remove('pop'), { once: true });
-                    showNotification(isNowActive ? 'Added to favorites!' : 'Removed from favorites.', isNowActive ? 'success' : 'info');
+
+                    // Get product name from card for notification
+                    const card  = document.querySelector(`.product-card[data-product-id="${productId}"]`);
+                    const pName = card?.querySelector('.product-name')?.textContent?.trim() || 'Product';
+                    showNotification(isNowActive ? pName + ' added to your favorites.' : pName + ' removed from your favorites.', isNowActive ? 'success' : 'info');
                 });
         }
 

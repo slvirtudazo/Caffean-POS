@@ -37,6 +37,27 @@ body.kiosk-no-scroll {
     margin: 0;
 }
 
+/* Back button — shared style for steps 1 & 2 (inside dark cart bar) */
+.kcb-back-btn {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    color: #fff;
+    padding: 0.45rem 1.1rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-subheading);
+    font-weight: 500;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.kcb-back-btn:hover {
+    background: rgba(255, 255, 255, 0.22);
+    border-color: rgba(255, 255, 255, 0.7);
+}
+
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -107,27 +128,6 @@ body.kiosk-no-scroll {
 }
 
 /* ── Progress bar ────────────────────────────────────────────── */
-
-/* Back button in progress bar */
-.btn-view-cart {
-    background: transparent;
-    border: 1.5px solid rgba(255, 255, 255, 0.45);
-    color: #fff;
-    padding: 0.35rem 0.85rem;
-    border-radius: var(--radius-sm);
-    font-family: var(--font-subheading);
-    font-weight: 600;
-    font-size: 0.82rem;
-    letter-spacing: 0.2px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-view-cart:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.8);
-}
-
 .kiosk-progress {
     background: var(--deep-maroon);
     padding: 1rem 0;
@@ -266,6 +266,9 @@ body.kiosk-no-scroll {
     max-width: 640px;
     width: 100%;
     flex: 0 1 auto;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+    pointer-events: auto;
 }
 
 /* Each column = one progress step slot */
@@ -294,6 +297,16 @@ body.kiosk-no-scroll {
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+    pointer-events: auto;
+}
+
+/* Hidden state — fade out simultaneously */
+.kcb-bar-center.kcb-hidden,
+.kcb-bar-right.kcb-hidden {
+    opacity: 0;
+    pointer-events: none;
 }
 
 /* Count badge — matches progress dot active style */
@@ -330,14 +343,14 @@ body.kiosk-no-scroll {
 }
 
 /* Right: Continue to Cart button */
-.kcb-btn {
+.kcb-continue-btn {
     background: rgba(255, 255, 255, 0.12);
     border: 1.5px solid rgba(255, 255, 255, 0.35);
     color: #fff;
     padding: 0.45rem 1.1rem;
     border-radius: var(--radius-sm);
     font-family: var(--font-subheading);
-    font-weight: 600;
+    font-weight: 500;
     font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -345,13 +358,13 @@ body.kiosk-no-scroll {
     flex-shrink: 0;
 }
 
-.kcb-btn:hover {
+.kcb-continue-btn:hover {
     background: rgba(255, 255, 255, 0.22);
     border-color: rgba(255, 255, 255, 0.7);
 }
 
 /* Dimmed and unclickable when cart is empty */
-.kcb-btn:disabled {
+.kcb-continue-btn:disabled {
     opacity: 0.38;
     cursor: not-allowed;
     pointer-events: none;
@@ -368,6 +381,7 @@ body.kiosk-no-scroll {
 }
 
 .welcome-inner {
+    padding-bottom: 60px;
     max-width: 700px;
     width: 100%;
 }
@@ -661,7 +675,7 @@ body.kiosk-no-scroll {
 /* Products area — independent scroll, flush with sidebar top */
 .kiosk-products-area {
     flex: 1;
-    padding: 2rem var(--spacing-md) 0;
+    padding: 0 var(--spacing-md) 0;
     overflow-y: auto;
     overflow-x: hidden;
     overscroll-behavior: contain;
@@ -672,8 +686,9 @@ body.kiosk-no-scroll {
     margin-bottom: 1.5rem;
 }
 
+/* Top breathing room when no active filter header is present */
 .kiosk-cat-group:first-of-type {
-    padding-top: 0;
+    padding-top: 2rem;
 }
 
 /* Category label — matches menu .menu-cat-label */
@@ -683,7 +698,7 @@ body.kiosk-no-scroll {
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--burgundy-wine);
-    padding-top: 0;
+    padding-top: 1.95rem;
     margin-bottom: 0.5rem;
     font-weight: 700;
 }
@@ -725,6 +740,11 @@ body.kiosk-no-scroll {
 .kiosk-active-header.visible {
     display: block;
     animation: kioskFilterSlideDown 0.2s ease both;
+}
+
+/* Remove first-group top spacing when active header is already providing it */
+.kiosk-active-header.visible ~ .kiosk-cat-group:first-of-type {
+    padding-top: 0;
 }
 
 /* Active filters row — exact match to .active-filters */
@@ -1074,6 +1094,16 @@ body.kiosk-no-scroll {
     color: var(--burgundy-wine);
 }
 
+/* Specs preview (size · temp · sugar · milk) — matches online ci-opts-preview */
+.k-ci-opts-preview {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: rgba(42, 0, 0, 0.42);
+    line-height: 1.4;
+    margin-top: 2px;
+}
+
 /* Delete button */
 .k-ci-del {
     background: none;
@@ -1138,40 +1168,41 @@ body.kiosk-no-scroll {
     resize: none;
 }
 
-/* Add-ons grid — matches online cart addon-item layout */
+/* Add-ons grid — matches online addons-grid / addon-item */
 .k-addons-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    gap: 6px 16px;
     margin-top: 2px;
 }
 
 .k-addon-item {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
     font-family: var(--font-body);
-    font-size: 0.78rem;
+    font-size: 0.83rem;
     font-weight: 500;
     color: var(--dark-brown);
     cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 6px;
-    border: 1px solid rgba(42, 0, 0, 0.1);
-    background: #fafafa;
-    transition: border-color 0.18s, background 0.18s;
+    padding: 3px 0;
+    transition: color 0.18s;
+    border: none;
+    background: none;
+    border-radius: 0;
 }
 
 .k-addon-item:hover {
-    border-color: var(--burgundy-wine);
-    background: rgba(91, 19, 18, 0.04);
+    color: var(--deep-maroon);
+    background: none;
 }
 
 .k-addon-item input[type="checkbox"] {
     accent-color: var(--deep-maroon);
-    width: 13px;
-    height: 13px;
+    width: 14px;
+    height: 14px;
     cursor: pointer;
+    flex-shrink: 0;
 }
 
 /* Quantity row — pill style matching online */
@@ -1221,6 +1252,27 @@ body.kiosk-no-scroll {
 }
 
 /* Cart order summary card — matches online sum-card */
+/* Summary column — sticky on the column, matching step 4's kiosk-co-right pattern */
+.kiosk-sum-col {
+    position: sticky;
+    top: 168px;
+    align-self: start;
+}
+
+/* Single item: stretch summary card to match product card height */
+.k-single-item {
+    align-items: stretch;
+}
+
+.k-single-item .kiosk-sum-col {
+    position: static;
+    align-self: stretch;
+}
+
+.k-single-item .kiosk-sum-card {
+    height: 100%;
+}
+
 .kiosk-sum-card {
     background: #fff;
     border-radius: 14px;
@@ -1229,8 +1281,25 @@ body.kiosk-no-scroll {
     padding: 22px;
     display: flex;
     flex-direction: column;
-    position: sticky;
-    top: 110px;
+}
+
+/* Scrollable item lines — max 4 items visible (~160px) */
+.k-sum-lines-wrap {
+    overflow-y: auto;
+    max-height: 160px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(42, 0, 0, 0.12) transparent;
+}
+
+.k-sum-lines-wrap::-webkit-scrollbar { width: 3px; }
+.k-sum-lines-wrap::-webkit-scrollbar-thumb {
+    background: rgba(42, 0, 0, 0.15);
+    border-radius: 4px;
+}
+
+/* Footer block — pushed to bottom in single-item layout */
+.k-sum-footer {
+    margin-top: auto;
 }
 
 /* Summary title — uppercase matching online sum-title */
@@ -1270,6 +1339,26 @@ body.kiosk-no-scroll {
     margin-left: 3px;
 }
 
+/* Opts line below item name in summary */
+.k-sum-opts {
+    display: block;
+    font-size: 0.76rem;
+    font-weight: 400;
+    color: rgba(42, 0, 0, 0.42);
+    margin-top: 1px;
+}
+
+/* Subtotal/fee calc row — matches online sum-calc-row */
+.k-sum-calc-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--deep-maroon);
+    padding: 4px 0;
+}
+
 /* Divider and total row */
 .k-sum-hr {
     border: none;
@@ -1288,7 +1377,6 @@ body.kiosk-no-scroll {
 }
 
 .k-sum-actions {
-    margin-top: auto;
     padding-top: 20px;
 }
 
@@ -1342,29 +1430,63 @@ body.kiosk-no-scroll {
     color: var(--deep-maroon);
 }
 
-/* Empty cart state */
-.kiosk-empty {
+/* Empty cart state — matches cart.php cart-empty-state */
+.cart-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    padding: 4rem 2rem;
-    color: var(--dark-brown);
+    padding: 7rem 1rem 4rem;
+    max-width: 560px;
+    margin: 0 auto;
 }
 
-.kiosk-empty i {
-    font-size: 3.5rem;
-    color: var(--warm-sand);
-    margin-bottom: 1rem;
-    display: block;
+.cart-empty-state i.fa-shopping-cart {
+    font-size: 3.8rem;
+    color: var(--burgundy-wine);
+    margin-bottom: 1.8rem;
 }
 
-.kiosk-empty h3 {
-    font-family: var(--font-heading);
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+.cart-empty-state h2 {
+    font-family: var(--font-subheading);
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: var(--deep-maroon);
+    margin-bottom: 0.75rem;
+    letter-spacing: 1px;
 }
 
-.kiosk-empty p {
-    color: #888;
+.cart-empty-state p {
     font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 500;
+    color: #7a6f65;
+    line-height: 1.6;
+    margin-bottom: 2.2rem;
+}
+
+/* Browse Menu button — outlined pill matching cart.php */
+.btn-browse-menu {
+    background: transparent;
+    color: var(--burgundy-wine);
+    border: 2px solid var(--burgundy-wine);
+    padding: 0.7rem 2rem;
+    border-radius: var(--radius-xxl);
+    font-family: var(--font-subheading);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-normal);
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-browse-menu:hover {
+    background: var(--burgundy-wine);
+    color: var(--ivory-cream);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 /* ── STEP 4 – Checkout ───────────────────────────────────────── */
@@ -1377,7 +1499,7 @@ body.kiosk-no-scroll {
 /* Two-column grid: left | right sticky summary */
 .kiosk-co-layout {
     display: grid;
-    grid-template-columns: 1fr 320px;
+    grid-template-columns: 7fr 5fr;
     grid-template-rows: auto;
     gap: 0 1.5rem;
     align-items: start;
@@ -1401,7 +1523,7 @@ body.kiosk-no-scroll {
 
 .kiosk-co-right {
     position: sticky;
-    top: 110px;
+    top: 168px;
 }
 
 /* Section cards — matches online checkout-card */
@@ -1476,25 +1598,56 @@ body.kiosk-no-scroll {
 }
 
 /* Order type display — muted read-only */
-.k-order-type-muted {
-    display: inline-flex;
+/* Order type read-only tiles — matches checkout payment-option style */
+.k-ot-opts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.k-ot-opt {
+    display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-family: var(--font-body);
-    font-size: 0.92rem;
-    color: #999;
-    font-style: italic;
+    gap: 10px;
+    padding: 10px 16px;
+    border: 1.5px solid rgba(42, 0, 0, 0.13);
+    border-radius: 10px;
+    font-family: var(--font-subheading);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: rgba(42, 0, 0, 0.65);
+    background: #fafafa;
+    pointer-events: none;
 }
 
-.k-order-type-muted i {
-    color: #bbb;
-    font-size: 0.9rem;
+.k-ot-opt.active {
+    border-color: var(--deep-maroon);
+    background: rgba(42, 0, 0, 0.06);
+    color: var(--deep-maroon);
+    box-shadow: 0 0 0 3px rgba(42, 0, 0, 0.07);
 }
 
-/* Payment options — matches online payment-option style */
+.k-ot-opt .pay-icon,
+.k-pay-opt .pay-icon {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    color: rgba(42, 0, 0, 0.4);
+    flex-shrink: 0;
+    transition: color 0.18s;
+}
+
+.k-ot-opt.active .pay-icon {
+    color: var(--deep-maroon);
+}
+
+/* Payment options — matches online 2×2 grid with horizontal layout */
 .k-pay-opts {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
 }
 
@@ -1502,16 +1655,15 @@ body.kiosk-no-scroll {
     position: relative;
     border: 1.5px solid rgba(42, 0, 0, 0.13);
     border-radius: 10px;
-    padding: 13px 12px;
+    padding: 13px 16px;
     cursor: pointer;
     transition: all 0.18s ease;
-    text-align: center;
     background: #fafafa;
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 6px;
+    justify-content: flex-start;
+    flex-direction: row;
+    gap: 10px;
 }
 
 .k-pay-opt input {
@@ -1521,7 +1673,6 @@ body.kiosk-no-scroll {
 .k-pay-opt:hover {
     border-color: var(--deep-maroon);
     background: rgba(42, 0, 0, 0.03);
-    color: var(--deep-maroon);
 }
 
 .k-pay-opt.active {
@@ -1538,17 +1689,18 @@ body.kiosk-no-scroll {
 }
 
 .k-pay-opt i {
-    font-size: 1.4rem;
+    font-size: 1rem;
     color: rgba(42, 0, 0, 0.4);
     transition: color 0.18s;
 }
 
-.k-pay-opt.active i {
+.k-pay-opt.active i,
+.k-pay-opt.active .pay-icon {
     color: var(--deep-maroon);
 }
 
 .k-pay-name {
-    font-size: 0.8rem;
+    font-size: 0.88rem;
     font-weight: 600;
     font-family: var(--font-subheading);
     color: rgba(42, 0, 0, 0.65);
@@ -1588,23 +1740,6 @@ body.kiosk-no-scroll {
 .k-co-sum-title i {
     font-size: 0.95rem;
     opacity: 0.8;
-}
-
-#co-sum-items .k-sum-line {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 8px;
-    padding: 7px 0;
-    border-bottom: 1px solid rgba(42, 0, 0, 0.04);
-    font-family: var(--font-body);
-    font-size: 0.88rem;
-    color: var(--deep-maroon);
-    font-weight: 600;
-}
-
-#co-sum-items .k-sum-line:last-child {
-    border-bottom: none;
 }
 
 .k-co-sum-actions {
@@ -2067,14 +2202,16 @@ body.kiosk-no-scroll {
     color: var(--ivory-cream);
     padding: 0.7rem 1.5rem;
     border-radius: var(--radius-sm);
-    font-family: var(--font-body);
+    font-family: var(--font-subheading);
+    font-weight: 500;
     font-size: 0.88rem;
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 16px rgba(42, 0, 0, 0.22);
     opacity: 0;
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease;
     z-index: 300;
     white-space: nowrap;
     max-width: 90vw;
+    pointer-events: none;
 }
 
 .kiosk-toast.show {
@@ -2127,7 +2264,7 @@ body.kiosk-no-scroll {
         width: 100%;
     }
 
-    .kiosk-sum-card {
+    .kiosk-sum-col {
         position: static;
     }
 
@@ -2166,6 +2303,10 @@ body.kiosk-no-scroll {
 
     .k-pay-opts {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .k-ot-opts {
+        grid-template-columns: 1fr 1fr;
     }
 
     .kiosk-co-card {
@@ -2281,11 +2422,11 @@ body.kiosk-no-scroll {
     background: rgba(245, 241, 232, 0.25);
 }
 
-/* Cancel button — outlined */
+/* Cancel/destructive button — outlined */
 .kd-btn-cancel {
     background: transparent;
-    color: var(--text-muted, #7a6a5a);
-    border: 1.5px solid var(--text-muted, #7a6a5a);
+    color: #9b1c1c;
+    border: 1.5px solid #9b1c1c;
     padding: 10px 22px;
     border-radius: 50px;
     font-family: var(--font-subheading);
@@ -2299,9 +2440,9 @@ body.kiosk-no-scroll {
 }
 
 .kd-btn-cancel:hover {
-    background: rgba(42, 0, 0, 0.04);
-    color: var(--dark-brown);
-    border-color: var(--dark-brown);
+    background: rgba(155, 28, 28, 0.07);
+    color: #7b1111;
+    border-color: #7b1111;
 }
 
 /* Go Back confirm button — maroon (non-destructive warning) */
@@ -2348,4 +2489,52 @@ body.kiosk-no-scroll {
     background: #B30000;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(42, 0, 0, 0.20);
+}
+
+/* ── Extracted inline style classes ─────────────────────────── */
+
+/* Receipt divider with top margin spacing */
+.kiosk-receipt-divider--top {
+    margin-top: 10px;
+}
+
+/* Receipt divider with compact vertical margin */
+.kiosk-receipt-divider--compact {
+    margin: 8px 0;
+}
+
+/* Inline (auto-width) variant of main CTA button */
+.btn-kiosk-inline {
+    width: auto;
+    display: inline-block;
+    padding: 0.75rem 2rem;
+}
+
+/* Optional label inside customize panel */
+.k-cust-optional {
+    font-size: 0.78rem;
+    font-family: var(--font-body);
+    font-weight: 400;
+    color: var(--dark-brown);
+    margin-left: 4px;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+/* Receipt divider top-spaced variant */
+.kiosk-receipt-divider--top {
+    margin-top: 10px;
+}
+
+/* Receipt divider compact variant */
+.kiosk-receipt-divider--compact {
+    margin: 8px 0;
+}
+
+/* Queue order customer name label */
+.queue-customer-name {
+    font-size: 0.65rem;
+    font-family: var(--font-body);
+    color: rgba(245, 241, 232, 0.6);
+    margin-top: 0.25rem;
 }

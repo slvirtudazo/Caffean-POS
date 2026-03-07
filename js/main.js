@@ -104,9 +104,12 @@ function setMenuCardUI(pid, qty) {
  * Adds, updates, or removes item from session cart via AJAX
  */
 function menuCardQty(pid, delta) {
-    const numEl = document.getElementById('mpf-num-' + pid);
+    const numEl  = document.getElementById('mpf-num-' + pid);
     const current = numEl ? parseInt(numEl.textContent) || 0 : 0;
-    const next = Math.max(0, current + delta);
+    const next    = Math.max(0, current + delta);
+
+    // Get product name from card for notification messages
+    const name = document.querySelector(`.product-card[data-product-id="${pid}"] .product-name`)?.textContent?.trim() || 'Product';
 
     if (next === 0) {
         /* Remove from cart */
@@ -121,7 +124,7 @@ function menuCardQty(pid, delta) {
                     updateCartCountDisplay(data.cart_count);
                     cart = cart.filter(i => i.id !== pid);
                     localStorage.setItem('coffeeCart', JSON.stringify(cart));
-                    showNotification('Removed from cart.', 'info');
+                    showNotification(name + ' removed from your cart.', 'info');
                 }
             })
             .catch(() => { });
@@ -142,7 +145,7 @@ function menuCardQty(pid, delta) {
                     trackInteraction(pid, 'add_to_cart');
                     cart.push({ id: pid, quantity: 1 });
                     localStorage.setItem('coffeeCart', JSON.stringify(cart));
-                    showNotification(data.message || 'Added to cart!', 'success');
+                    showNotification(name + ' added to your cart.', 'success');
                 } else {
                     showNotification(data.message || 'Could not add to cart.', 'error');
                 }
@@ -150,7 +153,7 @@ function menuCardQty(pid, delta) {
             .catch(() => { });
 
     } else {
-        /* Update quantity */
+        /* Update quantity — increase or decrease */
         const fd = new FormData();
         fd.append('action', 'update_qty');
         fd.append('product_id', pid);
@@ -163,7 +166,7 @@ function menuCardQty(pid, delta) {
                     updateCartCountDisplay(data.cart_count);
                     const item = cart.find(i => i.id === pid);
                     if (item) { item.quantity = next; localStorage.setItem('coffeeCart', JSON.stringify(cart)); }
-                    showNotification('Cart updated.', 'info');
+                    showNotification(delta > 0 ? 'Product quantity increased.' : 'Product quantity decreased.', 'info');
                 }
             })
             .catch(() => { });

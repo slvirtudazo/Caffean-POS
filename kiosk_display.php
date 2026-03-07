@@ -72,7 +72,7 @@ $upcoming    = array_filter($orders, fn($o) => $o['status'] === 'pending');
                                 </span>
                                 #<?= str_pad($o['order_id'], 3, '0', STR_PAD_LEFT) ?>
                                 <?php if (!empty($o['customer_name']) && $o['customer_name'] !== 'Guest'): ?>
-                                    <div style="font-size:0.65rem; font-family: var(--font-body); color: rgba(245,241,232,0.6); margin-top:0.25rem;">
+                                    <div class="queue-customer-name">
                                         <?= htmlspecialchars($o['customer_name']) ?>
                                     </div>
                                 <?php endif; ?>
@@ -98,7 +98,7 @@ $upcoming    = array_filter($orders, fn($o) => $o['status'] === 'pending');
                                 </span>
                                 #<?= str_pad($o['order_id'], 3, '0', STR_PAD_LEFT) ?>
                                 <?php if (!empty($o['customer_name']) && $o['customer_name'] !== 'Guest'): ?>
-                                    <div style="font-size:0.65rem; font-family: var(--font-body); color: rgba(245,241,232,0.6); margin-top:0.25rem;">
+                                    <div class="queue-customer-name">
                                         <?= htmlspecialchars($o['customer_name']) ?>
                                     </div>
                                 <?php endif; ?>
