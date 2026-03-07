@@ -146,12 +146,13 @@
   color: #fff;
 }
 
-/* ── Edit/Add Product Modal — viewport-fitted, footer always visible ── */
+/* ── Edit/Add Product Modal — wider, viewport-fitted, footer always visible ── */
 #editProductModal .modal,
 #addProductModal .modal {
   display: flex;
   flex-direction: column;
-  max-height: min(750px, calc(100vh - 16px));
+  max-width: 700px;
+  max-height: calc(100vh - 48px);
   height: auto;
 }
 
@@ -185,9 +186,80 @@
   margin-bottom: 14px;
 }
 
+/* Two-column form grid — stretch so both cols share equal height */
+.product-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 20px;
+  align-items: stretch;
+}
+
+/* Each column stacks its fields; last field expands to fill remaining height */
+.product-form-col {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Last form-group in each column stretches to fill remaining col height */
+.product-form-col .form-group:last-child {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+}
+
+/* Textarea and select inside the last group fill the group's height */
+.product-form-col .form-group:last-child textarea,
+.product-form-col .form-group:last-child select {
+  flex: 1;
+  height: auto;
+  min-height: 48px;
+  max-height: none;
+  resize: none;
+}
+
+/* Match select height to input height inside product modals */
+#addProductModal select.form-control,
+#editProductModal select.form-control {
+  height: 44px;
+}
+
+#addProductModal input.form-control,
+#editProductModal input.form-control {
+  height: 44px;
+}
+
+/* Full-width row spanning both columns (e.g. Description in Add modal) */
+.product-form-full {
+  grid-column: 1 / -1;
+  margin-bottom: 0;
+}
+
+/* Collapse to single column on narrow screens */
+@media (max-width: 600px) {
+  #editProductModal .modal,
+  #addProductModal .modal {
+    max-height: calc(100vh - 24px);
+    width: 96%;
+  }
+
+  .product-form-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+@media (max-height: 700px) {
+  #editProductModal .modal,
+  #addProductModal .modal {
+    max-height: calc(100vh - 24px);
+  }
+}
+
 textarea.form-control {
   min-height: 64px;
-  max-height: 64px;
+  max-height: none;
 }
 
 .view-img-wrap {

@@ -21,7 +21,10 @@ for ($i = 5; $i >= 0; $i--) {
     $spend_labels[] = date('M Y', strtotime("-$i months"));
     $row = mysqli_fetch_assoc(mysqli_query($conn,
         "SELECT COALESCE(SUM(total_amount),0) AS s FROM orders
-         WHERE YEAR(order_date)=$y AND MONTH(order_date)=$m AND status != 'cancelled'"
+         WHERE YEAR(order_date)=$y AND MONTH(order_date)=$m
+         AND ((is_kiosk = 1 AND status IN ('processing','completed'))
+           OR (COALESCE(is_kiosk,0) = 0 AND payment_method = 'Cash on Delivery' AND status = 'completed')
+           OR (COALESCE(is_kiosk,0) = 0 AND payment_method != 'Cash on Delivery' AND status IN ('processing','completed')))"
     ));
     $spend_data[] = (float)($row['s'] ?? 0);
 }
@@ -52,14 +55,24 @@ $pay_data = [];
 foreach ($pay_rows as $r) $pay_data[$r['payment_method']] = (int)$r['cnt'];
 
 // ── Summary stats ──────────────────────────────────────────────
+// Summary: kiosk (all) → processing/completed; online COD → completed; online card → processing/completed
 $summary = mysqli_fetch_assoc(mysqli_query($conn,
     "SELECT COUNT(*) AS total_orders,
-            COALESCE(SUM(total_amount),0) AS total_revenue,
+            COALESCE(SUM(CASE
+              WHEN is_kiosk = 1 AND status IN ('processing','completed') THEN total_amount
+              WHEN COALESCE(is_kiosk,0) = 0 AND payment_method = 'Cash on Delivery' AND status = 'completed' THEN total_amount
+              WHEN COALESCE(is_kiosk,0) = 0 AND payment_method != 'Cash on Delivery' AND status IN ('processing','completed') THEN total_amount
+              ELSE 0 END), 0) AS total_revenue,
+            COUNT(CASE
+              WHEN is_kiosk = 1 AND status IN ('processing','completed') THEN 1
+              WHEN COALESCE(is_kiosk,0) = 0 AND payment_method = 'Cash on Delivery' AND status = 'completed' THEN 1
+              WHEN COALESCE(is_kiosk,0) = 0 AND payment_method != 'Cash on Delivery' AND status IN ('processing','completed') THEN 1
+              END) AS qualifying_orders,
             COUNT(DISTINCT user_id) AS unique_customers
-     FROM orders WHERE status != 'cancelled'"
+     FROM orders"
 ));
-$avg_order = $summary['total_orders'] > 0
-    ? round($summary['total_revenue'] / $summary['total_orders'], 2)
+$avg_order = $summary['qualifying_orders'] > 0
+    ? round($summary['total_revenue'] / $summary['qualifying_orders'], 2)
     : 0;
 
 require 'includes/header.php';

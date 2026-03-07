@@ -306,38 +306,48 @@ include 'includes/header.php';
             onchange="previewImage(this,'add_img_preview','add_img_placeholder','add_img_remove','add_thumb_wrap')" />
         </div>
 
-        <div class="form-group">
-          <label class="form-label">Product Name</label>
-          <input type="text" name="name" class="form-control"
-            placeholder="e.g. Espresso" required />
-        </div>
+        <!-- ── Two-column form grid ── -->
+        <div class="product-form-grid">
 
-        <div class="form-group">
-          <label class="form-label">Category</label>
-          <select name="category_id" class="form-control" required>
-            <?php mysqli_data_seek($categories_result, 0);
-            while ($cat = mysqli_fetch_assoc($categories_result)): ?>
-              <option value="<?= $cat['category_id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
-            <?php endwhile; ?>
-          </select>
-        </div>
+          <!-- Left: Name, Category -->
+          <div class="product-form-col">
+            <div class="form-group">
+              <label class="form-label">Product Name</label>
+              <input type="text" name="name" class="form-control"
+                placeholder="e.g. Espresso" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <select name="category_id" class="form-control" required>
+                <?php mysqli_data_seek($categories_result, 0);
+                while ($cat = mysqli_fetch_assoc($categories_result)): ?>
+                  <option value="<?= $cat['category_id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
+                <?php endwhile; ?>
+              </select>
+            </div>
+          </div>
 
-        <div class="form-group">
-          <label class="form-label">Description</label>
-          <textarea name="description" class="form-control"
-            placeholder="Brief product description"></textarea>
-        </div>
+          <!-- Right: Price, Net Content -->
+          <div class="product-form-col">
+            <div class="form-group">
+              <label class="form-label">Price (&#8369;)</label>
+              <input type="number" name="price" class="form-control"
+                step="0.01" min="0" placeholder="0.00" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Net Content <span style="font-weight:400;color:#888;"></span></label>
+              <input type="text" name="net_content" class="form-control"
+                placeholder="e.g. 12 oz" />
+            </div>
+          </div>
 
-        <div class="form-group">
-          <label class="form-label">Price (&#8369;)</label>
-          <input type="number" name="price" class="form-control"
-            step="0.01" min="0" placeholder="0.00" required />
-        </div>
+          <!-- Full-width: Description -->
+          <div class="form-group product-form-full">
+            <label class="form-label">Description</label>
+            <textarea name="description" class="form-control"
+              placeholder="Brief product description"></textarea>
+          </div>
 
-        <div class="form-group">
-          <label class="form-label">Net Content <span style="font-weight:400;color:#888;">(e.g. 12 oz, 250g, 1L)</span></label>
-          <input type="text" name="net_content" class="form-control"
-            placeholder="e.g. 12 oz" />
         </div>
       </div>
       <div class="modal-footer">
@@ -386,46 +396,53 @@ include 'includes/header.php';
             onchange="previewImage(this,'edit_img_preview','edit_img_placeholder','edit_img_remove','edit_thumb_wrap')" />
         </div>
 
-        <div class="form-group">
-          <label class="form-label">Product Name</label>
-          <input type="text" name="name" id="edit_name" class="form-control"
-            placeholder="e.g. Espresso" required />
-        </div>
+        <!-- ── Two-column form grid ── -->
+        <div class="product-form-grid">
 
-        <div class="form-group">
-          <label class="form-label">Category</label>
-          <select name="category_id" id="edit_category_id" class="form-control" required>
-            <?php mysqli_data_seek($categories_result, 0);
-            while ($cat = mysqli_fetch_assoc($categories_result)): ?>
-              <option value="<?= $cat['category_id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
-            <?php endwhile; ?>
-          </select>
-        </div>
+          <!-- Left: Name, Category, Description -->
+          <div class="product-form-col">
+            <div class="form-group">
+              <label class="form-label">Product Name</label>
+              <input type="text" name="name" id="edit_name" class="form-control"
+                placeholder="e.g. Espresso" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <select name="category_id" id="edit_category_id" class="form-control" required>
+                <?php mysqli_data_seek($categories_result, 0);
+                while ($cat = mysqli_fetch_assoc($categories_result)): ?>
+                  <option value="<?= $cat['category_id'] ?>"><?= htmlspecialchars($cat['name']) ?></option>
+                <?php endwhile; ?>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Description</label>
+              <textarea name="description" id="edit_description" class="form-control"
+                placeholder="Brief product description"></textarea>
+            </div>
+          </div>
 
-        <div class="form-group">
-          <label class="form-label">Description</label>
-          <textarea name="description" id="edit_description" class="form-control"
-            placeholder="Brief product description"></textarea>
-        </div>
+          <!-- Right: Price, Net Content, Status -->
+          <div class="product-form-col">
+            <div class="form-group">
+              <label class="form-label">Price (&#8369;)</label>
+              <input type="number" name="price" id="edit_price" class="form-control"
+                step="0.01" min="0" placeholder="0.00" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Net Content <span style="font-weight:400;color:#888;"></span></label>
+              <input type="text" name="net_content" id="edit_net_content" class="form-control"
+                placeholder="e.g. 12 oz" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Status</label>
+              <select name="status" id="edit_status" class="form-control">
+                <option value="1">Active</option>
+                <option value="0">Hidden</option>
+              </select>
+            </div>
+          </div>
 
-        <div class="form-group">
-          <label class="form-label">Price (&#8369;)</label>
-          <input type="number" name="price" id="edit_price" class="form-control"
-            step="0.01" min="0" placeholder="0.00" required />
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Net Content <span style="font-weight:400;color:#888;">(e.g. 12 oz, 250g, 1L)</span></label>
-          <input type="text" name="net_content" id="edit_net_content" class="form-control"
-            placeholder="e.g. 12 oz" />
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Status</label>
-          <select name="status" id="edit_status" class="form-control">
-            <option value="1">Active</option>
-            <option value="0">Hidden</option>
-          </select>
         </div>
       </div>
       <div class="modal-footer">

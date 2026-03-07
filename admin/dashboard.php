@@ -35,9 +35,12 @@ $stats['customers_inactive'] = (int)mysqli_fetch_assoc(mysqli_query($conn,
 
 $stats['customers_total'] = $stats['customers_active'] + $stats['customers_inactive'];
 
-// Total revenue from completed orders only
+// Total revenue: kiosk (all) → processing/completed; online COD → completed; online card → processing/completed
 $stats['revenue'] = (float)mysqli_fetch_assoc(mysqli_query($conn,
-    "SELECT COALESCE(SUM(total_amount), 0) AS r FROM orders WHERE status = 'completed'"
+    "SELECT COALESCE(SUM(total_amount), 0) AS r FROM orders WHERE
+     (is_kiosk = 1 AND status IN ('processing','completed'))
+     OR (COALESCE(is_kiosk,0) = 0 AND payment_method = 'Cash on Delivery' AND status = 'completed')
+     OR (COALESCE(is_kiosk,0) = 0 AND payment_method != 'Cash on Delivery' AND status IN ('processing','completed'))"
 ))['r'];
 
 // ── Revenue chart: last 7 days ────────────────────────────────
@@ -47,8 +50,11 @@ for ($i = 6; $i >= 0; $i--) {
     $date           = date('Y-m-d', strtotime("-$i days"));
     $chart_labels[] = date('M j', strtotime("-$i days"));
     $row            = mysqli_fetch_assoc(mysqli_query($conn,
-        "SELECT COALESCE(SUM(total_amount), 0) AS rev
-         FROM orders WHERE DATE(order_date) = '$date' AND status != 'cancelled'"
+        "SELECT COALESCE(SUM(total_amount), 0) AS rev FROM orders
+         WHERE DATE(order_date) = '$date'
+         AND ((is_kiosk = 1 AND status IN ('processing','completed'))
+           OR (COALESCE(is_kiosk,0) = 0 AND payment_method = 'Cash on Delivery' AND status = 'completed')
+           OR (COALESCE(is_kiosk,0) = 0 AND payment_method != 'Cash on Delivery' AND status IN ('processing','completed')))"
     ));
     $chart_data[] = (float)$row['rev'];
 }
@@ -104,8 +110,18 @@ $tm_orders = (int)mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS c F
 $lm_orders = (int)mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS c FROM orders WHERE DATE_FORMAT(order_date,'%Y-%m')='$last_month'"))['c'];
 $orders_delta = $lm_orders > 0 ? round((($tm_orders - $lm_orders) / $lm_orders) * 100, 1) : ($tm_orders > 0 ? 100 : 0);
 
-$tm_revenue = (float)mysqli_fetch_assoc(mysqli_query($conn, "SELECT COALESCE(SUM(total_amount),0) AS r FROM orders WHERE DATE_FORMAT(order_date,'%Y-%m')='$this_month' AND status!='cancelled'"))['r'];
-$lm_revenue = (float)mysqli_fetch_assoc(mysqli_query($conn, "SELECT COALESCE(SUM(total_amount),0) AS r FROM orders WHERE DATE_FORMAT(order_date,'%Y-%m')='$last_month' AND status!='cancelled'"))['r'];
+$tm_revenue = (float)mysqli_fetch_assoc(mysqli_query($conn,
+    "SELECT COALESCE(SUM(total_amount),0) AS r FROM orders
+     WHERE DATE_FORMAT(order_date,'%Y-%m')='$this_month'
+     AND ((is_kiosk = 1 AND status IN ('processing','completed'))
+       OR (COALESCE(is_kiosk,0) = 0 AND payment_method = 'Cash on Delivery' AND status = 'completed')
+       OR (COALESCE(is_kiosk,0) = 0 AND payment_method != 'Cash on Delivery' AND status IN ('processing','completed')))"))['r'];
+$lm_revenue = (float)mysqli_fetch_assoc(mysqli_query($conn,
+    "SELECT COALESCE(SUM(total_amount),0) AS r FROM orders
+     WHERE DATE_FORMAT(order_date,'%Y-%m')='$last_month'
+     AND ((is_kiosk = 1 AND status IN ('processing','completed'))
+       OR (COALESCE(is_kiosk,0) = 0 AND payment_method = 'Cash on Delivery' AND status = 'completed')
+       OR (COALESCE(is_kiosk,0) = 0 AND payment_method != 'Cash on Delivery' AND status IN ('processing','completed')))"))['r'];
 $revenue_delta = $lm_revenue > 0 ? round((($tm_revenue - $lm_revenue) / $lm_revenue) * 100, 1) : ($tm_revenue > 0 ? 100 : 0);
 
 $tm_customers = (int)mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS c FROM users WHERE role='customer' AND DATE_FORMAT(created_at,'%Y-%m')='$this_month'"))['c'];

@@ -28,36 +28,54 @@ mysqli_stmt_execute($stmt);
 $user = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 mysqli_stmt_close($stmt);
 
-/* Fetch order stats */
+/* Fetch order stats — includes kiosk orders matched by mobile number */
 $stmt = mysqli_prepare($conn,
     "SELECT
-     COUNT(*)                                          AS total_orders,
-     COALESCE(SUM(total_amount), 0)                    AS total_spent,
-     COUNT(CASE WHEN status = 'pending'   THEN 1 END)  AS pending_orders,
-     COUNT(CASE WHEN status = 'completed' THEN 1 END)  AS completed_orders,
-     COUNT(CASE WHEN status = 'cancelled' THEN 1 END)  AS cancelled_orders
-     FROM orders WHERE user_id = ?");
-mysqli_stmt_bind_param($stmt, "i", $user_id);
+     COUNT(*)                                                     AS total_orders,
+     COALESCE(SUM(CASE
+       WHEN is_kiosk = 1 AND payment_method = 'Pay at the counter (Cash)' AND status IN ('processing','completed') THEN total_amount
+       WHEN is_kiosk = 1 AND payment_method != 'Pay at the counter (Cash)' AND status IN ('processing','completed') THEN total_amount
+       WHEN COALESCE(is_kiosk,0) = 0 AND payment_method = 'Cash on Delivery' AND status = 'completed' THEN total_amount
+       WHEN COALESCE(is_kiosk,0) = 0 AND payment_method != 'Cash on Delivery' AND status IN ('processing','completed') THEN total_amount
+       ELSE 0 END), 0)                                           AS total_spent,
+     COUNT(CASE
+       WHEN is_kiosk = 1 AND payment_method = 'Pay at the counter (Cash)' AND status IN ('processing','completed') THEN 1
+       WHEN is_kiosk = 1 AND payment_method != 'Pay at the counter (Cash)' AND status IN ('processing','completed') THEN 1
+       WHEN COALESCE(is_kiosk,0) = 0 AND payment_method = 'Cash on Delivery' AND status = 'completed' THEN 1
+       WHEN COALESCE(is_kiosk,0) = 0 AND payment_method != 'Cash on Delivery' AND status IN ('processing','completed') THEN 1
+       END)                                                      AS qualifying_orders,
+     COUNT(CASE WHEN status = 'pending'    THEN 1 END)           AS pending_orders,
+     COUNT(CASE WHEN status = 'processing' THEN 1 END)           AS processing_orders,
+     COUNT(CASE WHEN status = 'completed'  THEN 1 END)           AS completed_orders,
+     COUNT(CASE WHEN status = 'cancelled'  THEN 1 END)           AS cancelled_orders
+     FROM orders
+     WHERE user_id = ? OR (is_kiosk = 1 AND mobile_number = (SELECT mobile_number FROM users WHERE user_id = ?))");
+mysqli_stmt_bind_param($stmt, "ii", $user_id, $user_id);
 mysqli_stmt_execute($stmt);
 $stats = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 mysqli_stmt_close($stmt);
 
-/* Fetch full order history — DESC by date for default load */
+/* Fetch full order history — includes kiosk orders matched by mobile */
 $stmt = mysqli_prepare($conn,
-    "SELECT o.order_id, o.total_amount, o.status, o.order_date,
-     o.payment_method, o.order_type,
+    "SELECT o.order_id, o.order_number, o.total_amount, o.status, o.order_date,
+     o.payment_method, o.order_type, o.is_kiosk, o.kiosk_order_type,
      COUNT(oi.id) AS item_count
      FROM orders o
      LEFT JOIN order_items oi ON o.order_id = oi.order_id
      WHERE o.user_id = ?
+        OR (o.is_kiosk = 1 AND o.mobile_number = (SELECT mobile_number FROM users WHERE user_id = ?))
      GROUP BY o.order_id
      ORDER BY o.order_date DESC");
-mysqli_stmt_bind_param($stmt, "i", $user_id);
+mysqli_stmt_bind_param($stmt, "ii", $user_id, $user_id);
 mysqli_stmt_execute($stmt);
 $orders_result = mysqli_stmt_get_result($stmt);
 mysqli_stmt_close($stmt);
 $orders_arr = [];
 while ($row = mysqli_fetch_assoc($orders_result)) $orders_arr[] = $row;
+
+/* Separate online vs kiosk for sub-tabs */
+$online_orders = array_values(array_filter($orders_arr, fn($o) => empty($o['is_kiosk'])));
+$kiosk_orders  = array_values(array_filter($orders_arr, fn($o) => !empty($o['is_kiosk'])));
 
 /* ── INSIGHTS DATA ───────────────────────────────────────────── */
 
@@ -69,50 +87,60 @@ for ($i = 5; $i >= 0; $i--) {
     $m = date('m', strtotime("-$i months"));
     $spend_labels[] = date('M Y', strtotime("-$i months"));
     $row = mysqli_fetch_assoc(mysqli_prepare_and_execute($conn,
-        "SELECT COALESCE(SUM(total_amount),0) AS s FROM orders
-         WHERE user_id = ? AND YEAR(order_date)=? AND MONTH(order_date)=?
-         AND status != 'cancelled'",
-        "iii", [$user_id, $y, $m]));
+        "SELECT COALESCE(SUM(CASE
+           WHEN is_kiosk = 1 AND payment_method = 'Pay at the counter (Cash)' AND status IN ('processing','completed') THEN total_amount
+           WHEN is_kiosk = 1 AND payment_method != 'Pay at the counter (Cash)' AND status IN ('processing','completed') THEN total_amount
+           WHEN COALESCE(is_kiosk,0) = 0 AND payment_method = 'Cash on Delivery' AND status = 'completed' THEN total_amount
+           WHEN COALESCE(is_kiosk,0) = 0 AND payment_method != 'Cash on Delivery' AND status IN ('processing','completed') THEN total_amount
+           ELSE 0 END),0) AS s FROM orders
+         WHERE (user_id = ? OR (is_kiosk = 1 AND mobile_number = (SELECT mobile_number FROM users WHERE user_id = ?)))
+           AND YEAR(order_date)=? AND MONTH(order_date)=?",
+        "iiii", [$user_id, $user_id, $y, $m]));
     $spend_data[] = (float)($row['s'] ?? 0);
 }
 
-/* Top 5 ordered items */
+/* Top 5 ordered items — includes kiosk orders */
 $stmt = mysqli_prepare($conn,
     "SELECT p.name, SUM(oi.quantity) AS qty, COALESCE(p.image_path,'') AS img
      FROM order_items oi
      JOIN orders o ON oi.order_id = o.order_id
      JOIN products p ON oi.product_id = p.product_id
      WHERE o.user_id = ?
+        OR (o.is_kiosk = 1 AND o.mobile_number = (SELECT mobile_number FROM users WHERE user_id = ?))
      GROUP BY oi.product_id
      ORDER BY qty DESC LIMIT 5");
-mysqli_stmt_bind_param($stmt, "i", $user_id);
+mysqli_stmt_bind_param($stmt, "ii", $user_id, $user_id);
 mysqli_stmt_execute($stmt);
 $top_items = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
 mysqli_stmt_close($stmt);
 
-/* Order type breakdown */
+/* Order type breakdown — includes kiosk orders */
 $stmt = mysqli_prepare($conn,
-    "SELECT order_type, COUNT(*) AS cnt FROM orders WHERE user_id = ? GROUP BY order_type");
-mysqli_stmt_bind_param($stmt, "i", $user_id);
+    "SELECT order_type, COUNT(*) AS cnt FROM orders
+     WHERE user_id = ? OR (is_kiosk = 1 AND mobile_number = (SELECT mobile_number FROM users WHERE user_id = ?))
+     GROUP BY order_type");
+mysqli_stmt_bind_param($stmt, "ii", $user_id, $user_id);
 mysqli_stmt_execute($stmt);
 $type_rows = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
 mysqli_stmt_close($stmt);
 $type_data = [];
 foreach ($type_rows as $r) $type_data[ucfirst($r['order_type'])] = (int)$r['cnt'];
 
-/* Payment method breakdown */
+/* Payment method breakdown — includes kiosk orders */
 $stmt = mysqli_prepare($conn,
-    "SELECT payment_method, COUNT(*) AS cnt FROM orders WHERE user_id = ? GROUP BY payment_method");
-mysqli_stmt_bind_param($stmt, "i", $user_id);
+    "SELECT payment_method, COUNT(*) AS cnt FROM orders
+     WHERE user_id = ? OR (is_kiosk = 1 AND mobile_number = (SELECT mobile_number FROM users WHERE user_id = ?))
+     GROUP BY payment_method");
+mysqli_stmt_bind_param($stmt, "ii", $user_id, $user_id);
 mysqli_stmt_execute($stmt);
 $pay_rows = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
 mysqli_stmt_close($stmt);
 $pay_data = [];
 foreach ($pay_rows as $r) $pay_data[$r['payment_method']] = (int)$r['cnt'];
 
-/* Average order value */
-$avg_order = $stats['total_orders'] > 0
-    ? round($stats['total_spent'] / $stats['total_orders'], 2)
+/* Average order value — based on qualifying (reflected) orders only */
+$avg_order = $stats['qualifying_orders'] > 0
+    ? round($stats['total_spent'] / $stats['qualifying_orders'], 2)
     : 0;
 
 /* Helper: prepare + bind + execute in one call */
@@ -176,12 +204,12 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
         </div>
     </nav>
 
-    <!-- ── FAVORITES DELETE MODAL ─────────────────────────────── -->
+    <!-- ── FAVORITES REMOVE MODAL — matches cart.php style ─────── -->
     <div class="cart-modal-overlay" id="favDeleteModal">
         <div class="cart-modal">
             <div class="cart-modal-header">
                 <h3>Remove Item</h3>
-                <button class="cart-modal-close" onclick="closeFavDeleteModal()" title="Close">&#x2715;</button>
+                <button class="cart-modal-close" onclick="closeFavDeleteModal()">&#x2715;</button>
             </div>
             <div class="cart-modal-body">
                 <p class="cart-modal-subtitle">Are you sure you want to remove <strong id="favDeleteName"></strong> from your favorites? This cannot be undone.</p>
@@ -264,7 +292,7 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                     </div>
                     <div class="stat-col">
                         <span class="stat-lbl">PENDING</span>
-                        <span class="stat-val"><?= number_format($stats['pending_orders']) ?></span>
+                        <span class="stat-val"><?= number_format($stats['pending_orders'] + $stats['processing_orders']) ?></span>
                     </div>
                 </div>
 
@@ -274,60 +302,143 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                     <div class="acct-tab-panel" id="panel-orders">
                         <div class="acct-card-header">
                             <div>
-                                <h3>Recent Orders</h3>
+                                <h3>Order History</h3>
                                 <p>Showing <?= count($orders_arr) ?> total orders from your history</p>
                             </div>
                         </div>
 
-                        <?php if (empty($orders_arr)): ?>
-                            <div class="acct-empty-state">
-                                <i class="bi bi-bag"></i>
-                                <p>No orders yet.</p>
-                            </div>
-                        <?php else: ?>
-                            <div class="table-responsive">
-                                <table class="acct-orders-table" id="ordersTable">
-                                    <thead>
-                                        <tr>
-                                            <th data-sort="text">ORDER ID</th>
-                                            <th data-sort="date">DATE</th>
-                                            <th data-sort="number">ITEMS</th>
-                                            <th data-sort="text">TYPE</th>
-                                            <th data-sort="text">PAYMENT</th>
-                                            <th data-sort="number">AMOUNT</th>
-                                            <th data-sort="text">STATUS</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($orders_arr as $o):
-                                            $orderId = fmt_id('OR', $o['order_id'], $o['order_date']);
-                                        ?>
-                                            <tr>
-                                                <td class="td-id" data-value="<?= htmlspecialchars($orderId) ?>"><?= $orderId ?></td>
-                                                <td data-value="<?= $o['order_date'] ?>"><?= date('M d, Y', strtotime($o['order_date'])) ?></td>
-                                                <td data-value="<?= (int)$o['item_count'] ?>"><?= $o['item_count'] ?> item<?= $o['item_count'] != 1 ? 's' : '' ?></td>
-                                                <td data-value="<?= htmlspecialchars($o['order_type'] ?? 'Pickup') ?>"><?= ucfirst(htmlspecialchars($o['order_type'] ?? 'Pickup')) ?></td>
-                                                <td data-value="<?= htmlspecialchars($o['payment_method']) ?>"><?= htmlspecialchars($o['payment_method']) ?></td>
-                                                <td class="td-amount" data-value="<?= $o['total_amount'] ?>">&#8369;<?= number_format($o['total_amount'], 2) ?></td>
-                                                <td data-value="<?= strtolower($o['status']) ?>">
-                                                    <span class="status-badge status-<?= strtolower($o['status']) ?>">
-                                                        <?= strtoupper($o['status']) ?>
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            </div>
+                        <!-- Sub-tab navigation -->
+                        <div class="acct-subtabs">
+                            <button class="acct-subtab active" onclick="openOrderSubTab('online', this)">
+                                Order Online <span class="acct-subtab-count"><?= count($online_orders) ?></span>
+                            </button>
+                            <button class="acct-subtab" onclick="openOrderSubTab('kiosk', this)">
+                                Self-Order Kiosk <span class="acct-subtab-count"><?= count($kiosk_orders) ?></span>
+                            </button>
+                        </div>
 
-                            <div class="acct-pagination">
-                                <span class="page-info">Page 1 of 1</span>
-                                <div class="page-controls">
-                                    <button class="btn-page"><i class="bi bi-chevron-left"></i></button>
-                                    <button class="btn-page"><i class="bi bi-chevron-right"></i></button>
+                        <!-- Online Orders sub-panel -->
+                        <div class="acct-subtab-panel" id="subtab-online">
+                            <?php if (empty($online_orders)): ?>
+                                <div class="acct-empty-state">
+                                    <i class="bi bi-bag"></i>
+                                    <p>No online orders yet.</p>
                                 </div>
-                            </div>
-                        <?php endif; ?>
+                            <?php else: ?>
+                                <div class="acct-subtab-toolbar">
+                                    <div class="acct-subtab-search">
+                                        <span class="srch-icon"><i class="fas fa-search"></i></span>
+                                        <input type="text" id="onlineSearch" placeholder="Search orders..." oninput="filterOrderTable('onlineOrdersTable', this.value, 'onlinePageInfo', 'onlinePrev', 'onlineNext')" />
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="acct-orders-table" id="onlineOrdersTable">
+                                        <thead>
+                                            <tr>
+                                                <th data-sort="text">ORDER ID</th>
+                                                <th data-sort="date">DATE &amp; TIME</th>
+                                                <th data-sort="number">ITEMS</th>
+                                                <th data-sort="text">TYPE</th>
+                                                <th data-sort="text">PAYMENT</th>
+                                                <th data-sort="number">AMOUNT</th>
+                                                <th data-sort="text">STATUS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($online_orders as $o):
+                                                $orderId = !empty($o['order_number']) ? $o['order_number'] : fmt_id('OR', $o['order_id'], $o['order_date']);
+                                                $status  = strtolower($o['status']);
+                                            ?>
+                                                <tr>
+                                                    <td class="td-id" data-value="<?= htmlspecialchars($orderId) ?>"><?= htmlspecialchars($orderId) ?></td>
+                                                    <td data-value="<?= $o['order_date'] ?>"><?= date('M d, Y · g:i A', strtotime($o['order_date'])) ?></td>
+                                                    <td data-value="<?= (int)$o['item_count'] ?>"><?= $o['item_count'] ?> item<?= $o['item_count'] != 1 ? 's' : '' ?></td>
+                                                    <td data-value="<?= htmlspecialchars(ucfirst($o['order_type'] ?? 'Pickup')) ?>"><?= htmlspecialchars(ucfirst($o['order_type'] ?? 'Pickup')) ?></td>
+                                                    <td data-value="<?= htmlspecialchars($o['payment_method']) ?>"><?= htmlspecialchars($o['payment_method']) ?></td>
+                                                    <td class="td-amount" data-value="<?= $o['total_amount'] ?>">
+                                                        &#8369;<?= number_format($o['total_amount'], 2) ?>
+                                                    </td>
+                                                    <td data-value="<?= $status ?>">
+                                                        <span class="status-badge status-<?= $status ?>">
+                                                            <?= strtoupper($status) ?>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="acct-pagination" id="onlinePagination">
+                                    <span class="page-info" id="onlinePageInfo">Page 1 of 1</span>
+                                    <div class="page-controls">
+                                        <button class="btn-page" id="onlinePrev"><i class="bi bi-chevron-left"></i></button>
+                                        <button class="btn-page" id="onlineNext"><i class="bi bi-chevron-right"></i></button>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+
+                        <!-- Kiosk Orders sub-panel -->
+                        <div class="acct-subtab-panel hidden" id="subtab-kiosk">
+                            <?php if (empty($kiosk_orders)): ?>
+                                <div class="acct-empty-state">
+                                    <i class="bi bi-display"></i>
+                                    <p>No kiosk orders yet.</p>
+                                </div>
+                            <?php else: ?>
+                                <div class="acct-subtab-toolbar">
+                                    <div class="acct-subtab-search">
+                                        <span class="srch-icon"><i class="fas fa-search"></i></span>
+                                        <input type="text" id="kioskSearch" placeholder="Search orders..." oninput="filterOrderTable('kioskOrdersTable', this.value, 'kioskPageInfo', 'kioskPrev', 'kioskNext')" />
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="acct-orders-table" id="kioskOrdersTable">
+                                        <thead>
+                                            <tr>
+                                                <th data-sort="text">ORDER ID</th>
+                                                <th data-sort="date">DATE &amp; TIME</th>
+                                                <th data-sort="number">ITEMS</th>
+                                                <th data-sort="text">TYPE</th>
+                                                <th data-sort="text">PAYMENT</th>
+                                                <th data-sort="number">AMOUNT</th>
+                                                <th data-sort="text">STATUS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($kiosk_orders as $o):
+                                                $orderId   = !empty($o['order_number']) ? $o['order_number'] : fmt_id('OR', $o['order_id'], $o['order_date']);
+                                                $status    = strtolower($o['status']);
+                                                $kioskType = $o['kiosk_order_type'] === 'dine_in' ? 'Dine In' : 'Take Out';
+                                            ?>
+                                                <tr>
+                                                    <td class="td-id" data-value="<?= htmlspecialchars($orderId) ?>"><?= htmlspecialchars($orderId) ?></td>
+                                                    <td data-value="<?= $o['order_date'] ?>"><?= date('M d, Y · g:i A', strtotime($o['order_date'])) ?></td>
+                                                    <td data-value="<?= (int)$o['item_count'] ?>"><?= $o['item_count'] ?> item<?= $o['item_count'] != 1 ? 's' : '' ?></td>
+                                                    <td data-value="<?= $kioskType ?>"><?= $kioskType ?></td>
+                                                    <td data-value="<?= htmlspecialchars($o['payment_method']) ?>"><?= htmlspecialchars($o['payment_method']) ?></td>
+                                                    <td class="td-amount" data-value="<?= $o['total_amount'] ?>">
+                                                        &#8369;<?= number_format($o['total_amount'], 2) ?>
+                                                    </td>
+                                                    <td data-value="<?= $status ?>">
+                                                        <span class="status-badge status-<?= $status ?>">
+                                                            <?= strtoupper($status) ?>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="acct-pagination" id="kioskPagination">
+                                    <span class="page-info" id="kioskPageInfo">Page 1 of 1</span>
+                                    <div class="page-controls">
+                                        <button class="btn-page" id="kioskPrev"><i class="bi bi-chevron-left"></i></button>
+                                        <button class="btn-page" id="kioskNext"><i class="bi bi-chevron-right"></i></button>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
 
                     <!-- ── FAVORITES TAB ────────────────────────────────── -->
@@ -767,7 +878,66 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
             });
         }
 
-        initSortableTable('ordersTable');
+        initSortableTable('onlineOrdersTable');
+        initSortableTable('kioskOrdersTable');
+
+        /* ── ORDER SUB-TAB SWITCHER ─────────────────────────────── */
+        function openOrderSubTab(name, el) {
+            document.querySelectorAll('.acct-subtab').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            document.querySelectorAll('.acct-subtab-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById('subtab-' + name).classList.remove('hidden');
+        }
+
+        /* ── TABLE SEARCH FILTER ────────────────────────────────── */
+        function filterOrderTable(tableId, query, infoId, prevId, nextId) {
+            const table = document.getElementById(tableId);
+            if (!table) return;
+            const q = query.trim().toLowerCase();
+            table.querySelectorAll('tbody tr').forEach(row => {
+                row.dataset.filtered = q === '' || row.textContent.toLowerCase().includes(q) ? '1' : '0';
+            });
+            renderPaginatedTable(tableId, 1, infoId, prevId, nextId);
+        }
+
+        /* ── PAGINATED TABLE RENDERER ───────────────────────────── */
+        const _pgState = {};
+
+        function renderPaginatedTable(tableId, page, infoId, prevId, nextId) {
+            const table = document.getElementById(tableId);
+            if (!table) return;
+            const perPage = 10;
+            const rows    = Array.from(table.querySelectorAll('tbody tr'))
+                .filter(r => r.dataset.filtered !== '0');
+            const total   = Math.max(1, Math.ceil(rows.length / perPage));
+            page = Math.min(Math.max(1, page), total);
+            _pgState[tableId] = { page, infoId, prevId, nextId };
+
+            Array.from(table.querySelectorAll('tbody tr')).forEach(r => r.style.display = 'none');
+            rows.slice((page - 1) * perPage, page * perPage).forEach(r => r.style.display = '');
+
+            document.getElementById(infoId).textContent = `Page ${page} of ${total}`;
+            document.getElementById(prevId).disabled = page <= 1;
+            document.getElementById(nextId).disabled = page >= total;
+        }
+
+        /* ── SIMPLE TABLE PAGINATION ────────────────────────────── */
+        function initTablePagination(tableId, infoId, prevId, nextId) {
+            Array.from(document.getElementById(tableId)?.querySelectorAll('tbody tr') ?? [])
+                .forEach(r => r.dataset.filtered = '1');
+            renderPaginatedTable(tableId, 1, infoId, prevId, nextId);
+            document.getElementById(prevId).addEventListener('click', () => {
+                const s = _pgState[tableId];
+                if (s) renderPaginatedTable(tableId, s.page - 1, s.infoId, s.prevId, s.nextId);
+            });
+            document.getElementById(nextId).addEventListener('click', () => {
+                const s = _pgState[tableId];
+                if (s) renderPaginatedTable(tableId, s.page + 1, s.infoId, s.prevId, s.nextId);
+            });
+        }
+
+        initTablePagination('onlineOrdersTable', 'onlinePageInfo', 'onlinePrev', 'onlineNext');
+        initTablePagination('kioskOrdersTable',  'kioskPageInfo',  'kioskPrev',  'kioskNext');
 
         /* ── FAVORITES ──────────────────────────────────────────── */
         let favPage = 1;
@@ -816,7 +986,7 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
             return items.map(item => {
                 const img = item.image_path
                     ? `<img src="${item.image_path}" class="fav-product-img" alt="${item.name}">`
-                    : `<div class="fav-product-img" style="background:rgba(42,0,0,0.06);display:flex;align-items:center;justify-content:center;margin:0 auto;"><i class="bi bi-cup-hot" style="color:var(--dark-brown);opacity:0.4;font-size:1.4rem;"></i></div>`;
+                    : `<div class="fav-product-img" style="background:rgba(42,0,0,0.06);display:flex;align-items:center;justify-content:center;"><i class="bi bi-cup-hot" style="color:var(--dark-brown);opacity:0.4;font-size:1.4rem;"></i></div>`;
                 return `<tr>
                     <td>${img}</td>
                     <td class="td-fav-name">${item.name}</td>
@@ -873,7 +1043,7 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                 </button>`;
         }
 
-        /* ── ADD TO CART ────────────────────────────────────────── */
+        /* ── ADD TO CART — matches menu/supplies.php addToProductCart ── */
         function favAddToCart(productId, productName) {
             const fd = new FormData();
             fd.append('product_id', productId);
@@ -883,16 +1053,25 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                 .then(r => r.json())
                 .then(d => {
                     if (d.success) {
-                        showFavToast(`${productName} added to cart!`);
-                        if (typeof updateCartCount === 'function') updateCartCount();
+                        // Detect whether item was newly added or quantity increased
+                        const isUpdate = d.message && d.message.includes('quantity updated');
+                        const msg = isUpdate
+                            ? 'Product quantity increased.'
+                            : productName + ' added to your cart.';
+                        showNotification(msg, 'success');
+                        // Update cart badge count in real-time
+                        if (typeof updateCartCountDisplay === 'function' && d.cart_count != null)
+                            updateCartCountDisplay(d.cart_count);
+                        // Animate cart icon
+                        if (typeof animateCartIcon === 'function') animateCartIcon();
                     } else {
-                        showFavToast(d.message || 'Failed to add to cart.');
+                        showNotification(d.message || 'Could not add to cart.', 'error');
                     }
                 })
-                .catch(() => showFavToast('Could not add to cart. Please try again.'));
+                .catch(() => showNotification('Error adding to cart.', 'error'));
         }
 
-        /* ── DELETE MODAL ───────────────────────────────────────── */
+        /* ── DELETE MODAL — matches cart.php remove item modal ──────── */
         let pendingDeleteId = null;
 
         function openFavDeleteModal(productId, productName) {
@@ -916,7 +1095,7 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                 .then(d => {
                     closeFavDeleteModal();
                     if (d.success) {
-                        showFavToast('Removed from favorites.', 'success');
+                        showNotification('Removed from favorites.', 'info');
                         loadFavorites(favPage);
                     }
                 });
@@ -925,22 +1104,6 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
         document.getElementById('favDeleteModal').addEventListener('click', function(e) {
             if (e.target === this) closeFavDeleteModal();
         });
-
-        /* ── TOAST — matches #notification-toast from menu/components ── */
-        function showFavToast(msg) {
-            let toast = document.getElementById('notification-toast');
-            if (!toast) {
-                toast = document.createElement('div');
-                toast.id = 'notification-toast';
-                document.body.appendChild(toast);
-            }
-            toast.textContent = msg;
-            toast.classList.remove('show');
-            void toast.offsetWidth;
-            toast.classList.add('show');
-            clearTimeout(toast._t);
-            toast._t = setTimeout(() => toast.classList.remove('show'), 2200);
-        }
 
         /* ── AVATAR ─────────────────────────────────────────────── */
         function openAvatarEdit() {

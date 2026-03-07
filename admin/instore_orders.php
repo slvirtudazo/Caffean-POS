@@ -132,7 +132,7 @@ include 'includes/header.php';
         <th data-sort="text">Order No.</th>
         <th data-sort="text">Customer</th>
         <th data-sort="text">Type</th>
-        <th data-sort="date">Date</th>
+        <th data-sort="date">Date &amp; Time</th>
         <th data-sort="number">Items</th>
         <th data-sort="number">Amount</th>
         <th data-sort="text">Payment</th>
@@ -156,9 +156,9 @@ include 'includes/header.php';
             <td class="td-id"><?= htmlspecialchars($o['order_number'] ?? '#' . $o['order_id']) ?></td>
             <td><?= htmlspecialchars($o['customer_name']) ?></td>
             <td><?= $o['kiosk_order_type'] === 'dine_in' ? 'Dine In' : 'Take Out' ?></td>
-            <td><?= date('M d, Y h:i A', strtotime($o['order_date'])) ?></td>
+            <td><?= date('M d, Y · H:i:s', strtotime($o['order_date'])) ?></td>
             <td><?= $o['total_items'] ?? 0 ?></td>
-            <td>&#8369;<?= number_format($o['total_amount'], 2) ?></td>
+            <td class="td-amount">&#8369;<?= number_format($o['total_amount'], 2) ?></td>
             <td><?= htmlspecialchars($o['payment_method']) ?></td>
             <td>
               <span class="badge badge-<?= strtolower($o['status']) ?>">

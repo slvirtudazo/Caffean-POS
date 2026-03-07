@@ -470,12 +470,12 @@ body.page-account .navbar .container {
 
 .acct-orders-table th:nth-child(2),
 .acct-orders-table td:nth-child(2) {
-    width: 14%;
+    width: 20%;
 }
 
 .acct-orders-table th:nth-child(3),
 .acct-orders-table td:nth-child(3) {
-    width: 10%;
+    width: 8%;
 }
 
 .acct-orders-table th:nth-child(4),
@@ -485,12 +485,12 @@ body.page-account .navbar .container {
 
 .acct-orders-table th:nth-child(5),
 .acct-orders-table td:nth-child(5) {
-    width: 16%;
+    width: 14%;
 }
 
 .acct-orders-table th:nth-child(6),
 .acct-orders-table td:nth-child(6) {
-    width: 14%;
+    width: 12%;
 }
 
 .acct-orders-table th:nth-child(7),
@@ -704,23 +704,23 @@ body.page-account .navbar .container {
     gap: 6px;
 }
 
-/* Action buttons — exact admin btn-icon-view / btn-icon-delete style */
+/* Action buttons — matches menu/supplies add-to-cart / cart remove styles */
 .fav-btn-cart,
 .fav-btn-remove {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     border: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 1rem;
     color: #fff;
-    transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    transition: background 0.18s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* Cart — blue */
+/* Cart — blue, matches menu add-to-cart accent */
 .fav-btn-cart {
     background: #3A9AFF;
 }
@@ -731,7 +731,7 @@ body.page-account .navbar .container {
     box-shadow: 0 4px 12px rgba(42, 0, 0, 0.15);
 }
 
-/* Remove — red */
+/* Remove — red, matches cart.php cart-modal-btn-delete */
 .fav-btn-remove {
     background: #DC0000;
 }
@@ -1411,4 +1411,101 @@ body.page-account .navbar .container {
     .ins-body {
         padding: 16px 20px;
     }
+}
+/* ── ORDER SUB-TABS — matches admin .admin-tabs / .tab ───── */
+.acct-subtabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 2px solid rgba(42, 0, 0, 0.06);
+    /* align with card header horizontal padding */
+    padding: 0 var(--spacing-lg);
+    margin: 0;
+}
+
+.acct-subtab {
+    padding: 11px 18px;
+    font-family: var(--font-subheading);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+    transition: color 0.22s ease;
+}
+
+/* First tab text aligns with "Order History" heading */
+.acct-subtab:first-child {
+    padding-left: 0;
+}
+
+.acct-subtab:hover {
+    color: var(--burgundy-wine);
+}
+
+.acct-subtab.active {
+    color: var(--deep-maroon);
+    border-bottom-color: var(--burgundy-wine);
+    font-weight: 700;
+}
+
+/* Count label — matches admin .tab-count */
+.acct-subtab-count {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    opacity: 0.7;
+    letter-spacing: 0.2px;
+}
+
+/* Search toolbar — equal top/bottom spacing, same side padding as table columns */
+.acct-subtab-toolbar {
+    display: flex;
+    align-items: center;
+    padding: 18px 20px;
+}
+
+.acct-subtab-search {
+    position: relative;
+    width: 100%;
+}
+
+.acct-subtab-search .srch-icon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    pointer-events: none;
+}
+
+.acct-subtab-search input {
+    width: 100%;
+    padding: 10px 15px 10px 45px;
+    border: 1.5px solid rgba(42, 0, 0, 0.08);
+    border-radius: 50px;
+    font-family: var(--font-subheading);
+    font-size: 0.9rem;
+    font-weight: 400;
+    background: #fff;
+    color: var(--dark-brown);
+    box-shadow: 0 2px 8px rgba(42, 0, 0, 0.07);
+    transition: border-color 0.22s ease;
+}
+
+.acct-subtab-search input:focus {
+    outline: none;
+    border-color: var(--burgundy-wine);
+    box-shadow: 0 0 0 3px #5b131214;
+}
+
+.acct-subtab-panel.hidden {
+    display: none;
 }

@@ -74,10 +74,21 @@ $last_row = mysqli_fetch_assoc(mysqli_query($conn,
 $last_seq     = $last_row ? intval(substr($last_row['order_number'], -5)) : 0;
 $order_number = 'PC-' . $year . '-' . str_pad($last_seq + 1, 5, '0', STR_PAD_LEFT);
 
+// Resolve user_id: prefer active session, then mobile number lookup
+$resolved_user_id = null;
+if (!empty($_SESSION['user_id']) && ($_SESSION['role'] ?? '') !== 'admin') {
+    $resolved_user_id = (int)$_SESSION['user_id'];
+} elseif ($mobile !== '') {
+    $u = mysqli_fetch_assoc(mysqli_query($conn,
+        "SELECT user_id FROM users WHERE mobile_number = '" . mysqli_real_escape_string($conn, $mobile) . "' AND role = 'customer' LIMIT 1"
+    ));
+    if ($u) $resolved_user_id = (int)$u['user_id'];
+}
+
 // DB transaction
 mysqli_begin_transaction($conn);
 try {
-    // Build delivery address including table number for dine-in table service
+    // Build delivery address
     if ($kiosk_order_type === 'take_out') {
         $delivery_address = 'Take Out';
     } elseif ($service_type === 'table' && $table_number !== '') {
@@ -86,15 +97,15 @@ try {
         $delivery_address = 'Dine In - Counter Pickup';
     }
 
-    // Insert order — user_id is NULL for walk-in guests
+    // Insert order — user_id set when session or mobile matches a registered account
     $stmt = mysqli_prepare($conn,
         "INSERT INTO orders
             (order_number, user_id, total_amount, status, payment_method, delivery_address,
              mobile_number, order_type, is_kiosk, kiosk_order_type, customer_name)
-         VALUES (?, NULL, ?, 'pending', ?, ?, ?, 'pickup', 1, ?, ?)"
+         VALUES (?, ?, ?, 'pending', ?, ?, ?, 'pickup', 1, ?, ?)"
     );
-    mysqli_stmt_bind_param($stmt, 'sdsssss',
-        $order_number, $total,
+    mysqli_stmt_bind_param($stmt, 'sidsssss',
+        $order_number, $resolved_user_id, $total,
         $payment_method, $delivery_address,
         $mobile, $kiosk_order_type, $customer_name
     );

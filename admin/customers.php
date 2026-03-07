@@ -25,7 +25,12 @@ $customers_result = mysqli_query(
   $conn,
   "SELECT u.*,
      COUNT(DISTINCT o.order_id)       AS total_orders,
-     COALESCE(SUM(o.total_amount), 0) AS total_spent
+     COALESCE(SUM(CASE
+       WHEN o.is_kiosk = 1 AND o.payment_method = 'Pay at the counter (Cash)' AND o.status IN ('processing','completed') THEN o.total_amount
+       WHEN o.is_kiosk = 1 AND o.payment_method != 'Pay at the counter (Cash)' AND o.status IN ('processing','completed') THEN o.total_amount
+       WHEN COALESCE(o.is_kiosk,0) = 0 AND o.payment_method = 'Cash on Delivery' AND o.status = 'completed' THEN o.total_amount
+       WHEN COALESCE(o.is_kiosk,0) = 0 AND o.payment_method != 'Cash on Delivery' AND o.status IN ('processing','completed') THEN o.total_amount
+       ELSE 0 END), 0) AS total_spent
      FROM users u
      LEFT JOIN orders o ON u.user_id = o.user_id
      WHERE u.role = 'customer'
