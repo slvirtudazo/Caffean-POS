@@ -237,48 +237,67 @@ function showNotification(message, type = 'info') {
 }
 
 /**
- * Toggle favorite product.
- * iconEl  — the <i> element inside .favorite-icon.
- * Also toggles the .active class on the parent wrapper for CSS targeting.
+ * Toggle favorite product — persists to DB via favorites.php.
+ * Optimistic UI update; reverts on failure.
  */
 function toggleFavorite(productId, iconEl) {
-    let favorites = JSON.parse(localStorage.getItem('coffeeFavorites')) || [];
-    const idx = favorites.indexOf(productId);
     const wrapper = iconEl.closest ? iconEl.closest('.favorite-icon') : iconEl.parentElement;
+    const wasFav  = iconEl.classList.contains('fas');
 
-    if (idx === -1) {
-        favorites.push(productId);
-        iconEl.classList.replace('far', 'fas');
-        iconEl.style.color = '#c0392b';
-        if (wrapper) wrapper.classList.add('active');
-        showNotification('Added to favorites!', 'success');
-    } else {
-        favorites.splice(idx, 1);
-        iconEl.classList.replace('fas', 'far');
-        iconEl.style.color = '';
-        if (wrapper) wrapper.classList.remove('active');
-        showNotification('Removed from favorites.', 'info');
-    }
-    localStorage.setItem('coffeeFavorites', JSON.stringify(favorites));
+    /* Optimistic UI */
+    iconEl.classList.replace(wasFav ? 'fas' : 'far', wasFav ? 'far' : 'fas');
+    iconEl.style.color = wasFav ? '' : '#c0392b';
+    if (wrapper) wrapper.classList.toggle('active', !wasFav);
+    showNotification(wasFav ? 'Removed from favorites.' : 'Added to favorites!', wasFav ? 'info' : 'success');
+
+    /* Persist to DB */
+    const fd = new FormData();
+    fd.append('action', 'toggle');
+    fd.append('product_id', productId);
+    fetch('favorites.php', { method: 'POST', body: fd })
+        .then(r => r.json())
+        .then(d => {
+            if (!d.success) {
+                /* Revert on DB failure */
+                iconEl.classList.replace(wasFav ? 'far' : 'fas', wasFav ? 'fas' : 'far');
+                iconEl.style.color = wasFav ? '#c0392b' : '';
+                if (wrapper) wrapper.classList.toggle('active', wasFav);
+                showNotification('Could not update favorites.', 'error');
+            }
+        })
+        .catch(() => showNotification('Could not update favorites.', 'error'));
 }
 
 /**
- * Load saved favorites on product cards (page load).
- * Applies .fas class + red colour to the heart icon, and .active to wrapper.
+ * Load favorite state from DB on page load.
+ * Batch-checks all product IDs on the page against favorites.php.
  */
 function loadFavoritesForMenu() {
-    const favorites = JSON.parse(localStorage.getItem('coffeeFavorites')) || [];
-    favorites.forEach(productId => {
-        const card = document.querySelector(`[data-product-id="${productId}"]`);
-        if (!card) return;
-        const wrapper = card.querySelector('.favorite-icon');
-        const icon = card.querySelector('.favorite-icon i');
-        if (icon) {
-            icon.classList.replace('far', 'fas');
-            icon.style.color = '#c0392b';
-        }
-        if (wrapper) wrapper.classList.add('active');
-    });
+    if (!window.IS_LOGGED_IN) return;
+    const cards = document.querySelectorAll('[data-product-id]');
+    if (!cards.length) return;
+
+    const ids = [...cards].map(c => c.dataset.productId).filter(Boolean).join(',');
+    if (!ids) return;
+
+    fetch(`favorites.php?action=batch&ids=${ids}`)
+        .then(r => r.json())
+        .then(d => {
+            if (!d.success) return;
+            const favSet = new Set(d.favorited.map(String));
+            cards.forEach(card => {
+                const pid     = card.dataset.productId;
+                const wrapper = card.querySelector('.favorite-icon');
+                const icon    = card.querySelector('.favorite-icon i');
+                if (!icon) return;
+                const isFav = favSet.has(pid);
+                icon.classList.toggle('fas', isFav);
+                icon.classList.toggle('far', !isFav);
+                icon.style.color = isFav ? '#c0392b' : '';
+                if (wrapper) wrapper.classList.toggle('active', isFav);
+            });
+        })
+        .catch(() => {});
 }
 
 /**
@@ -299,7 +318,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Guests never retain cart or interaction data
     if (!window.IS_LOGGED_IN) {
         localStorage.removeItem('coffeeCart');
-        localStorage.removeItem('coffeeFavorites');
         localStorage.removeItem('interactions');
         cart = [];
     }

@@ -1259,18 +1259,21 @@ body.kiosk-no-scroll {
     align-self: start;
 }
 
-/* Single item: summary card aligns to content height only */
+/* Single item: row stretches both columns to equal height */
 .k-single-item {
-    align-items: start;
+    align-items: stretch;
 }
 
 .k-single-item .kiosk-sum-col {
     position: static;
-    align-self: start;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
 }
 
 .k-single-item .kiosk-sum-card {
-    height: auto;
+    flex: 1;
+    height: 100%;
 }
 
 .kiosk-sum-card {
@@ -1559,6 +1562,8 @@ body.kiosk-no-scroll {
 .kiosk-co-right {
     position: sticky;
     top: 168px;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Section cards — matches online checkout-card */
@@ -1791,8 +1796,11 @@ body.kiosk-no-scroll {
     opacity: 0.8;
 }
 
-.k-co-sum-actions {
+.k-co-sum-footer {
     margin-top: auto;
+}
+
+.k-co-sum-actions {
     padding-top: 14px;
 }
 
@@ -1801,6 +1809,14 @@ body.kiosk-no-scroll {
     max-width: 680px;
     margin: 0 auto;
     padding: 2rem 1.5rem 4rem;
+    min-height: calc(100vh - 135px);
+    display: flex;
+    align-items: center;
+}
+
+/* Receipt card fills full width inside the flex receipt page */
+.kiosk-receipt-page .kiosk-receipt-card {
+    width: 100%;
 }
 
 /* Receipt card — white, clean, matching online receipt-dialog */
@@ -2266,6 +2282,133 @@ body.kiosk-no-scroll {
 .kiosk-toast.show {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
+}
+
+/* ── Table number selection (service type = table) ───────────── */
+.k-table-number-section {
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(42, 0, 0, 0.08);
+}
+
+.k-table-section-label {
+    font-family: var(--font-subheading);
+    font-size: 1rem;
+    color: var(--dark-brown);
+    margin: 0 0 0.85rem;
+    font-weight: 500;
+}
+
+/* 5-column grid for 10 tent number chips */
+.k-tent-numbers {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+/* Matches k-ot-opt / k-pay-opt card style exactly */
+.k-tent-chip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    border: 1.5px solid rgba(42, 0, 0, 0.13);
+    border-radius: 10px;
+    background: #fafafa;
+    font-family: var(--font-subheading);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: rgba(42, 0, 0, 0.65);
+    cursor: pointer;
+    transition: all 0.18s ease;
+    text-align: center;
+}
+
+.k-tent-chip:hover {
+    border-color: var(--deep-maroon);
+    background: rgba(42, 0, 0, 0.03);
+}
+
+.k-tent-chip.selected {
+    border-color: var(--deep-maroon);
+    background: rgba(42, 0, 0, 0.06);
+    color: var(--deep-maroon);
+    box-shadow: 0 0 0 3px rgba(42, 0, 0, 0.07);
+}
+
+/* ── Cash receipt (minimal thermal-style) ────────────────────── */
+.k-cash-receipt {
+    text-align: center;
+    padding: 10px 0 0;
+    font-family: var(--font-body);
+}
+
+.k-cash-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.k-cash-logo-img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+}
+
+.k-cash-logo-name {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--deep-maroon);
+    letter-spacing: 0.02em;
+}
+
+/* Dashed divider matching receipt PNG style */
+.k-cash-divider {
+    border: none;
+    border-top: 1.5px dashed rgba(42, 0, 0, 0.2);
+    margin: 14px 0;
+}
+
+.k-cash-label {
+    font-size: 0.88rem;
+    color: #555;
+    margin: 0 0 6px;
+    font-weight: 400;
+}
+
+/* Large bold order number */
+.k-cash-order-num {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--deep-maroon);
+    letter-spacing: 0.1em;
+    line-height: 1.1;
+    margin: 4px 0 8px;
+}
+
+.k-cash-note {
+    font-size: 0.85rem;
+    color: #444;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.k-cash-address {
+    font-size: 0.8rem;
+    color: #666;
+    line-height: 1.6;
+    margin: 0 0 4px;
+}
+
+.k-cash-datetime {
+    font-size: 0.78rem;
+    color: #888;
+    margin: 2rem 0 0;
 }
 
 /* ── Responsive ──────────────────────────────────────────────── */

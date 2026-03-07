@@ -35,7 +35,7 @@ $order_type     = trim($_POST['order_type']     ?? 'delivery');
 $payment_method = trim($_POST['payment_method'] ?? '');
 $promo_code     = strtoupper(trim($_POST['promo_code'] ?? ''));
 
-$allowed_payments = ['Cash on Delivery', 'GCash', 'Maya', 'Credit/Debit Card', 'Bank Transfer'];
+$allowed_payments = ['Cash on Delivery', 'GCash', 'Maya', 'Credit/Debit Card', 'GoTyme'];
 $allowed_types    = ['delivery', 'pickup'];
 
 // Validate required fields

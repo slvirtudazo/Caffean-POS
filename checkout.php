@@ -42,12 +42,18 @@ unset($v);
 
 $user_id = $_SESSION['user_id'];
 
-// Fetch user info
-$user_stmt = mysqli_prepare($conn, "SELECT full_name, email FROM users WHERE user_id = ?");
+// Fetch user info and saved default address
+$user_stmt = mysqli_prepare($conn,
+    "SELECT full_name, email, house_unit, street_name, barangay,
+            city_municipality, province, zip_code
+     FROM users WHERE user_id = ?");
 mysqli_stmt_bind_param($user_stmt, 'i', $user_id);
 mysqli_stmt_execute($user_stmt);
 $user_info = mysqli_fetch_assoc(mysqli_stmt_get_result($user_stmt));
 mysqli_stmt_close($user_stmt);
+
+// Check if user has a complete enough default address
+$has_default_addr = !empty($user_info['house_unit']) && !empty($user_info['city_municipality']);
 
 /* Fetch cart products */
 $cart_items   = [];
@@ -154,20 +160,16 @@ $min_date = date('Y-m-d');
                                 <label class="form-label">Full Name *</label>
                                 <input type="text" id="co-name" class="form-control"
                                     value="<?= htmlspecialchars($user_info['full_name'] ?? '') ?>"
-                                    placeholder="John Doe"
                                     autocomplete="name" />
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Email Address *</label>
                                 <input type="email" id="co-email" class="form-control"
-                                    value="<?= htmlspecialchars($user_info['email'] ?? '') ?>"
-                                    placeholder="johndoe@gmail.com"
                                     autocomplete="email" />
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Mobile Number *</label>
                                 <input type="tel" id="co-mobile" class="form-control"
-                                    placeholder="09XXXXXXXXX"
                                     maxlength="11"
                                     inputmode="numeric"
                                     autocomplete="tel" />
@@ -200,40 +202,64 @@ $min_date = date('Y-m-d');
 
                         <!-- Delivery Address Fields -->
                         <div id="delivery-fields" class="mt-3">
-                            <div class="row g-3">
+
+                            <?php if ($has_default_addr): ?>
+                            <!-- Address source toggle — shown only when user has a saved default address -->
+                            <div class="addr-source-toggle mb-3">
+                                <button type="button" class="addr-src-btn active" id="btn-use-default"
+                                    onclick="useDefaultAddress()">Use Default Address
+                                </button>
+                                <button type="button" class="addr-src-btn" id="btn-new-addr"
+                                    onclick="useNewAddress()">Enter New Address
+                                </button>
+                            </div>
+                            <!-- Saved default address preview -->
+                            <div class="addr-default-preview" id="addr-default-preview">
+                                <div class="addr-preview-text">
+                                    <span class="addr-preview-label">Delivering to your saved address</span>
+                                    <span class="addr-preview-detail">
+                                        <?= htmlspecialchars(implode(', ', array_filter([
+                                            $user_info['house_unit'],
+                                            $user_info['street_name'],
+                                            $user_info['barangay'],
+                                            $user_info['city_municipality'],
+                                            $user_info['province'],
+                                            $user_info['zip_code']
+                                        ]))) ?>
+                                    </span>
+                                </div>
+                            </div>
+                            <?php endif; ?>
+
+                            <div class="row g-3" id="addr-form-fields"
+                                <?= $has_default_addr ? 'style="display:none;"' : '' ?>>
                                 <div class="col-md-6">
                                     <label class="form-label">House / Unit No. *</label>
                                     <input type="text" id="del-house" class="form-control"
-                                        placeholder="e.g., Blk 2 Lot 5, Unit A"
                                         autocomplete="address-line1" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Street *</label>
                                     <input type="text" id="del-street" class="form-control"
-                                        placeholder="e.g., Emerald Avenue, San Pedro St."
                                         autocomplete="address-line2" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Barangay *</label>
-                                    <input type="text" id="del-brgy" class="form-control"
-                                        placeholder="e.g., Brgy. Magang, Matina" />
+                                    <input type="text" id="del-brgy" class="form-control" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">City / Municipality *</label>
                                     <input type="text" id="del-city" class="form-control"
-                                        placeholder="City / Municipality"
                                         autocomplete="address-level2" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Province *</label>
                                     <input type="text" id="del-province" class="form-control"
-                                        placeholder="e.g., Camarines Norte, Davao del Sur"
                                         autocomplete="address-level1" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">ZIP Code *</label>
                                     <input type="text" id="del-zip" class="form-control"
-                                        placeholder="e.g. 8000"
                                         maxlength="4"
                                         inputmode="numeric"
                                         autocomplete="postal-code" />
@@ -242,8 +268,7 @@ $min_date = date('Y-m-d');
                                     <label class="form-label">
                                         Delivery Notes <span class="opt-text">(Optional)</span>
                                     </label>
-                                    <textarea id="del-notes" class="form-control del-notes-ta" rows="3"
-                                        placeholder="e.g., Beside the green gate, leave at guard house..."></textarea>
+                                    <textarea id="del-notes" class="form-control del-notes-ta" rows="3"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -264,8 +289,11 @@ $min_date = date('Y-m-d');
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Pickup Date *</label>
-                                    <input type="date" id="pick-date" class="form-control"
-                                        min="<?= $min_date ?>" />
+                                    <input type="text" id="pick-date" class="form-control"
+                                        placeholder="mm/dd/yyyy"
+                                        min="<?= $min_date ?>"
+                                        onfocus="this.type='date'"
+                                        onblur="if(!this.value) this.type='text'" />
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Pickup Time *</label>
@@ -307,10 +335,10 @@ $min_date = date('Y-m-d');
                             </div>
                             <div class="payment-option">
                                 <input type="radio" name="payment_method" id="pay-bank"
-                                    value="Bank Transfer" />
+                                    value="GoTyme" />
                                 <label for="pay-bank">
                                     <span class="pay-icon"><i class="fas fa-building-columns"></i></span>
-                                    <span class="pay-label">Bank Transfer</span>
+                                    <span class="pay-label">GoTyme</span>
                                 </label>
                             </div>
                         </div>
@@ -503,6 +531,37 @@ $min_date = date('Y-m-d');
         const subtotal     = <?= $subtotal ?>;
         let   orderType    = 'delivery';
 
+        /* Saved default address from user profile */
+        const defaultAddr = {
+            house_unit:        <?= json_encode($user_info['house_unit']        ?? '') ?>,
+            street_name:       <?= json_encode($user_info['street_name']       ?? '') ?>,
+            barangay:          <?= json_encode($user_info['barangay']          ?? '') ?>,
+            city_municipality: <?= json_encode($user_info['city_municipality'] ?? '') ?>,
+            province:          <?= json_encode($user_info['province']          ?? '') ?>,
+            zip_code:          <?= json_encode($user_info['zip_code']          ?? '') ?>
+        };
+
+        /* Whether using saved default address (true) or entering a new one (false) */
+        let usingDefaultAddr = <?= $has_default_addr ? 'true' : 'false' ?>;
+
+        /* Pre-fill delivery fields with saved default address */
+        function useDefaultAddress() {
+            usingDefaultAddr = true;
+            document.getElementById('btn-use-default')?.classList.add('active');
+            document.getElementById('btn-new-addr')?.classList.remove('active');
+            document.getElementById('addr-form-fields').style.display    = 'none';
+            document.getElementById('addr-default-preview').style.display = 'flex';
+        }
+
+        /* Show blank delivery fields for a new address */
+        function useNewAddress() {
+            usingDefaultAddr = false;
+            document.getElementById('btn-new-addr')?.classList.add('active');
+            document.getElementById('btn-use-default')?.classList.remove('active');
+            document.getElementById('addr-form-fields').style.display    = '';
+            document.getElementById('addr-default-preview').style.display = 'none';
+        }
+
         /* PHP cart items passed to JS for receipt rendering */
         const cartItems = <?= json_encode(array_map(function($i) {
             return [
@@ -570,18 +629,32 @@ $min_date = date('Y-m-d');
             if (!name)              return showAlert('Please enter your full name.');
             if (!validEmail(email)) return showAlert('Please enter a valid email address.');
             if (!/^09\d{9}$/.test(mobile))
-                                    return showAlert('Enter a valid PH mobile number (09XXXXXXXXX).');
+                                    return showAlert('Enter a valid PH mobile number (+63 9XX XXX XXXX).');
             if (!payment)           return showAlert('Please select a payment method.');
 
             const data = { name, email, mobile, payment_method: payment, order_type: orderType };
 
             if (orderType === 'delivery') {
-                const house    = document.getElementById('del-house').value.trim();
-                const street   = document.getElementById('del-street').value.trim();
-                const brgy     = document.getElementById('del-brgy').value.trim();
-                const city     = document.getElementById('del-city').value.trim();
-                const province = document.getElementById('del-province').value.trim();
-                const zip      = document.getElementById('del-zip').value.trim();
+                let house, street, brgy, city, province, zip;
+
+                if (usingDefaultAddr) {
+                    /* Use saved default address */
+                    house    = defaultAddr.house_unit;
+                    street   = defaultAddr.street_name;
+                    brgy     = defaultAddr.barangay;
+                    city     = defaultAddr.city_municipality;
+                    province = defaultAddr.province;
+                    zip      = defaultAddr.zip_code;
+                } else {
+                    /* Use manually entered address */
+                    house    = document.getElementById('del-house').value.trim();
+                    street   = document.getElementById('del-street').value.trim();
+                    brgy     = document.getElementById('del-brgy').value.trim();
+                    city     = document.getElementById('del-city').value.trim();
+                    province = document.getElementById('del-province').value.trim();
+                    zip      = document.getElementById('del-zip').value.trim();
+                }
+
                 if (!house || !street || !brgy || !city || !province || !zip)
                     return showAlert('Please fill in all required delivery address fields.');
                 if (!/^\d{4}$/.test(zip))

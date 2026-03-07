@@ -21,13 +21,15 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Sanitize inputs
 $kiosk_order_type = trim($_POST['kiosk_order_type'] ?? 'dine_in');
+$service_type     = trim($_POST['service_type']     ?? 'table');
+$table_number     = trim($_POST['table_number']     ?? '');
 $payment_method   = trim($_POST['payment_method']   ?? '');
 $customer_name    = trim($_POST['customer_name']    ?? 'Guest');
 $mobile           = trim($_POST['mobile']           ?? '');
 $cart_json        = trim($_POST['cart']             ?? '{}');
 
 $allowed_types    = ['dine_in', 'take_out'];
-$allowed_payments = ['Cash', 'Credit/Debit Card', 'Tap-to-Pay (GCash)', 'Tap-to-Pay (Maya)'];
+$allowed_payments = ['Pay at the counter (Cash)', 'GCash', 'Maya', 'GoTyme'];
 
 // Validate inputs
 if (!in_array($kiosk_order_type, $allowed_types)) {
@@ -75,7 +77,14 @@ $order_number = 'PC-' . $year . '-' . str_pad($last_seq + 1, 5, '0', STR_PAD_LEF
 // DB transaction
 mysqli_begin_transaction($conn);
 try {
-    $delivery_address = ($kiosk_order_type === 'dine_in') ? 'Dine In' : 'Take Out';
+    // Build delivery address including table number for dine-in table service
+    if ($kiosk_order_type === 'take_out') {
+        $delivery_address = 'Take Out';
+    } elseif ($service_type === 'table' && $table_number !== '') {
+        $delivery_address = 'Dine In - Table ' . intval($table_number);
+    } else {
+        $delivery_address = 'Dine In - Counter Pickup';
+    }
 
     // Insert order — user_id is NULL for walk-in guests
     $stmt = mysqli_prepare($conn,
@@ -84,7 +93,7 @@ try {
              mobile_number, order_type, is_kiosk, kiosk_order_type, customer_name)
          VALUES (?, NULL, ?, 'pending', ?, ?, ?, 'pickup', 1, ?, ?)"
     );
-    mysqli_stmt_bind_param($stmt, 'sdssss',
+    mysqli_stmt_bind_param($stmt, 'sdsssss',
         $order_number, $total,
         $payment_method, $delivery_address,
         $mobile, $kiosk_order_type, $customer_name
@@ -144,6 +153,8 @@ try {
         'mobile'           => $mobile,
         'payment_method'   => $payment_method,
         'kiosk_order_type' => $kiosk_order_type,
+        'service_type'     => $service_type,
+        'table_number'     => $table_number,
         'total'            => $total,
         'items'            => $items_response,
     ]);

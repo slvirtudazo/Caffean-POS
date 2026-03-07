@@ -73,22 +73,11 @@ function setupSortToggles() {
 }
 
 /**
- * Load favorite products from localStorage and mark them visually.
+ * Load and display saved favorites on product cards.
+ * Delegated to main.js loadFavoritesForMenu() which uses the DB.
  */
 function loadFavoritesForMenu() {
-    const favorites = JSON.parse(localStorage.getItem('coffeeFavorites')) || [];
-
-    favorites.forEach(function (productId) {
-        const productCard = document.querySelector(`.product-card[data-product-id="${productId}"]`);
-        if (productCard) {
-            const heartIcon = productCard.querySelector('.favorite-icon i');
-            if (heartIcon) {
-                heartIcon.classList.remove('far');
-                heartIcon.classList.add('fas');
-                productCard.querySelector('.favorite-icon').classList.add('active');
-            }
-        }
-    });
+    // Handled by main.js via DB batch check
 }
 
 /**

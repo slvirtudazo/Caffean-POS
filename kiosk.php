@@ -15,6 +15,11 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
 }
 
 /* ── Init kiosk cart ─────────────────────────────────────────── */
+if (isset($_GET['reset'])) {
+    $_SESSION['kiosk_cart'] = [];
+    header('Location: kiosk.php');
+    exit();
+}
 if (!isset($_SESSION['kiosk_cart'])) $_SESSION['kiosk_cart'] = [];
 
 /* ── Fetch all active products grouped by category ──────────── */
@@ -286,12 +291,20 @@ function kioskNetContent($product)
                         </div>
                         <div class="k-ot-opts">
                             <div class="k-ot-opt" id="co-svc-table" onclick="selectServiceType('table')">
-                                <span class="pay-icon"><i class="fas fa-table-cells-large"></i></span>
                                 Serve at your table
                             </div>
                             <div class="k-ot-opt" id="co-svc-counter" onclick="selectServiceType('counter')">
-                                <span class="pay-icon"><i class="fas fa-hand-holding"></i></span>
                                 Pick up at the counter
+                            </div>
+                        </div>
+
+                        <!-- Table number selection — only shown for 'Serve at your table' -->
+                        <div id="table-number-section" class="k-table-number-section" style="display:none;">
+                            <p class="k-table-section-label">
+                                <i class="fas fa-hashtag"></i> Grab a table tent and select its number below
+                            </p>
+                            <div class="k-tent-numbers" id="tent-numbers-row">
+                                <!-- 10 random table numbers injected by JS -->
                             </div>
                         </div>
                     </div>
@@ -303,23 +316,19 @@ function kioskNetContent($product)
                         <div class="k-pay-opts">
                             <label class="k-pay-opt active" onclick="selectPayment(this, 'Pay at the counter (Cash)')">
                                 <input type="radio" name="k_payment" value="Pay at the counter (Cash)" checked>
-                                <span class="pay-icon"><i class="fas fa-money-bills"></i></span>
                                 <div class="k-pay-name">Pay at the counter (Cash)</div>
                             </label>
                             <label class="k-pay-opt" onclick="selectPayment(this, 'GCash')">
                                 <input type="radio" name="k_payment" value="GCash">
-                                <span class="pay-icon"><i class="fas fa-mobile-screen-button"></i></span>
                                 <div class="k-pay-name">GCash</div>
                             </label>
                             <label class="k-pay-opt" onclick="selectPayment(this, 'Maya')">
                                 <input type="radio" name="k_payment" value="Maya">
-                                <span class="pay-icon"><i class="fas fa-wallet"></i></span>
                                 <div class="k-pay-name">Maya</div>
                             </label>
-                            <label class="k-pay-opt" onclick="selectPayment(this, 'Bank Transfer')">
-                                <input type="radio" name="k_payment" value="Bank Transfer">
-                                <span class="pay-icon"><i class="fas fa-building-columns"></i></span>
-                                <div class="k-pay-name">Bank Transfer</div>
+                            <label class="k-pay-opt" onclick="selectPayment(this, 'GoTyme')">
+                                <input type="radio" name="k_payment" value="GoTyme">
+                                <div class="k-pay-name">GoTyme</div>
                             </label>
                         </div>
                     </div>
@@ -334,23 +343,25 @@ function kioskNetContent($product)
                         <div class="k-sum-order-type-row" id="co-sum-order-type"></div>
                         <hr class="k-sum-hr k-sum-hr--order-type">
                         <div class="k-sum-lines-wrap" id="co-sum-items"></div>
-                        <hr class="k-sum-hr">
-                        <div class="k-sum-calc-row">
-                            <span>Subtotal</span>
-                            <span id="co-sum-subtotal">₱0.00</span>
-                        </div>
-                        <hr class="k-sum-hr">
-                        <div class="k-sum-total">
-                            <span>Total Amount</span>
-                            <span id="co-sum-total">₱0.00</span>
-                        </div>
-                        <div class="k-co-sum-actions">
-                            <button class="btn-kiosk-main" onclick="placeKioskOrder()">
-                                <i class="fas fa-check-circle me-2"></i>Place Order
-                            </button>
-                            <button class="btn-kiosk-back mt-2" onclick="goToStep(3)">
-                                <i class="fas fa-arrow-left me-1"></i> Back to Cart
-                            </button>
+                        <div class="k-co-sum-footer">
+                            <hr class="k-sum-hr">
+                            <div class="k-sum-calc-row">
+                                <span>Subtotal</span>
+                                <span id="co-sum-subtotal">₱0.00</span>
+                            </div>
+                            <hr class="k-sum-hr">
+                            <div class="k-sum-total">
+                                <span>Total Amount</span>
+                                <span id="co-sum-total">₱0.00</span>
+                            </div>
+                            <div class="k-co-sum-actions">
+                                <button class="btn-kiosk-main" onclick="placeKioskOrder()">
+                                    <i class="fas fa-check-circle me-2"></i>Place Order
+                                </button>
+                                <button class="btn-kiosk-back mt-2" onclick="goToStep(3)">
+                                    <i class="fas fa-arrow-left me-1"></i> Back to Cart
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -405,7 +416,7 @@ function kioskNetContent($product)
                     <div id="receipt-totals"></div>
 
                     <div class="kiosk-receipt-footer-note">
-                        Thank you for choosing Purge Coffee! &#128578;
+                        Thank you for choosing Purge Coffee!
                     </div>
 
                 </div>
@@ -492,6 +503,7 @@ function kioskNetContent($product)
         /* ── State ───────────────────────────────────────────────────── */
         let kioskOrderType = 'dine_in';
         let kioskServiceType = 'table'; // 'table' | 'counter'
+        let kioskTableNumber = '';      // selected tent table number
         let kioskPayment = 'Pay at the counter (Cash)';
         let kioskCart = {};
         let kioskCurrentCat = 'all'; // 'all' | category id string
@@ -886,11 +898,17 @@ function kioskNetContent($product)
             kioskCart[pid][field] = value;
         }
 
-        /* Activate service type option */
+        /* Activate service type option and toggle table number section */
         function selectServiceType(type) {
             kioskServiceType = type;
             document.getElementById('co-svc-table').classList.toggle('active', type === 'table');
             document.getElementById('co-svc-counter').classList.toggle('active', type === 'counter');
+            const tableSection = document.getElementById('table-number-section');
+            if (tableSection) tableSection.style.display = type === 'table' ? 'block' : 'none';
+            if (type !== 'table') {
+                kioskTableNumber = '';
+                document.querySelectorAll('.k-tent-chip').forEach(c => c.classList.remove('selected'));
+            }
         }
 
         /* ── Step 4: render checkout summary ────────────────────────── */
@@ -899,14 +917,20 @@ function kioskNetContent($product)
             document.getElementById('co-svc-table').classList.toggle('active', kioskServiceType === 'table');
             document.getElementById('co-svc-counter').classList.toggle('active', kioskServiceType === 'counter');
 
+            /* Restore table number section visibility */
+            const tableSection = document.getElementById('table-number-section');
+            if (tableSection) tableSection.style.display = kioskServiceType === 'table' ? 'block' : 'none';
+
+            /* Generate 5 random tent table numbers (1–50) each time step 4 is entered */
+            generateTentNumbers();
+
             /* Inject order type row into summary */
             const isDineIn = kioskOrderType === 'dine_in';
-            const otIcon = isDineIn ? 'fa-utensils' : 'fa-bag-shopping';
             const otLabel = isDineIn ? 'Dine In' : 'Take Out';
             document.getElementById('co-sum-order-type').innerHTML = `
                 <div class="k-sum-ot-row">
-                    <span class="k-sum-ot-label"><i class="fas fa-location-dot"></i> Order Type</span>
-                    <span class="k-sum-ot-val"><i class="fas ${otIcon}"></i> ${otLabel}</span>
+                    <span class="k-sum-ot-label">Order Type</span>
+                    <span class="k-sum-ot-val">${otLabel}</span>
                 </div>`;
 
             /* Build summary item lines with specs */
@@ -945,6 +969,14 @@ function kioskNetContent($product)
                 return;
             }
 
+            /* Require table number when serving at table */
+            if (kioskServiceType === 'table') {
+                if (!kioskTableNumber) {
+                    showAlert('step4-alert', 'Please select your table number.', 'danger');
+                    return;
+                }
+            }
+
             const btn = document.querySelector('#step4 .btn-kiosk-main');
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
@@ -952,6 +984,7 @@ function kioskNetContent($product)
             const fd = new FormData();
             fd.append('kiosk_order_type', kioskOrderType);
             fd.append('service_type', kioskServiceType);
+            fd.append('table_number', kioskTableNumber);
             fd.append('payment_method', kioskPayment);
             fd.append('customer_name', 'Guest');
             fd.append('mobile', '');
@@ -980,21 +1013,66 @@ function kioskNetContent($product)
 
         /* ── Step 5: show confirmation receipt ───────────────────────── */
         function showConfirmation(data) {
-            /* Order number */
-            const orderNumEl = document.getElementById('confirm-order-num');
+            const isCash = data.payment_method === 'Pay at the counter (Cash)';
+
+            /* Short 3-digit display number for cash receipts */
+            const shortNum = String(data.order_id).padStart(3, '0');
+
+            /* Full formatted order number for full receipts */
             const orderNum = 'ORD-' + new Date().getFullYear() + '-' + String(data.order_id).padStart(5, '0');
+
+            /* Datetime — YYYY/MM/DD HH:MM:SS AM/PM */
+            const now = new Date();
+            const yyyy = now.getFullYear();
+            const mm   = String(now.getMonth() + 1).padStart(2, '0');
+            const dd   = String(now.getDate()).padStart(2, '0');
+            const hh   = now.getHours();
+            const min  = String(now.getMinutes()).padStart(2, '0');
+            const ss   = String(now.getSeconds()).padStart(2, '0');
+            const ampm = hh >= 12 ? 'PM' : 'AM';
+            const hr12 = String(hh % 12 || 12).padStart(2, '0');
+            const cashDatetime = `${yyyy}/${mm}/${dd} ${hr12}:${min}:${ss} ${ampm}`;
+
+            const receipt = document.getElementById('confirm-receipt');
+
+            if (isCash) {
+                /* Minimal cash receipt template */
+                receipt.innerHTML = `
+                <div class="k-cash-receipt">
+                    <div class="k-cash-logo">
+                        <img src="images/coffee_beans_logo.png" alt="Purge Coffee" class="k-cash-logo-img">
+                        <span class="k-cash-logo-name">Purge Coffee</span>
+                    </div>
+                    <div class="k-cash-divider"></div>
+                    <p class="k-cash-label">Your order number is</p>
+                    <div class="k-cash-order-num">${shortNum}</div>
+                    <div class="k-cash-divider"></div>
+                    <p class="k-cash-note">Please show this receipt to the<br>cashier at the claim counter.</p>
+                    <div class="k-cash-divider"></div>
+                    <p class="k-cash-address">123 Tulip Drive, Matina<br>Davao City 8000, Philippines</p>
+                    <p class="k-cash-datetime">${cashDatetime}</p>
+                </div>`;
+                kioskCart = {};
+                goToStep(5);
+                return;
+            }
+
+            /* Full detailed receipt for non-cash payments */
+            const orderNumEl = document.getElementById('confirm-order-num');
             orderNumEl.textContent = orderNum;
             orderNumEl.dataset.num = orderNum;
 
-            /* Greeting */
             document.getElementById('confirm-greeting').textContent =
                 (data.customer_name && data.customer_name !== 'Guest') ?
                 `Thank you, ${data.customer_name}!` : 'Thank you for your purchase!';
 
-            /* Datetime */
-            document.getElementById('confirm-datetime').textContent = data.order_date || new Date().toLocaleString();
+            const dateStr = now.toLocaleDateString('en-PH', {
+                year: 'numeric', month: 'long', day: '2-digit'
+            }) + ' · ' + now.toLocaleTimeString('en-PH', {
+                hour: '2-digit', minute: '2-digit'
+            });
+            document.getElementById('confirm-datetime').textContent = dateStr;
 
-            /* Customer section — shown only if name or mobile provided */
             const name = (data.customer_name && data.customer_name !== 'Guest') ? data.customer_name : '';
             const mob  = data.mobile || '';
             let custHtml = '';
@@ -1012,7 +1090,6 @@ function kioskNetContent($product)
             }
             document.getElementById('receipt-customer').innerHTML = custHtml;
 
-            /* Order details rows */
             const orderType = data.kiosk_order_type === 'dine_in' ? 'Dine In' : 'Take Out';
             document.getElementById('receipt-order-details').innerHTML = `
                 <div class="kiosk-receipt-info-row">
@@ -1024,7 +1101,6 @@ function kioskNetContent($product)
                     <span class="r-val">${data.payment_method}</span>
                 </div>`;
 
-            /* Item rows with thumbnail + specs */
             let itemsHtml = '';
             let subtotal = 0;
             data.items.forEach(it => {
@@ -1051,7 +1127,6 @@ function kioskNetContent($product)
             });
             document.getElementById('receipt-items').innerHTML = itemsHtml;
 
-            /* Totals — kiosk has no delivery fee */
             document.getElementById('receipt-totals').innerHTML = `
                 <div class="kiosk-receipt-amount-row">
                     <span>Subtotal</span>
@@ -1063,7 +1138,6 @@ function kioskNetContent($product)
                     <span>₱${parseFloat(data.total).toFixed(2)}</span>
                 </div>`;
 
-            /* Clear cart and go to step 5 */
             kioskCart = {};
             goToStep(5);
         }
@@ -1238,12 +1312,25 @@ function kioskNetContent($product)
         }
 
         function startNewOrder() {
-            kioskCart = {};
-            kioskOrderType = 'dine_in';
-            kioskServiceType = 'table';
-            kioskPayment = 'Pay at the counter (Cash)';
-            updateCartBar();
-            goToStep(1);
+            window.location.href = 'kiosk.php?reset=1';
+        }
+
+        /* Generate 10 unique random table numbers (1–50) and render as tent chips */
+        function generateTentNumbers() {
+            const pool = Array.from({ length: 50 }, (_, i) => i + 1);
+            const shuffled = pool.sort(() => Math.random() - 0.5).slice(0, 10);
+            const row = document.getElementById('tent-numbers-row');
+            if (!row) return;
+            row.innerHTML = shuffled.map(n => `
+                <button class="k-tent-chip" onclick="selectTentNumber(${n})">${n}</button>
+            `).join('');
+        }
+
+        /* Select a tent chip — highlights it and sets the table number */
+        function selectTentNumber(num) {
+            kioskTableNumber = String(num);
+            document.querySelectorAll('.k-tent-chip').forEach(c => c.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
         }
     </script>
 

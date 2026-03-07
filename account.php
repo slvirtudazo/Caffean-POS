@@ -177,28 +177,21 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
     </nav>
 
     <!-- ── FAVORITES DELETE MODAL ─────────────────────────────── -->
-    <div class="acct-modal-overlay" id="favDeleteModal" style="display:none;">
-        <div class="acct-modal">
-            <div class="acct-modal-header">
-                <span><i class="bi bi-trash3"></i> Remove Favorite</span>
-                <button class="acct-modal-close" onclick="closeFavDeleteModal()">
-                    <i class="bi bi-x-lg"></i>
-                </button>
+    <div class="cart-modal-overlay" id="favDeleteModal">
+        <div class="cart-modal">
+            <div class="cart-modal-header">
+                <h3>Remove Item</h3>
+                <button class="cart-modal-close" onclick="closeFavDeleteModal()" title="Close">&#x2715;</button>
             </div>
-            <div class="acct-modal-body">
-                <p>Are you sure you want to remove <strong id="favDeleteName"></strong> from your favorites? This action cannot be undone.</p>
+            <div class="cart-modal-body">
+                <p class="cart-modal-subtitle">Are you sure you want to remove <strong id="favDeleteName"></strong> from your favorites? This cannot be undone.</p>
             </div>
-            <div class="acct-modal-footer">
-                <button class="acct-modal-btn-cancel" onclick="closeFavDeleteModal()">Cancel</button>
-                <button class="acct-modal-btn-delete" id="favDeleteConfirmBtn">
-                    <i class="bi bi-trash3"></i> Remove
-                </button>
+            <div class="cart-modal-footer">
+                <button class="cart-modal-btn-cancel" onclick="closeFavDeleteModal()">Cancel</button>
+                <button class="cart-modal-btn-delete" id="favDeleteConfirmBtn">Remove Item</button>
             </div>
         </div>
     </div>
-
-    <!-- ── TOAST ───────────────────────────────────────────────── -->
-    <div id="fav-toast" class="fav-toast"></div>
 
     <!-- ── PAGE LAYOUT ────────────────────────────────────────── -->
     <div class="acct-page">
@@ -307,15 +300,13 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                                     </thead>
                                     <tbody>
                                         <?php foreach ($orders_arr as $o):
-                                            $isDelivery = strtolower($o['order_type'] ?? '') === 'delivery';
-                                            $typeIcon   = $isDelivery ? 'bi-truck' : 'bi-shop';
-                                            $orderId    = fmt_id('OR', $o['order_id'], $o['order_date']);
+                                            $orderId = fmt_id('OR', $o['order_id'], $o['order_date']);
                                         ?>
                                             <tr>
                                                 <td class="td-id" data-value="<?= htmlspecialchars($orderId) ?>"><?= $orderId ?></td>
                                                 <td data-value="<?= $o['order_date'] ?>"><?= date('M d, Y', strtotime($o['order_date'])) ?></td>
                                                 <td data-value="<?= (int)$o['item_count'] ?>"><?= $o['item_count'] ?> item<?= $o['item_count'] != 1 ? 's' : '' ?></td>
-                                                <td data-value="<?= htmlspecialchars($o['order_type'] ?? 'Pickup') ?>"><i class="bi <?= $typeIcon ?>"></i> <?= ucfirst(htmlspecialchars($o['order_type'] ?? 'Pickup')) ?></td>
+                                                <td data-value="<?= htmlspecialchars($o['order_type'] ?? 'Pickup') ?>"><?= ucfirst(htmlspecialchars($o['order_type'] ?? 'Pickup')) ?></td>
                                                 <td data-value="<?= htmlspecialchars($o['payment_method']) ?>"><?= htmlspecialchars($o['payment_method']) ?></td>
                                                 <td class="td-amount" data-value="<?= $o['total_amount'] ?>">&#8369;<?= number_format($o['total_amount'], 2) ?></td>
                                                 <td data-value="<?= strtolower($o['status']) ?>">
@@ -449,7 +440,7 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                                         </div>
                                         <ul class="ins-legend">
                                             <?php
-                                            $type_colors = ['Delivery' => '#5B1312', 'Pickup' => '#b07830'];
+                                            $type_colors = ['Delivery' => '#5B1312', 'Pickup' => '#4a8a6f'];
                                             $total_types = array_sum($type_data);
                                             foreach ($type_data as $label => $cnt):
                                                 $color = $type_colors[$label] ?? '#c4a882';
@@ -478,7 +469,7 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                                         </div>
                                         <ul class="ins-legend">
                                             <?php
-                                            $pay_palette = ['#5B1312','#b07830','#3a7a5b','#1a6ea8','#7a3a7a'];
+                                            $pay_palette = ['#5B1312','#c49a3c','#1a6ea8','#2d8a5e','#8b4b9e'];
                                             $total_pays  = array_sum($pay_data);
                                             $pi = 0;
                                             foreach ($pay_data as $label => $cnt):
@@ -527,7 +518,7 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                                         </div>
                                         <div class="acct-ps-field full-width">
                                             <label>MOBILE NUMBER</label>
-                                            <input type="tel" name="mobile_number" value="<?= htmlspecialchars($user['mobile_number'] ?? '') ?>" placeholder="09XXXXXXXXX" maxlength="16" pattern="(\+63|0)[0-9]{10}" />
+                                            <input type="tel" name="mobile_number" value="<?= htmlspecialchars($user['mobile_number'] ?? '') ?>" placeholder="(+63 9XX XXX XXXX)" maxlength="16" pattern="(\+63|0)[0-9]{10}" />
                                         </div>
                                         <div class="acct-ps-field full-width acct-ps-sub-hd">
                                             Default Delivery Address
@@ -547,6 +538,14 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                                         <div class="acct-ps-field">
                                             <label>CITY / MUNICIPALITY</label>
                                             <input type="text" name="city_municipality" value="<?= htmlspecialchars($user['city_municipality'] ?? '') ?>" />
+                                        </div>
+                                        <div class="acct-ps-field">
+                                            <label>PROVINCE</label>
+                                            <input type="text" name="province" value="<?= htmlspecialchars($user['province'] ?? '') ?>" placeholder="e.g., Davao del Sur" />
+                                        </div>
+                                        <div class="acct-ps-field">
+                                            <label>ZIP CODE</label>
+                                            <input type="text" name="zip_code" value="<?= htmlspecialchars($user['zip_code'] ?? '') ?>" placeholder="e.g., 8000" maxlength="4" inputmode="numeric" />
                                         </div>
                                     </div>
                                     <div class="acct-ps-form-actions">
@@ -715,7 +714,7 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                 const opts = doughnutOpts(insTypeLabels);
                 opts.data = {
                     labels: insTypeLabels,
-                    datasets: [{ data: insTypeData, backgroundColor: ['#5B1312','#b07830','#c4a882'], borderWidth: 0, hoverOffset: 4 }]
+                    datasets: [{ data: insTypeData, backgroundColor: ['#5B1312','#4a8a6f','#c49a3c'], borderWidth: 0, hoverOffset: 4 }]
                 };
                 new Chart(typeCtx, opts);
             }
@@ -726,7 +725,7 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                 const opts = doughnutOpts(insPayLabels);
                 opts.data = {
                     labels: insPayLabels,
-                    datasets: [{ data: insPayData, backgroundColor: ['#5B1312','#b07830','#3a7a5b','#1a6ea8','#7a3a7a'], borderWidth: 0, hoverOffset: 4 }]
+                    datasets: [{ data: insPayData, backgroundColor: ['#5B1312','#c49a3c','#1a6ea8','#2d8a5e','#8b4b9e'], borderWidth: 0, hoverOffset: 4 }]
                 };
                 new Chart(payCtx, opts);
             }
@@ -778,7 +777,7 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
 
         function loadFavorites(page) {
             favPage = page || 1;
-            fetch(`favorites.php?page=${favPage}&ajax=1`)
+            fetch(`favorites.php?action=get&page=${favPage}&ajax=1`)
                 .then(r => r.json())
                 .then(d => {
                     document.getElementById('fav-subtitle').textContent =
@@ -817,7 +816,7 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
             return items.map(item => {
                 const img = item.image_path
                     ? `<img src="${item.image_path}" class="fav-product-img" alt="${item.name}">`
-                    : `<div class="fav-product-img" style="background:rgba(42,0,0,0.06);display:flex;align-items:center;justify-content:center;"><i class="bi bi-cup-hot" style="color:var(--dark-brown);opacity:0.4;font-size:1.4rem;"></i></div>`;
+                    : `<div class="fav-product-img" style="background:rgba(42,0,0,0.06);display:flex;align-items:center;justify-content:center;margin:0 auto;"><i class="bi bi-cup-hot" style="color:var(--dark-brown);opacity:0.4;font-size:1.4rem;"></i></div>`;
                 return `<tr>
                     <td>${img}</td>
                     <td class="td-fav-name">${item.name}</td>
@@ -880,12 +879,17 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
             fd.append('product_id', productId);
             fd.append('quantity', 1);
             fd.append('ajax', 1);
-            fetch('add_to_cart.php', { method: 'POST', body: fd })
+            fetch('php/add_to_cart.php', { method: 'POST', body: fd })
                 .then(r => r.json())
                 .then(d => {
-                    if (d.success) showFavToast(`${productName} added to cart!`, 'success');
-                    else showFavToast(d.message || 'Failed to add.', 'error');
-                });
+                    if (d.success) {
+                        showFavToast(`${productName} added to cart!`);
+                        if (typeof updateCartCount === 'function') updateCartCount();
+                    } else {
+                        showFavToast(d.message || 'Failed to add to cart.');
+                    }
+                })
+                .catch(() => showFavToast('Could not add to cart. Please try again.'));
         }
 
         /* ── DELETE MODAL ───────────────────────────────────────── */
@@ -894,12 +898,12 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
         function openFavDeleteModal(productId, productName) {
             pendingDeleteId = productId;
             document.getElementById('favDeleteName').textContent = productName;
-            document.getElementById('favDeleteModal').style.display = 'flex';
+            document.getElementById('favDeleteModal').classList.add('open');
         }
 
         function closeFavDeleteModal() {
             pendingDeleteId = null;
-            document.getElementById('favDeleteModal').style.display = 'none';
+            document.getElementById('favDeleteModal').classList.remove('open');
         }
 
         document.getElementById('favDeleteConfirmBtn').addEventListener('click', () => {
@@ -922,13 +926,20 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
             if (e.target === this) closeFavDeleteModal();
         });
 
-        /* ── TOAST ──────────────────────────────────────────────── */
-        function showFavToast(msg, type) {
-            const toast = document.getElementById('fav-toast');
+        /* ── TOAST — matches #notification-toast from menu/components ── */
+        function showFavToast(msg) {
+            let toast = document.getElementById('notification-toast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'notification-toast';
+                document.body.appendChild(toast);
+            }
             toast.textContent = msg;
-            toast.className   = `fav-toast fav-toast-${type} show`;
+            toast.classList.remove('show');
+            void toast.offsetWidth;
+            toast.classList.add('show');
             clearTimeout(toast._t);
-            toast._t = setTimeout(() => toast.classList.remove('show'), 3000);
+            toast._t = setTimeout(() => toast.classList.remove('show'), 2200);
         }
 
         /* ── AVATAR ─────────────────────────────────────────────── */
@@ -973,7 +984,9 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
             house_unit:       <?= json_encode($user['house_unit'] ?? '') ?>,
             street_name:      <?= json_encode($user['street_name'] ?? '') ?>,
             barangay:         <?= json_encode($user['barangay'] ?? '') ?>,
-            city_municipality:<?= json_encode($user['city_municipality'] ?? '') ?>
+            city_municipality:<?= json_encode($user['city_municipality'] ?? '') ?>,
+            province:         <?= json_encode($user['province'] ?? '') ?>,
+            zip_code:         <?= json_encode($user['zip_code'] ?? '') ?>
         };
 
         function discardProfileInfo() {

@@ -498,8 +498,8 @@ body.page-account .navbar .container {
     width: 14%;
 }
 
-/* Order ID — bold 700, all other order fields 400 (inherited) */
-.td-id {
+/* Order ID — bold 700; explicit selector beats .acct-orders-table td */
+.acct-orders-table td.td-id {
     font-weight: 700;
 }
 
@@ -685,13 +685,15 @@ body.page-account .navbar .container {
     font-weight: 600;
 }
 
-/* Product image */
+/* Product image — centered in cell */
 .fav-product-img {
     width: 58px;
     height: 58px;
     object-fit: cover;
     border-radius: 10px;
     border: 1px solid rgba(42, 0, 0, 0.1);
+    display: block;
+    margin: 0 auto;
 }
 
 /* Action buttons wrapper */
@@ -740,149 +742,158 @@ body.page-account .navbar .container {
     box-shadow: 0 4px 12px rgba(42, 0, 0, 0.15);
 }
 
-/* ── FAVORITES DELETE MODAL ───────────────────────────────── */
-.acct-modal-overlay {
+/* ── FAVORITES DELETE MODAL — matches cart.css cart-modal ─── */
+.cart-modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.45);
-    display: flex;
+    background: rgba(28, 28, 28, 0.45);
+    display: none;
     align-items: center;
     justify-content: center;
-    z-index: 9000;
+    z-index: 5000;
 }
 
-.acct-modal {
+.cart-modal-overlay.open { display: flex; }
+
+.cart-modal {
     background: #fff;
-    border-radius: 16px;
     width: 90%;
-    max-width: 420px;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    max-width: 520px;
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(42, 0, 0, 0.10);
     overflow: hidden;
+    animation: fadeInUp 0.22s ease both;
 }
 
-.acct-modal-header {
+.cart-modal-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 18px 24px;
+    padding: 20px 28px;
     border-bottom: 1px solid rgba(42, 0, 0, 0.08);
+    background: rgba(245, 241, 232, 0.4);
+}
+
+.cart-modal-header h3 {
     font-family: var(--font-subheading);
     font-size: 1rem;
     font-weight: 700;
     color: var(--deep-maroon);
+    letter-spacing: 0.3px;
+    margin: 0;
 }
 
-.acct-modal-header i {
-    margin-right: 8px;
-}
-
-.acct-modal-close {
+.cart-modal-close {
     background: none;
     border: none;
-    color: rgba(42, 0, 0, 0.45);
     font-size: 1rem;
+    font-weight: 700;
+    color: var(--deep-maroon);
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4px;
-    border-radius: 6px;
-    transition: color 0.15s ease, background 0.15s ease;
+    line-height: 1;
+    padding: 5px;
+    border-radius: 5px;
+    transition: background 0.22s ease;
 }
 
-.acct-modal-close:hover {
-    color: var(--deep-maroon);
-    background: rgba(42, 0, 0, 0.06);
+.cart-modal-close:hover { background: rgba(42, 0, 0, 0.06); }
+
+.cart-modal-body {
+    padding: 24px 28px;
 }
 
-.acct-modal-body {
-    padding: 20px 24px;
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    color: var(--dark-brown);
+.cart-modal-subtitle {
+    font-family: var(--font-subheading);
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--text-muted, #7a6a5a);
+    margin: 0;
     line-height: 1.6;
-    border-bottom: 1px solid rgba(42, 0, 0, 0.08);
 }
 
-.acct-modal-body strong {
+.cart-modal-subtitle strong {
+    font-weight: 600;
     color: var(--deep-maroon);
 }
 
-.acct-modal-footer {
+.cart-modal-footer {
     display: flex;
-    align-items: center;
     justify-content: flex-end;
     gap: 10px;
-    padding: 16px 24px;
+    padding: 20px 28px;
+    border-top: 1px solid rgba(42, 0, 0, 0.08);
+    background: rgba(245, 241, 232, 0.25);
 }
 
-.acct-modal-btn-cancel {
+.cart-modal-btn-cancel {
     background: transparent;
-    border: 1.5px solid rgba(42, 0, 0, 0.2);
+    color: #9b1c1c;
+    border: 1.5px solid #9b1c1c;
+    padding: 10px 22px;
     border-radius: 50px;
-    padding: 8px 20px;
     font-family: var(--font-subheading);
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     font-weight: 600;
-    color: var(--dark-brown);
-    cursor: pointer;
-    transition: all 0.15s ease;
-}
-
-.acct-modal-btn-cancel:hover {
-    border-color: var(--deep-maroon);
-    color: var(--deep-maroon);
-}
-
-.acct-modal-btn-delete {
-    background: #DC0000;
-    border: none;
-    border-radius: 50px;
-    padding: 8px 20px;
-    font-family: var(--font-subheading);
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: #fff;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    transition: background 0.15s ease, transform 0.15s ease;
+    gap: 8px;
+    transition: all 0.22s ease;
 }
 
-.acct-modal-btn-delete:hover {
+.cart-modal-btn-cancel:hover {
+    background: rgba(155, 28, 28, 0.07);
+    color: #7b1111;
+    border-color: #7b1111;
+}
+
+.cart-modal-btn-delete {
+    background: #DC0000;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-family: var(--font-subheading);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.22s ease;
+}
+
+.cart-modal-btn-delete:hover {
     background: #B30000;
     transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(42, 0, 0, 0.20);
 }
 
-/* ── TOAST ────────────────────────────────────────────────── */
-.fav-toast {
+/* ── TOAST — matches #notification-toast from components.css ─ */
+#notification-toast {
     position: fixed;
-    bottom: 32px;
+    bottom: 28px;
     left: 50%;
     transform: translateX(-50%) translateY(20px);
     background: var(--deep-maroon);
-    color: #fff;
+    color: var(--ivory-cream);
+    padding: 0.7rem 1.5rem;
+    border-radius: var(--radius-sm);
     font-family: var(--font-subheading);
+    font-weight: 500;
     font-size: 0.88rem;
-    font-weight: 600;
-    padding: 12px 24px;
-    border-radius: 50px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 16px rgba(42, 0, 0, 0.22);
     opacity: 0;
-    transition: opacity 0.25s ease, transform 0.25s ease;
-    z-index: 9999;
-    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 10000;
     white-space: nowrap;
+    max-width: 90vw;
+    pointer-events: none;
 }
 
-.fav-toast.show {
+#notification-toast.show {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
-}
-
-.fav-toast.fav-toast-error {
-    background: #c0392b;
 }
 
 /* ── PROFILE SETTINGS FORM ────────────────────────────────── */
