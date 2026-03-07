@@ -508,61 +508,86 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                             </div>
                         </div>
 
-                        <div id="profile-alert-zone" class="p-4 pb-0"></div>
+                        <div id="profile-alert-zone" class="acct-ps-alert-zone"></div>
 
-                        <form id="profileForm" onsubmit="saveProfile(event)" class="p-4">
-                            <div class="acct-section-hd">Personal Information</div>
-                            <div class="acct-form-grid">
-                                <div class="acct-field">
-                                    <label>Full Name *</label>
-                                    <input type="text" name="full_name" value="<?= htmlspecialchars($user['full_name'] ?? '') ?>" required />
-                                </div>
-                                <div class="acct-field">
-                                    <label>Email Address *</label>
-                                    <input type="email" name="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>" required />
-                                </div>
-                                <div class="acct-field">
-                                    <label>Mobile Number</label>
-                                    <input type="tel" name="mobile_number" value="<?= htmlspecialchars($user['mobile_number'] ?? '') ?>" placeholder="+63 9XX XXX XXXX" maxlength="16" pattern="(\+63|0)[0-9]{10}" title="Format: +63 9XX XXX XXXX or 09XXXXXXXXX" />
-                                </div>
+                        <div class="acct-ps-row">
+
+                            <!-- Left: Account Information + Address -->
+                            <div class="acct-ps-card">
+                                <p class="acct-ps-section-hd">Account Information</p>
+                                <form id="profileInfoForm" onsubmit="saveProfileInfo(event)">
+                                    <div class="acct-ps-form-grid">
+                                        <div class="acct-ps-field">
+                                            <label>FULL NAME</label>
+                                            <input type="text" name="full_name" value="<?= htmlspecialchars($user['full_name'] ?? '') ?>" required />
+                                        </div>
+                                        <div class="acct-ps-field">
+                                            <label>EMAIL ADDRESS</label>
+                                            <input type="email" name="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>" required />
+                                        </div>
+                                        <div class="acct-ps-field full-width">
+                                            <label>MOBILE NUMBER</label>
+                                            <input type="tel" name="mobile_number" value="<?= htmlspecialchars($user['mobile_number'] ?? '') ?>" placeholder="09XXXXXXXXX" maxlength="16" pattern="(\+63|0)[0-9]{10}" />
+                                        </div>
+                                        <div class="acct-ps-field full-width acct-ps-sub-hd">
+                                            Default Delivery Address
+                                        </div>
+                                        <div class="acct-ps-field">
+                                            <label>HOUSE / UNIT NO.</label>
+                                            <input type="text" name="house_unit" value="<?= htmlspecialchars($user['house_unit'] ?? '') ?>" />
+                                        </div>
+                                        <div class="acct-ps-field">
+                                            <label>STREET</label>
+                                            <input type="text" name="street_name" value="<?= htmlspecialchars($user['street_name'] ?? '') ?>" />
+                                        </div>
+                                        <div class="acct-ps-field">
+                                            <label>BARANGAY</label>
+                                            <input type="text" name="barangay" value="<?= htmlspecialchars($user['barangay'] ?? '') ?>" />
+                                        </div>
+                                        <div class="acct-ps-field">
+                                            <label>CITY / MUNICIPALITY</label>
+                                            <input type="text" name="city_municipality" value="<?= htmlspecialchars($user['city_municipality'] ?? '') ?>" />
+                                        </div>
+                                    </div>
+                                    <div class="acct-ps-form-actions">
+                                        <button type="button" class="acct-ps-btn-discard" onclick="discardProfileInfo()">Discard</button>
+                                        <button type="submit" class="acct-ps-btn-save" id="saveInfoBtn">Save Changes</button>
+                                    </div>
+                                </form>
                             </div>
 
-                            <div class="acct-section-hd mt-4">Change Password</div>
-                            <div class="acct-form-grid">
-                                <div class="acct-field">
-                                    <label>New Password</label>
-                                    <input type="password" name="new_password" id="f-pw-new" placeholder="Min. 8 characters" autocomplete="new-password" />
-                                </div>
-                                <div class="acct-field">
-                                    <label>Confirm New Password</label>
-                                    <input type="password" name="confirm_password" id="f-pw-confirm" placeholder="Repeat new password" autocomplete="new-password" />
-                                </div>
+                            <!-- Right: Change Password -->
+                            <div class="acct-ps-card">
+                                <p class="acct-ps-section-hd">Change Password</p>
+                                <form id="profilePwForm" onsubmit="saveProfilePw(event)">
+                                    <div class="acct-ps-form-grid" style="margin-top:8px;">
+                                        <div class="acct-ps-field full-width">
+                                            <label>NEW PASSWORD</label>
+                                            <div class="acct-ps-pw-wrap">
+                                                <input type="password" name="new_password" id="f-pw-new" placeholder="Min. 8 characters" autocomplete="new-password" />
+                                                <button type="button" class="acct-ps-pw-toggle" onclick="toggleAcctPw('f-pw-new', this)" aria-label="Toggle visibility">
+                                                    <i class="fas fa-eye-slash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="acct-ps-field full-width">
+                                            <label>CONFIRM NEW PASSWORD</label>
+                                            <div class="acct-ps-pw-wrap">
+                                                <input type="password" name="confirm_password" id="f-pw-confirm" placeholder="Repeat new password" autocomplete="new-password" />
+                                                <button type="button" class="acct-ps-pw-toggle" onclick="toggleAcctPw('f-pw-confirm', this)" aria-label="Toggle visibility">
+                                                    <i class="fas fa-eye-slash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="acct-ps-form-actions">
+                                        <button type="button" class="acct-ps-btn-discard" onclick="discardProfilePw()">Discard</button>
+                                        <button type="submit" class="acct-ps-btn-save" id="savePwBtn">Save Changes</button>
+                                    </div>
+                                </form>
                             </div>
 
-                            <div class="acct-section-hd mt-4">Default Delivery Address</div>
-                            <div class="acct-form-grid">
-                                <div class="acct-field">
-                                    <label>House / Unit No.</label>
-                                    <input type="text" name="house_unit" value="<?= htmlspecialchars($user['house_unit'] ?? '') ?>" />
-                                </div>
-                                <div class="acct-field">
-                                    <label>Street</label>
-                                    <input type="text" name="street_name" value="<?= htmlspecialchars($user['street_name'] ?? '') ?>" />
-                                </div>
-                                <div class="acct-field">
-                                    <label>Barangay</label>
-                                    <input type="text" name="barangay" value="<?= htmlspecialchars($user['barangay'] ?? '') ?>" />
-                                </div>
-                                <div class="acct-field">
-                                    <label>City / Municipality</label>
-                                    <input type="text" name="city_municipality" value="<?= htmlspecialchars($user['city_municipality'] ?? '') ?>" />
-                                </div>
-                            </div>
-
-                            <div class="acct-form-actions mt-4">
-                                <button type="submit" class="acct-btn-save" id="saveBtn">Save Changes</button>
-                            </div>
-                        </form>
+                        </div>
                     </div>
 
                 </div><!-- /acct-main-card -->
@@ -931,26 +956,48 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
         }
 
         /* ── PROFILE SAVE ───────────────────────────────────────── */
-        function saveProfile(e) {
-            e.preventDefault();
-            const btn  = document.getElementById('saveBtn');
-            const zone = document.getElementById('profile-alert-zone');
-            const newPw  = document.getElementById('f-pw-new').value;
-            const confPw = document.getElementById('f-pw-confirm').value;
+        /* ── PASSWORD TOGGLE ────────────────────────────────────── */
+        function toggleAcctPw(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon  = btn.querySelector('i');
+            const isHidden = input.type === 'password';
+            input.type = isHidden ? 'text' : 'password';
+            icon.className = isHidden ? 'fas fa-eye' : 'fas fa-eye-slash';
+        }
 
-            if (newPw && newPw !== confPw) {
-                zone.innerHTML = '<div class="alert alert-danger">Passwords do not match.</div>';
-                return;
-            }
-            if (newPw && newPw.length < 8) {
-                zone.innerHTML = '<div class="alert alert-danger">New password must be at least 8 characters.</div>';
-                return;
-            }
+        /* Stored originals for discard */
+        const _origInfo = {
+            full_name:        <?= json_encode($user['full_name'] ?? '') ?>,
+            email:            <?= json_encode($user['email'] ?? '') ?>,
+            mobile_number:    <?= json_encode($user['mobile_number'] ?? '') ?>,
+            house_unit:       <?= json_encode($user['house_unit'] ?? '') ?>,
+            street_name:      <?= json_encode($user['street_name'] ?? '') ?>,
+            barangay:         <?= json_encode($user['barangay'] ?? '') ?>,
+            city_municipality:<?= json_encode($user['city_municipality'] ?? '') ?>
+        };
+
+        function discardProfileInfo() {
+            const f = document.getElementById('profileInfoForm');
+            Object.keys(_origInfo).forEach(k => { if (f[k]) f[k].value = _origInfo[k]; });
+        }
+
+        function discardProfilePw() {
+            ['f-pw-new', 'f-pw-confirm'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+        }
+
+        /* ── SAVE ACCOUNT INFO ──────────────────────────────────── */
+        function saveProfileInfo(e) {
+            e.preventDefault();
+            const btn  = document.getElementById('saveInfoBtn');
+            const zone = document.getElementById('profile-alert-zone');
 
             btn.disabled = true;
             btn.textContent = 'Saving...';
 
-            const fd = new FormData(document.getElementById('profileForm'));
+            const fd = new FormData(document.getElementById('profileInfoForm'));
             const avatarFile = document.getElementById('avatarFileInput').files[0];
             if (avatarFile) fd.append('avatar', avatarFile);
 
@@ -967,10 +1014,45 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                     setTimeout(() => zone.innerHTML = '', 5000);
                 })
                 .catch(() => zone.innerHTML = '<div class="alert alert-danger">Network error.</div>')
-                .finally(() => {
-                    btn.disabled = false;
-                    btn.textContent = 'Save Changes';
-                });
+                .finally(() => { btn.disabled = false; btn.textContent = 'Save Changes'; });
+        }
+
+        /* ── SAVE PASSWORD ──────────────────────────────────────── */
+        function saveProfilePw(e) {
+            e.preventDefault();
+            const btn  = document.getElementById('savePwBtn');
+            const zone = document.getElementById('profile-alert-zone');
+            const newPw  = document.getElementById('f-pw-new').value;
+            const confPw = document.getElementById('f-pw-confirm').value;
+
+            if (!newPw) {
+                zone.innerHTML = '<div class="alert alert-danger">Please enter a new password.</div>';
+                return;
+            }
+            if (newPw.length < 8) {
+                zone.innerHTML = '<div class="alert alert-danger">New password must be at least 8 characters.</div>';
+                return;
+            }
+            if (newPw !== confPw) {
+                zone.innerHTML = '<div class="alert alert-danger">Passwords do not match.</div>';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            const fd = new FormData(document.getElementById('profilePwForm'));
+            fetch('php/update_profile.php', { method: 'POST', body: fd })
+                .then(r => r.json())
+                .then(d => {
+                    zone.innerHTML = d.success
+                        ? '<div class="alert alert-success">Password updated successfully.</div>'
+                        : '<div class="alert alert-danger">' + (d.message || 'Update failed.') + '</div>';
+                    if (d.success) discardProfilePw();
+                    setTimeout(() => zone.innerHTML = '', 5000);
+                })
+                .catch(() => zone.innerHTML = '<div class="alert alert-danger">Network error.</div>')
+                .finally(() => { btn.disabled = false; btn.textContent = 'Save Changes'; });
         }
     </script>
 </body>

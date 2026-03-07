@@ -1679,6 +1679,13 @@ textarea.form-control {
   padding-top: 16px;
 }
 
+/* Make each card's form stretch to fill remaining card height */
+.ps-card form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
 /* Discard button — secondary action */
 .ps-btn-discard {
   background: transparent;

@@ -949,7 +949,171 @@ body.page-account .navbar .container {
     background: var(--burgundy-wine);
 }
 
-/* ── BROWSE MENU BUTTON ───────────────────────────────────── */
+/* ── PROFILE SETTINGS TAB — matches admin ps-* layout ──────── */
+.acct-ps-alert-zone {
+    padding: 0 28px;
+    margin-bottom: 4px;
+}
+
+.acct-ps-alert-zone:empty { display: none; }
+
+.acct-ps-row {
+    display: flex;
+    gap: 24px;
+    align-items: stretch;
+    padding: 20px 28px 28px;
+}
+
+.acct-ps-card {
+    background: var(--white, #fff);
+    border: 1px solid rgba(42, 0, 0, 0.09);
+    border-radius: 12px;
+    padding: 28px 32px;
+    box-shadow: 0 1px 4px rgba(42, 0, 0, 0.05);
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.acct-ps-card form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.acct-ps-section-hd {
+    font-family: var(--font-subheading);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--deep-maroon);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(42, 0, 0, 0.06);
+}
+
+.acct-ps-sub-hd {
+    font-family: var(--font-subheading);
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--deep-maroon);
+    opacity: 0.7;
+    margin-top: 4px;
+    padding-top: 4px;
+}
+
+.acct-ps-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.acct-ps-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.acct-ps-field.full-width {
+    grid-column: 1 / -1;
+}
+
+.acct-ps-field label {
+    font-family: var(--font-subheading);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: rgba(42, 0, 0, 0.6);
+    letter-spacing: 0.3px;
+}
+
+.acct-ps-field input {
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--dark-brown);
+    padding: 10px 14px;
+    border: 1px solid rgba(42, 0, 0, 0.14);
+    border-radius: 9px;
+    background: #fafafa;
+    outline: none;
+    transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.acct-ps-field input:focus {
+    border-color: var(--deep-maroon);
+    box-shadow: 0 0 0 3px rgba(42, 0, 0, 0.07);
+    background: #fff;
+}
+
+/* Password input wrapper */
+.acct-ps-pw-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.acct-ps-pw-wrap input {
+    width: 100%;
+    padding-right: 44px;
+}
+
+.acct-ps-pw-toggle {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    color: rgba(42, 0, 0, 0.35);
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 4px;
+    transition: color 0.18s;
+}
+
+.acct-ps-pw-toggle:hover { color: var(--deep-maroon); }
+
+/* Form action buttons row */
+.acct-ps-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 16px;
+}
+
+.acct-ps-btn-discard {
+    background: transparent;
+    color: rgba(42, 0, 0, 0.55);
+    border: 1.5px solid rgba(42, 0, 0, 0.3);
+    padding: 12px 22px;
+    border-radius: 50px;
+    font-family: var(--font-subheading);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.18s;
+}
+
+.acct-ps-btn-discard:hover {
+    background: rgba(42, 0, 0, 0.04);
+    color: var(--deep-maroon);
+    border-color: var(--deep-maroon);
+}
+
+.acct-ps-btn-save {
+    background: var(--deep-maroon);
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-family: var(--font-subheading);
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.18s;
+}
+
+.acct-ps-btn-save:hover { background: var(--burgundy-wine); }
 .btn-browse-menu {
     background: transparent;
     color: var(--burgundy-wine);
