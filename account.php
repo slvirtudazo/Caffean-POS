@@ -451,9 +451,11 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                         </div>
 
                         <div id="fav-body">
-                            <div class="acct-empty-state">
-                                <i class="bi bi-heart"></i>
-                                <p>Loading favorites…</p>
+                            <div class="fav-empty-state">
+                                <i class="fas fa-heart"></i>
+                                <h2>No favorites yet</h2>
+                                <p>Looks like you haven't saved any items yet.<br>Browse our menu to find your favorites!</p>
+                                <a href="menu.php" class="btn-browse-menu">Browse Menu</a>
                             </div>
                         </div>
 
@@ -1005,7 +1007,7 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
             if (!items || !items.length) {
                 body.innerHTML = `
                     <div class="fav-empty-state">
-                        <i class="bi bi-heart"></i>
+                        <i class="fas fa-heart"></i>
                         <h2>No favorites yet</h2>
                         <p>Looks like you haven't saved any items yet.<br>Browse our menu to find your favorites!</p>
                         <a href="menu.php" class="btn-browse-menu">Browse Menu</a>

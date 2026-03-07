@@ -4,6 +4,7 @@
  * Purge Coffee Shop - Coffee Menu Page
  */
 require_once 'php/db_connection.php';
+require_once 'php/product_images.php';
 
 $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 
@@ -109,7 +110,7 @@ $products_result = mysqli_query(
                                 <div class="favorite-icon" onclick="toggleFavorite(<?php echo $product['product_id']; ?>, this.querySelector('i'))">
                                     <i class="far fa-heart"></i>
                                 </div>
-                                <img src="images/coffee.png" alt="<?php echo htmlspecialchars($product['name']); ?>" class="product-image">
+                                <img src="<?php echo htmlspecialchars(resolveProductImage($product['name'], $product['image_path'], $product['category_id'])); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="product-image">
                             </div>
                             <div class="product-info">
                                 <h3 class="product-name"><?php echo htmlspecialchars($product['name']); ?></h3>

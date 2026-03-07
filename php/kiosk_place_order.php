@@ -10,6 +10,7 @@ error_reporting(0);
 ini_set('display_errors', 0);
 
 require_once 'db_connection.php';
+require_once 'product_images.php';
 
 header('Content-Type: application/json');
 
@@ -52,7 +53,10 @@ if (empty($cart) || !is_array($cart)) {
 $ids   = implode(',', array_map('intval', array_keys($cart)));
 $res   = mysqli_query($conn, "SELECT product_id, name, price, image_path FROM products WHERE product_id IN ($ids) AND status = 1");
 $prods = [];
-while ($p = mysqli_fetch_assoc($res)) $prods[$p['product_id']] = $p;
+while ($p = mysqli_fetch_assoc($res)) {
+    $p['image_path'] = resolveProductImage($p['name'], $p['image_path']);
+    $prods[$p['product_id']] = $p;
+}
 
 if (empty($prods)) {
     echo json_encode(['success' => false, 'message' => 'No valid products found.']); exit();

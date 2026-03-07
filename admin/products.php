@@ -7,6 +7,7 @@
 
 session_start();
 require_once '../php/db_connection.php';
+require_once '../php/product_images.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
   header('Location: ../login.php');
@@ -183,7 +184,12 @@ include 'includes/header.php';
           </td>
         </tr>
       <?php else: ?>
-        <?php while ($product = mysqli_fetch_assoc($products_result)): ?>
+        <?php while ($product = mysqli_fetch_assoc($products_result)):
+              $product['display_image'] = resolveProductImage(
+                  $product['name'],
+                  $product['image_path'] ?? '',
+                  $product['category_id'] ?? 0
+              ); ?>
           <tr>
             <td class="td-id"><?= fmt_id('PR', $product['product_id'], $product['created_at'] ?? null) ?></td>
             <td><?= htmlspecialchars($product['name']) ?></td>
@@ -555,8 +561,8 @@ include 'includes/header.php';
     // Show product image if available
     var imgWrap = document.getElementById('view_img_wrap');
     var imgEl = document.getElementById('view_img');
-    if (p.image_path) {
-      imgEl.src = _baseUrl + p.image_path;
+    if (p.display_image) {
+      imgEl.src = p.display_image;
       imgWrap.style.display = 'block';
     } else {
       imgWrap.style.display = 'none';
@@ -581,8 +587,8 @@ include 'includes/header.php';
     var removeBtn = document.getElementById('edit_img_remove');
     var wrap = document.getElementById('edit_thumb_wrap');
 
-    if (p.image_path) {
-      preview.src = _baseUrl + p.image_path;
+    if (p.display_image) {
+      preview.src = p.display_image;
       preview.style.display = 'block';
       placeholder.style.display = 'none';
       removeBtn.style.display = 'none';

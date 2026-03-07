@@ -8,6 +8,7 @@
  */
 
 require_once 'php/db_connection.php';
+require_once 'php/product_images.php';
 
 $is_admin      = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 $is_logged_in  = isset($_SESSION['user_id']);
@@ -103,9 +104,11 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
     $desc  = htmlspecialchars($product['description']);
     $price = number_format($product['price'], 2);
     $net   = htmlspecialchars($product['net_content'] ?? '');
-    $img   = !empty($product['image_path'])
-           ? htmlspecialchars($product['image_path'])
-           : 'images/placeholder.png';
+    $img   = htmlspecialchars(resolveProductImage(
+                 $product['name'],
+                 $product['image_path'] ?? '',
+                 $product['category_id'] ?? 0
+             ));
 
     echo '<div class="product-card" data-product-id="' . $id . '">';
 

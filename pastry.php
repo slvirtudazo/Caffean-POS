@@ -4,8 +4,7 @@
  * Purge Coffee Shop - Pastry Menu Page
  */
 require_once 'php/db_connection.php';
-
-$is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+require_once 'php/product_images.php';
 
 $items_per_page  = 4;
 $current_page    = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -109,7 +108,7 @@ $products_result = mysqli_query(
                                 <div class="favorite-icon" onclick="toggleFavorite(<?php echo $product['product_id']; ?>, this.querySelector('i'))">
                                     <i class="far fa-heart"></i>
                                 </div>
-                                <img src="images/pastry.png" alt="<?php echo htmlspecialchars($product['name']); ?>" class="product-image">
+                                <img src="<?php echo htmlspecialchars(resolveProductImage($product['name'], $product['image_path'], $product['category_id'])); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="product-image">
                             </div>
                             <div class="product-info">
                                 <h3 class="product-name"><?php echo htmlspecialchars($product['name']); ?></h3>

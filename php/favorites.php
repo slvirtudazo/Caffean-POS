@@ -1,6 +1,7 @@
 <?php
 /* Purge Coffee — Favorites AJAX Handler */
-require_once 'db_connection.php';
+require_once 'php/db_connection.php';
+require_once 'php/product_images.php';
 
 header('Content-Type: application/json');
 
@@ -66,6 +67,12 @@ if ($action === 'get') {
     mysqli_stmt_execute($stmt);
     $rows = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
     mysqli_stmt_close($stmt);
+
+    // Resolve imgur images via central map
+    foreach ($rows as &$row) {
+        $row['image_path'] = resolveProductImage($row['name'], $row['image_path']);
+    }
+    unset($row);
 
     echo json_encode([
         'success'    => true,

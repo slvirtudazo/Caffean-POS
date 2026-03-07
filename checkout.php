@@ -5,6 +5,7 @@
  * Shows an order confirmation receipt dialog with save-as-PNG option.
  */
 require_once 'php/db_connection.php';
+require_once 'php/product_images.php';
 
 // Redirect admin away from checkout
 if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
@@ -76,6 +77,7 @@ while ($p = mysqli_fetch_assoc($res)) {
     $p['addons']               = $o['addons']               ?? [];
     $p['special_instructions'] = $o['special_instructions'] ?? '';
     $p['item_total']           = $p['price'] * $p['quantity'];
+    $p['image_path']           = resolveProductImage($p['name'], $p['image_path']);
     $subtotal                 += $p['item_total'];
     $cart_items[]              = $p;
 }

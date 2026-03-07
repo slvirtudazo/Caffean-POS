@@ -7,6 +7,7 @@
  */
 
 require_once 'php/db_connection.php';
+require_once 'php/product_images.php';
 
 /* ── Redirect admin away ─────────────────────────────────────── */
 if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
@@ -45,9 +46,11 @@ while ($row = mysqli_fetch_assoc($products_res)) {
 /* ── Image helper ────────────────────────────────────────────── */
 function kioskProductImage($product)
 {
-    if (!empty($product['image_path'])) return htmlspecialchars($product['image_path']);
-    $map = [6 => 'pastry.png', 7 => 'pastry.png', 8 => 'pastry.png'];
-    return 'images/' . ($map[$product['category_id']] ?? 'coffee.png');
+    return htmlspecialchars(resolveProductImage(
+        $product['name'],
+        $product['image_path'] ?? '',
+        $product['category_id'] ?? 0
+    ));
 }
 
 /* ── Net content helper — DB value or category default ──────── */

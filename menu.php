@@ -7,6 +7,7 @@
  */
 
 require_once 'php/db_connection.php';
+require_once 'php/product_images.php';
 
 $is_admin      = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 $is_logged_in  = isset($_SESSION['user_id']);
@@ -248,16 +249,13 @@ if ($category_filter > 0) {
                 <div class="menu-content">
 
                     <?php
-                    // Resolve image for a product
-                    $image_map = [
-                        1 => 'coffee.png', 2 => 'coffee.png', 3 => 'coffee.png',
-                        4 => 'coffee.png', 5 => 'coffee.png', 6 => 'pastry.png',
-                        7 => 'pastry.png', 8 => 'pastry.png', 9 => 'coffee.png',
-                    ];
+                    // Resolve image for a product using central helper
                     function getProductImage($product, $image_map) {
-                        return !empty($product['image_path'])
-                            ? $product['image_path']
-                            : 'images/' . ($image_map[$product['category_id']] ?? 'coffee.png');
+                        return resolveProductImage(
+                            $product['name'],
+                            $product['image_path'] ?? '',
+                            $product['category_id'] ?? 0
+                        );
                     }
 
                     // Net content defaults by category (db value takes precedence)
@@ -338,7 +336,7 @@ if ($category_filter > 0) {
                                     <p class="menu-cat-label"><?php echo htmlspecialchars($group_name); ?></p>
                                     <div class="products-grid">
                                         <?php foreach ($items as $product):
-                                            renderProductCard($product, getProductImage($product, $image_map), $is_admin, $is_logged_in);
+                                            renderProductCard($product, getProductImage($product, null), $is_admin, $is_logged_in);
                                         endforeach; ?>
                                     </div>
                                 </div>
@@ -378,7 +376,7 @@ if ($category_filter > 0) {
                                 <?php
                                 mysqli_data_seek($products_result, 0);
                                 while ($product = mysqli_fetch_assoc($products_result)):
-                                    renderProductCard($product, getProductImage($product, $image_map), $is_admin, $is_logged_in);
+                                    renderProductCard($product, getProductImage($product, null), $is_admin, $is_logged_in);
                                 endwhile; ?>
                             </div>
                         <?php endif; ?>
