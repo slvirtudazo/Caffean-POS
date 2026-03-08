@@ -85,8 +85,8 @@ $has_order_num = (bool)mysqli_fetch_assoc(mysqli_query($conn,
 ));
 
 $order_num_select = $has_order_num
-    ? "COALESCE(NULLIF(o.order_number,''), CONCAT('PC-', YEAR(o.order_date), '-', LPAD(o.order_id,5,'0')))"
-    : "CONCAT('PC-', YEAR(o.order_date), '-', LPAD(o.order_id,5,'0'))";
+    ? "COALESCE(NULLIF(o.order_number,''), IF(o.is_kiosk=1, CONCAT('SO-', YEAR(o.order_date), '-', LPAD(o.order_id,3,'0')), CONCAT('ON-', YEAR(o.order_date), '-', LPAD(o.order_id,3,'0'))))"
+    : "IF(o.is_kiosk=1, CONCAT('SO-', YEAR(o.order_date), '-', LPAD(o.order_id,3,'0')), CONCAT('ON-', YEAR(o.order_date), '-', LPAD(o.order_id,3,'0')))";
 
 $recent_res = mysqli_query($conn,
     "SELECT o.order_id,

@@ -99,7 +99,7 @@ if (!empty($orders_map)) {
 
 // Add formatted display ID for JS modal use
 foreach ($orders_map as &$o) {
-  $o['fmt_id'] = fmt_id('OO', $o['order_id'], $o['order_date']);
+  $o['fmt_id'] = fmt_id('ON', $o['order_id'], $o['order_date']);
 }
 unset($o);
 
@@ -167,7 +167,7 @@ include 'includes/header.php';
       <?php else: ?>
         <?php foreach ($orders_map as $o): ?>
           <tr>
-            <td class="td-id"><?= fmt_id('OO', $o['order_id'], $o['order_date']) ?></td>
+            <td class="td-id"><?= fmt_id('ON', $o['order_id'], $o['order_date']) ?></td>
             <td><?= htmlspecialchars($o['full_name']) ?></td>
             <td><?= date('M d, Y · H:i:s', strtotime($o['order_date'])) ?></td>
             <td><?= $o['total_items'] ?? 0 ?></td>

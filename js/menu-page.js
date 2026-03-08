@@ -73,14 +73,6 @@ function setupSortToggles() {
 }
 
 /**
- * Load and display saved favorites on product cards.
- * Delegated to main.js loadFavoritesForMenu() which uses the DB.
- */
-function loadFavoritesForMenu() {
-    // Handled by main.js via DB batch check
-}
-
-/**
  * Setup intersection observer for product card fade-in animations.
  */
 function setupProductAnimations() {

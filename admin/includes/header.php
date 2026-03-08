@@ -58,23 +58,6 @@ $page_css_file = $page_css_map[$current_page] ?? null;
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 
   <style>
-    /* Unread badge inside sidebar link */
-    .sidebar-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 18px;
-      height: 18px;
-      padding: 0 5px;
-      border-radius: 50px;
-      background: var(--burgundy-wine, #5b1312);
-      color: #fff;
-      font-size: 0.7rem;
-      font-weight: 700;
-      margin-left: auto;
-      line-height: 1;
-    }
-
     /* Sortable column indicators */
     .admin-table th[data-sort]::after      { content: ' ↕'; font-size: 0.65rem; opacity: 0.4; }
     .admin-table th[data-sort].sort-asc::after  { content: ' ↑'; opacity: 0.9; }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Purge Coffee Shop — Place Order (php/place_order.php)
+ * Purge Coffee Shop — Place Order
  * Validates inputs, inserts order + full item customizations, clears session cart.
  * Returns JSON consumed by cart.php to show the order success screen.
  */
@@ -33,7 +33,6 @@ $email          = trim($_POST['email']          ?? '');
 $mobile         = trim($_POST['mobile']         ?? '');
 $order_type     = trim($_POST['order_type']     ?? 'delivery');
 $payment_method = trim($_POST['payment_method'] ?? '');
-$promo_code     = strtoupper(trim($_POST['promo_code'] ?? ''));
 
 $allowed_payments = ['Cash on Delivery', 'GCash', 'Maya', 'Credit/Debit Card', 'GoTyme'];
 $allowed_types    = ['delivery', 'pickup'];
@@ -103,7 +102,7 @@ if (empty($valid_products)) {
     echo json_encode($r); exit();
 }
 
-// Calculate subtotal from DB prices
+// Calculate subtotal and total from DB prices
 $DELIVERY_FEE = ($order_type === 'delivery') ? 50.00 : 0.00;
 $subtotal = 0.0;
 foreach ($valid_products as $pid => $p) {
@@ -112,36 +111,15 @@ foreach ($valid_products as $pid => $p) {
     $subtotal += $p['price'] * $qty;
 }
 
-// Apply promo code if provided
-$discount_amount = 0.0;
-if ($promo_code) {
-    $stmt = mysqli_prepare($conn,
-        "SELECT discount_type, discount_value, min_order_amount
-         FROM promo_codes
-         WHERE code = ? AND is_active = 1
-           AND (expires_at IS NULL OR expires_at > NOW())"
-    );
-    mysqli_stmt_bind_param($stmt, 's', $promo_code);
-    mysqli_stmt_execute($stmt);
-    $promo = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
-    mysqli_stmt_close($stmt);
+$total = round($subtotal + $DELIVERY_FEE, 2);
 
-    if ($promo && $subtotal >= $promo['min_order_amount']) {
-        $discount_amount = ($promo['discount_type'] === 'percentage')
-            ? round($subtotal * ($promo['discount_value'] / 100), 2)
-            : min((float)$promo['discount_value'], $subtotal);
-    }
-}
-
-$total = round($subtotal + $DELIVERY_FEE - $discount_amount, 2);
-
-// Generate unique human-readable order number: PC-YYYY-NNNNN
+// Generate unique online order number: ON-YYYY-NNN
 $year         = date('Y');
 $last_row     = mysqli_fetch_assoc(mysqli_query($conn,
-    "SELECT order_number FROM orders WHERE order_number LIKE 'PC-{$year}-%' ORDER BY order_id DESC LIMIT 1"
+    "SELECT order_number FROM orders WHERE order_number LIKE 'ON-{$year}-%' ORDER BY order_id DESC LIMIT 1"
 ));
-$last_seq     = $last_row ? intval(substr($last_row['order_number'], -5)) : 0;
-$order_number = 'PC-' . $year . '-' . str_pad($last_seq + 1, 5, '0', STR_PAD_LEFT);
+$last_seq     = $last_row ? intval(substr($last_row['order_number'], -3)) : 0;
+$order_number = 'ON-' . $year . '-' . str_pad($last_seq + 1, 3, '0', STR_PAD_LEFT);
 
 // Run DB transaction
 mysqli_begin_transaction($conn);
@@ -152,17 +130,15 @@ try {
             (order_number, user_id, total_amount, status, payment_method, delivery_address,
              mobile_number, order_type,
              house_unit, street_name, barangay, city_municipality, province, zip_code,
-             delivery_notes, pickup_branch, pickup_date, pickup_time,
-             promo_code, discount_amount)
-         VALUES (?,?,?,'pending',?,?, ?,?, ?,?,?,?,?,?, ?,?,?,?, ?,?)"
+             delivery_notes, pickup_branch, pickup_date, pickup_time)
+         VALUES (?,?,?,'pending',?,?, ?,?, ?,?,?,?,?,?, ?,?,?,?)"
     );
-    mysqli_stmt_bind_param($stmt, 'sidsssssssssssssssd',
+    mysqli_stmt_bind_param($stmt, 'sidsssssssssssssss',
         $order_number, $user_id, $total,
         $payment_method, $delivery_address,
         $mobile, $order_type,
         $house_unit, $street_name, $barangay, $city_municipality, $province, $zip_code,
-        $delivery_notes, $pickup_branch, $pickup_date_val, $pickup_time_val,
-        $promo_code, $discount_amount
+        $delivery_notes, $pickup_branch, $pickup_date_val, $pickup_time_val
     );
     mysqli_stmt_execute($stmt);
     $order_id = mysqli_insert_id($conn);
@@ -182,7 +158,7 @@ try {
         $qty   = is_array($opts) ? intval($opts['quantity'] ?? 1) : intval($opts);
         $price = (float)$p['price'];
 
-        // Extract customization options (defaults match cart/add_to_cart.php)
+        // Extract customization options
         $size     = is_array($opts) ? ($opts['size']                 ?? null) : null;
         $temp     = is_array($opts) ? ($opts['temperature']          ?? null) : null;
         $sugar    = is_array($opts) ? ($opts['sugar_level']          ?? null) : null;

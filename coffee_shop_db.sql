@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 07, 2026 at 10:03 PM
+-- Generation Time: Mar 08, 2026 at 07:20 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -55,21 +55,6 @@ INSERT INTO `categories` (`category_id`, `name`, `description`, `created_at`) VA
 -- --------------------------------------------------------
 
 --
--- Table structure for table `contact_messages`
---
-
-CREATE TABLE `contact_messages` (
-  `id` int(11) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `subject` varchar(255) NOT NULL,
-  `message` text NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `favorites`
 --
 
@@ -85,8 +70,8 @@ CREATE TABLE `favorites` (
 --
 
 INSERT INTO `favorites` (`id`, `user_id`, `product_id`, `created_at`) VALUES
-(50, 3, 55, '2026-03-07 13:41:46'),
-(52, 3, 3, '2026-03-07 13:41:52');
+(66, 3, 2, '2026-03-08 06:12:53'),
+(67, 3, 3, '2026-03-08 06:12:54');
 
 -- --------------------------------------------------------
 
@@ -116,8 +101,6 @@ CREATE TABLE `orders` (
   `pickup_branch` varchar(100) DEFAULT NULL,
   `pickup_date` date DEFAULT NULL,
   `pickup_time` time DEFAULT NULL,
-  `promo_code` varchar(50) DEFAULT NULL,
-  `discount_amount` decimal(10,2) NOT NULL DEFAULT 0.00,
   `is_kiosk` tinyint(1) NOT NULL DEFAULT 0,
   `kiosk_order_type` enum('dine_in','take_out') DEFAULT NULL,
   `customer_name` varchar(100) DEFAULT NULL
@@ -127,77 +110,79 @@ CREATE TABLE `orders` (
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`order_id`, `order_number`, `user_id`, `order_date`, `total_amount`, `status`, `payment_method`, `delivery_address`, `created_at`, `mobile_number`, `order_type`, `house_unit`, `street_name`, `barangay`, `city_municipality`, `province`, `zip_code`, `delivery_notes`, `pickup_branch`, `pickup_date`, `pickup_time`, `promo_code`, `discount_amount`, `is_kiosk`, `kiosk_order_type`, `customer_name`) VALUES
-(1, 'PC-2026-00001', 3, '2026-02-21 17:51:26', 51.00, 'pending', 'GCash', 'test', '2026-02-21 09:51:26', NULL, 'delivery', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0, NULL, NULL),
-(4, 'PC-2026-00004', 3, '2026-02-21 23:35:42', 210.00, 'processing', 'Cash on Delivery', 'Block 6 Lot 17 Crestview Homes, Crestview Avenue, Ula, Tugbok District, Davao City, Davao del Sur 8000', '2026-02-21 15:35:42', '09123456789', 'delivery', 'Block 6 Lot 17 Crestview Homes', 'Crestview Avenue', 'Ula, Tugbok District', 'Davao City', 'Davao del Sur', '8000', 'test', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(5, 'PC-2026-00005', 2, '2026-02-28 01:56:46', 210.00, 'completed', 'Cash on Delivery', '123, asd, asd, asd, asd 8000', '2026-02-27 17:56:46', '09603150070', 'delivery', '123', 'asd', 'asd', 'asd', 'asd', '8000', 'asdasdas', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(6, 'PC-2026-00006', NULL, '2026-02-28 01:58:47', 160.00, 'completed', 'Cash', 'Dine In', '2026-02-27 17:58:47', '09603150070', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Jane Smith'),
-(11, 'PC-2026-00007', 3, '2026-03-01 05:23:56', 735.00, 'pending', 'Cash on Delivery', 'Pickup: Diversion Road, Matina Balusong (Main) on 2026-03-20 at 15:30', '2026-02-28 21:23:56', '09603150070', 'pickup', '', '', '', '', '', '', '', 'Diversion Road, Matina Balusong (Main)', '2026-03-20', '15:30:00', '', 0.00, 0, NULL, NULL),
-(12, 'PC-2026-00008', 3, '2026-03-01 11:49:37', 735.00, 'pending', 'Cash on Delivery', 'Pickup: Diversion Road, Matina Balusong (Main) on 2026-03-25 at 14:00', '2026-03-01 03:49:37', '09603150070', 'pickup', '', '', '', '', '', '', '', 'Diversion Road, Matina Balusong (Main)', '2026-03-25', '14:00:00', '', 0.00, 0, NULL, NULL),
-(13, 'PC-2026-00009', 3, '2026-03-01 11:51:53', 160.00, 'pending', 'GCash', 'Pickup: Polo Street, Obrero on 2026-03-02 at 11:00', '2026-03-01 03:51:53', '09603150070', 'pickup', '', '', '', '', '', '', '', 'Polo Street, Obrero', '2026-03-02', '11:00:00', '', 0.00, 0, NULL, NULL),
-(14, 'PC-2026-00010', 3, '2026-03-01 12:20:03', 210.00, 'pending', 'Cash on Delivery', 'asd, asd, asd, asd, asd 8000', '2026-03-01 04:20:03', '09603150070', 'delivery', 'asd', 'asd', 'asd', 'asd', 'asd', '8000', 'dasdsadasdas', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(15, 'PC-2026-00011', 3, '2026-03-01 12:28:03', 185.00, 'pending', 'Cash on Delivery', 'Pickup: Diversion Road, Matina Balusong (Main) on 2026-03-25 at 12:00', '2026-03-01 04:28:03', '09603150070', 'pickup', '', '', '', '', '', '', '', 'Diversion Road, Matina Balusong (Main)', '2026-03-25', '12:00:00', '', 0.00, 0, NULL, NULL),
-(16, 'PC-2026-00012', 3, '2026-03-01 12:38:20', 635.00, 'completed', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 04:38:20', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'test delivery notes', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(17, 'PC-2026-00013', 3, '2026-03-01 12:39:55', 1025.00, 'completed', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 04:39:55', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'test delivery notes', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(18, 'PC-2026-00014', 3, '2026-03-01 12:51:48', 720565.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 04:51:48', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'Beside shoe rack', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(19, 'PC-2026-00015', 3, '2026-03-01 13:04:26', 250.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 05:04:26', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'Beside green gate', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(20, 'PC-2026-00016', 3, '2026-03-01 13:15:48', 1725.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 05:15:48', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'test', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(21, 'PC-2026-00017', 3, '2026-03-01 13:27:40', 370.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 05:27:40', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'dasdasdasdasdcascdascdfaefcve fugfvchdsbvfhsvecdfevdgwdvhfvegudfvdsdhuddvhdv', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(22, 'PC-2026-00018', 3, '2026-03-01 13:51:39', 530.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 05:51:39', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'Beside the shoe rack', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(23, 'PC-2026-00019', 3, '2026-03-01 13:54:21', 210.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 05:54:21', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(24, 'PC-2026-00020', 3, '2026-03-01 13:55:50', 235.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 05:55:50', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(25, 'PC-2026-00021', 3, '2026-03-01 13:57:04', 225.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 05:57:04', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(26, 'PC-2026-00022', 3, '2026-03-02 05:43:36', 690.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 21:43:36', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'asd', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(27, 'PC-2026-00023', 3, '2026-03-02 08:48:53', 705.00, 'pending', 'GCash', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-02 00:48:53', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(28, 'PC-2026-00024', 3, '2026-03-03 12:53:25', 875.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-03 04:53:25', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(29, 'PC-2026-00025', 3, '2026-03-04 20:44:00', 735.00, 'pending', 'GCash', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-04 12:44:00', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(30, 'PC-2026-00026', 3, '2026-03-07 13:36:23', 385.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-07 05:36:23', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'test', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(31, 'PC-2026-00027', 3, '2026-03-07 13:39:18', 190.00, 'pending', 'Bank Transfer', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-07 05:39:18', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'asdas', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(32, 'PC-2026-00028', NULL, '2026-03-07 20:21:46', 520.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 1', '2026-03-07 12:21:46', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Guest'),
-(33, 'PC-2026-00029', NULL, '2026-03-07 20:23:20', 175.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 1', '2026-03-07 12:23:20', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Guest'),
-(34, 'PC-2026-00030', NULL, '2026-03-07 20:24:37', 140.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 45', '2026-03-07 12:24:37', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Guest'),
-(35, 'PC-2026-00031', NULL, '2026-03-07 20:27:38', 520.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 31', '2026-03-07 12:27:38', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Guest'),
-(36, 'PC-2026-00032', NULL, '2026-03-07 20:30:42', 475.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 31', '2026-03-07 12:30:42', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Guest'),
-(37, 'PC-2026-00033', NULL, '2026-03-07 20:32:17', 140.00, 'pending', 'Pay at the counter (Cash)', 'Take Out', '2026-03-07 12:32:17', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'take_out', 'Guest'),
-(38, 'PC-2026-00034', NULL, '2026-03-07 20:32:35', 185.00, 'pending', 'GCash', 'Take Out', '2026-03-07 12:32:35', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'take_out', 'Guest'),
-(39, 'PC-2026-00035', NULL, '2026-03-07 20:36:10', 325.00, 'pending', 'GCash', 'Dine In - Table 4', '2026-03-07 12:36:10', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Guest'),
-(40, 'PC-2026-00036', NULL, '2026-03-07 20:36:54', 380.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 31', '2026-03-07 12:36:54', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Guest'),
-(41, 'PC-2026-00037', NULL, '2026-03-07 20:37:28', 855.00, 'pending', 'Maya', 'Take Out', '2026-03-07 12:37:28', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'take_out', 'Guest'),
-(42, 'PC-2026-00038', NULL, '2026-03-07 20:39:50', 140.00, 'pending', 'Pay at the counter (Cash)', 'Take Out', '2026-03-07 12:39:50', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'take_out', 'Guest'),
-(43, 'PC-2026-00039', NULL, '2026-03-07 20:41:29', 140.00, 'pending', 'GCash', 'Take Out', '2026-03-07 12:41:29', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'take_out', 'Guest'),
-(44, 'PC-2026-00040', NULL, '2026-03-07 20:43:36', 335.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 35', '2026-03-07 12:43:36', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Guest'),
-(45, 'PC-2026-00041', NULL, '2026-03-07 20:44:12', 325.00, 'pending', 'GCash', 'Take Out', '2026-03-07 12:44:12', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'take_out', 'Guest'),
-(46, 'PC-2026-00042', NULL, '2026-03-07 20:48:02', 325.00, 'pending', 'Pay at the counter (Cash)', 'Take Out', '2026-03-07 12:48:02', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'take_out', 'Guest'),
-(47, 'PC-2026-00043', NULL, '2026-03-07 20:48:13', 315.00, 'pending', 'GCash', 'Dine In - Table 7', '2026-03-07 12:48:13', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Guest'),
-(48, 'PC-2026-00044', NULL, '2026-03-07 20:48:32', 345.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 22', '2026-03-07 12:48:32', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Guest'),
-(49, 'PC-2026-00045', NULL, '2026-03-07 20:48:40', 335.00, 'pending', 'GoTyme', 'Take Out', '2026-03-07 12:48:40', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'take_out', 'Guest'),
-(50, 'PC-2026-00046', 3, '2026-03-07 20:50:36', 1345.00, 'pending', 'GCash', 'Pickup: Diversion Road, Matina Balusong (Main) on 2026-03-16 at 16:30', '2026-03-07 12:50:36', '09603150070', 'pickup', '', '', '', '', '', '', '', 'Diversion Road, Matina Balusong (Main)', '2026-03-16', '16:30:00', '', 0.00, 0, NULL, NULL),
-(51, 'PC-2026-00047', 3, '2026-03-07 20:51:33', 375.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-07 12:51:33', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(52, 'PC-2026-00048', 3, '2026-03-07 21:12:40', 190.00, 'processing', 'GoTyme', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-07 13:12:40', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(53, 'PC-2026-00049', NULL, '2026-03-07 21:22:48', 140.00, 'pending', 'GoTyme', 'Dine In - Counter Pickup', '2026-03-07 13:22:48', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Guest'),
-(54, 'PC-2026-00050', NULL, '2026-03-07 22:53:37', 140.00, 'pending', 'Pay at the counter (Cash)', 'Take Out', '2026-03-07 14:53:37', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'take_out', 'Guest'),
-(55, 'PC-2026-00051', 3, '2026-03-07 22:58:44', 1260.00, 'cancelled', 'Cash on Delivery', 'Pickup: Quimpo Boulevard, Ecoland on 2026-03-08 at 12:00', '2026-03-07 14:58:44', '09603150070', 'pickup', '', '', '', '', '', '', '', 'Quimpo Boulevard, Ecoland', '2026-03-08', '12:00:00', '', 0.00, 0, NULL, NULL),
-(56, 'PC-2026-00052', 3, '2026-03-07 23:01:40', 210.00, 'pending', 'Maya', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-07 15:01:40', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(57, 'PC-2026-00053', 3, '2026-03-07 23:03:08', 365.00, 'pending', 'Cash on Delivery', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-07 15:03:08', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(58, 'PC-2026-00054', 3, '2026-03-07 23:03:41', 375.00, 'completed', 'GCash', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-07 15:03:41', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(59, 'PC-2026-00055', NULL, '2026-03-07 23:04:38', 315.00, 'pending', 'Maya', 'Dine In - Table 31', '2026-03-07 15:04:38', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Guest'),
-(60, 'PC-2026-00056', NULL, '2026-03-07 23:10:38', 335.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 14', '2026-03-07 15:10:38', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Guest'),
-(61, 'PC-2026-00057', NULL, '2026-03-07 23:23:54', 160.00, 'processing', 'Pay at the counter (Cash)', 'Dine In - Table 20', '2026-03-07 15:23:54', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Guest'),
-(62, 'PC-2026-00058', NULL, '2026-03-07 23:25:39', 140.00, 'pending', 'GCash', 'Dine In - Table 15', '2026-03-07 15:25:39', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Guest'),
-(63, 'PC-2026-00059', NULL, '2026-03-07 23:31:22', 140.00, 'processing', 'Pay at the counter (Cash)', 'Take Out', '2026-03-07 15:31:22', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'take_out', 'Guest'),
-(64, 'PC-2026-00060', NULL, '2026-03-07 23:32:31', 140.00, 'pending', 'GoTyme', 'Take Out', '2026-03-07 15:32:31', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'take_out', 'Guest'),
-(65, 'PC-2026-00061', NULL, '2026-03-07 23:57:20', 160.00, 'processing', 'Pay at the counter (Cash)', 'Dine In - Table 18', '2026-03-07 15:57:20', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Guest'),
-(66, 'PC-2026-00062', 3, '2026-03-08 00:43:30', 210.00, 'completed', 'Cash on Delivery', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-07 16:43:30', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(67, 'PC-2026-00063', 3, '2026-03-08 00:45:44', 210.00, 'cancelled', 'GCash', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-07 16:45:44', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(68, 'PC-2026-00064', NULL, '2026-03-08 00:47:16', 175.00, 'processing', 'Pay at the counter (Cash)', 'Dine In - Table 49', '2026-03-07 16:47:16', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Guest'),
-(69, 'PC-2026-00065', NULL, '2026-03-08 00:49:16', 175.00, 'pending', 'GCash', 'Dine In - Table 48', '2026-03-07 16:49:16', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Guest'),
-(70, 'PC-2026-00066', 3, '2026-03-08 01:21:16', 1860.00, 'completed', 'Cash on Delivery', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-07 17:21:16', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(71, 'PC-2026-00067', 3, '2026-03-08 01:22:59', 225.00, 'completed', 'GCash', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-07 17:22:59', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(72, 'PC-2026-00068', NULL, '2026-03-08 01:24:36', 175.00, 'processing', 'Pay at the counter (Cash)', 'Dine In - Table 22', '2026-03-07 17:24:36', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Guest'),
-(73, 'PC-2026-00069', 3, '2026-03-08 01:31:02', 380.00, 'processing', 'Pay at the counter (Cash)', 'Take Out', '2026-03-07 17:31:02', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'take_out', 'Guest'),
-(74, 'PC-2026-00070', 3, '2026-03-08 01:32:19', 195.00, 'completed', 'Maya', 'Take Out', '2026-03-07 17:32:19', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'take_out', 'Guest'),
-(75, 'PC-2026-00071', 3, '2026-03-08 04:48:48', 225.00, 'pending', 'Cash on Delivery', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-07 20:48:48', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, '', 0.00, 0, NULL, NULL),
-(76, 'PC-2026-00072', NULL, '2026-03-08 05:02:57', 175.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 31', '2026-03-07 21:02:57', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 1, 'dine_in', 'Guest');
+INSERT INTO `orders` (`order_id`, `order_number`, `user_id`, `order_date`, `total_amount`, `status`, `payment_method`, `delivery_address`, `created_at`, `mobile_number`, `order_type`, `house_unit`, `street_name`, `barangay`, `city_municipality`, `province`, `zip_code`, `delivery_notes`, `pickup_branch`, `pickup_date`, `pickup_time`, `is_kiosk`, `kiosk_order_type`, `customer_name`) VALUES
+(1, 'PC-2026-00001', 3, '2026-02-21 17:51:26', 51.00, 'pending', 'GCash', 'test', '2026-02-21 09:51:26', NULL, 'delivery', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL),
+(4, 'PC-2026-00004', 3, '2026-02-21 23:35:42', 210.00, 'processing', 'Cash on Delivery', 'Block 6 Lot 17 Crestview Homes, Crestview Avenue, Ula, Tugbok District, Davao City, Davao del Sur 8000', '2026-02-21 15:35:42', '09123456789', 'delivery', 'Block 6 Lot 17 Crestview Homes', 'Crestview Avenue', 'Ula, Tugbok District', 'Davao City', 'Davao del Sur', '8000', 'test', '', NULL, NULL, 0, NULL, NULL),
+(5, 'PC-2026-00005', 2, '2026-02-28 01:56:46', 210.00, 'completed', 'Cash on Delivery', '123, asd, asd, asd, asd 8000', '2026-02-27 17:56:46', '09603150070', 'delivery', '123', 'asd', 'asd', 'asd', 'asd', '8000', 'asdasdas', '', NULL, NULL, 0, NULL, NULL),
+(6, 'PC-2026-00006', NULL, '2026-02-28 01:58:47', 160.00, 'completed', 'Cash', 'Dine In', '2026-02-27 17:58:47', '09603150070', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Jane Smith'),
+(11, 'PC-2026-00007', 3, '2026-03-01 05:23:56', 735.00, 'pending', 'Cash on Delivery', 'Pickup: Diversion Road, Matina Balusong (Main) on 2026-03-20 at 15:30', '2026-02-28 21:23:56', '09603150070', 'pickup', '', '', '', '', '', '', '', 'Diversion Road, Matina Balusong (Main)', '2026-03-20', '15:30:00', 0, NULL, NULL),
+(12, 'PC-2026-00008', 3, '2026-03-01 11:49:37', 735.00, 'pending', 'Cash on Delivery', 'Pickup: Diversion Road, Matina Balusong (Main) on 2026-03-25 at 14:00', '2026-03-01 03:49:37', '09603150070', 'pickup', '', '', '', '', '', '', '', 'Diversion Road, Matina Balusong (Main)', '2026-03-25', '14:00:00', 0, NULL, NULL),
+(13, 'PC-2026-00009', 3, '2026-03-01 11:51:53', 160.00, 'pending', 'GCash', 'Pickup: Polo Street, Obrero on 2026-03-02 at 11:00', '2026-03-01 03:51:53', '09603150070', 'pickup', '', '', '', '', '', '', '', 'Polo Street, Obrero', '2026-03-02', '11:00:00', 0, NULL, NULL),
+(14, 'PC-2026-00010', 3, '2026-03-01 12:20:03', 210.00, 'pending', 'Cash on Delivery', 'asd, asd, asd, asd, asd 8000', '2026-03-01 04:20:03', '09603150070', 'delivery', 'asd', 'asd', 'asd', 'asd', 'asd', '8000', 'dasdsadasdas', '', NULL, NULL, 0, NULL, NULL),
+(15, 'PC-2026-00011', 3, '2026-03-01 12:28:03', 185.00, 'pending', 'Cash on Delivery', 'Pickup: Diversion Road, Matina Balusong (Main) on 2026-03-25 at 12:00', '2026-03-01 04:28:03', '09603150070', 'pickup', '', '', '', '', '', '', '', 'Diversion Road, Matina Balusong (Main)', '2026-03-25', '12:00:00', 0, NULL, NULL),
+(16, 'PC-2026-00012', 3, '2026-03-01 12:38:20', 635.00, 'completed', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 04:38:20', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'test delivery notes', '', NULL, NULL, 0, NULL, NULL),
+(17, 'PC-2026-00013', 3, '2026-03-01 12:39:55', 1025.00, 'completed', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 04:39:55', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'test delivery notes', '', NULL, NULL, 0, NULL, NULL),
+(18, 'PC-2026-00014', 3, '2026-03-01 12:51:48', 720565.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 04:51:48', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'Beside shoe rack', '', NULL, NULL, 0, NULL, NULL),
+(19, 'PC-2026-00015', 3, '2026-03-01 13:04:26', 250.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 05:04:26', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'Beside green gate', '', NULL, NULL, 0, NULL, NULL),
+(20, 'PC-2026-00016', 3, '2026-03-01 13:15:48', 1725.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 05:15:48', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'test', '', NULL, NULL, 0, NULL, NULL),
+(21, 'PC-2026-00017', 3, '2026-03-01 13:27:40', 370.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 05:27:40', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'dasdasdasdasdcascdascdfaefcve fugfvchdsbvfhsvecdfevdgwdvhfvegudfvdsdhuddvhdv', '', NULL, NULL, 0, NULL, NULL),
+(22, 'PC-2026-00018', 3, '2026-03-01 13:51:39', 530.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 05:51:39', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'Beside the shoe rack', '', NULL, NULL, 0, NULL, NULL),
+(23, 'PC-2026-00019', 3, '2026-03-01 13:54:21', 210.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 05:54:21', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
+(24, 'PC-2026-00020', 3, '2026-03-01 13:55:50', 235.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 05:55:50', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
+(25, 'PC-2026-00021', 3, '2026-03-01 13:57:04', 225.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 05:57:04', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
+(26, 'PC-2026-00022', 3, '2026-03-02 05:43:36', 690.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-01 21:43:36', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'asd', '', NULL, NULL, 0, NULL, NULL),
+(27, 'PC-2026-00023', 3, '2026-03-02 08:48:53', 705.00, 'pending', 'GCash', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-02 00:48:53', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
+(28, 'PC-2026-00024', 3, '2026-03-03 12:53:25', 875.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-03 04:53:25', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
+(29, 'PC-2026-00025', 3, '2026-03-04 20:44:00', 735.00, 'pending', 'GCash', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-04 12:44:00', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
+(30, 'PC-2026-00026', 3, '2026-03-07 13:36:23', 385.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-07 05:36:23', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'test', '', NULL, NULL, 0, NULL, NULL),
+(31, 'PC-2026-00027', 3, '2026-03-07 13:39:18', 190.00, 'pending', 'Bank Transfer', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-07 05:39:18', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', 'asdas', '', NULL, NULL, 0, NULL, NULL),
+(32, 'PC-2026-00028', NULL, '2026-03-07 20:21:46', 520.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 1', '2026-03-07 12:21:46', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(33, 'PC-2026-00029', NULL, '2026-03-07 20:23:20', 175.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 1', '2026-03-07 12:23:20', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(34, 'PC-2026-00030', NULL, '2026-03-07 20:24:37', 140.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 45', '2026-03-07 12:24:37', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(35, 'PC-2026-00031', NULL, '2026-03-07 20:27:38', 520.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 31', '2026-03-07 12:27:38', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(36, 'PC-2026-00032', NULL, '2026-03-07 20:30:42', 475.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 31', '2026-03-07 12:30:42', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(37, 'PC-2026-00033', NULL, '2026-03-07 20:32:17', 140.00, 'pending', 'Pay at the counter (Cash)', 'Take Out', '2026-03-07 12:32:17', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest'),
+(38, 'PC-2026-00034', NULL, '2026-03-07 20:32:35', 185.00, 'pending', 'GCash', 'Take Out', '2026-03-07 12:32:35', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest'),
+(39, 'PC-2026-00035', NULL, '2026-03-07 20:36:10', 325.00, 'pending', 'GCash', 'Dine In - Table 4', '2026-03-07 12:36:10', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(40, 'PC-2026-00036', NULL, '2026-03-07 20:36:54', 380.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 31', '2026-03-07 12:36:54', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(41, 'PC-2026-00037', NULL, '2026-03-07 20:37:28', 855.00, 'pending', 'Maya', 'Take Out', '2026-03-07 12:37:28', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest'),
+(42, 'PC-2026-00038', NULL, '2026-03-07 20:39:50', 140.00, 'pending', 'Pay at the counter (Cash)', 'Take Out', '2026-03-07 12:39:50', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest'),
+(43, 'PC-2026-00039', NULL, '2026-03-07 20:41:29', 140.00, 'pending', 'GCash', 'Take Out', '2026-03-07 12:41:29', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest'),
+(44, 'PC-2026-00040', NULL, '2026-03-07 20:43:36', 335.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 35', '2026-03-07 12:43:36', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(45, 'PC-2026-00041', NULL, '2026-03-07 20:44:12', 325.00, 'pending', 'GCash', 'Take Out', '2026-03-07 12:44:12', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest'),
+(46, 'PC-2026-00042', NULL, '2026-03-07 20:48:02', 325.00, 'pending', 'Pay at the counter (Cash)', 'Take Out', '2026-03-07 12:48:02', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest'),
+(47, 'PC-2026-00043', NULL, '2026-03-07 20:48:13', 315.00, 'pending', 'GCash', 'Dine In - Table 7', '2026-03-07 12:48:13', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(48, 'PC-2026-00044', NULL, '2026-03-07 20:48:32', 345.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 22', '2026-03-07 12:48:32', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(49, 'PC-2026-00045', NULL, '2026-03-07 20:48:40', 335.00, 'pending', 'GoTyme', 'Take Out', '2026-03-07 12:48:40', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest'),
+(50, 'PC-2026-00046', 3, '2026-03-07 20:50:36', 1345.00, 'pending', 'GCash', 'Pickup: Diversion Road, Matina Balusong (Main) on 2026-03-16 at 16:30', '2026-03-07 12:50:36', '09603150070', 'pickup', '', '', '', '', '', '', '', 'Diversion Road, Matina Balusong (Main)', '2026-03-16', '16:30:00', 0, NULL, NULL),
+(51, 'PC-2026-00047', 3, '2026-03-07 20:51:33', 375.00, 'pending', 'Cash on Delivery', 'Blk 6 Lot 17, Crestview Avenue, Brgy. Ula, Tugobk District, Davao City, Davao del Sur 8000', '2026-03-07 12:51:33', '09603150070', 'delivery', 'Blk 6 Lot 17', 'Crestview Avenue', 'Brgy. Ula, Tugobk District', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
+(52, 'PC-2026-00048', 3, '2026-03-07 21:12:40', 190.00, 'processing', 'GoTyme', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-07 13:12:40', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
+(53, 'PC-2026-00049', NULL, '2026-03-07 21:22:48', 140.00, 'pending', 'GoTyme', 'Dine In - Counter Pickup', '2026-03-07 13:22:48', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(54, 'PC-2026-00050', NULL, '2026-03-07 22:53:37', 140.00, 'pending', 'Pay at the counter (Cash)', 'Take Out', '2026-03-07 14:53:37', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest'),
+(55, 'PC-2026-00051', 3, '2026-03-07 22:58:44', 1260.00, 'cancelled', 'Cash on Delivery', 'Pickup: Quimpo Boulevard, Ecoland on 2026-03-08 at 12:00', '2026-03-07 14:58:44', '09603150070', 'pickup', '', '', '', '', '', '', '', 'Quimpo Boulevard, Ecoland', '2026-03-08', '12:00:00', 0, NULL, NULL),
+(56, 'PC-2026-00052', 3, '2026-03-07 23:01:40', 210.00, 'pending', 'Maya', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-07 15:01:40', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
+(57, 'PC-2026-00053', 3, '2026-03-07 23:03:08', 365.00, 'pending', 'Cash on Delivery', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-07 15:03:08', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
+(58, 'PC-2026-00054', 3, '2026-03-07 23:03:41', 375.00, 'completed', 'GCash', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-07 15:03:41', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
+(59, 'PC-2026-00055', NULL, '2026-03-07 23:04:38', 315.00, 'pending', 'Maya', 'Dine In - Table 31', '2026-03-07 15:04:38', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(60, 'PC-2026-00056', NULL, '2026-03-07 23:10:38', 335.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 14', '2026-03-07 15:10:38', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(61, 'PC-2026-00057', NULL, '2026-03-07 23:23:54', 160.00, 'processing', 'Pay at the counter (Cash)', 'Dine In - Table 20', '2026-03-07 15:23:54', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(62, 'PC-2026-00058', NULL, '2026-03-07 23:25:39', 140.00, 'pending', 'GCash', 'Dine In - Table 15', '2026-03-07 15:25:39', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(63, 'PC-2026-00059', NULL, '2026-03-07 23:31:22', 140.00, 'processing', 'Pay at the counter (Cash)', 'Take Out', '2026-03-07 15:31:22', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest'),
+(64, 'PC-2026-00060', NULL, '2026-03-07 23:32:31', 140.00, 'pending', 'GoTyme', 'Take Out', '2026-03-07 15:32:31', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest'),
+(65, 'PC-2026-00061', NULL, '2026-03-07 23:57:20', 160.00, 'processing', 'Pay at the counter (Cash)', 'Dine In - Table 18', '2026-03-07 15:57:20', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(66, 'PC-2026-00062', 3, '2026-03-08 00:43:30', 210.00, 'completed', 'Cash on Delivery', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-07 16:43:30', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
+(67, 'PC-2026-00063', 3, '2026-03-08 00:45:44', 210.00, 'cancelled', 'GCash', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-07 16:45:44', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
+(68, 'PC-2026-00064', NULL, '2026-03-08 00:47:16', 175.00, 'processing', 'Pay at the counter (Cash)', 'Dine In - Table 49', '2026-03-07 16:47:16', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(69, 'PC-2026-00065', NULL, '2026-03-08 00:49:16', 175.00, 'pending', 'GCash', 'Dine In - Table 48', '2026-03-07 16:49:16', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(70, 'PC-2026-00066', 3, '2026-03-08 01:21:16', 1860.00, 'completed', 'Cash on Delivery', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-07 17:21:16', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
+(71, 'PC-2026-00067', 3, '2026-03-08 01:22:59', 225.00, 'completed', 'GCash', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-07 17:22:59', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
+(72, 'PC-2026-00068', NULL, '2026-03-08 01:24:36', 175.00, 'processing', 'Pay at the counter (Cash)', 'Dine In - Table 22', '2026-03-07 17:24:36', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(73, 'PC-2026-00069', 3, '2026-03-08 01:31:02', 380.00, 'processing', 'Pay at the counter (Cash)', 'Take Out', '2026-03-07 17:31:02', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest'),
+(74, 'PC-2026-00070', 3, '2026-03-08 01:32:19', 195.00, 'completed', 'Maya', 'Take Out', '2026-03-07 17:32:19', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest'),
+(75, 'PC-2026-00071', 3, '2026-03-08 04:48:48', 225.00, 'pending', 'Cash on Delivery', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-07 20:48:48', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
+(76, 'PC-2026-00072', NULL, '2026-03-08 05:02:57', 175.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 31', '2026-03-07 21:02:57', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(77, 'SO-2026-001', 3, '2026-03-08 13:56:33', 160.00, 'pending', 'Maya', 'Dine In - Table 4', '2026-03-08 05:56:33', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(78, 'SO-2026-002', 3, '2026-03-08 13:56:51', 140.00, 'pending', 'Pay at the counter (Cash)', 'Take Out', '2026-03-08 05:56:51', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest');
 
 -- --------------------------------------------------------
 
@@ -333,7 +318,9 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price_at
 (115, 73, 5, 1, 185.00, 'Short', 'Hot', '0%', 'Whole', NULL, ''),
 (116, 74, 4, 1, 195.00, 'Short', 'Hot', '0%', 'Whole', NULL, ''),
 (117, 75, 2, 1, 175.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
-(118, 76, 2, 1, 175.00, 'Short', 'Hot', '0%', 'Whole', NULL, '');
+(118, 76, 2, 1, 175.00, 'Short', 'Hot', '0%', 'Whole', NULL, ''),
+(119, 77, 55, 1, 160.00, 'Short', 'Hot', '0%', 'Whole', NULL, ''),
+(120, 78, 3, 1, 140.00, 'Short', 'Hot', '0%', 'Whole', NULL, '');
 
 -- --------------------------------------------------------
 
@@ -453,23 +440,6 @@ INSERT INTO `product_interactions` (`interaction_id`, `product_id`, `interaction
 -- --------------------------------------------------------
 
 --
--- Table structure for table `promo_codes`
---
-
-CREATE TABLE `promo_codes` (
-  `id` int(11) NOT NULL,
-  `code` varchar(50) NOT NULL,
-  `discount_type` enum('percentage','fixed') NOT NULL,
-  `discount_value` decimal(10,2) NOT NULL,
-  `min_order_amount` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `is_active` tinyint(1) NOT NULL DEFAULT 1,
-  `expires_at` datetime DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `users`
 --
 
@@ -520,13 +490,6 @@ CREATE TABLE `user_carts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `user_carts`
---
-
-INSERT INTO `user_carts` (`cart_id`, `user_id`, `product_id`, `quantity`, `size`, `temperature`, `sugar_level`, `milk`, `addons`, `special_instructions`, `updated_at`) VALUES
-(1002, 3, 55, 2, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-03-07 21:02:11');
-
---
 -- Indexes for dumped tables
 --
 
@@ -535,13 +498,6 @@ INSERT INTO `user_carts` (`cart_id`, `user_id`, `product_id`, `quantity`, `size`
 --
 ALTER TABLE `categories`
   ADD PRIMARY KEY (`category_id`);
-
---
--- Indexes for table `contact_messages`
---
-ALTER TABLE `contact_messages`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_email` (`email`);
 
 --
 -- Indexes for table `favorites`
@@ -587,14 +543,6 @@ ALTER TABLE `product_interactions`
   ADD KEY `idx_product_id` (`product_id`);
 
 --
--- Indexes for table `promo_codes`
---
-ALTER TABLE `promo_codes`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_code` (`code`),
-  ADD KEY `idx_is_active` (`is_active`);
-
---
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -621,28 +569,22 @@ ALTER TABLE `categories`
   MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
--- AUTO_INCREMENT for table `contact_messages`
---
-ALTER TABLE `contact_messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `favorites`
 --
 ALTER TABLE `favorites`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=119;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=121;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -657,12 +599,6 @@ ALTER TABLE `product_interactions`
   MODIFY `interaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT for table `promo_codes`
---
-ALTER TABLE `promo_codes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
@@ -672,7 +608,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `user_carts`
 --
 ALTER TABLE `user_carts`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1003;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1023;
 
 --
 -- Constraints for dumped tables

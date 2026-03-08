@@ -115,7 +115,7 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
     // Favorite heart button — top-right corner of card
     if (!$is_admin) {
         $onclick = $is_logged_in ? "toggleFav(event,$id,this)" : "event.stopPropagation();showLoginRequiredPopup()";
-        echo '<button class="fav-card-btn" onclick="' . $onclick . '" title="Save to favorites" aria-label="Save to favorites">';
+        echo '<button class="fav-card-btn" data-name="' . htmlspecialchars($product['name'], ENT_QUOTES) . '" onclick="' . $onclick . '" title="Save to favorites" aria-label="Save to favorites">';
         echo  '<i class="far fa-heart"></i>';
         echo '</button>';
     }
@@ -168,7 +168,6 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
 
 <body class="page-supplies">
 
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="index.php">
@@ -209,16 +208,13 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
         </div>
     </nav>
 
-    <!-- Main supplies section -->
     <section class="supplies-main-section">
         <div class="container-fluid">
             <div class="supplies-layout-row">
 
-                <!-- Sidebar -->
                 <div class="supplies-sidebar">
                     <div class="filter-panel">
 
-                        <!-- Categories filter -->
                         <div class="filter-section">
                             <h3 class="filter-title">
                                 <i class="fas fa-list-ul"></i> Categories
@@ -255,7 +251,6 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
                             </div>
                         </div>
 
-                        <!-- Sort By -->
                         <div class="filter-section">
                             <h3 class="filter-title">
                                 <i class="fas fa-sort-amount-down"></i> Sort By
@@ -279,11 +274,9 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
                     </div>
                 </div>
 
-                <!-- Main content -->
                 <div class="supplies-content">
 
                     <?php if ($has_active_filters): ?>
-                        <!-- Active filters sticky bar -->
                         <div class="supplies-content-sticky-header">
                             <div class="active-filters">
                                 <span class="filter-label">Active Filters:</span>
@@ -340,7 +333,6 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
                             <?php endforeach; ?>
 
                         <?php else: ?>
-                            <!-- Filtered/sorted flat grid -->
                             <div class="products-grid">
                                 <?php while ($product = mysqli_fetch_assoc($products_result)):
                                     renderSupplyCard($product, $is_admin, $is_logged_in);
@@ -428,7 +420,6 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
         window.addEventListener('load', restoreScrollPosition);
     </script>
 
-    <!-- Login Required Popup -->
     <div id="login-required-popup" class="login-popup-overlay" style="display:none;" onclick="closeLoginPopup(event)">
         <div class="login-popup-card">
             <h3 class="login-popup-title">Login Required</h3>
@@ -545,53 +536,37 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
             e.stopPropagation();
             if (!window.IS_LOGGED_IN) { showLoginRequiredPopup(); return; }
 
+            const productName = btn.getAttribute('data-name') || 'Product';
             const fd = new FormData();
             fd.append('action', 'toggle');
             fd.append('product_id', productId);
 
             fetch('favorites.php', { method: 'POST', body: fd })
-                .then(r => r.json())
+                .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
                 .then(d => {
-                    if (!d.success) return;
+                    if (!d.success) throw new Error(d.message || 'failed');
                     const icon = btn.querySelector('i');
                     const isNowActive = d.state === 'added';
                     btn.classList.toggle('active', isNowActive);
                     icon.className = isNowActive ? 'fas fa-heart' : 'far fa-heart';
                     btn.classList.add('pop');
                     btn.addEventListener('animationend', () => btn.classList.remove('pop'), { once: true });
-
-                    // Get product name from card for notification
-                    const card  = document.querySelector(`.product-card[data-product-id="${productId}"]`);
-                    const pName = card?.querySelector('.product-name')?.textContent?.trim() || 'Product';
-                    showNotification(isNowActive ? pName + ' added to your favorites.' : pName + ' removed from your favorites.', isNowActive ? 'success' : 'info');
-                });
+                    showNotification(
+                        isNowActive ? productName + ' added to favorites.' : productName + ' removed from favorites.',
+                        isNowActive ? 'success' : 'info'
+                    );
+                })
+                .catch(() => showNotification('Could not update favorites.', 'error'));
         }
 
         /* ── Restore qty selectors from session cart on page load ─ */
+        /* Initial favorite states loaded by main.js loadFavoritesForMenu() */
         document.addEventListener('DOMContentLoaded', () => {
             if (window.serverCart) {
                 Object.entries(window.serverCart).forEach(([pid, qty]) => {
                     if (qty > 0) setSupplyCardUI(parseInt(pid), qty);
                 });
             }
-
-            // Mark already-favorited cards on page load
-            if (!window.IS_LOGGED_IN) return;
-            const ids = [...document.querySelectorAll('.product-card[data-product-id]')]
-                        .map(c => c.dataset.productId).join(',');
-            if (!ids) return;
-            fetch(`favorites.php?action=batch&ids=${ids}`)
-                .then(r => r.json())
-                .then(d => {
-                    if (!d.favorited) return;
-                    d.favorited.forEach(pid => {
-                        const card = document.querySelector(`.product-card[data-product-id="${pid}"]`);
-                        const btn  = card?.querySelector('.fav-card-btn');
-                        if (!btn) return;
-                        btn.classList.add('active');
-                        btn.querySelector('i').className = 'fas fa-heart';
-                    });
-                });
         });
     </script>
 </body>

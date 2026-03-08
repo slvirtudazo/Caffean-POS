@@ -70,13 +70,13 @@ foreach ($prods as $pid => $p) {
 }
 $total = round($total, 2);
 
-// Generate unique order number: PC-YYYY-NNNNN
+// Generate unique kiosk order number: SO-YYYY-NNN
 $year     = date('Y');
 $last_row = mysqli_fetch_assoc(mysqli_query($conn,
-    "SELECT order_number FROM orders WHERE order_number LIKE 'PC-{$year}-%' ORDER BY order_id DESC LIMIT 1"
+    "SELECT order_number FROM orders WHERE order_number LIKE 'SO-{$year}-%' ORDER BY order_id DESC LIMIT 1"
 ));
-$last_seq     = $last_row ? intval(substr($last_row['order_number'], -5)) : 0;
-$order_number = 'PC-' . $year . '-' . str_pad($last_seq + 1, 5, '0', STR_PAD_LEFT);
+$last_seq     = $last_row ? intval(substr($last_row['order_number'], -3)) : 0;
+$order_number = 'SO-' . $year . '-' . str_pad($last_seq + 1, 3, '0', STR_PAD_LEFT);
 
 // Resolve user_id: prefer active session, then mobile number lookup
 $resolved_user_id = null;

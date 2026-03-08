@@ -269,8 +269,8 @@ function toggleFavorite(productId, iconEl) {
 }
 
 /**
- * Load favorite state from DB on page load.
- * Batch-checks all product IDs on the page against favorites.php.
+ * Batch-check favorited products on page load and mark card buttons.
+ * Handles both .fav-card-btn (menu/supplies) and .favorite-icon (legacy).
  */
 function loadFavoritesForMenu() {
     if (!window.IS_LOGGED_IN) return;
@@ -286,15 +286,24 @@ function loadFavoritesForMenu() {
             if (!d.success) return;
             const favSet = new Set(d.favorited.map(String));
             cards.forEach(card => {
-                const pid     = card.dataset.productId;
-                const wrapper = card.querySelector('.favorite-icon');
-                const icon    = card.querySelector('.favorite-icon i');
-                if (!icon) return;
-                const isFav = favSet.has(pid);
-                icon.classList.toggle('fas', isFav);
-                icon.classList.toggle('far', !isFav);
-                icon.style.color = isFav ? '#c0392b' : '';
-                if (wrapper) wrapper.classList.toggle('active', isFav);
+                const pid = card.dataset.productId;
+                if (!favSet.has(pid)) return;
+
+                /* .fav-card-btn — menu and supplies pages */
+                const btn = card.querySelector('.fav-card-btn');
+                if (btn) {
+                    btn.classList.add('active');
+                    btn.querySelector('i').className = 'fas fa-heart';
+                }
+
+                /* .favorite-icon — legacy pages */
+                const icon = card.querySelector('.favorite-icon i');
+                if (icon) {
+                    icon.classList.replace('far', 'fas');
+                    icon.style.color = '#c0392b';
+                    const wrapper = card.querySelector('.favorite-icon');
+                    if (wrapper) wrapper.classList.add('active');
+                }
             });
         })
         .catch(() => {});

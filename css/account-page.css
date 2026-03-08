@@ -166,6 +166,24 @@ body.page-account .navbar .container {
     -webkit-text-stroke: 0.5px currentColor;
 }
 
+/* Nav count badge — shows item count beside nav label */
+.acct-nav-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    margin-left: auto;
+    background: var(--burgundy-wine);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 999px;
+    line-height: 1;
+}
+
 /* ── MAIN CONTENT ─────────────────────────────────────────── */
 .acct-main {
     flex: 1;
@@ -464,39 +482,19 @@ body.page-account .navbar .container {
 
 /* ── ORDERS TABLE column widths ───────────────────────────── */
 .acct-orders-table th:nth-child(1),
-.acct-orders-table td:nth-child(1) {
-    width: 18%;
-}
-
+.acct-orders-table td:nth-child(1) { width: 18%; }
 .acct-orders-table th:nth-child(2),
-.acct-orders-table td:nth-child(2) {
-    width: 20%;
-}
-
+.acct-orders-table td:nth-child(2) { width: 20%; }
 .acct-orders-table th:nth-child(3),
-.acct-orders-table td:nth-child(3) {
-    width: 8%;
-}
-
+.acct-orders-table td:nth-child(3) { width: 8%; }
 .acct-orders-table th:nth-child(4),
-.acct-orders-table td:nth-child(4) {
-    width: 14%;
-}
-
+.acct-orders-table td:nth-child(4) { width: 14%; }
 .acct-orders-table th:nth-child(5),
-.acct-orders-table td:nth-child(5) {
-    width: 14%;
-}
-
+.acct-orders-table td:nth-child(5) { width: 14%; }
 .acct-orders-table th:nth-child(6),
-.acct-orders-table td:nth-child(6) {
-    width: 12%;
-}
-
+.acct-orders-table td:nth-child(6) { width: 12%; }
 .acct-orders-table th:nth-child(7),
-.acct-orders-table td:nth-child(7) {
-    width: 14%;
-}
+.acct-orders-table td:nth-child(7) { width: 14%; }
 
 /* Order ID — bold 700; explicit selector beats .acct-orders-table td */
 .acct-orders-table td.td-id {
@@ -605,14 +603,14 @@ body.page-account .navbar .container {
     display: block;
 }
 
-/* Favorites empty state — mirrors cart empty state */
+/* Favorites empty state — exact mirror of cart.php empty state */
 .fav-empty-state {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 7rem 1rem 4rem;
+    padding: 3rem 1rem 4rem;
     max-width: 560px;
     margin: 0 auto;
 }
@@ -642,47 +640,56 @@ body.page-account .navbar .container {
     margin-bottom: 2.2rem;
 }
 
+/* Loading state inside fav-body */
+.fav-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 4rem 1rem;
+    color: rgba(42, 0, 0, 0.35);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+}
+
+.fav-loading i {
+    font-size: 2rem;
+    color: var(--burgundy-wine);
+    opacity: 0.5;
+}
+
 /* ── FAVORITES TABLE — balanced equal column widths ──────── */
-/* All 5 columns use consistent 20% width for even spacing    */
+/* All 4 columns use consistent width for even spacing    */
 .acct-fav-table th,
 .acct-fav-table td {
     text-align: center;
+    vertical-align: middle;
 }
 
 .acct-fav-table th:nth-child(1),
-.acct-fav-table td:nth-child(1) {
-    width: 14%;
-}
+.acct-fav-table td:nth-child(1) { width: 20%; }
 
 .acct-fav-table th:nth-child(2),
-.acct-fav-table td:nth-child(2) {
-    width: 26%;
-}
+.acct-fav-table td:nth-child(2) { width: 40%; }
 
 .acct-fav-table th:nth-child(3),
-.acct-fav-table td:nth-child(3) {
-    width: 22%;
-}
+.acct-fav-table td:nth-child(3) { width: 20%; }
 
 .acct-fav-table th:nth-child(4),
-.acct-fav-table td:nth-child(4) {
-    width: 20%;
-}
-
-.acct-fav-table th:nth-child(5),
-.acct-fav-table td:nth-child(5) {
-    width: 18%;
-}
+.acct-fav-table td:nth-child(4) { width: 20%; }
 
 /* Product name — bold 700 */
 .td-fav-name {
     font-weight: 700;
+    text-align: center;
 }
 
 /* Price — deep maroon color */
 .td-fav-price {
     color: var(--deep-maroon);
     font-weight: 600;
+    text-align: center;
 }
 
 /* Product image — centered in cell */

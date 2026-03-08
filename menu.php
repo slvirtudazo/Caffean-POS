@@ -282,7 +282,7 @@ if ($category_filter > 0) {
                         // Favorite heart button — top-right corner of card
                         if (!$is_admin) {
                             $onclick = $is_logged_in ? "toggleFav(event,$id,this)" : "event.stopPropagation();showLoginRequiredPopup()";
-                            echo '<button class="fav-card-btn" onclick="' . $onclick . '" title="Save to favorites" aria-label="Save to favorites">';
+                            echo '<button class="fav-card-btn" data-name="' . htmlspecialchars($product['name'], ENT_QUOTES) . '" onclick="' . $onclick . '" title="Save to favorites" aria-label="Save to favorites">';
                             echo  '<i class="far fa-heart"></i>';
                             echo '</button>';
                         }
@@ -343,7 +343,6 @@ if ($category_filter > 0) {
                             <?php endforeach; ?>
 
                         <?php else: ?>
-                            <!-- Filtered / sorted flat grid with active-filter bar -->
                             <?php if ($has_active_filters): ?>
                                 <div class="menu-content-sticky-header">
                                     <div class="active-filters">
@@ -440,7 +439,6 @@ if ($category_filter > 0) {
         window.addEventListener('load', restoreScrollPosition);
     </script>
 
-    <!-- Login Required Popup -->
     <div id="login-required-popup" class="login-popup-overlay" style="display:none;" onclick="closeLoginPopup(event)">
         <div class="login-popup-card">
             <h3 class="login-popup-title">Login Required</h3>
@@ -486,54 +484,34 @@ if ($category_filter > 0) {
     <script src="js/menu-page.js?v=<?php echo time(); ?>"></script>
 
     <script>
-        /* ── Favorites: toggle + initial state ───────────────── */
-
-        // Toggle favorite on heart button click
+        /* ── Favorites: toggle on heart button click ─────────── */
         function toggleFav(e, productId, btn) {
             e.stopPropagation();
             if (!window.IS_LOGGED_IN) { showLoginRequiredPopup(); return; }
 
+            const productName = btn.getAttribute('data-name') || 'Product';
             const fd = new FormData();
             fd.append('action', 'toggle');
             fd.append('product_id', productId);
 
             fetch('favorites.php', { method: 'POST', body: fd })
-                .then(r => r.json())
+                .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
                 .then(d => {
-                    if (!d.success) return;
+                    if (!d.success) throw new Error(d.message || 'failed');
                     const icon = btn.querySelector('i');
                     const isNowActive = d.state === 'added';
                     btn.classList.toggle('active', isNowActive);
                     icon.className = isNowActive ? 'fas fa-heart' : 'far fa-heart';
                     btn.classList.add('pop');
                     btn.addEventListener('animationend', () => btn.classList.remove('pop'), { once: true });
-
-                    // Get product name from card for notification
-                    const card  = document.querySelector(`.product-card[data-product-id="${productId}"]`);
-                    const pName = card?.querySelector('.product-name')?.textContent?.trim() || 'Product';
-                    showNotification(isNowActive ? pName + ' added to your favorites.' : pName + ' removed from your favorites.', isNowActive ? 'success' : 'info');
-                });
+                    showNotification(
+                        isNowActive ? productName + ' added to favorites.' : productName + ' removed from favorites.',
+                        isNowActive ? 'success' : 'info'
+                    );
+                })
+                .catch(() => showNotification('Could not update favorites.', 'error'));
         }
-
-        // On page load, mark cards the user has already favorited
-        document.addEventListener('DOMContentLoaded', () => {
-            if (!window.IS_LOGGED_IN) return;
-            const ids = [...document.querySelectorAll('.product-card[data-product-id]')]
-                        .map(c => c.dataset.productId).join(',');
-            if (!ids) return;
-            fetch(`favorites.php?action=batch&ids=${ids}`)
-                .then(r => r.json())
-                .then(d => {
-                    if (!d.favorited) return;
-                    d.favorited.forEach(pid => {
-                        const card = document.querySelector(`.product-card[data-product-id="${pid}"]`);
-                        const btn  = card?.querySelector('.fav-card-btn');
-                        if (!btn) return;
-                        btn.classList.add('active');
-                        btn.querySelector('i').className = 'fas fa-heart';
-                    });
-                });
-        });
+        /* Initial favorite states loaded by main.js loadFavoritesForMenu() */
     </script>
 </body>
 

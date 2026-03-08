@@ -55,6 +55,14 @@ mysqli_stmt_execute($stmt);
 $stats = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 mysqli_stmt_close($stmt);
 
+/* Fetch favorites count */
+$stmt = mysqli_prepare($conn, "SELECT COUNT(*) AS fav_count FROM favorites WHERE user_id = ?");
+mysqli_stmt_bind_param($stmt, "i", $user_id);
+mysqli_stmt_execute($stmt);
+$fav_count_res = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+$fav_count = $fav_count_res['fav_count'] ?? 0;
+mysqli_stmt_close($stmt);
+
 /* Fetch full order history — includes kiosk orders matched by mobile */
 $stmt = mysqli_prepare($conn,
     "SELECT o.order_id, o.order_number, o.total_amount, o.status, o.order_date,
@@ -174,7 +182,6 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
 </head>
 <body class="page-account">
 
-    <!-- ── NAVBAR ─────────────────────────────────────────────── -->
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="index.php">
@@ -204,7 +211,6 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
         </div>
     </nav>
 
-    <!-- ── FAVORITES REMOVE MODAL — matches cart.php style ─────── -->
     <div class="cart-modal-overlay" id="favDeleteModal">
         <div class="cart-modal">
             <div class="cart-modal-header">
@@ -221,13 +227,11 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
         </div>
     </div>
 
-    <!-- ── PAGE LAYOUT ────────────────────────────────────────── -->
     <div class="acct-page">
         <div class="acct-dashboard">
 
             <aside class="acct-sidebar">
 
-                <!-- ── PROFILE INFO — avatar, name, badge ──────────── -->
                 <div class="acct-sidebar-profile">
                     <div class="acct-avatar-wrap" onclick="openAvatarEdit()" title="Change photo">
                         <?php if ($avatar_src): ?>
@@ -254,6 +258,7 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                         <i class="far fa-heart acct-ic-out"></i>
                         <i class="fas fa-heart acct-ic-fill"></i>
                         <span class="acct-nav-text">Favorites</span>
+                        <span class="acct-nav-badge" id="fav-nav-badge" style="<?php echo $fav_count > 0 ? '' : 'display:none;'; ?>"><?php echo $fav_count; ?></span>
                     </a>
                     <a href="#" class="acct-nav-item" onclick="openTab('insights', this); return false;">
                         <i class="fas fa-chart-line acct-ic-out"></i>
@@ -276,7 +281,6 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
 
             <main class="acct-main">
 
-                <!-- ── STATS BAR ────────────────────────────────────── -->
                 <div class="acct-stats-bar">
                     <div class="stat-col">
                         <span class="stat-lbl">TOTAL ORDERS</span>
@@ -298,7 +302,6 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
 
                 <div class="acct-main-card">
 
-                    <!-- ── ORDERS TAB ───────────────────────────────────── -->
                     <div class="acct-tab-panel" id="panel-orders">
                         <div class="acct-card-header">
                             <div>
@@ -307,7 +310,6 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                             </div>
                         </div>
 
-                        <!-- Sub-tab navigation -->
                         <div class="acct-subtabs">
                             <button class="acct-subtab active" onclick="openOrderSubTab('online', this)">
                                 Order Online <span class="acct-subtab-count"><?= count($online_orders) ?></span>
@@ -317,7 +319,6 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                             </button>
                         </div>
 
-                        <!-- Online Orders sub-panel -->
                         <div class="acct-subtab-panel" id="subtab-online">
                             <?php if (empty($online_orders)): ?>
                                 <div class="acct-empty-state">
@@ -346,7 +347,7 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                                         </thead>
                                         <tbody>
                                             <?php foreach ($online_orders as $o):
-                                                $orderId = !empty($o['order_number']) ? $o['order_number'] : fmt_id('OR', $o['order_id'], $o['order_date']);
+                                                $orderId = !empty($o['order_number']) ? $o['order_number'] : fmt_id($o['is_kiosk'] ? 'SO' : 'ON', $o['order_id'], $o['order_date']);
                                                 $status  = strtolower($o['status']);
                                             ?>
                                                 <tr>
@@ -378,7 +379,6 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                             <?php endif; ?>
                         </div>
 
-                        <!-- Kiosk Orders sub-panel -->
                         <div class="acct-subtab-panel hidden" id="subtab-kiosk">
                             <?php if (empty($kiosk_orders)): ?>
                                 <div class="acct-empty-state">
@@ -407,7 +407,7 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                                         </thead>
                                         <tbody>
                                             <?php foreach ($kiosk_orders as $o):
-                                                $orderId   = !empty($o['order_number']) ? $o['order_number'] : fmt_id('OR', $o['order_id'], $o['order_date']);
+                                                $orderId   = !empty($o['order_number']) ? $o['order_number'] : fmt_id($o['is_kiosk'] ? 'SO' : 'ON', $o['order_id'], $o['order_date']);
                                                 $status    = strtolower($o['status']);
                                                 $kioskType = $o['kiosk_order_type'] === 'dine_in' ? 'Dine In' : 'Take Out';
                                             ?>
@@ -441,7 +441,6 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                         </div>
                     </div>
 
-                    <!-- ── FAVORITES TAB ────────────────────────────────── -->
                     <div class="acct-tab-panel hidden" id="panel-favorites">
                         <div class="acct-card-header">
                             <div>
@@ -451,11 +450,9 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                         </div>
 
                         <div id="fav-body">
-                            <div class="fav-empty-state">
-                                <i class="fas fa-heart"></i>
-                                <h2>No favorites yet</h2>
-                                <p>Looks like you haven't saved any items yet.<br>Browse our menu to find your favorites!</p>
-                                <a href="menu.php" class="btn-browse-menu">Browse Menu</a>
+                            <div class="fav-loading">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Loading favorites…</p>
                             </div>
                         </div>
 
@@ -465,7 +462,6 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                         </div>
                     </div>
 
-                    <!-- ── INSIGHTS TAB ──────────────────────────────────── -->
                     <div class="acct-tab-panel hidden" id="panel-insights">
                         <div class="acct-card-header">
                             <div>
@@ -476,10 +472,8 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
 
                         <div class="ins-body">
 
-                            <!-- Row 1: Spending chart + avg order value card -->
                             <div class="ins-row ins-row--chart">
 
-                                <!-- Spending over time -->
                                 <div class="ins-panel ins-panel--chart">
                                     <div class="ins-panel-header">
                                         <span class="ins-panel-title">Spending Over Time</span>
@@ -490,7 +484,6 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                                     </div>
                                 </div>
 
-                                <!-- Summary stat cards -->
                                 <div class="ins-panel ins-panel--summary">
                                     <div class="ins-panel-header">
                                         <span class="ins-panel-title">Summary</span>
@@ -517,10 +510,8 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
 
                             </div>
 
-                            <!-- Row 2: Top items + Order type + Payment breakdown -->
                             <div class="ins-row ins-row--bottom">
 
-                                <!-- Top ordered items -->
                                 <div class="ins-panel ins-panel--top-items">
                                     <div class="ins-panel-header">
                                         <span class="ins-panel-title">Top Ordered Items</span>
@@ -540,7 +531,6 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                                     <?php endif; ?>
                                 </div>
 
-                                <!-- Order type doughnut -->
                                 <div class="ins-panel ins-panel--donut">
                                     <div class="ins-panel-header">
                                         <span class="ins-panel-title">Order Type</span>
@@ -569,7 +559,6 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                                     <?php endif; ?>
                                 </div>
 
-                                <!-- Payment method doughnut -->
                                 <div class="ins-panel ins-panel--donut">
                                     <div class="ins-panel-header">
                                         <span class="ins-panel-title">Payment Methods</span>
@@ -600,10 +589,8 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                                 </div>
 
                             </div>
-                        </div><!-- /ins-body -->
-                    </div>
+                        </div></div>
 
-                    <!-- ── PROFILE SETTINGS TAB ──────────────────────────── -->
                     <div class="acct-tab-panel hidden" id="panel-profile">
                         <div class="acct-card-header">
                             <div>
@@ -616,7 +603,6 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
 
                         <div class="acct-ps-row">
 
-                            <!-- Left: Account Information + Address -->
                             <div class="acct-ps-card">
                                 <p class="acct-ps-section-hd">Account Information</p>
                                 <form id="profileInfoForm" onsubmit="saveProfileInfo(event)">
@@ -668,7 +654,6 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                                 </form>
                             </div>
 
-                            <!-- Right: Change Password -->
                             <div class="acct-ps-card">
                                 <p class="acct-ps-section-hd">Change Password</p>
                                 <form id="profilePwForm" onsubmit="saveProfilePw(event)">
@@ -702,8 +687,7 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                         </div>
                     </div>
 
-                </div><!-- /acct-main-card -->
-            </main>
+                </div></main>
         </div>
     </div>
 
@@ -949,18 +933,28 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
 
         function loadFavorites(page) {
             favPage = page || 1;
-            fetch(`favorites.php?action=get&page=${favPage}&ajax=1`)
-                .then(r => r.json())
+            fetch(`favorites.php?action=get&page=${favPage}`)
+                .then(r => {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return r.json();
+                })
                 .then(d => {
+                    if (!d.success) throw new Error(d.message || 'Failed');
+                    const total = d.total || 0;
                     document.getElementById('fav-subtitle').textContent =
-                        `You have ${d.total || 0} item${d.total !== 1 ? 's' : ''} in your wishlist`;
+                        total === 0
+                            ? 'You have no items in your wishlist'
+                            : `You have ${total} item${total !== 1 ? 's' : ''} in your wishlist`;
                     favAllItems = d.items || [];
                     renderFavTable(favAllItems);
                     renderFavPagination(d);
+                    updateFavBadge(total);
                 })
                 .catch(() => {
-                    document.getElementById('fav-body').innerHTML =
-                        '<div class="acct-empty-state"><i class="bi bi-exclamation-circle"></i><p>Failed to load favorites.</p></div>';
+                    /* Show empty state — favorites.php unreachable or returned error */
+                    renderFavTable([]);
+                    document.getElementById('fav-subtitle').textContent = 'You have no items in your wishlist';
+                    document.getElementById('fav-pagination').style.display = 'none';
                 });
         }
 
@@ -972,7 +966,7 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                 favSortDir = 'asc';
             }
             const sorted = [...favAllItems].sort((a, b) => {
-                const keys = ['', 'name', 'category', 'price'];
+                const keys = ['', 'name', 'price'];
                 const av = String(a[keys[col]] ?? '');
                 const bv = String(b[keys[col]] ?? '');
                 const cmp = type === 'number'
@@ -992,7 +986,6 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                 return `<tr>
                     <td>${img}</td>
                     <td class="td-fav-name">${item.name}</td>
-                    <td>${item.category || '—'}</td>
                     <td class="td-fav-price">&#8369;${parseFloat(item.price).toFixed(2)}</td>
                     <td><div class="fav-td-action">
                         <button class="fav-btn-cart" onclick="favAddToCart(${item.product_id},'${item.name.replace(/'/g,"\\'")}')"><i class="bi bi-cart-plus"></i></button>
@@ -1013,6 +1006,7 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                         <a href="menu.php" class="btn-browse-menu">Browse Menu</a>
                     </div>`;
                 document.getElementById('fav-pagination').style.display = 'none';
+                updateFavBadge(0);
                 return;
             }
             body.innerHTML = `
@@ -1022,15 +1016,13 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                             <tr>
                                 <th>PRODUCT IMAGE</th>
                                 <th data-sort="text" onclick="sortFavBy(1,'text')">PRODUCT NAME</th>
-                                <th data-sort="text" onclick="sortFavBy(2,'text')">CATEGORY</th>
-                                <th data-sort="number" onclick="sortFavBy(3,'number')">PRICE</th>
+                                <th data-sort="number" onclick="sortFavBy(2,'number')">PRICE</th>
                                 <th>ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody>${buildFavRows(items)}</tbody>
                     </table>
                 </div>`;
-            document.getElementById('fav-pagination').style.display = 'flex';
         }
 
         function renderFavPagination(d) {
@@ -1043,6 +1035,19 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                 <button class="btn-page" onclick="loadFavorites(${d.page + 1})" ${d.page >= total ? 'disabled' : ''}>
                     <i class="bi bi-chevron-right"></i>
                 </button>`;
+            if (total > 1) document.getElementById('fav-pagination').style.display = 'flex';
+        }
+
+        /* Update Favorites nav badge count */
+        function updateFavBadge(count) {
+            const badge = document.getElementById('fav-nav-badge');
+            if (!badge) return;
+            if (count > 0) {
+                badge.textContent = count;
+                badge.style.display = '';
+            } else {
+                badge.style.display = 'none';
+            }
         }
 
         /* ── ADD TO CART — matches menu/supplies.php addToProductCart ── */
@@ -1074,21 +1079,25 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
         }
 
         /* ── DELETE MODAL — matches cart.php remove item modal ──────── */
-        let pendingDeleteId = null;
+        let pendingDeleteId   = null;
+        let pendingDeleteName = null;
 
         function openFavDeleteModal(productId, productName) {
-            pendingDeleteId = productId;
+            pendingDeleteId   = productId;
+            pendingDeleteName = productName;
             document.getElementById('favDeleteName').textContent = productName;
             document.getElementById('favDeleteModal').classList.add('open');
         }
 
         function closeFavDeleteModal() {
-            pendingDeleteId = null;
+            pendingDeleteId   = null;
+            pendingDeleteName = null;
             document.getElementById('favDeleteModal').classList.remove('open');
         }
 
         document.getElementById('favDeleteConfirmBtn').addEventListener('click', () => {
             if (!pendingDeleteId) return;
+            const name = pendingDeleteName || 'Product';
             const fd = new FormData();
             fd.append('action', 'remove');
             fd.append('product_id', pendingDeleteId);
@@ -1097,10 +1106,12 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                 .then(d => {
                     closeFavDeleteModal();
                     if (d.success) {
-                        showNotification('Removed from favorites.', 'info');
-                        loadFavorites(favPage);
+                        showNotification(name + ' removed from favorites.', 'info');
+                        const newPage = favAllItems.length <= 1 && favPage > 1 ? favPage - 1 : favPage;
+                        loadFavorites(newPage);
                     }
-                });
+                })
+                .catch(() => showNotification('Could not remove from favorites.', 'error'));
         });
 
         document.getElementById('favDeleteModal').addEventListener('click', function(e) {
