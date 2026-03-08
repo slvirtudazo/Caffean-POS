@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 08, 2026 at 02:31 PM
+-- Generation Time: Mar 08, 2026 at 08:14 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -70,8 +70,10 @@ CREATE TABLE `favorites` (
 --
 
 INSERT INTO `favorites` (`id`, `user_id`, `product_id`, `created_at`) VALUES
-(66, 3, 2, '2026-03-08 06:12:53'),
-(67, 3, 3, '2026-03-08 06:12:54');
+(77, 3, 3, '2026-03-08 16:30:47'),
+(78, 3, 2, '2026-03-08 16:30:48'),
+(79, 3, 69, '2026-03-08 16:37:17'),
+(80, 3, 67, '2026-03-08 16:37:18');
 
 -- --------------------------------------------------------
 
@@ -182,7 +184,16 @@ INSERT INTO `orders` (`order_id`, `order_number`, `user_id`, `order_date`, `tota
 (75, 'PC-2026-00071', 3, '2026-03-08 04:48:48', 225.00, 'pending', 'Cash on Delivery', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-07 20:48:48', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
 (76, 'PC-2026-00072', NULL, '2026-03-08 05:02:57', 175.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 31', '2026-03-07 21:02:57', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
 (77, 'SO-2026-001', 3, '2026-03-08 13:56:33', 160.00, 'pending', 'Maya', 'Dine In - Table 4', '2026-03-08 05:56:33', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
-(78, 'SO-2026-002', 3, '2026-03-08 13:56:51', 140.00, 'pending', 'Pay at the counter (Cash)', 'Take Out', '2026-03-08 05:56:51', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest');
+(78, 'SO-2026-002', 3, '2026-03-08 13:56:51', 140.00, 'pending', 'Pay at the counter (Cash)', 'Take Out', '2026-03-08 05:56:51', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest'),
+(79, 'SO-2026-003', 3, '2026-03-09 00:29:12', 140.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 16', '2026-03-08 16:29:12', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(80, 'SO-2026-004', 3, '2026-03-09 00:29:19', 175.00, 'pending', 'GoTyme', 'Take Out', '2026-03-08 16:29:19', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest'),
+(81, 'SO-2026-005', NULL, '2026-03-09 00:35:52', 340.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 4', '2026-03-08 16:35:52', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(82, 'SO-2026-006', NULL, '2026-03-09 00:36:01', 185.00, 'pending', 'GoTyme', 'Take Out', '2026-03-08 16:36:01', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest'),
+(83, 'SO-2026-007', NULL, '2026-03-09 00:36:18', 160.00, 'pending', 'GCash', 'Take Out', '2026-03-08 16:36:18', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest'),
+(84, 'PC-2026-00073', 3, '2026-03-09 01:41:25', 370.00, 'pending', 'GCash', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-08 17:41:25', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
+(85, 'PC-2026-00074', 3, '2026-03-09 01:41:38', 190.00, 'pending', 'GoTyme', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-08 17:41:38', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
+(86, 'SO-2026-008', 3, '2026-03-09 01:41:49', 185.00, 'pending', 'GoTyme', 'Dine In - Table 12', '2026-03-08 17:41:49', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(87, 'SO-2026-009', 3, '2026-03-09 01:42:00', 210.00, 'pending', 'Pay at the counter (Cash)', 'Take Out', '2026-03-08 17:42:00', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest');
 
 -- --------------------------------------------------------
 
@@ -320,7 +331,17 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price_at
 (117, 75, 2, 1, 175.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
 (118, 76, 2, 1, 175.00, 'Short', 'Hot', '0%', 'Whole', NULL, ''),
 (119, 77, 55, 1, 160.00, 'Short', 'Hot', '0%', 'Whole', NULL, ''),
-(120, 78, 3, 1, 140.00, 'Short', 'Hot', '0%', 'Whole', NULL, '');
+(120, 78, 3, 1, 140.00, 'Short', 'Hot', '0%', 'Whole', NULL, ''),
+(121, 79, 3, 1, 140.00, 'Short', 'Hot', '0%', 'Whole', NULL, ''),
+(122, 80, 2, 1, 175.00, 'Short', 'Hot', '0%', 'Whole', NULL, ''),
+(123, 81, 11, 1, 165.00, 'Short', 'Hot', '0%', 'Whole', NULL, ''),
+(124, 81, 14, 1, 175.00, 'Short', 'Hot', '0%', 'Whole', NULL, ''),
+(125, 82, 6, 1, 185.00, 'Short', 'Hot', '0%', 'Whole', NULL, ''),
+(126, 83, 23, 1, 160.00, 'Short', 'Hot', '0%', 'Whole', NULL, ''),
+(127, 84, 55, 2, 160.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
+(128, 85, 3, 1, 140.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
+(129, 86, 5, 1, 185.00, 'Short', 'Hot', '0%', 'Whole', NULL, ''),
+(130, 87, 27, 1, 210.00, 'Short', 'Hot', '0%', 'Whole', NULL, '');
 
 -- --------------------------------------------------------
 
@@ -490,6 +511,13 @@ CREATE TABLE `user_carts` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Dumping data for table `user_carts`
+--
+
+INSERT INTO `user_carts` (`cart_id`, `user_id`, `product_id`, `quantity`, `size`, `temperature`, `sugar_level`, `milk`, `addons`, `special_instructions`, `updated_at`) VALUES
+(1026, 3, 55, 2, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-03-08 17:41:18');
+
+--
 -- Indexes for dumped tables
 --
 
@@ -572,19 +600,19 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `favorites`
 --
 ALTER TABLE `favorites`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=121;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=131;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -608,7 +636,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `user_carts`
 --
 ALTER TABLE `user_carts`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1023;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1027;
 
 --
 -- Constraints for dumped tables

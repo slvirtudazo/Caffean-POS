@@ -43,9 +43,9 @@ unset($v);
 
 $user_id = $_SESSION['user_id'];
 
-// Fetch user info and saved default address
+// Fetch user info, mobile number, and saved default address
 $user_stmt = mysqli_prepare($conn,
-    "SELECT full_name, email, house_unit, street_name, barangay,
+    "SELECT full_name, email, mobile_number, house_unit, street_name, barangay,
             city_municipality, province, zip_code
      FROM users WHERE user_id = ?");
 mysqli_stmt_bind_param($user_stmt, 'i', $user_id);
@@ -167,11 +167,13 @@ $min_date = date('Y-m-d');
                             <div class="col-md-6">
                                 <label class="form-label">Email Address *</label>
                                 <input type="email" id="co-email" class="form-control"
+                                    value="<?= htmlspecialchars($user_info['email'] ?? '') ?>"
                                     autocomplete="email" />
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Mobile Number *</label>
                                 <input type="tel" id="co-mobile" class="form-control"
+                                    value="<?= htmlspecialchars($user_info['mobile_number'] ?? '') ?>"
                                     maxlength="11"
                                     inputmode="numeric"
                                     autocomplete="tel" />

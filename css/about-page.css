@@ -52,7 +52,6 @@ body.page-about .container {
     text-align: center;
     overflow: hidden;
     padding: var(--spacing-xxl) 0;
-    margin-bottom: 5rem;
 }
 
 /* Overlay blobs — original colors and opacities, evenly scattered across all four corners and center */
@@ -138,8 +137,13 @@ body.page-about .container {
 ═══════════════════════════════════════════ */
 .about-story-section {
     padding: calc(var(--spacing-xxl) * 1.5) 0;
-    padding-top: calc(var(--spacing-md) * 4.5);
-    background-color: var(--ivory-cream);
+    padding-top: calc(var(--spacing-xl) * 4.5);
+    background:
+        radial-gradient(ellipse 55% 60% at 0%   45%,  rgba(91,19,18,0.28)  0%, transparent 68%),
+        radial-gradient(ellipse 45% 50% at 100% 10%,  rgba(42,0,0,0.20)    0%, transparent 65%),
+        radial-gradient(ellipse 40% 45% at 90%  90%,  rgba(91,19,18,0.18)  0%, transparent 62%),
+        radial-gradient(ellipse 30% 35% at 50%  55%,  rgba(42,0,0,0.08)    0%, transparent 58%),
+        linear-gradient(135deg, #F5F1E8 0%, #EDE8DC 50%, #F0EBE1 100%);
 }
 
 .about-story-section .section-eyebrow {
@@ -212,20 +216,6 @@ body.page-about .container {
     justify-content: center;
 }
 
-.about-image-accent {
-    position: absolute;
-    inset: -16px;
-    border-radius: var(--radius-xl);
-    background: linear-gradient(135deg, var(--deep-maroon) 0%, var(--burgundy-wine) 100%);
-    z-index: 0;
-    opacity: 0.12;
-    transform: rotate(-3deg);
-    transition: transform 0.5s ease;
-}
-
-.about-image-wrapper:hover .about-image-accent {
-    transform: rotate(0deg);
-}
 
 .about-image {
     width: 100%;
@@ -254,7 +244,7 @@ body.page-about .container {
 ═══════════════════════════════════════════ */
 .about-values-section {
     padding: calc(var(--spacing-xxl) * 1.5) 0;
-    background: linear-gradient(160deg, var(--deep-maroon) 0%, #3C1518 100%);
+    background: radial-gradient(ellipse 80% 90% at 50% 50%, #3D0A0A 0%, #2A0000 45%, #150000 100%);
     position: relative;
     overflow: hidden;
 }
@@ -361,7 +351,12 @@ body.page-about .container {
 
 .about-process-section {
     padding: calc(var(--spacing-xxl) * 1.5) 0;
-    background: var(--ivory-cream);
+    background:
+        radial-gradient(ellipse 55% 60% at 0%   45%,  rgba(91,19,18,0.28)  0%, transparent 68%),
+        radial-gradient(ellipse 45% 50% at 100% 10%,  rgba(42,0,0,0.20)    0%, transparent 65%),
+        radial-gradient(ellipse 40% 45% at 90%  90%,  rgba(91,19,18,0.18)  0%, transparent 62%),
+        radial-gradient(ellipse 30% 35% at 50%  55%,  rgba(42,0,0,0.08)    0%, transparent 58%),
+        linear-gradient(135deg, #F5F1E8 0%, #EDE8DC 50%, #F0EBE1 100%);
     position: relative;
     overflow: hidden;
 }
@@ -381,7 +376,7 @@ body.page-about .container {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 5px;
-    color: var(--burgundy-wine); /* Darkened for readability */
+    color: var(--deep-maroon);
 }
 
 .about-process-section .about-subtitle {
