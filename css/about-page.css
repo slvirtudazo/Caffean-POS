@@ -42,7 +42,8 @@ body.page-about .container {
 ═══════════════════════════════════════════ */
 .about-hero {
     position: relative;
-    background: var(--deep-maroon);
+    background:
+        radial-gradient(ellipse 80% 90% at 50% 50%, #3D0A0A 0%, #2A0000 45%, #150000 100%);
     color: var(--ivory-cream);
     min-height: 520px;
     display: flex;
@@ -54,18 +55,21 @@ body.page-about .container {
     margin-bottom: 5rem;
 }
 
-/* Animated noise/texture overlay */
+/* Overlay blobs — original colors and opacities, evenly scattered across all four corners and center */
 .about-hero-bg {
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(ellipse at 20% 50%, rgba(91, 19, 18, 0.6) 0%, transparent 60%),
-        radial-gradient(ellipse at 80% 20%, rgba(91, 19, 18, 0.4) 0%, transparent 50%);
+        radial-gradient(ellipse 55% 70% at 5%   10%,  rgba(91,19,18,0.55)  0%, transparent 62%),
+        radial-gradient(ellipse 45% 55% at 95%  10%,  rgba(120,30,20,0.40) 0%, transparent 58%),
+        radial-gradient(ellipse 40% 50% at 95%  90%,  rgba(91,19,18,0.45)  0%, transparent 55%),
+        radial-gradient(ellipse 35% 45% at 5%   90%,  rgba(60,10,10,0.30)  0%, transparent 52%),
+        radial-gradient(ellipse 30% 35% at 50%  50%,  rgba(91,19,18,0.35)  0%, transparent 50%);
     animation: heroBgPulse 8s ease-in-out infinite alternate;
 }
 
 @keyframes heroBgPulse {
-    from { opacity: 0.7; }
+    from { opacity: 0.75; }
     to   { opacity: 1; }
 }
 
@@ -86,7 +90,7 @@ body.page-about .container {
     color: var(--ivory-cream);
     font-weight: 700;
     line-height: 1.15;
-    padding-bottom: var(--spacing-md); 
+    padding-bottom: var(--spacing-md);
     margin-bottom: var(--spacing-lg);
     animation: fadeInUp 0.9s ease 0.1s both;
 }

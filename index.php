@@ -69,25 +69,55 @@ $is_logged_in  = isset($_SESSION['user_id']);
 
     <!-- Hero Section -->
     <section class="hero-section">
+        <!-- Ambient depth blobs -->
+        <div class="hero-bg-glow hero-bg-glow--right" aria-hidden="true"></div>
+        <div class="hero-bg-glow hero-bg-glow--left"  aria-hidden="true"></div>
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6 hero-content">
-                    <p class="hero-label">Locally Crafted</p>
+                    <span class="hero-badge">Locally Crafted in Davao</span>
                     <h1 class="hero-title">
-                        We serve the richest coffee in Davao!
+                        We serve the<br>
+                        <em>richest coffee</em><br>
+                        in the city!
                     </h1>
-                    <?php if ($is_logged_in): ?>
-                        <a href="menu.php" class="btn-hero">Order Online</a>
-                    <?php else: ?>
-                        <button class="btn-hero" onclick="showLoginRequiredPopup()">Order Online</button>
-                    <?php endif; ?>
-                    <a href="<?= $is_admin ? 'menu.php' : 'kiosk.php' ?>" class="btn-hero-secondary ms-2">Self-Order Kiosk</a>
+                    <p class="hero-descriptor">Ethically sourced, masterfully brewed — every cup is a story worth savoring.</p>
+                    <div class="hero-cta-wrap">
+                        <?php if ($is_logged_in): ?>
+                            <a href="menu.php" class="btn-hero">Order Online</a>
+                        <?php else: ?>
+                            <button class="btn-hero" onclick="showLoginRequiredPopup()">Order Online</button>
+                        <?php endif; ?>
+                        <a href="<?= $is_admin ? 'menu.php' : 'kiosk.php' ?>" class="btn-hero-secondary">Self-Order Kiosk</a>
+                    </div>
+                    <div class="hero-stat-row">
+                        <div class="hero-stat">
+                            <span class="hero-stat-num">50+</span>
+                            <span class="hero-stat-lbl">Menu Items</span>
+                        </div>
+                        <div class="hero-stat-divider"></div>
+                        <div class="hero-stat">
+                            <span class="hero-stat-num">100%</span>
+                            <span class="hero-stat-lbl">Fresh Daily</span>
+                        </div>
+                        <div class="hero-stat-divider"></div>
+                        <div class="hero-stat">
+                            <span class="hero-stat-num">4.9 ★</span>
+                            <span class="hero-stat-lbl">Local Favorite</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-lg-6 hero-image">
-                    <img src="images/coffee_mug.png" alt="Premium Coffee">
+                <div class="col-lg-6 hero-visual px-0">
+                    <!-- Spacer column — image renders on .hero-section below -->
                 </div>
             </div>
         </div>
+
+        <!-- Coffee splash — positioned absolutely on section, right half, full height -->
+        <img src="images/coffee_bg.png" alt="Purge Coffee Splash" class="hero-img-main" aria-hidden="true">
+
+        <!-- Maroon bottom rule -->
+        <div class="hero-bottom-rule" aria-hidden="true"></div>
     </section>
 
     <!-- Special Offers Section -->
@@ -179,10 +209,7 @@ $is_logged_in  = isset($_SESSION['user_id']);
                     </div>
                 </div>
                 <div class="location-map">
-                    <div class="map-placeholder">
-                        <i class="fas fa-map-marked-alt"></i>
-                        <p>Map coming soon</p>
-                    </div>
+                    <img src="images/store_exterior.png" alt="Caffean Store Exterior" class="store-exterior-img">
                 </div>
             </div>
         </div>
