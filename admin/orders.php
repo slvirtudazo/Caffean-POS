@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Purge Coffee Shop — Admin Online Orders (admin/orders.php)
+ * Caffean Shop — Admin Online Orders (admin/orders.php)
  * Manages delivery and pickup orders (is_kiosk = 0).
  */
 

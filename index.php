@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Purge Coffee Shop - Homepage
+ * Caffean Shop - Homepage
  */
 
 require_once 'php/db_connection.php';
@@ -16,7 +16,7 @@ $is_logged_in  = isset($_SESSION['user_id']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Purge Coffee - Home</title>
+    <title>Caffean - Home</title>
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -33,8 +33,8 @@ $is_logged_in  = isset($_SESSION['user_id']);
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="index.php">
-                <img src="images/coffee_beans_logo.png" alt="Purge Coffee">
-                <span>purge coffee</span>
+                <img src="images/coffee_beans_logo.png" alt="Caffean">
+                <span>caffean</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -114,7 +114,7 @@ $is_logged_in  = isset($_SESSION['user_id']);
         </div>
 
         <!-- Coffee splash — positioned absolutely on section, right half, full height -->
-        <img src="images/coffee_bg.png" alt="Purge Coffee Splash" class="hero-img-main" aria-hidden="true">
+        <img src="images/coffee_bg.png" alt="Caffean Splash" class="hero-img-main" aria-hidden="true">
 
         <!-- Maroon bottom rule -->
         <div class="hero-bottom-rule" aria-hidden="true"></div>
@@ -182,7 +182,7 @@ $is_logged_in  = isset($_SESSION['user_id']);
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Visit Our Store</h2>
-                <p class="section-subtitle">Come experience the Purge Coffee difference in person!</p>
+                <p class="section-subtitle">Come experience the Caffean difference in person!</p>
             </div>
             <div class="location-content">
                 <div class="location-details">

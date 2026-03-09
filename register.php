@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Purge Coffee Shop — Customer Registration Page
+ * Caffean Shop — Customer Registration Page
  * Features: field validation, password strength check, password_hash(),
  * show/hide password, password match, role-based restriction, HTTPS enforcement.
  * Admin accounts are managed outside this system.
@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register — Purge Coffee</title>
+    <title>Register — Caffean</title>
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -117,10 +117,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <i class="fas fa-arrow-left"></i>
             <span>Back to Home</span>
         </a>
-        <img src="images/coffee_beans_logo.png" alt="Purge Coffee" class="logo">
+        <img src="images/coffee_beans_logo.png" alt="Caffean" class="logo">
 
         <div class="register-header">
-            <h1 class="register-title">Welcome to Purge Coffee!</h1>
+            <h1 class="register-title">Welcome to Caffean!</h1>
             <p class="register-subtitle">Join our coffee community</p>
         </div>
 

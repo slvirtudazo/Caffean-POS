@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Purge Coffee Shop — Place Order (php/place_order.php)
+ * Caffean Shop — Place Order (php/place_order.php)
  * Validates inputs, inserts order with full item customizations, clears the session cart.
  * Returns JSON consumed by checkout.php to render the receipt dialog on success.
  *

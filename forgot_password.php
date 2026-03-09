@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Purge Coffee Shop — Forgot Password Page
+ * Caffean Shop — Forgot Password Page
  * Allows a registered customer to reset their password directly
  * by verifying their email and setting a new password.
  *
@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Password — Purge Coffee</title>
+    <title>Reset Password — Caffean</title>
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <i class="fas fa-arrow-left"></i>
             <span>Back to Login</span>
         </a>
-        <img src="images/coffee_beans_logo.png" alt="Purge Coffee" class="logo">
+        <img src="images/coffee_beans_logo.png" alt="Caffean" class="logo">
 
         <div class="fp-header">
             <h1 class="fp-title">Reset Your Password</h1>

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Purge Coffee Shop — Admin Dashboard (admin/dashboard.php)
+ * Caffean Shop — Admin Dashboard (admin/dashboard.php)
  * Sales analytics, trending products, and recent orders overview.
  */
 

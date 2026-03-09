@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Purge Coffee Shop — Admin Products Management  (products.php)
+ * Caffean Shop — Admin Products Management  (products.php)
  * Full CRUD: Add, View, Edit, Delete.
  */
 
@@ -558,11 +558,11 @@ include 'includes/header.php';
       '<span class="badge badge-active">Active</span>' :
       '<span class="badge badge-inactive">Hidden</span>';
 
-    // Show product image if available
+    // Show product image — prepend base URL for local paths
     var imgWrap = document.getElementById('view_img_wrap');
     var imgEl = document.getElementById('view_img');
     if (p.display_image) {
-      imgEl.src = p.display_image;
+      imgEl.src = p.display_image.startsWith('http') ? p.display_image : _baseUrl + p.display_image;
       imgWrap.style.display = 'block';
     } else {
       imgWrap.style.display = 'none';
@@ -588,7 +588,7 @@ include 'includes/header.php';
     var wrap = document.getElementById('edit_thumb_wrap');
 
     if (p.display_image) {
-      preview.src = p.display_image;
+      preview.src = p.display_image.startsWith('http') ? p.display_image : _baseUrl + p.display_image;
       preview.style.display = 'block';
       placeholder.style.display = 'none';
       removeBtn.style.display = 'none';

@@ -1,6 +1,6 @@
 <?php
 /**
- * Purge Coffee — Update Profile Endpoint (php/update_profile.php)
+ * Caffean — Update Profile Endpoint (php/update_profile.php)
  * Handles two actions via POST field 'action':
  *   'info'     — update full_name, email, mobile_number, optional avatar
  *   'password' — update password only (requires current_password verification)

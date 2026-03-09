@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Purge Coffee Shop — Self-Order Kiosk (kiosk.php)
+ * Caffean Shop — Self-Order Kiosk (kiosk.php)
  * Guest ordering: Dine In / Take Out → Browse → Cart → Checkout → Confirmation
  * No login required. Cart stored in $_SESSION['kiosk_cart'].
  */
@@ -67,7 +67,7 @@ function kioskNetContent($product)
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Self-Order Kiosk — Purge Coffee</title>
+    <title>Self-Order Kiosk — Caffean</title>
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -80,8 +80,8 @@ function kioskNetContent($product)
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="index.php">
-                <img src="images/coffee_beans_logo.png" alt="Purge Coffee">
-                <span>purge coffee</span>
+                <img src="images/coffee_beans_logo.png" alt="Caffean">
+                <span>caffean</span>
             </a>
         </div>
     </nav>
@@ -379,8 +379,8 @@ function kioskNetContent($product)
                 <div class="kiosk-receipt-content" id="confirm-receipt">
 
                     <div class="kiosk-receipt-logo">
-                        <img src="images/coffee_beans_logo.png" alt="Purge Coffee">
-                        <span>Purge Coffee</span>
+                        <img src="images/coffee_beans_logo.png" alt="Caffean">
+                        <span>Caffean</span>
                     </div>
 
                     <h2 class="kiosk-receipt-heading" id="confirm-greeting">Thank you for your order!</h2>
@@ -419,7 +419,7 @@ function kioskNetContent($product)
                     <div id="receipt-totals"></div>
 
                     <div class="kiosk-receipt-footer-note">
-                        Thank you for choosing Purge Coffee!
+                        Thank you for choosing Caffean!
                     </div>
 
                 </div>
@@ -1043,8 +1043,8 @@ function kioskNetContent($product)
                 receipt.innerHTML = `
                 <div class="k-cash-receipt">
                     <div class="k-cash-logo">
-                        <img src="images/coffee_beans_logo.png" alt="Purge Coffee" class="k-cash-logo-img">
-                        <span class="k-cash-logo-name">Purge Coffee</span>
+                        <img src="images/coffee_beans_logo.png" alt="Caffean" class="k-cash-logo-img">
+                        <span class="k-cash-logo-name">Caffean</span>
                     </div>
                     <div class="k-cash-divider"></div>
                     <p class="k-cash-label">Your order number is</p>

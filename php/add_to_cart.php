@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Purge Coffee Shop — Add to Cart Handler (php/add_to_cart.php)
+ * Caffean Shop — Add to Cart Handler (php/add_to_cart.php)
  * FIX #1: Output buffering ensures clean JSON — no stray output can corrupt the response.
  * FIX #5: Default options use the FIRST item of each dropdown (Short, Hot, 0%, Whole).
  */

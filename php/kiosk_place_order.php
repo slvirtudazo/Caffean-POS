@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Purge Coffee Shop — Kiosk Order Handler (php/kiosk_place_order.php)
+ * Caffean Shop — Kiosk Order Handler (php/kiosk_place_order.php)
  * Places walk-in kiosk orders. user_id = NULL for guest walk-ins.
  */
 

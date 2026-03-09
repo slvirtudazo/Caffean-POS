@@ -1,6 +1,6 @@
 <?php
 /**
- * Purge Coffee Shop - Logout Script
+ * Caffean Shop - Logout Script
  * This file handles user logout by destroying the session and redirecting to the homepage.
  * It ensures proper cleanup of session data for security purposes.
  */

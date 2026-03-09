@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Purge Coffee Shop — Admin Customers Management  (customers.php)
+ * Caffean Shop — Admin Customers Management  (customers.php)
  * Operation: View only (eye icon).
  */
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Purge Coffee — Admin Insights (admin/insights.php)
+ * Caffean — Admin Insights (admin/insights.php)
  * Revenue trends, top products, order type and payment breakdowns.
  */
 

@@ -85,7 +85,7 @@ FROM users WHERE email = ?";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login — Purge Coffee</title>
+    <title>Login — Caffean</title>
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -99,9 +99,9 @@ FROM users WHERE email = ?";
             <i class="bi bi-arrow-left"></i>
             <span>Back to Home</span>
         </a>
-        <img src="images/coffee_beans_logo.png" alt="Purge Coffee" class="logo">
+        <img src="images/coffee_beans_logo.png" alt="Caffean" class="logo">
         <div class="login-header">
-            <h1 class="login-title">Welcome back to Purge Coffee!</h1>
+            <h1 class="login-title">Welcome back to Caffean!</h1>
             <p class="login-subtitle">Log in to access your favorites and recent orders</p>
         </div>
         <!-- Display error messages -->

@@ -1,5 +1,5 @@
 /* ============================================================
-   PURGE COFFEE - Admin Style Sheet  (admin.css)
+   Caffean - Admin Style Sheet  (admin.css)
    Shared / global styles for all admin module pages.
    ============================================================ */
 
@@ -1214,7 +1214,7 @@ textarea.form-control {
 .search-box {
   position: relative;
   flex: 1;
-  max-width: 340px;
+  max-width: 600px;
 }
 
 .search-box .search-icon {

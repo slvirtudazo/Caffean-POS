@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Purge Coffee Shop — Order Success Page (order_success.php)
+ * Caffean Shop — Order Success Page (order_success.php)
  * Shown after a successful checkout.
  */
 
@@ -55,7 +55,7 @@ while ($row = mysqli_fetch_assoc($items_result)) $items[] = $row;
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Order Confirmed — Purge Coffee</title>
+    <title>Order Confirmed — Caffean</title>
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -200,8 +200,8 @@ while ($row = mysqli_fetch_assoc($items_result)) $items[] = $row;
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="index.php">
-                <img src="images/coffee_beans_logo.png" alt="Purge Coffee Logo" />
-                <span>purge coffee</span>
+                <img src="images/coffee_beans_logo.png" alt="Caffean Logo" />
+                <span>caffean</span>
             </a>
             <div class="nav-icons">
                 <a href="cart.php" class="text-decoration-none"><i class="fas fa-shopping-cart nav-icon"></i></a>

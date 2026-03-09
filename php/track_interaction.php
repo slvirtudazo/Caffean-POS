@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Purge Coffee Shop — Product Interaction Tracker (track_interaction.php)
+ * Caffean Shop — Product Interaction Tracker (track_interaction.php)
  * Increments or decrements favorite/add_to_cart counts for bestseller ranking.
  * Silent endpoint — no response body on success.
  */

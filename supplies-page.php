@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Purge Coffee Shop - Supplies Page
+ * Caffean Shop - Supplies Page
  * Displays Coffee Beans, Milk & Creamers, and Brewing Equipment
  * Layout mirrors the Menu page: sticky sidebar + 5-column product grid
  * Supports category filter, price sort, and best sellers sort
@@ -155,7 +155,7 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Purge Coffee - Supplies</title>
+    <title>Caffean - Supplies</title>
 
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -171,8 +171,8 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="index.php">
-                <img src="images/coffee_beans_logo.png" alt="Purge Coffee Logo">
-                <span>purge coffee</span>
+                <img src="images/coffee_beans_logo.png" alt="Caffean Logo">
+                <span>caffean   </span>
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">

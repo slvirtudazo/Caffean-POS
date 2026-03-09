@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Purge Coffee Shop — Shared Frontend Footer
+ * Caffean Shop — Shared Frontend Footer
  * Included by all customer-facing pages.
- * Matching design: PURGE COFFEE | OUR POLICIES | SOCIAL MEDIA
+ * Matching design: CAFFEAN | OUR POLICIES | SOCIAL MEDIA
  */
 ?>
 
@@ -15,10 +15,10 @@
 
             <!-- ── Brand & Contact ──────────────────────────────── -->
             <div class="footer-section">
-                <span class="footer-brand-name">Purge Coffee</span>
+                <span class="footer-brand-name">CAFFEAN</span>
                 <div class="footer-contact">
                     <p><i class="fas fa-phone"></i> 0960 315 0070</p>
-                    <p><i class="fas fa-envelope"></i> purgecoffee@gmail.com</p>
+                    <p><i class="fas fa-envelope"></i> support@caffean.co</p>
                 </div>
             </div>
 
@@ -53,7 +53,7 @@
         <hr>
 
         <div class="footer-bottom">
-            <p>&copy; 2026 Purge Coffee | All Rights Reserved</p>
+            <p>&copy; 2026 Caffean | All Rights Reserved</p>
         </div>
 
     </div><!-- /.container -->

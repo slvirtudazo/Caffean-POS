@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Purge Coffee Shop - About Page
+ * Caffean Shop - About Page
  */
 require_once 'php/db_connection.php';
 $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
@@ -12,7 +12,7 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Purge Coffee - About Page</title>
+    <title>Caffean - About Page</title>
 
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -29,8 +29,8 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="index.php">
-                <img src="images/coffee_beans_logo.png" alt="Purge Coffee Logo">
-                <span>purge coffee</span>
+                <img src="images/coffee_beans_logo.png" alt="Caffean Logo">
+                <span>caffean</span>
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -94,7 +94,7 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                     <span class="section-eyebrow">From Our Kitchen to Your Favorite Cup</span>
                     <h2 class="about-subtitle">A Shared Dream, Freshly Brewed</h2>
                     <p class="about-text">
-                        Purge Coffee started as a late-night family dream brewed right in our own kitchen.
+                        Caffean started as a late-night family dream brewed right in our own kitchen.
                         Our first business venture took that dining table idea and transformed it into a
                         welcoming space to share our love of coffee with the community.
                     </p>
@@ -107,26 +107,12 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                         Today, our doors are wide open, and our espresso machines are humming.
                         Whether you're stopping by for a robust morning pick-me-up, a delicate
                         pastry, or just a cozy spot to connect with friends, we want you to feel
-                        right at home. From our family to yours—welcome to Purge Coffee.
+                        right at home. From our family to yours—welcome to Caffean.
                     </p>
-                    <div class="about-stats">
-                        <div class="about-stat">
-                            <span class="stat-num">2+</span>
-                            <span class="stat-label">Years Brewing</span>
-                        </div>
-                        <div class="about-stat">
-                            <span class="stat-num">1</span>
-                            <span class="stat-label">Big Family Leap</span>
-                        </div>
-                        <div class="about-stat">
-                            <span class="stat-num">20+</span>
-                            <span class="stat-label">Handcrafted Recipes</span>
-                        </div>
-                    </div>
                 </div>
                 <div class="col-lg-6 reveal-right">
                     <div class="about-image-wrapper">
-                        <img src="images/coffee_mug.png" alt="Purge Coffee" class="about-image">
+                        <img src="images/coffee_mug.png" alt="Caffean" class="about-image">
                     </div>
                 </div>
             </div>

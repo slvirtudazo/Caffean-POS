@@ -99,12 +99,17 @@ function resolveProductImage($name, $image_path, $cat_id = 0) {
         return $PRODUCT_IMAGE_MAP[$name];
     }
 
-    // Use DB path if it's an external URL (imgur or other)
+    // Use DB path if it is an external URL
     if (!empty($image_path) && strpos($image_path, 'http') === 0) {
         return $image_path;
     }
 
-    // Pastry / supplies fallback
+    // Use local uploaded path if it exists
+    if (!empty($image_path)) {
+        return $image_path;
+    }
+
+    // Category-based fallback
     $pastry_cats = [3, 6, 7, 8];
     if (in_array($cat_id, $pastry_cats)) {
         return 'images/pastry.png';

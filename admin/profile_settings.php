@@ -1,6 +1,6 @@
 <?php
 /**
- * Purge Coffee — Admin Profile Settings (admin/profile_settings.php)
+ * Caffean — Admin Profile Settings (admin/profile_settings.php)
  * Split into two independent cards: Account Information and Change Password.
  */
 

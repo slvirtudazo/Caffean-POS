@@ -1,6 +1,6 @@
 <?php
 /**
- * Purge Coffee Shop - AJAX Search Handler
+ * Caffean Shop - AJAX Search Handler
  * Queries the database for products matching the search term.
  */
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Purge Coffee Shop — Update Cart Item AJAX Handler (php/update_cart_item.php)
+ * Caffean Shop — Update Cart Item AJAX Handler (php/update_cart_item.php)
  * Actions: update_qty | update_option | update_addons | remove
  */
 ob_start();

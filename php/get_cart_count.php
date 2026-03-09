@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Purge Coffee Shop — Get Cart Count (php/get_cart_count.php)
+ * Caffean Shop — Get Cart Count (php/get_cart_count.php)
  * Returns the total quantity of items in the session cart as JSON.
  * Called by main.js updateCartCount() to keep the navbar badge in sync.
  */

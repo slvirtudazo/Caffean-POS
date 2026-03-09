@@ -1,6 +1,6 @@
 <?php
 /**
- * Purge Coffee Shop — Checkout Page
+ * Caffean Shop — Checkout Page
  * Collects customer info, order type, address/pickup, and payment method.
  * Shows an order confirmation receipt dialog with save-as-PNG option.
  */
@@ -90,7 +90,7 @@ $min_date = date('Y-m-d');
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Checkout — Purge Coffee</title>
+    <title>Checkout — Caffean</title>
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -110,8 +110,8 @@ $min_date = date('Y-m-d');
     <nav class="navbar navbar-expand-lg sticky-top">
         <div class="container">
             <a class="navbar-brand" href="index.php">
-                <img src="images/coffee_beans_logo.png" alt="Purge Coffee" />
-                <span>purge coffee</span>
+                <img src="images/coffee_beans_logo.png" alt="Caffean" />
+                <span>caffean</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -413,8 +413,8 @@ $min_date = date('Y-m-d');
 
                 <!-- Shop logo and name -->
                 <div class="receipt-logo-wrap">
-                    <img src="images/coffee_beans_logo.png" alt="Purge Coffee" class="receipt-logo-img" />
-                    <span class="receipt-logo-name">Purge Coffee</span>
+                    <img src="images/coffee_beans_logo.png" alt="Caffean" class="receipt-logo-img" />
+                    <span class="receipt-logo-name">Caffean</span>
                 </div>
 
                 <hr class="receipt-divider" />
@@ -510,7 +510,7 @@ $min_date = date('Y-m-d');
                 </div>
 
                 <hr class="receipt-divider" />
-                <div class="receipt-footer-note">Thank you for choosing Purge Coffee!
+                <div class="receipt-footer-note">Thank you for choosing Caffean!
                     <i class="bi bi-emoji-smile"></i>
                 </div>
             </div>
@@ -813,7 +813,7 @@ $min_date = date('Y-m-d');
             html2canvas(el, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }).then(canvas => {
                 const link  = document.createElement('a');
                 link.href   = canvas.toDataURL('image/png');
-                link.download = 'purge-coffee-receipt.png';
+                link.download = 'caffean-receipt.png';
                 link.click();
             });
         }

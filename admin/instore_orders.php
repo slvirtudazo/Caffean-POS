@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Purge Coffee Shop — Admin In-Store Orders (admin/instore_orders.php)
+ * Caffean Shop — Admin In-Store Orders (admin/instore_orders.php)
  * Manages walk-in kiosk orders (is_kiosk = 1).
  */
 

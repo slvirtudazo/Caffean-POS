@@ -1,5 +1,5 @@
 /**
- * Purge Coffee Shop - Main JavaScript File
+ * Caffean Shop - Main JavaScript File
  * Handles cart operations, universal favorite management, and notifications.
  */
 

@@ -1,5 +1,5 @@
 /**
- * Purge Coffee Shop - Search Module
+ * Caffean Shop - Search Module
  * Handles the universal search modal overlay and AJAX database queries.
  */
 

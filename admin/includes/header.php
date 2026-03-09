@@ -5,7 +5,7 @@
  * Outputs the full HTML head, top navbar, and sidebar for all admin pages.
  */
 
-if (!defined('BASE_URL')) define('BASE_URL', '/purge-coffee');
+if (!defined('BASE_URL')) define('BASE_URL', '/caffean');
 
 $admin_name    = isset($_SESSION['full_name']) ? htmlspecialchars($_SESSION['full_name']) : 'Admin';
 $admin_initial = strtoupper(substr($admin_name, 0, 1));
@@ -43,7 +43,7 @@ $page_css_file = $page_css_map[$current_page] ?? null;
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Purge Coffee - Admin</title>
+  <title>Caffean - Admin</title>
   <link rel="icon" type="image/png" href="<?= BASE_URL ?>/images/coffee_beans_logo.png" />
 
   <!-- Shared admin styles -->
@@ -245,8 +245,8 @@ $page_css_file = $page_css_map[$current_page] ?? null;
   <nav class="admin-navbar">
     <div class="admin-nav-inner">
       <a href="<?= BASE_URL ?>/admin/dashboard.php" class="admin-brand">
-        <img src="<?= BASE_URL ?>/images/coffee_beans_logo.png" alt="Purge Coffee" />
-        <span>purge coffee</span>
+        <img src="<?= BASE_URL ?>/images/coffee_beans_logo.png" alt="Caffean" />
+        <span>Caffean</span>
       </a>
       <div class="nav-right">
         <a href="<?= BASE_URL ?>/" target="_blank" class="btn-ghost">
