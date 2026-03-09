@@ -128,7 +128,7 @@ $categories_result = mysqli_query($conn, "SELECT * FROM categories ORDER BY name
 $total_products = mysqli_num_rows($products_result);
 mysqli_data_seek($products_result, 0);
 
-define('BASE_URL', '..');
+define('BASE_URL', '/caffean-pos');
 include 'includes/header.php';
 ?>
 

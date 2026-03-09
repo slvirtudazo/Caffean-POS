@@ -511,7 +511,6 @@ $min_date = date('Y-m-d');
 
                 <hr class="receipt-divider" />
                 <div class="receipt-footer-note">Thank you for choosing Caffean!
-                    <i class="bi bi-emoji-smile"></i>
                 </div>
             </div>
 

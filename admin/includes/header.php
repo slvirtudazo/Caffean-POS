@@ -5,7 +5,7 @@
  * Outputs the full HTML head, top navbar, and sidebar for all admin pages.
  */
 
-if (!defined('BASE_URL')) define('BASE_URL', '/caffean');
+if (!defined('BASE_URL')) define('BASE_URL', '/caffean-pos');
 
 $admin_name    = isset($_SESSION['full_name']) ? htmlspecialchars($_SESSION['full_name']) : 'Admin';
 $admin_initial = strtoupper(substr($admin_name, 0, 1));

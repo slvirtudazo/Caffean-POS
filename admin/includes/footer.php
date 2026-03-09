@@ -3,7 +3,7 @@
  * Admin Footer Include — admin/includes/footer.php
  * Closes the main content + sidebar wrappers opened in header.php.
  */
-if (!defined('BASE_URL')) define('BASE_URL', '/caffean');
+if (!defined('BASE_URL')) define('BASE_URL', '/caffean-pos');
 ?>
 
   </main><!-- /.admin-wrapper -->

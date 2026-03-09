@@ -22,8 +22,8 @@ mysqli_stmt_execute($stmt);
 $admin = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 mysqli_stmt_close($stmt);
 
-/* Build avatar src for display */
-if (!defined('BASE_URL')) define('BASE_URL', '..');
+/* Build avatar src for display (BASE_URL defined in includes/header.php) */
+if (!defined('BASE_URL')) define('BASE_URL', '/caffean-pos');
 $avatar_src = !empty($admin['profile_image'])
     ? BASE_URL . '/' . htmlspecialchars($admin['profile_image'])
     : '';

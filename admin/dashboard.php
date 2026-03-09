@@ -131,6 +131,8 @@ $customers_delta = $lm_customers > 0 ? round((($tm_customers - $lm_customers) / 
 include 'includes/header.php';
 ?>
 
+<link rel="stylesheet" href="assets/css/dashboard.css">
+
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
