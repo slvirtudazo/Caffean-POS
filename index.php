@@ -114,7 +114,7 @@ $is_logged_in  = isset($_SESSION['user_id']);
         </div>
 
         <!-- Coffee splash — positioned absolutely on section, right half, full height -->
-        <img src="images/coffee_bg.png" alt="Caffean Splash" class="hero-img-main" aria-hidden="true">
+        <img src="images/coffee_cups.png" alt="Caffean Splash" class="hero-img-main" aria-hidden="true">
 
         <!-- Maroon bottom rule -->
         <div class="hero-bottom-rule" aria-hidden="true"></div>

@@ -112,7 +112,7 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                 </div>
                 <div class="col-lg-6 reveal-right">
                     <div class="about-image-wrapper">
-                        <img src="images/pastry3.png" alt="Caffean" class="about-image">
+                        <img src="images/coffee_beans.png" alt="Caffean" class="about-image">
                     </div>
                 </div>
             </div>

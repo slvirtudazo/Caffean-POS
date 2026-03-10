@@ -188,8 +188,9 @@ body.page-about .container {
 
 
 .about-image {
+    left: 50px;
     width: 100%;
-    max-width: 480px;
+    max-width: 550px;
     height: auto;
     display: block;
     position: relative;

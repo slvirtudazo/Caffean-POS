@@ -476,8 +476,8 @@ p {
 .hero-img-main {
     position: absolute;
     top: 0;
-    right: 60px;
-    width: 750px;                 /* right half of the section */
+    right: 100px;
+    width: 700px;                 /* right half of the section */
     height: 100%;
     object-fit: cover;
     object-position: center center;

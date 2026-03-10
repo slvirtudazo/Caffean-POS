@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 09, 2026 at 03:24 PM
+-- Generation Time: Mar 10, 2026 at 03:55 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -200,7 +200,10 @@ INSERT INTO `orders` (`order_id`, `order_number`, `user_id`, `order_date`, `tota
 (90, 'SO-2026-010', 3, '2026-03-09 13:49:57', 140.00, 'pending', 'Pay at the counter (Cash)', 'Take Out', '2026-03-09 05:49:57', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest'),
 (91, 'SO-2026-011', 3, '2026-03-09 13:50:07', 200.00, 'pending', 'GoTyme', 'Dine In - Counter Pickup', '2026-03-09 05:50:07', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
 (92, 'PC-2026-00077', 3, '2026-03-09 22:17:41', 2330.00, 'pending', 'GCash', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-09 14:17:41', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
-(93, 'SO-2026-012', NULL, '2026-03-09 22:21:43', 190.00, 'pending', 'GoTyme', 'Take Out', '2026-03-09 14:21:43', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest');
+(93, 'SO-2026-012', NULL, '2026-03-09 22:21:43', 190.00, 'pending', 'GoTyme', 'Take Out', '2026-03-09 14:21:43', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest'),
+(94, 'PC-2026-00078', 3, '2026-03-10 11:24:20', 1225.00, 'processing', 'GoTyme', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-10 03:24:20', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
+(95, 'SO-2026-013', 3, '2026-03-10 11:25:56', 340.00, 'processing', 'Pay at the counter (Cash)', 'Dine In - Table 13', '2026-03-10 03:25:56', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(96, 'SO-2026-014', 3, '2026-03-10 11:26:47', 160.00, 'completed', 'Maya', 'Take Out', '2026-03-10 03:26:47', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest');
 
 -- --------------------------------------------------------
 
@@ -358,7 +361,14 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price_at
 (137, 92, 2, 2, 175.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
 (138, 92, 3, 2, 140.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
 (139, 92, 67, 3, 550.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
-(140, 93, 9, 1, 190.00, 'Short', 'Hot', '0%', 'Whole', NULL, '');
+(140, 93, 9, 1, 190.00, 'Short', 'Hot', '0%', 'Whole', NULL, ''),
+(141, 94, 3, 2, 140.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
+(142, 94, 5, 1, 185.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
+(143, 94, 55, 1, 160.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
+(144, 94, 67, 1, 550.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
+(145, 95, 3, 1, 140.00, 'Short', 'Hot', '0%', 'Whole', NULL, ''),
+(146, 95, 8, 1, 200.00, 'Short', 'Hot', '0%', 'Whole', NULL, ''),
+(147, 96, 55, 1, 160.00, 'Short', 'Hot', '0%', 'Whole', NULL, '');
 
 -- --------------------------------------------------------
 
@@ -624,13 +634,13 @@ ALTER TABLE `favorites`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=94;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=148;
 
 --
 -- AUTO_INCREMENT for table `products`
