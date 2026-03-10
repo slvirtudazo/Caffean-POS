@@ -85,7 +85,7 @@ require 'includes/header.php';
   </div>
   <!-- Export entire insights feed as A4 PDF -->
   <button class="btn-primary" id="btnExportPDF" onclick="exportInsightsPDF()">
-    Export as PDF
+    <i class="fas fa-file-pdf"></i> Export as PDF
   </button>
 </div>
 
@@ -314,11 +314,11 @@ require 'includes/header.php';
 
     const target = document.getElementById('insightsFeed');
     const opt = {
-      margin:     [10, 10, 10, 10],
-      filename:   'caffean-insights.pdf',
-      image:      { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, logging: false },
-      jsPDF:      { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      margin:      [0.3, 0.1, 0.3, 0.5],
+      filename:    'caffean-insights.pdf',
+      image:       { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, logging: false, windowWidth: 1600, scrollX: 0, scrollY: 0 },
+      jsPDF:       { unit: 'in', format: 'legal', orientation: 'landscape' }
     };
     html2pdf().set(opt).from(target).save().then(function () {
       btn.disabled = false;

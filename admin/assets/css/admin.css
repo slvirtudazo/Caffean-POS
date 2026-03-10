@@ -1441,6 +1441,7 @@ textarea.form-control {
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--deep-maroon);
+  white-space: nowrap;
 }
 
 .ins-panel-sub {
@@ -1565,6 +1566,9 @@ textarea.form-control {
   font-size: 0.78rem;
   color: var(--dark-brown);
   flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ins-legend-val {
@@ -1572,6 +1576,8 @@ textarea.form-control {
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--deep-maroon);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* ── PROFILE SETTINGS PAGE ───────────────────────────────────── */
