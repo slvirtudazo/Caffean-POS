@@ -4,6 +4,10 @@
    Global/shared styles are in admin.css.
    ============================================================ */
 
+/* ── Toolbar: 0.5rem gap between search bar and Add New Product button ── */
+.toolbar { gap: 1rem; }
+.search-box { max-width: none; }
+
 /* ── Items table inside the view modal ─────────────────────── */
 #vw_items_table {
   margin-top: 4px;

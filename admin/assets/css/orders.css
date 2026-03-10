@@ -4,6 +4,9 @@
    Global/shared styles are in admin.css.
    ============================================================ */
 
+/* ── Search bar extends to full table width ──────────────────── */
+.search-box { max-width: none; }
+
 /* ── "Ordered Items" section label inside view modal ───────── */
 /* Replaces the former inline style="margin-top:16px; margin-bottom:8px;" */
 .view-modal-section-label {

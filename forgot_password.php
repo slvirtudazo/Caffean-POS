@@ -85,6 +85,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Reset Password — Caffean</title>
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/forgot_password.css?v=<?php echo time(); ?>">
@@ -139,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         oninput="checkStrength(this.value)">
                     <button type="button" class="btn-eye" id="toggleNew"
                         aria-label="Show password">
-                        <i class="fas fa-eye" id="eyeIcon1"></i>
+                        <i class="bi bi-eye-slash" id="eyeIcon1"></i>
                     </button>
                 </div>
                 <div class="invalid-feedback">Password does not meet requirements.</div>
@@ -150,11 +153,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <small class="strength-text" id="strengthText"></small>
 
                 <ul class="pwd-req" id="pwdReq">
-                    <li id="req-len"> <i class="fas fa-circle-xmark"></i> At least 8 characters</li>
-                    <li id="req-upper"><i class="fas fa-circle-xmark"></i> One uppercase letter</li>
-                    <li id="req-lower"><i class="fas fa-circle-xmark"></i> One lowercase letter</li>
-                    <li id="req-num"> <i class="fas fa-circle-xmark"></i> One number</li>
-                    <li id="req-sym"> <i class="fas fa-circle-xmark"></i> One special character (@#!…)</li>
+                    <li id="req-len"> <i class="bi bi-x-circle"></i> At least 8 characters</li>
+                    <li id="req-upper"><i class="bi bi-x-circle"></i> One uppercase letter</li>
+                    <li id="req-lower"><i class="bi bi-x-circle"></i> One lowercase letter</li>
+                    <li id="req-num"> <i class="bi bi-x-circle"></i> One number</li>
+                    <li id="req-sym"> <i class="bi bi-x-circle"></i> One special character (@#!…)</li>
                 </ul>
             </div>
 
@@ -169,12 +172,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         oninput="checkMatch()">
                     <button type="button" class="btn-eye" id="toggleConfirm"
                         aria-label="Show confirm password">
-                        <i class="fas fa-eye" id="eyeIcon2"></i>
+                        <i class="bi bi-eye-slash" id="eyeIcon2"></i>
                     </button>
                 </div>
                 <div class="invalid-feedback" id="confirmFeedback">Passwords do not match.</div>
                 <small class="match-ok" id="matchOk">
-                    <i class="fas fa-circle-check"></i> Passwords match!
+                    <i class="bi bi-check-circle"></i> Passwords match!
                 </small>
             </div>
 
@@ -198,8 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 const i = document.getElementById(iconId);
                 const show = f.type === 'password';
                 f.type = show ? 'text' : 'password';
-                i.classList.toggle('fa-eye', !show);
-                i.classList.toggle('fa-eye-slash', show);
+                i.className = show ? 'bi bi-eye' : 'bi bi-eye-slash';
                 this.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
             });
         }
@@ -219,8 +221,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             for (const [id, ok] of Object.entries(rules)) {
                 const li = document.getElementById(id);
                 const icon = li.querySelector('i');
-                ok ? (li.classList.add('req-ok'), icon.className = 'fas fa-circle-check', score++) :
-                    (li.classList.remove('req-ok'), icon.className = 'fas fa-circle-xmark');
+                ok ? (li.classList.add('req-ok'), icon.className = 'bi bi-check-circle', score++) :
+                    (li.classList.remove('req-ok'), icon.className = 'bi bi-x-circle');
             }
             const levels = [{
                     pct: 0,

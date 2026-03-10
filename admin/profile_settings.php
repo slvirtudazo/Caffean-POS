@@ -103,21 +103,21 @@ require 'includes/header.php';
 
         <form id="psPwForm" onsubmit="savePasswordSection(event)">
           <div class="ps-form-grid" style="margin-top: 8px;">
-            <div class="ps-field">
+            <div class="ps-field full-width">
               <label>CURRENT PASSWORD</label>
               <div class="ps-pw-wrap">
                 <input type="password" name="current_password" id="ps-pw-cur" autocomplete="current-password" />
                 <button type="button" class="ps-pw-toggle" onclick="togglePw('ps-pw-cur', this)" aria-label="Toggle visibility">
-                  <i class="fas fa-eye-slash"></i>
+                  <i class="bi bi-eye-slash"></i>
                 </button>
               </div>
             </div>
-            <div class="ps-field">
+            <div class="ps-field full-width">
               <label>NEW PASSWORD</label>
               <div class="ps-pw-wrap">
                 <input type="password" name="new_password" id="ps-pw-new" autocomplete="new-password" />
                 <button type="button" class="ps-pw-toggle" onclick="togglePw('ps-pw-new', this)" aria-label="Toggle visibility">
-                  <i class="fas fa-eye-slash"></i>
+                  <i class="bi bi-eye-slash"></i>
                 </button>
               </div>
             </div>
@@ -126,7 +126,7 @@ require 'includes/header.php';
               <div class="ps-pw-wrap">
                 <input type="password" name="confirm_password" id="ps-pw-confirm" autocomplete="new-password" />
                 <button type="button" class="ps-pw-toggle" onclick="togglePw('ps-pw-confirm', this)" aria-label="Toggle visibility">
-                  <i class="fas fa-eye-slash"></i>
+                  <i class="bi bi-eye-slash"></i>
                 </button>
               </div>
             </div>
@@ -178,10 +178,10 @@ require 'includes/header.php';
     var icon  = btn.querySelector('i');
     if (input.type === 'password') {
       input.type = 'text';
-      icon.classList.replace('fa-eye-slash', 'fa-eye');
+      icon.className = 'bi bi-eye';
     } else {
       input.type = 'password';
-      icon.classList.replace('fa-eye', 'fa-eye-slash');
+      icon.className = 'bi bi-eye-slash';
     }
   }
 
@@ -209,8 +209,7 @@ require 'includes/header.php';
     document.getElementById('ps-pw-new').value     = '';
     document.getElementById('ps-pw-confirm').value = '';
     document.querySelectorAll('#psPwForm .ps-pw-toggle i').forEach(function (ic) {
-      ic.classList.remove('fa-eye');
-      ic.classList.add('fa-eye-slash');
+      ic.className = 'bi bi-eye-slash';
     });
     document.querySelectorAll('#psPwForm input').forEach(function (inp) {
       if (inp.type === 'text') inp.type = 'password';

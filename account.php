@@ -233,14 +233,12 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
             <aside class="acct-sidebar">
 
                 <div class="acct-sidebar-profile">
-                    <div class="acct-avatar-wrap" onclick="openAvatarEdit()" title="Change photo">
+                    <div class="acct-avatar-wrap">
                         <?php if ($avatar_src): ?>
                             <img src="<?= $avatar_src ?>" alt="Profile" class="acct-avatar-img" id="avatarPreview" />
                         <?php else: ?>
                             <div class="acct-avatar-initial" id="avatarInitial"><?= $initials ?></div>
                         <?php endif; ?>
-                        <div class="avatar-edit-icon"><i class="bi bi-pencil-fill"></i></div>
-                        <input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="previewAvatar(this)" />
                     </div>
                     <div class="profile-details">
                         <h2><?= htmlspecialchars($user['full_name'] ?? '—') ?></h2>
@@ -599,12 +597,33 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                             </div>
                         </div>
 
-                        <div id="profile-alert-zone" class="acct-ps-alert-zone"></div>
+                        <div id="profile-info-alert-zone" class="acct-ps-alert-zone"></div>
 
                         <div class="acct-ps-row">
 
-                            <div class="acct-ps-card">
+                            <div class="acct-ps-col">
+                                <div class="acct-ps-card">
                                 <p class="acct-ps-section-hd">Account Information</p>
+
+                                <!-- Avatar upload row — matches admin profile settings -->
+                                <div class="acct-ps-avatar-row">
+                                    <div class="acct-ps-avatar-wrap" id="acctPsAvatarWrap"
+                                         onclick="document.getElementById('avatarFileInput').click()" title="Edit profile photo">
+                                        <?php if ($avatar_src): ?>
+                                            <img src="<?= $avatar_src ?>" alt="Profile" class="acct-ps-avatar-img" id="avatarPreview" />
+                                        <?php else: ?>
+                                            <div class="acct-ps-avatar-initial" id="avatarInitial"><?= $initials ?></div>
+                                        <?php endif; ?>
+                                        <div class="acct-ps-avatar-pencil"><i class="bi bi-pencil-fill"></i></div>
+                                    </div>
+                                    <div class="acct-ps-avatar-meta">
+                                        <span class="acct-ps-avatar-hint">Edit Profile Photo</span>
+                                        <span class="acct-ps-avatar-hint-sub">Accepted formats: JPG, PNG, WEBP (Max 5MB)</span>
+                                    </div>
+                                    <input type="file" id="avatarFileInput" accept="image/jpeg,image/png,image/webp"
+                                           style="display:none" onchange="previewAvatar(this)" />
+                                </div>
+
                                 <form id="profileInfoForm" onsubmit="saveProfileInfo(event)">
                                     <div class="acct-ps-form-grid">
                                         <div class="acct-ps-field">
@@ -652,37 +671,50 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
                                         <button type="submit" class="acct-ps-btn-save" id="saveInfoBtn">Save Changes</button>
                                     </div>
                                 </form>
-                            </div>
+                            </div><!-- /.acct-ps-card -->
+                            </div><!-- /.acct-ps-col -->
 
-                            <div class="acct-ps-card">
-                                <p class="acct-ps-section-hd">Change Password</p>
-                                <form id="profilePwForm" onsubmit="saveProfilePw(event)">
-                                    <div class="acct-ps-form-grid" style="margin-top:8px;">
-                                        <div class="acct-ps-field full-width">
-                                            <label>NEW PASSWORD</label>
-                                            <div class="acct-ps-pw-wrap">
-                                                <input type="password" name="new_password" id="f-pw-new" placeholder="Min. 8 characters" autocomplete="new-password" />
-                                                <button type="button" class="acct-ps-pw-toggle" onclick="toggleAcctPw('f-pw-new', this)" aria-label="Toggle visibility">
-                                                    <i class="fas fa-eye-slash"></i>
-                                                </button>
+                            <div class="acct-ps-col">
+                                <div id="profile-pw-alert-zone" class="acct-ps-alert-zone"></div>
+                                <div class="acct-ps-card">
+                                    <p class="acct-ps-section-hd">Change Password</p>
+                                    <form id="profilePwForm" onsubmit="saveProfilePw(event)">
+                                        <div class="acct-ps-form-grid" style="margin-top:8px;">
+                                            <div class="acct-ps-field full-width">
+                                                <label>CURRENT PASSWORD</label>
+                                                <div class="acct-ps-pw-wrap">
+                                                    <input type="password" name="current_password" id="f-pw-cur" autocomplete="current-password" />
+                                                    <button type="button" class="acct-ps-pw-toggle" onclick="toggleAcctPw('f-pw-cur', this)" aria-label="Toggle visibility">
+                                                        <i class="bi bi-eye-slash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="acct-ps-field full-width">
+                                                <label>NEW PASSWORD</label>
+                                                <div class="acct-ps-pw-wrap">
+                                                    <input type="password" name="new_password" id="f-pw-new" autocomplete="new-password" />
+                                                    <button type="button" class="acct-ps-pw-toggle" onclick="toggleAcctPw('f-pw-new', this)" aria-label="Toggle visibility">
+                                                        <i class="bi bi-eye-slash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="acct-ps-field full-width">
+                                                <label>CONFIRM NEW PASSWORD</label>
+                                                <div class="acct-ps-pw-wrap">
+                                                    <input type="password" name="confirm_password" id="f-pw-confirm" autocomplete="new-password" />
+                                                    <button type="button" class="acct-ps-pw-toggle" onclick="toggleAcctPw('f-pw-confirm', this)" aria-label="Toggle visibility">
+                                                        <i class="bi bi-eye-slash"></i>
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="acct-ps-field full-width">
-                                            <label>CONFIRM NEW PASSWORD</label>
-                                            <div class="acct-ps-pw-wrap">
-                                                <input type="password" name="confirm_password" id="f-pw-confirm" placeholder="Repeat new password" autocomplete="new-password" />
-                                                <button type="button" class="acct-ps-pw-toggle" onclick="toggleAcctPw('f-pw-confirm', this)" aria-label="Toggle visibility">
-                                                    <i class="fas fa-eye-slash"></i>
-                                                </button>
-                                            </div>
+                                        <div class="acct-ps-form-actions">
+                                            <button type="button" class="acct-ps-btn-discard" onclick="discardProfilePw()">Discard</button>
+                                            <button type="submit" class="acct-ps-btn-save" id="savePwBtn">Save Changes</button>
                                         </div>
-                                    </div>
-                                    <div class="acct-ps-form-actions">
-                                        <button type="button" class="acct-ps-btn-discard" onclick="discardProfilePw()">Discard</button>
-                                        <button type="submit" class="acct-ps-btn-save" id="savePwBtn">Save Changes</button>
-                                    </div>
-                                </form>
-                            </div>
+                                    </form>
+                                </div><!-- /.acct-ps-card -->
+                            </div><!-- /.acct-ps-col -->
 
                         </div>
                     </div>
@@ -1118,26 +1150,25 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
             if (e.target === this) closeFavDeleteModal();
         });
 
-        /* ── AVATAR ─────────────────────────────────────────────── */
-        function openAvatarEdit() {
-            document.getElementById('avatarFileInput').click();
-        }
-
         function previewAvatar(input) {
             if (!input.files || !input.files[0]) return;
             const reader = new FileReader();
             reader.onload = e => {
-                const wrap    = document.querySelector('.acct-avatar-wrap');
+                const wrap    = document.getElementById('acctPsAvatarWrap');
                 let img       = document.getElementById('avatarPreview');
                 const initial = document.getElementById('avatarInitial');
                 if (!img) {
-                    img = document.createElement('img');
+                    img    = document.createElement('img');
                     img.id = 'avatarPreview';
-                    img.className = 'acct-avatar-img';
+                    img.className = 'acct-ps-avatar-img';
                     if (initial) initial.replaceWith(img);
-                    else wrap.insertBefore(img, wrap.firstChild);
+                    else wrap.insertBefore(img, wrap.querySelector('.acct-ps-avatar-pencil'));
                 }
                 img.src = e.target.result;
+                /* Sync sidebar avatar */
+                const sidebarImg     = document.querySelector('.acct-avatar-img');
+                const sidebarInitial = document.getElementById('avatarInitial');
+                if (sidebarImg) sidebarImg.src = e.target.result;
             };
             reader.readAsDataURL(input.files[0]);
         }
@@ -1149,7 +1180,7 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
             const icon  = btn.querySelector('i');
             const isHidden = input.type === 'password';
             input.type = isHidden ? 'text' : 'password';
-            icon.className = isHidden ? 'fas fa-eye' : 'fas fa-eye-slash';
+            icon.className = isHidden ? 'bi bi-eye' : 'bi bi-eye-slash';
         }
 
         /* Stored originals for discard */
@@ -1171,59 +1202,41 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
         }
 
         function discardProfilePw() {
-            ['f-pw-new', 'f-pw-confirm'].forEach(id => {
+            ['f-pw-cur', 'f-pw-new', 'f-pw-confirm'].forEach(id => {
                 const el = document.getElementById(id);
-                if (el) el.value = '';
+                if (!el) return;
+                el.value = '';
+                if (el.type === 'text') el.type = 'password';
             });
-        }
-
-        /* ── SAVE ACCOUNT INFO ──────────────────────────────────── */
-        function saveProfileInfo(e) {
-            e.preventDefault();
-            const btn  = document.getElementById('saveInfoBtn');
-            const zone = document.getElementById('profile-alert-zone');
-
-            btn.disabled = true;
-            btn.textContent = 'Saving...';
-
-            const fd = new FormData(document.getElementById('profileInfoForm'));
-            const avatarFile = document.getElementById('avatarFileInput').files[0];
-            if (avatarFile) fd.append('avatar', avatarFile);
-
-            fetch('php/update_profile.php', { method: 'POST', body: fd })
-                .then(r => r.json())
-                .then(d => {
-                    zone.innerHTML = d.success
-                        ? '<div class="alert alert-success">Profile updated successfully.</div>'
-                        : '<div class="alert alert-danger">' + (d.message || 'Update failed.') + '</div>';
-                    if (d.success) {
-                        document.querySelector('.profile-details h2').textContent = fd.get('full_name');
-                        document.querySelector('.profile-email').textContent      = fd.get('email');
-                    }
-                    setTimeout(() => zone.innerHTML = '', 5000);
-                })
-                .catch(() => zone.innerHTML = '<div class="alert alert-danger">Network error.</div>')
-                .finally(() => { btn.disabled = false; btn.textContent = 'Save Changes'; });
+            document.querySelectorAll('#profilePwForm .acct-ps-pw-toggle i').forEach(ic => {
+                ic.className = 'bi bi-eye-slash';
+            });
+            document.getElementById('profile-pw-alert-zone').innerHTML = '';
         }
 
         /* ── SAVE PASSWORD ──────────────────────────────────────── */
         function saveProfilePw(e) {
             e.preventDefault();
-            const btn  = document.getElementById('savePwBtn');
-            const zone = document.getElementById('profile-alert-zone');
+            const btn    = document.getElementById('savePwBtn');
+            const zone   = document.getElementById('profile-pw-alert-zone');
+            const curPw  = document.getElementById('f-pw-cur').value;
             const newPw  = document.getElementById('f-pw-new').value;
             const confPw = document.getElementById('f-pw-confirm').value;
 
+            if (!curPw) {
+                zone.innerHTML = '<div class="flash-error"><i class="bi bi-exclamation-circle"></i> Enter your current password.</div>';
+                return;
+            }
             if (!newPw) {
-                zone.innerHTML = '<div class="alert alert-danger">Please enter a new password.</div>';
+                zone.innerHTML = '<div class="flash-error"><i class="bi bi-exclamation-circle"></i> Enter a new password.</div>';
                 return;
             }
             if (newPw.length < 8) {
-                zone.innerHTML = '<div class="alert alert-danger">New password must be at least 8 characters.</div>';
+                zone.innerHTML = '<div class="flash-error"><i class="bi bi-exclamation-circle"></i> Password must be at least 8 characters.</div>';
                 return;
             }
             if (newPw !== confPw) {
-                zone.innerHTML = '<div class="alert alert-danger">Passwords do not match.</div>';
+                zone.innerHTML = '<div class="flash-error"><i class="bi bi-exclamation-circle"></i> Passwords do not match.</div>';
                 return;
             }
 
@@ -1231,16 +1244,47 @@ $avatar_src = !empty($user['profile_image']) ? htmlspecialchars($user['profile_i
             btn.textContent = 'Saving...';
 
             const fd = new FormData(document.getElementById('profilePwForm'));
+            fd.append('action', 'password');
+
             fetch('php/update_profile.php', { method: 'POST', body: fd })
                 .then(r => r.json())
                 .then(d => {
                     zone.innerHTML = d.success
-                        ? '<div class="alert alert-success">Password updated successfully.</div>'
-                        : '<div class="alert alert-danger">' + (d.message || 'Update failed.') + '</div>';
+                        ? '<div class="flash-success"><i class="bi bi-check-circle"></i> Password updated successfully.</div>'
+                        : '<div class="flash-error"><i class="bi bi-exclamation-circle"></i> ' + (d.message || 'Update failed.') + '</div>';
                     if (d.success) discardProfilePw();
                     setTimeout(() => zone.innerHTML = '', 5000);
                 })
-                .catch(() => zone.innerHTML = '<div class="alert alert-danger">Network error.</div>')
+                .catch(() => zone.innerHTML = '<div class="flash-error"><i class="bi bi-exclamation-circle"></i> Network error.</div>')
+                .finally(() => { btn.disabled = false; btn.textContent = 'Save Changes'; });
+        }
+        /* ── SAVE ACCOUNT INFO ──────────────────────────────────── */
+        function saveProfileInfo(e) {
+            e.preventDefault();
+            const btn  = document.getElementById('saveInfoBtn');
+            const zone = document.getElementById('profile-info-alert-zone');
+
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            const fd = new FormData(document.getElementById('profileInfoForm'));
+            fd.append('action', 'info');
+            const avatarFile = document.getElementById('avatarFileInput').files[0];
+            if (avatarFile) fd.append('avatar', avatarFile);
+
+            fetch('php/update_profile.php', { method: 'POST', body: fd })
+                .then(r => r.json())
+                .then(d => {
+                    zone.innerHTML = d.success
+                        ? '<div class="flash-success"><i class="bi bi-check-circle"></i> Profile updated successfully.</div>'
+                        : '<div class="flash-error"><i class="bi bi-exclamation-circle"></i> ' + (d.message || 'Update failed.') + '</div>';
+                    if (d.success) {
+                        document.querySelector('.profile-details h2').textContent = fd.get('full_name');
+                        document.querySelector('.profile-email').textContent      = fd.get('email');
+                    }
+                    setTimeout(() => zone.innerHTML = '', 5000);
+                })
+                .catch(() => zone.innerHTML = '<div class="flash-error"><i class="bi bi-exclamation-circle"></i> Network error.</div>')
                 .finally(() => { btn.disabled = false; btn.textContent = 'Save Changes'; });
         }
     </script>

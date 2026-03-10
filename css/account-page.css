@@ -247,7 +247,6 @@ body.page-account .navbar .container {
     width: 100px;
     height: 100px;
     position: relative;
-    cursor: pointer;
 }
 
 .acct-avatar-img,
@@ -903,6 +902,117 @@ body.page-account .navbar .container {
     transform: translateX(-50%) translateY(0);
 }
 
+/* ── PROFILE SETTINGS — avatar row (matches admin .ps-avatar-*) */
+.acct-ps-avatar-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(42, 0, 0, 0.06);
+}
+
+.acct-ps-avatar-wrap {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    aspect-ratio: 1 / 1;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.acct-ps-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
+.acct-ps-avatar-initial {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--burgundy-wine), var(--deep-maroon));
+    color: #fff;
+    font-family: var(--font-subheading);
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.acct-ps-avatar-pencil {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1.5px solid rgba(42, 0, 0, 0.15);
+    box-shadow: 0 1px 4px rgba(42, 0, 0, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--deep-maroon);
+    font-size: 0.6rem;
+    transition: background 0.2s, color 0.2s;
+    pointer-events: none;
+}
+
+.acct-ps-avatar-wrap:hover .acct-ps-avatar-pencil {
+    background: var(--deep-maroon);
+    color: #fff;
+}
+
+.acct-ps-avatar-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.acct-ps-avatar-hint {
+    font-family: var(--font-subheading);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--dark-brown);
+}
+
+.acct-ps-avatar-hint-sub {
+    font-family: var(--font-subheading);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* ── FLASH ALERTS — matches admin .flash-success / .flash-error */
+.flash-success,
+.flash-error {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 18px;
+    border-radius: 8px;
+    font-family: var(--font-subheading);
+    font-size: 0.88rem;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.flash-success {
+    background: #e6f4ea;
+    color: #1e7e34;
+    border: 1px solid #c3e6cb;
+}
+
+.flash-error {
+    background: #fce8e6;
+    color: #c0392b;
+    border: 1px solid #f5c6cb;
+}
+
 /* ── PROFILE SETTINGS FORM ────────────────────────────────── */
 .acct-form-grid {
     display: grid;
@@ -969,7 +1079,6 @@ body.page-account .navbar .container {
 
 /* ── PROFILE SETTINGS TAB — matches admin ps-* layout ──────── */
 .acct-ps-alert-zone {
-    padding: 0 28px;
     margin-bottom: 4px;
 }
 
@@ -982,6 +1091,14 @@ body.page-account .navbar .container {
     padding: 20px 28px 28px;
 }
 
+/* Equal-width columns — both cards visually balanced */
+.acct-ps-col {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
 .acct-ps-card {
     background: var(--white, #fff);
     border: 1px solid rgba(42, 0, 0, 0.09);
@@ -989,7 +1106,6 @@ body.page-account .navbar .container {
     padding: 28px 32px;
     box-shadow: 0 1px 4px rgba(42, 0, 0, 0.05);
     flex: 1;
-    min-width: 0;
     display: flex;
     flex-direction: column;
 }
@@ -1080,11 +1196,12 @@ body.page-account .navbar .container {
     right: 12px;
     background: none;
     border: none;
-    color: rgba(42, 0, 0, 0.35);
+    color: var(--burgundy-wine);
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 16px;
     padding: 4px;
-    transition: color 0.18s;
+    line-height: 1;
+    transition: color 0.2s;
 }
 
 .acct-ps-pw-toggle:hover { color: var(--deep-maroon); }

@@ -83,10 +83,14 @@ require 'includes/header.php';
     <h1>Insights</h1>
     <p>Store analytics and performance overview</p>
   </div>
+  <!-- Export entire insights feed as A4 PDF -->
+  <button class="btn-primary" id="btnExportPDF" onclick="exportInsightsPDF()">
+    Export as PDF
+  </button>
 </div>
 
 <!-- Insights body -->
-<div class="ins-outer-frame">
+<div class="ins-outer-frame" id="insightsFeed">
 <div class="ins-body">
 
   <!-- Row 1: Revenue chart + Summary -->
@@ -160,8 +164,14 @@ require 'includes/header.php';
       </div>
       <ul class="ins-legend">
         <?php
-        $type_color_map = ['Delivery'=>'#5B1312','Pickup'=>'#b07830','Dine In'=>'#3a7a5b','Take Out'=>'#b07830','Kiosk'=>'#3a7a5b'];
-        $fallback = ['#5B1312','#b07830','#3a7a5b','#1a6ea8'];
+        $type_color_map = [
+          'Delivery' => '#3D5A80',
+          'Pickup'   => '#b07830',
+          'Dine In'  => '#3a7a5b',
+          'Take Out' => '#1a6ea8',
+          'Kiosk'    => '#7a3a7a'
+        ];
+        $fallback = ['#5B1312','#b07830','#3a7a5b','#1a6ea8','#7a3a7a'];
         $ci = 0;
         foreach ($type_data as $lbl => $val): ?>
           <li class="ins-legend-item">
@@ -182,8 +192,19 @@ require 'includes/header.php';
       </div>
       <ul class="ins-legend">
         <?php
-        $pay_color_map = ['Cash'=>'#5B1312','Cash on Delivery'=>'#b07830','GCash'=>'#0057DA','Gcash'=>'#0057DA','Maya'=>'#44B655','PayMaya'=>'#44B655','Card'=>'#1a6ea8'];
-        $fallback2 = ['#5B1312','#b07830','#3a7a5b','#1a6ea8','#7a3a7a'];
+        $pay_color_map = [
+          'Bank Transfer'             => '#6B3FA0',
+          'Cash'                      => '#5B1312',
+          'Cash on Delivery'          => '#C4842A',
+          'GCash'                     => '#0057DA',
+          'Gcash'                     => '#0057DA',
+          'Maya'                      => '#44B655',
+          'PayMaya'                   => '#44B655',
+          'Card'                      => '#6C3483',
+          'GoTyme'                    => '#FF6B35',
+          'Pay at the counter (Cash)' => '#7A5C3A'
+        ];
+        $fallback2 = ['#5B1312','#b07830','#0057DA','#44B655','#6C3483','#FF6B35'];
         $ci = 0;
         foreach ($pay_data as $lbl => $val): ?>
           <li class="ins-legend-item">
@@ -236,22 +257,25 @@ require 'includes/header.php';
     });
   }
 
-  /* Brand-accurate color map for payment methods and order types */
+  /* Color map — distinct per order type and payment method */
   const colorMap = {
-    'Cash':             '#5B1312',
-    'Cash on Delivery': '#b07830',
-    'Gcash':            '#0057DA',
-    'GCash':            '#0057DA',
-    'Maya':             '#44B655',
-    'PayMaya':          '#44B655',
-    'Card':             '#1a6ea8',
-    'Delivery':         '#5B1312',
-    'Pickup':           '#b07830',
-    'Dine In':          '#3a7a5b',
-    'Take Out':         '#b07830',
-    'Kiosk':            '#3a7a5b',
+    'Bank Transfer':             '#6B3FA0',
+    'Cash':                      '#5B1312',
+    'Cash on Delivery':          '#C4842A',
+    'Gcash':                     '#0057DA',
+    'GCash':                     '#0057DA',
+    'Maya':                      '#44B655',
+    'PayMaya':                   '#44B655',
+    'Card':                      '#6C3483',
+    'GoTyme':                    '#FF6B35',
+    'Pay at the counter (Cash)': '#7A5C3A',
+    'Delivery':                  '#3D5A80',
+    'Pickup':                    '#b07830',
+    'Dine In':                   '#3a7a5b',
+    'Take Out':                  '#1a6ea8',
+    'Kiosk':                     '#7a3a7a',
   };
-  const fallbackColors = ['#5B1312','#b07830','#3a7a5b','#1a6ea8','#7a3a7a'];
+  const fallbackColors = ['#5B1312','#b07830','#3a7a5b','#1a6ea8','#7a3a7a','#FF6B35'];
 
   function getColors(labels) {
     return labels.map((lbl, i) => colorMap[lbl] || fallbackColors[i % fallbackColors.length]);
@@ -281,6 +305,28 @@ require 'includes/header.php';
     <?= json_encode(array_keys($pay_data)) ?>,
     <?= json_encode(array_values($pay_data)) ?>
   );
+
+  /* Export the full insights feed as an A4 PDF */
+  function exportInsightsPDF() {
+    const btn = document.getElementById('btnExportPDF');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Exporting…';
+
+    const target = document.getElementById('insightsFeed');
+    const opt = {
+      margin:     [10, 10, 10, 10],
+      filename:   'caffean-insights.pdf',
+      image:      { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, logging: false },
+      jsPDF:      { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(target).save().then(function () {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-file-pdf"></i> Export as PDF';
+    });
+  }
 </script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <?php require 'includes/footer.php'; ?>

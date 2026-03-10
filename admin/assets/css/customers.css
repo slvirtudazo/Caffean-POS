@@ -4,6 +4,9 @@
    Global/shared styles are in admin.css.
    ============================================================ */
 
+/* ── Search bar extends to full table width ──────────────────── */
+.search-box { max-width: none; }
+
 /* ── Customers stat grid: always 3 columns ──────────────────── */
 .customers-stat-grid {
   grid-template-columns: repeat(3, 1fr);
