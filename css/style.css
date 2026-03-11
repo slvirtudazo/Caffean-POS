@@ -476,7 +476,7 @@ p {
 .hero-img-main {
     position: absolute;
     top: 0;
-    right: 100px;
+    right: 130px;
     width: 700px;                 /* right half of the section */
     height: 100%;
     object-fit: cover;

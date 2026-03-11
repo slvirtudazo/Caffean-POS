@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 10, 2026 at 08:26 PM
+-- Generation Time: Mar 11, 2026 at 02:53 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -76,7 +76,8 @@ INSERT INTO `favorites` (`id`, `user_id`, `product_id`, `created_at`) VALUES
 (82, 2, 3, '2026-03-09 05:21:23'),
 (83, 3, 2, '2026-03-09 05:49:07'),
 (84, 3, 91, '2026-03-10 18:22:19'),
-(85, 3, 85, '2026-03-10 18:22:20');
+(85, 3, 85, '2026-03-10 18:22:20'),
+(86, 3, 55, '2026-03-11 05:49:01');
 
 -- --------------------------------------------------------
 
@@ -207,7 +208,10 @@ INSERT INTO `orders` (`order_id`, `order_number`, `user_id`, `order_date`, `tota
 (95, 'SO-2026-013', 3, '2026-03-10 11:25:56', 340.00, 'processing', 'Pay at the counter (Cash)', 'Dine In - Table 13', '2026-03-10 03:25:56', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
 (96, 'SO-2026-014', 3, '2026-03-10 11:26:47', 160.00, 'completed', 'Maya', 'Take Out', '2026-03-10 03:26:47', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'take_out', 'Guest'),
 (97, 'PC-2026-00079', 3, '2026-03-11 02:20:40', 190.00, 'pending', 'Cash on Delivery', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-10 18:20:40', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
-(98, 'SO-2026-015', 3, '2026-03-11 02:26:11', 165.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Counter Pickup', '2026-03-10 18:26:11', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest');
+(98, 'SO-2026-015', 3, '2026-03-11 02:26:11', 165.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Counter Pickup', '2026-03-10 18:26:11', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(99, 'PC-2026-00080', 3, '2026-03-11 13:40:43', 370.00, 'cancelled', 'GCash', 'BLK 6 LOT 17, Crestview Avenue, Ula, Tugbok, Davao City, Davao del Sur 8000', '2026-03-11 05:40:43', '09603150070', 'delivery', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '', '', NULL, NULL, 0, NULL, NULL),
+(100, 'SO-2026-016', 3, '2026-03-11 13:42:21', 350.00, 'pending', 'GoTyme', 'Dine In - Table 14', '2026-03-11 05:42:21', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest'),
+(101, 'SO-2026-017', 3, '2026-03-11 13:43:14', 175.00, 'pending', 'Pay at the counter (Cash)', 'Dine In - Table 23', '2026-03-11 05:43:14', '', 'pickup', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 'dine_in', 'Guest');
 
 -- --------------------------------------------------------
 
@@ -374,7 +378,10 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price_at
 (146, 95, 8, 1, 200.00, 'Short', 'Hot', '0%', 'Whole', NULL, ''),
 (147, 96, 55, 1, 160.00, 'Short', 'Hot', '0%', 'Whole', NULL, ''),
 (148, 97, 3, 1, 140.00, 'Short', 'Hot', '0%', 'Whole', '', ''),
-(149, 98, 11, 1, 165.00, 'Short', 'Hot', '0%', 'Whole', NULL, '');
+(149, 98, 11, 1, 165.00, 'Short', 'Hot', '0%', 'Whole', NULL, ''),
+(150, 99, 55, 2, 160.00, 'Grande', 'Hot', '0%', 'Oat', 'Vanilla Syrup', 'ADASDSA'),
+(151, 100, 2, 2, 175.00, 'Short', 'Hot', '0%', 'Whole', NULL, ''),
+(152, 101, 2, 1, 175.00, 'Short', 'Hot', '0%', 'Whole', NULL, '');
 
 -- --------------------------------------------------------
 
@@ -457,8 +464,7 @@ INSERT INTO `products` (`product_id`, `category_id`, `name`, `description`, `pri
 (89, 12, 'Temperature Controlled Kettle', 'A gooseneck kettle essential for precise water flow in manual brewing', 6500.00, NULL, NULL, 1, '2026-02-28 05:47:42'),
 (90, 12, 'French Press (Bodum)', 'A classic immersion brewer used for serving simple, full-bodied coffee', 1800.00, NULL, NULL, 1, '2026-02-28 05:47:42'),
 (91, 11, 'Oat Milk', 'A creamy, plant-based milk with a naturally sweet flavor, ideal for lattes and cappuccinos', 150.00, NULL, '1L', 1, '2026-03-07 20:44:26'),
-(92, 11, 'Soy Milk', 'A smooth, protein-rich dairy alternative with a mild, neutral flavor for everyday coffee drinks', 130.00, NULL, '1L', 1, '2026-03-07 20:44:26'),
-(93, 11, 'Whole Milk', 'Full-fat fresh dairy milk for rich, creamy coffee textures and traditional espresso drinks', 120.00, NULL, '1L', 1, '2026-03-07 20:44:26');
+(92, 11, 'Soy Milk', 'A smooth, protein-rich dairy alternative with a mild, neutral flavor for everyday coffee drinks', 130.00, NULL, '1L', 1, '2026-03-07 20:44:26');
 
 -- --------------------------------------------------------
 
@@ -519,7 +525,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `full_name`, `email`, `mobile_number`, `profile_image`, `house_unit`, `street_name`, `barangay`, `city_municipality`, `province`, `zip_code`, `password`, `role`, `created_at`) VALUES
-(1, 'Samantha Lewis Virtudazo', 'admin@caffean.co', '09603150070', 'uploads/avatars/avatar_1_1772720738.jpg', '', '', '', '', '', '', '$2y$10$mXH3QlZADwjAgAJ.xTJpj.R5oqEX7UicWJAQOBU5WFD9XmETKBXfq', 'admin', '2026-02-20 02:12:15'),
+(1, 'Samantha Virtudazo', 'admin@caffean.co', '09603150070', 'uploads/avatars/avatar_1_1772720738.jpg', '', '', '', '', '', '', '$2y$10$mXH3QlZADwjAgAJ.xTJpj.R5oqEX7UicWJAQOBU5WFD9XmETKBXfq', 'admin', '2026-02-20 02:12:15'),
 (2, 'Customer', 'customer@caffean.co', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '$2a$12$nvPoBAKZQZpBpybEbGlsNeYwwMFn.YcvPM1SqGgM0iR.iHMw2efGW', 'customer', '2026-02-20 02:23:55'),
 (3, 'John Doe', 'johndoe@caffean.co', '09603150070', 'uploads/avatars/avatar_3_1772412807.jpg', 'BLK 6 LOT 17', 'Crestview Avenue', 'Ula, Tugbok', 'Davao City', 'Davao del Sur', '8000', '$2y$10$JQkZqbU/QQSkZGoxr7TyzuYfiASaQsav1LtFF1FeLTToEAQYuk9hC', 'customer', '2026-02-21 07:15:51');
 
@@ -548,7 +554,7 @@ CREATE TABLE `user_carts` (
 --
 
 INSERT INTO `user_carts` (`cart_id`, `user_id`, `product_id`, `quantity`, `size`, `temperature`, `sugar_level`, `milk`, `addons`, `special_instructions`, `updated_at`) VALUES
-(1046, 3, 3, 1, 'Short', 'Hot', '0%', 'Whole', '[]', '', '2026-03-10 18:18:32');
+(1051, 3, 55, 2, 'Grande', 'Hot', '0%', 'Oat', '[\"Vanilla Syrup\"]', 'ADASDSA', '2026-03-11 05:40:21');
 
 --
 -- Indexes for dumped tables
@@ -633,25 +639,25 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `favorites`
 --
 ALTER TABLE `favorites`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
 
 --
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=150;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=153;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
 
 --
 -- AUTO_INCREMENT for table `product_interactions`
@@ -669,7 +675,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `user_carts`
 --
 ALTER TABLE `user_carts`
-  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1047;
+  MODIFY `cart_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1052;
 
 --
 -- Constraints for dumped tables
