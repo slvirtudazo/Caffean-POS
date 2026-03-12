@@ -1,9 +1,6 @@
 <?php
 
-/**
- * Admin Header Include — admin/includes/header.php
- * Outputs the full HTML head, top navbar, and sidebar for all admin pages.
- */
+// Admin header — outputs the HTML head, navbar, and sidebar.
 
 if (!defined('BASE_URL')) define('BASE_URL', '/caffean-pos');
 
@@ -11,45 +8,46 @@ $admin_name    = isset($_SESSION['full_name']) ? htmlspecialchars($_SESSION['ful
 $admin_initial = strtoupper(substr($admin_name, 0, 1));
 $current_page  = basename($_SERVER['PHP_SELF']);
 
-// Fetch admin's profile image and email from DB
+// Fetch admin's profile image and email from the database
 $admin_avatar_src = '';
 $admin_email      = '';
 if (isset($_SESSION['user_id'])) {
-    $a_stmt = mysqli_prepare($conn, "SELECT profile_image, email FROM users WHERE user_id = ?");
-    mysqli_stmt_bind_param($a_stmt, 'i', $_SESSION['user_id']);
-    mysqli_stmt_execute($a_stmt);
-    $a_row = mysqli_fetch_assoc(mysqli_stmt_get_result($a_stmt));
-    mysqli_stmt_close($a_stmt);
-    if (!empty($a_row['profile_image'])) {
-        $admin_avatar_src = BASE_URL . '/' . htmlspecialchars($a_row['profile_image']);
-    }
-    $admin_email = htmlspecialchars($a_row['email'] ?? '');
+  $a_stmt = mysqli_prepare($conn, "SELECT profile_image, email FROM users WHERE user_id = ?");
+  mysqli_stmt_bind_param($a_stmt, 'i', $_SESSION['user_id']);
+  mysqli_stmt_execute($a_stmt);
+  $a_row = mysqli_fetch_assoc(mysqli_stmt_get_result($a_stmt));
+  mysqli_stmt_close($a_stmt);
+  if (!empty($a_row['profile_image'])) {
+    $admin_avatar_src = BASE_URL . '/' . htmlspecialchars($a_row['profile_image']);
+  }
+  $admin_email = htmlspecialchars($a_row['email'] ?? '');
 }
 
-// Map each admin page to its page-specific CSS file
+// Map each page to its CSS file
 $page_css_map = [
-    'dashboard.php'        => 'dashboard.css',
-    'products.php'         => 'products.css',
-    'orders.php'           => 'orders.css',
-    'instore_orders.php'   => 'orders.css',
-    'customers.php'        => 'customers.css',
-    'insights.php'         => 'dashboard.css',
-    'profile_settings.php' => null,
+  'dashboard.php'        => 'dashboard.css',
+  'products.php'         => 'products.css',
+  'orders.php'           => 'orders.css',
+  'instore_orders.php'   => 'orders.css',
+  'customers.php'        => 'customers.css',
+  'insights.php'         => 'dashboard.css',
+  'profile_settings.php' => null,
 ];
 $page_css_file = $page_css_map[$current_page] ?? null;
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <title>Caffean - Admin</title>
   <link rel="icon" type="image/png" href="<?= BASE_URL ?>/images/coffee_beans_logo.png" />
 
-  <!-- Shared admin styles -->
+  <!-- Shared admin stylesheet -->
   <link rel="stylesheet" href="<?= BASE_URL ?>/admin/assets/css/admin.css?v=<?= time() ?>" />
 
-  <!-- Page-specific styles -->
+  <!-- Page-specific stylesheet -->
   <?php if ($page_css_file): ?>
     <link rel="stylesheet" href="<?= BASE_URL ?>/admin/assets/css/<?= $page_css_file ?>?v=<?= time() ?>" />
   <?php endif; ?>
@@ -58,41 +56,62 @@ $page_css_file = $page_css_map[$current_page] ?? null;
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 
   <style>
-    /* Sortable column indicators */
-    .admin-table th[data-sort]::after      { content: ' ↕'; font-size: 0.65rem; opacity: 0.4; }
-    .admin-table th[data-sort].sort-asc::after  { content: ' ↑'; opacity: 0.9; }
-    .admin-table th[data-sort].sort-desc::after { content: ' ↓'; opacity: 0.9; }
+    /* Column sort indicators */
+    .admin-table th[data-sort]::after {
+      content: ' ↕';
+      font-size: 0.65rem;
+      opacity: 0.4;
+    }
+
+    .admin-table th[data-sort].sort-asc::after {
+      content: ' ↑';
+      opacity: 0.9;
+    }
+
+    .admin-table th[data-sort].sort-desc::after {
+      content: ' ↓';
+      opacity: 0.9;
+    }
   </style>
 
   <!-- Shared table utilities: sorting, pagination, search -->
   <script>
-    /* Global pagination state keyed by tableId */
+    // Pagination state keyed by table ID
     window._pgState = {};
 
-    /* ── Pagination: show 10 rows per page ──────────────────────── */
+    // Pagination — shows 10 rows per page
     function initTablePagination(tableId, pageSize) {
       pageSize = pageSize || 10;
       var table = document.getElementById(tableId);
-      var pgEl  = document.getElementById(tableId + '-pagination');
+      var pgEl = document.getElementById(tableId + '-pagination');
       if (!table) return;
 
-      window._pgState[tableId] = { page: 1, pageSize: pageSize };
+      window._pgState[tableId] = {
+        page: 1,
+        pageSize: pageSize
+      };
 
       function renderPage() {
-        var state   = window._pgState[tableId];
-        var allRows = Array.from(table.querySelectorAll('tbody tr')).filter(function (r) {
+        var state = window._pgState[tableId];
+        var allRows = Array.from(table.querySelectorAll('tbody tr')).filter(function(r) {
           return !r.classList.contains('empty-row');
         });
-        var visRows = allRows.filter(function (r) { return r.dataset.searchMatch !== 'false'; });
-        var total   = Math.max(1, Math.ceil(visRows.length / state.pageSize));
+        var visRows = allRows.filter(function(r) {
+          return r.dataset.searchMatch !== 'false';
+        });
+        var total = Math.max(1, Math.ceil(visRows.length / state.pageSize));
         if (state.page > total) state.page = total;
 
         var start = (state.page - 1) * state.pageSize;
-        var end   = start + state.pageSize;
+        var end = start + state.pageSize;
 
-        /* Hide all, then show current page's matching rows */
-        allRows.forEach(function (r) { r.style.display = 'none'; });
-        visRows.slice(start, end).forEach(function (r) { r.style.display = ''; });
+        /* Hide all rows, then show the current page's matching rows */
+        allRows.forEach(function(r) {
+          r.style.display = 'none';
+        });
+        visRows.slice(start, end).forEach(function(r) {
+          r.style.display = '';
+        });
 
         if (pgEl) {
           pgEl.querySelector('.page-info').textContent = 'Page ' + state.page + ' of ' + total;
@@ -102,19 +121,22 @@ $page_css_file = $page_css_map[$current_page] ?? null;
       }
 
       if (pgEl) {
-        pgEl.querySelector('.btn-prev').addEventListener('click', function () {
+        pgEl.querySelector('.btn-prev').addEventListener('click', function() {
           if (window._pgState[tableId].page > 1) {
             window._pgState[tableId].page--;
             renderPage();
           }
         });
-        pgEl.querySelector('.btn-next').addEventListener('click', function () {
-          var s   = window._pgState[tableId];
-          var all = Array.from(table.querySelectorAll('tbody tr')).filter(function (r) {
+        pgEl.querySelector('.btn-next').addEventListener('click', function() {
+          var s = window._pgState[tableId];
+          var all = Array.from(table.querySelectorAll('tbody tr')).filter(function(r) {
             return !r.classList.contains('empty-row') && r.dataset.searchMatch !== 'false';
           });
           var total = Math.max(1, Math.ceil(all.length / s.pageSize));
-          if (s.page < total) { s.page++; renderPage(); }
+          if (s.page < total) {
+            s.page++;
+            renderPage();
+          }
         });
       }
 
@@ -122,14 +144,14 @@ $page_css_file = $page_css_map[$current_page] ?? null;
       renderPage();
     }
 
-    /* ── Search: filter rows, reset to page 1 ──────────────────── */
+    // Search — filters rows and resets to page 1
     function initTableSearch(inputId, tableId) {
       var input = document.getElementById(inputId);
       if (!input) return;
-      input.addEventListener('input', function () {
-        var q     = this.value.toLowerCase();
+      input.addEventListener('input', function() {
+        var q = this.value.toLowerCase();
         var table = document.getElementById(tableId);
-        Array.from(table.querySelectorAll('tbody tr')).forEach(function (r) {
+        Array.from(table.querySelectorAll('tbody tr')).forEach(function(r) {
           if (r.classList.contains('empty-row')) return;
           r.dataset.searchMatch = (!q || r.textContent.toLowerCase().includes(q)) ? 'true' : 'false';
         });
@@ -140,11 +162,11 @@ $page_css_file = $page_css_map[$current_page] ?? null;
       });
     }
 
-    /* ── Sortable table with default desc sort on init ─────────── */
+    // Sortable table — applies default desc sort on init
     function initSortableTable(tableId, defaultColIdx) {
       var table = document.getElementById(tableId);
       if (!table) return;
-      var headers    = table.querySelectorAll('thead th[data-sort]');
+      var headers = table.querySelectorAll('thead th[data-sort]');
       var currentCol = -1;
       var currentDir = 'asc';
 
@@ -154,39 +176,39 @@ $page_css_file = $page_css_map[$current_page] ?? null;
         return isNaN(d) ? 0 : d.getTime();
       }
 
-      /* Extract numeric value from prefixed IDs like "PR-2026-00090" → 90 */
+      // Extract numeric value from prefixed IDs like PR-2026-00090
       function parseId(str) {
         var m = str.match(/(\d+)$/);
         return m ? parseInt(m[1], 10) : 0;
       }
 
-      /* Core sort: sorts all non-empty rows by given col/type/dir */
+      // Sort all non-empty rows by column, type, and direction
       function sortRows(col, type, dir) {
         var tbody = table.querySelector('tbody');
-        var rows  = Array.from(tbody.querySelectorAll('tr')).filter(function (r) {
+        var rows = Array.from(tbody.querySelectorAll('tr')).filter(function(r) {
           return !r.classList.contains('empty-row') && !r.querySelector('.empty-state');
         });
         if (!rows.length) return;
 
-        rows.sort(function (a, b) {
+        rows.sort(function(a, b) {
           var aT = a.cells[col] ? a.cells[col].textContent.trim() : '';
           var bT = b.cells[col] ? b.cells[col].textContent.trim() : '';
           var cmp = 0;
 
           if (type === 'number') {
-            /* Handle prefixed IDs (e.g. "PR-2026-00090") and plain numbers */
+            // Handle prefixed IDs and plain numbers
             var aHasPrefix = /^[A-Z]+-/.test(aT);
             var bHasPrefix = /^[A-Z]+-/.test(bT);
             if (aHasPrefix || bHasPrefix) {
               cmp = parseId(aT) - parseId(bT);
             } else {
               cmp = (parseFloat(aT.replace(/[^0-9.-]/g, '')) || 0) -
-                    (parseFloat(bT.replace(/[^0-9.-]/g, '')) || 0);
+                (parseFloat(bT.replace(/[^0-9.-]/g, '')) || 0);
             }
           } else if (type === 'date') {
             cmp = parseAdminDate(aT) - parseAdminDate(bT);
           } else if (type === 'text') {
-            /* Also handle prefixed IDs sorted as text (e.g. "OO-2026-00029") */
+            // Also handle prefixed IDs sorted as text
             var aNum = /^[A-Z]+-/.test(aT) ? parseId(aT) : null;
             var bNum = /^[A-Z]+-/.test(bT) ? parseId(bT) : null;
             if (aNum !== null && bNum !== null) {
@@ -200,24 +222,26 @@ $page_css_file = $page_css_map[$current_page] ?? null;
           return dir === 'asc' ? cmp : -cmp;
         });
 
-        rows.forEach(function (r) { tbody.appendChild(r); });
+        rows.forEach(function(r) {
+          tbody.appendChild(r);
+        });
       }
 
-      headers.forEach(function (th) {
-        th.addEventListener('click', function () {
-          var col  = th.cellIndex;
+      headers.forEach(function(th) {
+        th.addEventListener('click', function() {
+          var col = th.cellIndex;
           var type = th.dataset.sort;
           currentDir = (currentCol === col && currentDir === 'asc') ? 'desc' : 'asc';
           currentCol = col;
 
-          table.querySelectorAll('thead th[data-sort]').forEach(function (h) {
+          table.querySelectorAll('thead th[data-sort]').forEach(function(h) {
             h.classList.remove('sort-asc', 'sort-desc');
           });
           th.classList.add(currentDir === 'asc' ? 'sort-asc' : 'sort-desc');
 
           sortRows(col, type, currentDir);
 
-          /* Reset pagination to page 1 after sort */
+          // Reset to page 1 after sorting
           if (window._pgState && window._pgState[tableId]) {
             window._pgState[tableId].page = 1;
             window._pgState[tableId].renderPage();
@@ -225,7 +249,7 @@ $page_css_file = $page_css_map[$current_page] ?? null;
         });
       });
 
-      /* Apply default desc sort on the specified column, actually sorting rows */
+      // Apply default desc sort on the specified column
       if (typeof defaultColIdx === 'number') {
         var defaultTh = table.querySelector('thead th:nth-child(' + (defaultColIdx + 1) + ')');
         if (defaultTh && defaultTh.dataset.sort) {
@@ -256,12 +280,12 @@ $page_css_file = $page_css_map[$current_page] ?? null;
     </div>
   </nav>
 
-  <!-- Body wrapper: sidebar + main -->
+  <!-- Body wrapper — sidebar and main content -->
   <div class="admin-body">
 
     <aside class="admin-sidebar">
 
-      <!-- ── PROFILE INFO — avatar, name, role ────────────────── -->
+      <!-- Sidebar profile info -->
       <div class="admin-sidebar-profile">
         <div class="admin-avatar-wrap">
           <?php if ($admin_avatar_src): ?>
@@ -349,7 +373,7 @@ $page_css_file = $page_css_map[$current_page] ?? null;
         </li>
       </ul>
 
-      <!-- Logout pinned to sidebar bottom -->
+      <!-- Sidebar logout link -->
       <div class="sidebar-logout">
         <a href="<?= BASE_URL ?>/php/logout.php" class="sidebar-logout-btn">
           <span class="snav-icon">
@@ -360,5 +384,5 @@ $page_css_file = $page_css_map[$current_page] ?? null;
       </div>
     </aside>
 
-    <!-- Main content area -->
+    <!-- Main content -->
     <main class="admin-wrapper">

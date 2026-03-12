@@ -1,32 +1,31 @@
 <?php
-/**
- * Caffean — Admin Profile Settings (admin/profile_settings.php)
- * Split into two independent cards: Account Information and Change Password.
- */
+// Admin profile settings — update account info and password.
 
 session_start();
 require_once '../php/db_connection.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../login.php');
-    exit();
+  header('Location: ../login.php');
+  exit();
 }
 
 $user_id = (int)$_SESSION['user_id'];
 
-/* Fetch current admin record */
-$stmt = mysqli_prepare($conn,
-    "SELECT full_name, email, mobile_number, profile_image FROM users WHERE user_id = ?");
+// Fetch the current admin's record
+$stmt = mysqli_prepare(
+  $conn,
+  "SELECT full_name, email, mobile_number, profile_image FROM users WHERE user_id = ?"
+);
 mysqli_stmt_bind_param($stmt, 'i', $user_id);
 mysqli_stmt_execute($stmt);
 $admin = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 mysqli_stmt_close($stmt);
 
-/* Build avatar src for display (BASE_URL defined in includes/header.php) */
+// Build the avatar display URL
 if (!defined('BASE_URL')) define('BASE_URL', '/caffean-pos');
 $avatar_src = !empty($admin['profile_image'])
-    ? BASE_URL . '/' . htmlspecialchars($admin['profile_image'])
-    : '';
+  ? BASE_URL . '/' . htmlspecialchars($admin['profile_image'])
+  : '';
 
 require 'includes/header.php';
 ?>
@@ -48,7 +47,7 @@ require 'includes/header.php';
 
         <div class="ps-avatar-row">
           <div class="ps-avatar-wrap" id="psAvatarWrap"
-               onclick="document.getElementById('psAvatarInput').click()" title="Edit profile photo">
+            onclick="document.getElementById('psAvatarInput').click()" title="Edit profile photo">
             <?php if ($avatar_src): ?>
               <img src="<?= $avatar_src ?>" alt="Profile" class="ps-avatar-img" id="psAvatarPreview" />
             <?php else: ?>
@@ -63,7 +62,7 @@ require 'includes/header.php';
             <span class="ps-avatar-hint-sub">Accepted formats: JPG, PNG, WEBP (Max 5MB)</span>
           </div>
           <input type="file" id="psAvatarInput" accept="image/jpeg,image/png,image/webp"
-                 style="display:none" onchange="previewPsAvatar(this)" />
+            style="display:none" onchange="previewPsAvatar(this)" />
         </div>
 
         <form id="psInfoForm" onsubmit="saveInfoSection(event)">
@@ -71,21 +70,21 @@ require 'includes/header.php';
             <div class="ps-field">
               <label>FULL NAME</label>
               <input type="text" name="full_name" id="ps-full-name"
-                     value="<?= htmlspecialchars($admin['full_name'] ?? '') ?>" required />
+                value="<?= htmlspecialchars($admin['full_name'] ?? '') ?>" required />
             </div>
             <div class="ps-field">
               <label>EMAIL ADDRESS</label>
               <input type="email" name="email" id="ps-email"
-                     value="<?= htmlspecialchars($admin['email'] ?? '') ?>" required />
+                value="<?= htmlspecialchars($admin['email'] ?? '') ?>" required />
             </div>
             <div class="ps-field full-width">
               <label>MOBILE NUMBER</label>
               <input type="tel" name="mobile_number" id="ps-mobile"
-                     value="<?= htmlspecialchars($admin['mobile_number'] ?? '') ?>"
-                     placeholder="+63 9XX XXX XXXX"
-                     maxlength="16"
-                     pattern="(\+63|0)[0-9]{10}"
-                     title="Format: +63 9XX XXX XXXX or 09XXXXXXXXX" />
+                value="<?= htmlspecialchars($admin['mobile_number'] ?? '') ?>"
+                placeholder="+63 9XX XXX XXXX"
+                maxlength="16"
+                pattern="(\+63|0)[0-9]{10}"
+                title="Format: +63 9XX XXX XXXX or 09XXXXXXXXX" />
             </div>
           </div>
           <div class="ps-form-actions">
@@ -139,43 +138,45 @@ require 'includes/header.php';
       </div>
     </div>
 
-  </div></div><script>
-  /* Stored originals for discard */
+  </div>
+</div>
+<script>
+  // Store original values for discard
   var _origInfo = {
-    full_name:     <?php echo json_encode($admin['full_name']     ?? ''); ?>,
-    email:         <?php echo json_encode($admin['email']         ?? ''); ?>,
+    full_name: <?php echo json_encode($admin['full_name']     ?? ''); ?>,
+    email: <?php echo json_encode($admin['email']         ?? ''); ?>,
     mobile_number: <?php echo json_encode($admin['mobile_number'] ?? ''); ?>
   };
   var _avatarChanged = false;
 
-  /* Avatar preview in card */
+  // Preview selected avatar image in the card
   function previewPsAvatar(input) {
     if (!input.files || !input.files[0]) return;
     var reader = new FileReader();
-    reader.onload = function (e) {
-      var wrap    = document.getElementById('psAvatarWrap');
+    reader.onload = function(e) {
+      var wrap = document.getElementById('psAvatarWrap');
       var preview = document.getElementById('psAvatarPreview');
       var initial = document.getElementById('psAvatarInitial');
       if (!preview) {
-        preview    = document.createElement('img');
+        preview = document.createElement('img');
         preview.id = 'psAvatarPreview';
         preview.className = 'ps-avatar-img';
         if (initial) initial.replaceWith(preview);
         else wrap.insertBefore(preview, wrap.querySelector('.ps-avatar-pencil'));
       }
-      preview.src    = e.target.result;
+      preview.src = e.target.result;
       _avatarChanged = true;
-      /* Also sync sidebar avatar */
+      // Sync the sidebar avatar as well
       var sidebarImg = document.getElementById('adminAvatarPreview');
       if (sidebarImg) sidebarImg.src = e.target.result;
     };
     reader.readAsDataURL(input.files[0]);
   }
 
-  /* Toggle password visibility */
+  // Toggle password field visibility
   function togglePw(inputId, btn) {
     var input = document.getElementById(inputId);
-    var icon  = btn.querySelector('i');
+    var icon = btn.querySelector('i');
     if (input.type === 'password') {
       input.type = 'text';
       icon.className = 'bi bi-eye';
@@ -185,11 +186,11 @@ require 'includes/header.php';
     }
   }
 
-  /* Discard account info changes */
+  // Reset account info fields to original values
   function discardInfo() {
     document.getElementById('ps-full-name').value = _origInfo.full_name;
-    document.getElementById('ps-email').value     = _origInfo.email;
-    document.getElementById('ps-mobile').value    = _origInfo.mobile_number;
+    document.getElementById('ps-email').value = _origInfo.email;
+    document.getElementById('ps-mobile').value = _origInfo.mobile_number;
     if (_avatarChanged) {
       document.getElementById('psAvatarInput').value = '';
       var preview = document.getElementById('psAvatarPreview');
@@ -203,26 +204,26 @@ require 'includes/header.php';
     document.getElementById('ps-info-alert').innerHTML = '';
   }
 
-  /* Discard password changes */
+  // Clear password fields and reset toggles
   function discardPassword() {
-    document.getElementById('ps-pw-cur').value     = '';
-    document.getElementById('ps-pw-new').value     = '';
+    document.getElementById('ps-pw-cur').value = '';
+    document.getElementById('ps-pw-new').value = '';
     document.getElementById('ps-pw-confirm').value = '';
-    document.querySelectorAll('#psPwForm .ps-pw-toggle i').forEach(function (ic) {
+    document.querySelectorAll('#psPwForm .ps-pw-toggle i').forEach(function(ic) {
       ic.className = 'bi bi-eye-slash';
     });
-    document.querySelectorAll('#psPwForm input').forEach(function (inp) {
+    document.querySelectorAll('#psPwForm input').forEach(function(inp) {
       if (inp.type === 'text') inp.type = 'password';
     });
     document.getElementById('ps-pw-alert').innerHTML = '';
   }
 
-  /* Save account information section */
+  // Submit and save account information
   function saveInfoSection(e) {
     e.preventDefault();
     var zone = document.getElementById('ps-info-alert');
-    var btn  = document.getElementById('psInfoSaveBtn');
-    btn.disabled    = true;
+    var btn = document.getElementById('psInfoSaveBtn');
+    btn.disabled = true;
     btn.textContent = 'Saving\u2026';
 
     var fd = new FormData(document.getElementById('psInfoForm'));
@@ -230,13 +231,18 @@ require 'includes/header.php';
     var avatarInput = document.getElementById('psAvatarInput');
     if (avatarInput && avatarInput.files[0]) fd.append('avatar', avatarInput.files[0]);
 
-    fetch('<?= BASE_URL ?>/php/update_profile.php', { method: 'POST', body: fd })
-      .then(function (r) { return r.json(); })
-      .then(function (d) {
+    fetch('<?= BASE_URL ?>/php/update_profile.php', {
+        method: 'POST',
+        body: fd
+      })
+      .then(function(r) {
+        return r.json();
+      })
+      .then(function(d) {
         if (d.success) {
           zone.innerHTML = '<div class="flash-success"><i class="bi bi-check-circle"></i> Account information updated.</div>';
-          _origInfo.full_name     = document.getElementById('ps-full-name').value;
-          _origInfo.email         = document.getElementById('ps-email').value;
+          _origInfo.full_name = document.getElementById('ps-full-name').value;
+          _origInfo.email = document.getElementById('ps-email').value;
           _origInfo.mobile_number = document.getElementById('ps-mobile').value;
           _avatarChanged = false;
           var nameEl = document.querySelector('.admin-sidebar-info h2');
@@ -248,24 +254,26 @@ require 'includes/header.php';
         } else {
           zone.innerHTML = '<div class="flash-error"><i class="bi bi-exclamation-circle"></i> ' + (d.message || 'Update failed.') + '</div>';
         }
-        setTimeout(function () { zone.innerHTML = ''; }, 5000);
+        setTimeout(function() {
+          zone.innerHTML = '';
+        }, 5000);
       })
-      .catch(function () {
+      .catch(function() {
         zone.innerHTML = '<div class="flash-error"><i class="bi bi-exclamation-circle"></i> Network error.</div>';
       })
-      .finally(function () {
-        btn.disabled    = false;
+      .finally(function() {
+        btn.disabled = false;
         btn.textContent = 'Save Changes';
       });
   }
 
-  /* Save password section */
+  // Submit and save the new password
   function savePasswordSection(e) {
     e.preventDefault();
-    var zone   = document.getElementById('ps-pw-alert');
-    var btn    = document.getElementById('psPwSaveBtn');
-    var curPw  = document.getElementById('ps-pw-cur').value;
-    var newPw  = document.getElementById('ps-pw-new').value;
+    var zone = document.getElementById('ps-pw-alert');
+    var btn = document.getElementById('psPwSaveBtn');
+    var curPw = document.getElementById('ps-pw-cur').value;
+    var newPw = document.getElementById('ps-pw-new').value;
     var confPw = document.getElementById('ps-pw-confirm').value;
 
     if (!curPw) {
@@ -285,28 +293,35 @@ require 'includes/header.php';
       return;
     }
 
-    btn.disabled    = true;
+    btn.disabled = true;
     btn.textContent = 'Saving\u2026';
 
     var fd = new FormData(document.getElementById('psPwForm'));
     fd.append('action', 'password');
 
-    fetch('<?= BASE_URL ?>/php/update_profile.php', { method: 'POST', body: fd })
-      .then(function (r) { return r.json(); })
-      .then(function (d) {
+    fetch('<?= BASE_URL ?>/php/update_profile.php', {
+        method: 'POST',
+        body: fd
+      })
+      .then(function(r) {
+        return r.json();
+      })
+      .then(function(d) {
         if (d.success) {
           zone.innerHTML = '<div class="flash-success"><i class="bi bi-check-circle"></i> Password updated successfully.</div>';
           discardPassword();
         } else {
           zone.innerHTML = '<div class="flash-error"><i class="bi bi-exclamation-circle"></i> ' + (d.message || 'Update failed.') + '</div>';
         }
-        setTimeout(function () { zone.innerHTML = ''; }, 5000);
+        setTimeout(function() {
+          zone.innerHTML = '';
+        }, 5000);
       })
-      .catch(function () {
+      .catch(function() {
         zone.innerHTML = '<div class="flash-error"><i class="bi bi-exclamation-circle"></i> Network error.</div>';
       })
-      .finally(function () {
-        btn.disabled    = false;
+      .finally(function() {
+        btn.disabled = false;
         btn.textContent = 'Save Changes';
       });
   }

@@ -1,14 +1,15 @@
-/* ============================================================
-    CAFFEAN — Products Page Styles  (products.css)
-   Page-specific overrides and additions for products.php.
-   Global/shared styles are in admin.css.
-   ============================================================ */
+/* products.css — page-specific styles for products.php */
 
-/* ── Toolbar: 0.5rem gap between search bar and Add New Product button ── */
-.toolbar { gap: 1rem; }
-.search-box { max-width: none; }
+/* Toolbar and search bar sizing */
+.toolbar {
+  gap: 1rem;
+}
 
-/* ── Items table inside the view modal ─────────────────────── */
+.search-box {
+  max-width: none;
+}
+
+/* Items table inside view modal */
 #vw_items_table {
   margin-top: 4px;
   font-size: 0.85rem;
@@ -19,25 +20,25 @@
   padding: 10px 14px;
 }
 
-/* ── Image Upload Zone ──────────────────────────────────────── */
+/* Image upload zone */
 
-/* Row: square thumb on the left, meta text on the right */
+/* Thumbnail row — image on left, meta on right */
 .img-thumb-row {
   display: flex;
   align-items: center;
   gap: 18px;
   padding: 4px 0 22px;
-  border-bottom: 1px solid rgba(42,0,0,0.07);
+  border-bottom: 1px solid rgba(42, 0, 0, 0.07);
   margin-bottom: 22px;
 }
 
-/* The square thumbnail itself */
+/* Square image thumbnail */
 .img-thumb-wrap {
   position: relative;
   width: 96px;
   height: 96px;
   border-radius: 12px;
-  border: 2px dashed rgba(91,19,18,0.35);
+  border: 2px dashed rgba(91, 19, 18, 0.35);
   background: var(--ivory-cream);
   overflow: hidden;
   cursor: pointer;
@@ -47,16 +48,16 @@
 
 .img-thumb-wrap:hover {
   border-color: var(--burgundy-wine);
-  box-shadow: 0 0 0 3px rgba(91,19,18,0.08);
+  box-shadow: 0 0 0 3px rgba(91, 19, 18, 0.08);
 }
 
-/* When an image is loaded, switch to a solid border */
+/* Solid border when image is loaded */
 .img-thumb-wrap.has-image {
   border-style: solid;
   border-color: var(--warm-sand);
 }
 
-/* Camera icon placeholder (shown when empty) */
+/* Camera placeholder (shown when empty) */
 .img-thumb-placeholder {
   width: 100%;
   height: 100%;
@@ -72,22 +73,22 @@
   opacity: 0.4;
 }
 
-/* The actual image preview, fills the square with cover crop */
+/* Image preview fills the thumbnail square */
 .img-thumb-preview {
   width: 100%;
   height: 100%;
-  object-fit: cover;   /* same as product-image on customer side */
+  object-fit: cover;
   display: block;
   position: absolute;
   inset: 0;
   pointer-events: none;
 }
 
-/* Hover overlay: camera icon appears over the image when hovering */
+/* Hover overlay — camera icon on image hover */
 .img-thumb-hover-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(42,0,0,0.45);
+  background: rgba(42, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -106,7 +107,7 @@
   opacity: 1;
 }
 
-/* Meta block beside the square */
+/* Meta text beside thumbnail */
 .img-thumb-meta {
   display: flex;
   flex-direction: column;
@@ -134,7 +135,7 @@
   margin-top: 6px;
   padding: 5px 12px;
   background: none;
-  border: 1.5px solid rgba(91,19,18,0.35);
+  border: 1.5px solid rgba(91, 19, 18, 0.35);
   border-radius: 30px;
   font-family: var(--font-subheading);
   font-size: 0.75rem;
@@ -150,7 +151,7 @@
   color: #fff;
 }
 
-/* ── Edit/Add Product Modal — wider, viewport-fitted, footer always visible ── */
+/* Product modals — wider and viewport-fitted */
 #editProductModal .modal,
 #addProductModal .modal {
   display: flex;
@@ -190,7 +191,7 @@
   margin-bottom: 14px;
 }
 
-/* Two-column form grid — stretch so both cols share equal height */
+/* Two-column form grid */
 .product-form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -198,14 +199,14 @@
   align-items: stretch;
 }
 
-/* Each column stacks its fields; last field expands to fill remaining height */
+/* Each column stacks fields vertically */
 .product-form-col {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-/* Last form-group in each column stretches to fill remaining col height */
+/* Last field in column stretches to fill remaining height */
 .product-form-col .form-group:last-child {
   flex: 1;
   display: flex;
@@ -213,7 +214,7 @@
   margin-bottom: 0;
 }
 
-/* Textarea and select inside the last group fill the group's height */
+/* Textarea and select fill group height */
 .product-form-col .form-group:last-child textarea,
 .product-form-col .form-group:last-child select {
   flex: 1;
@@ -223,7 +224,7 @@
   resize: none;
 }
 
-/* Match select height to input height inside product modals */
+/* Uniform select and input height */
 #addProductModal select.form-control,
 #editProductModal select.form-control {
   height: 44px;
@@ -234,14 +235,15 @@
   height: 44px;
 }
 
-/* Full-width row spanning both columns (e.g. Description in Add modal) */
+/* Full-width field spans both columns */
 .product-form-full {
   grid-column: 1 / -1;
   margin-bottom: 0;
 }
 
-/* Collapse to single column on narrow screens */
+/* Collapse to single column on small screens */
 @media (max-width: 600px) {
+
   #editProductModal .modal,
   #addProductModal .modal {
     max-height: calc(100vh - 24px);
@@ -255,6 +257,7 @@
 }
 
 @media (max-height: 700px) {
+
   #editProductModal .modal,
   #addProductModal .modal {
     max-height: calc(100vh - 24px);

@@ -1,20 +1,17 @@
-/* ============================================================
-   CAFFEAN — Orders Page Styles  (orders.css)
-   Page-specific overrides and additions for orders.php.
-   Global/shared styles are in admin.css.
-   ============================================================ */
+/* orders.css — page-specific styles for orders.php and instore_orders.php */
 
-/* ── Search bar extends to full table width ──────────────────── */
-.search-box { max-width: none; }
+/* Extend search bar to full width */
+.search-box {
+  max-width: none;
+}
 
-/* ── "Ordered Items" section label inside view modal ───────── */
-/* Replaces the former inline style="margin-top:16px; margin-bottom:8px;" */
+/* Section label inside view modal */
 .view-modal-section-label {
   margin-top: 16px;
   margin-bottom: 8px;
 }
 
-/* ── Items table inside the view modal ─────────────────────── */
+/* Items table inside view modal */
 #vw_items_table {
   margin-top: 4px;
   font-size: 0.85rem;
@@ -25,7 +22,7 @@
   padding: 10px 14px;
 }
 
-/* ── "No items" cell inside the order items modal table ──── */
+/* Empty cell for orders with no items */
 .vw-no-items-cell {
   text-align: center;
   color: #999;

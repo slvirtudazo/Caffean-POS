@@ -1,36 +1,33 @@
 <?php
 
-/**
- * Caffean Shop — Admin In-Store Orders (admin/instore_orders.php)
- * Manages walk-in kiosk orders (is_kiosk = 1).
- */
+// Admin in-store orders — manages walk-in kiosk orders.
 
 session_start();
 require_once '../php/db_connection.php';
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../login.php');
-    exit();
+  header('Location: ../login.php');
+  exit();
 }
 
-// Handle status update (PRG pattern)
+// Handle order status update using PRG pattern
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
-    $order_id   = (int)$_POST['order_id'];
-    $new_status = trim($_POST['status'] ?? '');
-    $allowed    = ['pending', 'processing', 'completed', 'cancelled'];
+  $order_id   = (int)$_POST['order_id'];
+  $new_status = trim($_POST['status'] ?? '');
+  $allowed    = ['pending', 'processing', 'completed', 'cancelled'];
 
-    if (in_array($new_status, $allowed)) {
-        $stmt = mysqli_prepare($conn, "UPDATE orders SET status=? WHERE order_id=? AND is_kiosk=1");
-        mysqli_stmt_bind_param($stmt, 'si', $new_status, $order_id);
-        $_SESSION['flash'] = mysqli_stmt_execute($stmt)
-            ? ['type' => 'success', 'msg' => "Order #$order_id updated to " . ucfirst($new_status) . "."]
-            : ['type' => 'error',   'msg' => 'Error updating order status.'];
-        mysqli_stmt_close($stmt);
-    }
+  if (in_array($new_status, $allowed)) {
+    $stmt = mysqli_prepare($conn, "UPDATE orders SET status=? WHERE order_id=? AND is_kiosk=1");
+    mysqli_stmt_bind_param($stmt, 'si', $new_status, $order_id);
+    $_SESSION['flash'] = mysqli_stmt_execute($stmt)
+      ? ['type' => 'success', 'msg' => "Order #$order_id updated to " . ucfirst($new_status) . "."]
+      : ['type' => 'error',   'msg' => 'Error updating order status.'];
+    mysqli_stmt_close($stmt);
+  }
 
-    $qs = isset($_GET['status']) ? '?status=' . urlencode($_GET['status']) : '';
-    header('Location: instore_orders.php' . $qs);
-    exit();
+  $qs = isset($_GET['status']) ? '?status=' . urlencode($_GET['status']) : '';
+  header('Location: instore_orders.php' . $qs);
+  exit();
 }
 
 // Session flash
@@ -44,20 +41,21 @@ $status_filter = $_GET['status'] ?? 'all';
 $base_where    = "o.is_kiosk = 1";
 $where_clause  = $base_where;
 if (in_array($status_filter, ['pending', 'processing', 'completed', 'cancelled'])) {
-    $where_clause = "$base_where AND o.status = '" . mysqli_real_escape_string($conn, $status_filter) . "'";
+  $where_clause = "$base_where AND o.status = '" . mysqli_real_escape_string($conn, $status_filter) . "'";
 }
 
 // Status counts
 $counts = ['all' => 0, 'pending' => 0, 'processing' => 0, 'completed' => 0, 'cancelled' => 0];
 $c_res  = mysqli_query($conn, "SELECT status, COUNT(*) AS count FROM orders WHERE is_kiosk = 1 GROUP BY status");
 while ($r = mysqli_fetch_assoc($c_res)) {
-    $counts[$r['status']] = $r['count'];
-    $counts['all']       += $r['count'];
+  $counts[$r['status']] = $r['count'];
+  $counts['all']       += $r['count'];
 }
 
-// Fetch kiosk orders
-$orders_raw = mysqli_query($conn,
-    "SELECT o.order_id, o.order_number, o.order_date, o.total_amount, o.status,
+// Fetch kiosk orders with item totals
+$orders_raw = mysqli_query(
+  $conn,
+  "SELECT o.order_id, o.order_number, o.order_date, o.total_amount, o.status,
             o.payment_method, o.kiosk_order_type, o.mobile_number,
             COALESCE(o.customer_name, 'Guest') AS customer_name,
             (SELECT SUM(quantity) FROM order_items WHERE order_id = o.order_id) AS total_items
@@ -69,23 +67,24 @@ $total_orders = mysqli_num_rows($orders_raw);
 
 $orders_map = [];
 while ($o = mysqli_fetch_assoc($orders_raw)) {
-    $o['items']            = [];
-    $orders_map[$o['order_id']] = $o;
+  $o['items']            = [];
+  $orders_map[$o['order_id']] = $o;
 }
 
-// Attach order items
+// Attach order items to each kiosk order
 if (!empty($orders_map)) {
-    $ids       = implode(',', array_map('intval', array_keys($orders_map)));
-    $items_res = mysqli_query($conn,
-        "SELECT oi.order_id, oi.quantity, oi.price_at_time AS price,
+  $ids       = implode(',', array_map('intval', array_keys($orders_map)));
+  $items_res = mysqli_query(
+    $conn,
+    "SELECT oi.order_id, oi.quantity, oi.price_at_time AS price,
                 p.name AS product_name, oi.size, oi.temperature, oi.sugar_level
          FROM order_items oi
          JOIN products p ON oi.product_id = p.product_id
          WHERE oi.order_id IN ($ids)"
-    );
-    while ($item = mysqli_fetch_assoc($items_res)) {
-        $orders_map[$item['order_id']]['items'][] = $item;
-    }
+  );
+  while ($item = mysqli_fetch_assoc($items_res)) {
+    $orders_map[$item['order_id']]['items'][] = $item;
+  }
 }
 
 include 'includes/header.php';
@@ -106,11 +105,11 @@ include 'includes/header.php';
 <?php endif; ?>
 
 <div class="admin-tabs">
-  <a href="?status=all"        class="tab <?= $status_filter === 'all'        ? 'active' : '' ?>">All Orders   <span class="tab-count"><?= $counts['all']        ?></span></a>
-  <a href="?status=pending"    class="tab <?= $status_filter === 'pending'    ? 'active' : '' ?>">Pending      <span class="tab-count"><?= $counts['pending']    ?></span></a>
-  <a href="?status=processing" class="tab <?= $status_filter === 'processing' ? 'active' : '' ?>">Processing   <span class="tab-count"><?= $counts['processing'] ?></span></a>
-  <a href="?status=completed"  class="tab <?= $status_filter === 'completed'  ? 'active' : '' ?>">Completed    <span class="tab-count"><?= $counts['completed']  ?></span></a>
-  <a href="?status=cancelled"  class="tab <?= $status_filter === 'cancelled'  ? 'active' : '' ?>">Cancelled    <span class="tab-count"><?= $counts['cancelled']  ?></span></a>
+  <a href="?status=all" class="tab <?= $status_filter === 'all'        ? 'active' : '' ?>">All Orders <span class="tab-count"><?= $counts['all']        ?></span></a>
+  <a href="?status=pending" class="tab <?= $status_filter === 'pending'    ? 'active' : '' ?>">Pending <span class="tab-count"><?= $counts['pending']    ?></span></a>
+  <a href="?status=processing" class="tab <?= $status_filter === 'processing' ? 'active' : '' ?>">Processing <span class="tab-count"><?= $counts['processing'] ?></span></a>
+  <a href="?status=completed" class="tab <?= $status_filter === 'completed'  ? 'active' : '' ?>">Completed <span class="tab-count"><?= $counts['completed']  ?></span></a>
+  <a href="?status=cancelled" class="tab <?= $status_filter === 'cancelled'  ? 'active' : '' ?>">Cancelled <span class="tab-count"><?= $counts['cancelled']  ?></span></a>
 </div>
 
 <div class="toolbar">
@@ -189,7 +188,7 @@ include 'includes/header.php';
   </div>
 </div>
 
-<!-- View In-Store Order Modal -->
+<!-- View in-store order modal -->
 <div class="modal-overlay" id="viewInstoreModal" style="display:none;">
   <div class="modal modal-lg">
     <div class="modal-header">
@@ -197,18 +196,26 @@ include 'includes/header.php';
       <button class="modal-close" onclick="closeModal('viewInstoreModal')">&#x2715;</button>
     </div>
     <div class="modal-body">
-      <div class="view-detail-group"><span class="view-label">Order No.</span>    <span class="view-value" id="iv_order_id"></span></div>
-      <div class="view-detail-group"><span class="view-label">Customer</span>     <span class="view-value" id="iv_customer"></span></div>
-      <div class="view-detail-group"><span class="view-label">Mobile</span>       <span class="view-value" id="iv_mobile"></span></div>
-      <div class="view-detail-group"><span class="view-label">Order Type</span>   <span class="view-value" id="iv_order_type"></span></div>
-      <div class="view-detail-group"><span class="view-label">Order Date</span>   <span class="view-value" id="iv_date"></span></div>
-      <div class="view-detail-group"><span class="view-label">Payment</span>      <span class="view-value" id="iv_payment"></span></div>
-      <div class="view-detail-group"><span class="view-label">Status</span>       <span class="view-value" id="iv_status"></span></div>
+      <div class="view-detail-group"><span class="view-label">Order No.</span> <span class="view-value" id="iv_order_id"></span></div>
+      <div class="view-detail-group"><span class="view-label">Customer</span> <span class="view-value" id="iv_customer"></span></div>
+      <div class="view-detail-group"><span class="view-label">Mobile</span> <span class="view-value" id="iv_mobile"></span></div>
+      <div class="view-detail-group"><span class="view-label">Order Type</span> <span class="view-value" id="iv_order_type"></span></div>
+      <div class="view-detail-group"><span class="view-label">Order Date</span> <span class="view-value" id="iv_date"></span></div>
+      <div class="view-detail-group"><span class="view-label">Payment</span> <span class="view-value" id="iv_payment"></span></div>
+      <div class="view-detail-group"><span class="view-label">Status</span> <span class="view-value" id="iv_status"></span></div>
       <div class="view-detail-group"><span class="view-label">Total Amount</span> <span class="view-value" id="iv_total"></span></div>
       <div class="view-label view-modal-section-label">Ordered Items</div>
       <table class="admin-table" id="iv_items_table">
         <thead>
-          <tr><th>Product</th><th>Size</th><th>Temp</th><th>Sugar</th><th>Qty</th><th>Unit Price</th><th>Subtotal</th></tr>
+          <tr>
+            <th>Product</th>
+            <th>Size</th>
+            <th>Temp</th>
+            <th>Sugar</th>
+            <th>Qty</th>
+            <th>Unit Price</th>
+            <th>Subtotal</th>
+          </tr>
         </thead>
         <tbody id="iv_items_body"></tbody>
       </table>
@@ -219,7 +226,7 @@ include 'includes/header.php';
   </div>
 </div>
 
-<!-- Update Status Modal -->
+<!-- Update status modal -->
 <div class="modal-overlay" id="updateStatusModal" style="display:none;">
   <div class="modal">
     <div class="modal-header">
@@ -250,34 +257,41 @@ include 'includes/header.php';
 
 <script>
   var instoreData = <?= json_encode(array_values($orders_map)) ?>;
-  var instoreMap  = {};
-  instoreData.forEach(function (o) { instoreMap[o.order_id] = o; });
+  var instoreMap = {};
+  instoreData.forEach(function(o) {
+    instoreMap[o.order_id] = o;
+  });
 
-  function openModal(id)  { document.getElementById(id).style.display = 'flex'; }
-  function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+  function openModal(id) {
+    document.getElementById(id).style.display = 'flex';
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+  }
 
   function viewInstoreOrder(orderId) {
     var o = instoreMap[orderId];
     if (!o) return;
-    document.getElementById('iv_order_id').textContent  = o.order_number || '#' + o.order_id;
-    document.getElementById('iv_customer').textContent  = o.customer_name;
-    document.getElementById('iv_mobile').textContent    = o.mobile_number || '—';
-    document.getElementById('iv_order_type').textContent  =
+    document.getElementById('iv_order_id').textContent = o.order_number || '#' + o.order_id;
+    document.getElementById('iv_customer').textContent = o.customer_name;
+    document.getElementById('iv_mobile').textContent = o.mobile_number || '—';
+    document.getElementById('iv_order_type').textContent =
       o.kiosk_order_type === 'dine_in' ? 'Dine In' : 'Take Out';
-    document.getElementById('iv_date').textContent      = o.order_date;
-    document.getElementById('iv_payment').textContent   = o.payment_method;
-    document.getElementById('iv_total').textContent     = '\u20B1' + parseFloat(o.total_amount).toFixed(2);
-    document.getElementById('iv_status').innerHTML      =
+    document.getElementById('iv_date').textContent = o.order_date;
+    document.getElementById('iv_payment').textContent = o.payment_method;
+    document.getElementById('iv_total').textContent = '\u20B1' + parseFloat(o.total_amount).toFixed(2);
+    document.getElementById('iv_status').innerHTML =
       '<span class="badge badge-' + o.status + '">' +
       o.status.charAt(0).toUpperCase() + o.status.slice(1) + '</span>';
 
     var tbody = document.getElementById('iv_items_body');
     tbody.innerHTML = '';
-    (o.items || []).forEach(function (item) {
+    (o.items || []).forEach(function(item) {
       var sub = (parseFloat(item.price) * parseInt(item.quantity)).toFixed(2);
       tbody.innerHTML +=
         '<tr><td>' + item.product_name + '</td>' +
-        '<td>' + (item.size        || '—') + '</td>' +
+        '<td>' + (item.size || '—') + '</td>' +
         '<td>' + (item.temperature || '—') + '</td>' +
         '<td>' + (item.sugar_level || '—') + '</td>' +
         '<td>' + item.quantity + '</td>' +
@@ -291,18 +305,22 @@ include 'includes/header.php';
   }
 
   function openUpdateModal(orderId, currentStatus) {
-    document.getElementById('modal_order_id').value       = orderId;
+    document.getElementById('modal_order_id').value = orderId;
     document.getElementById('display_order_id').innerText = '#' + orderId;
-    document.getElementById('modal_status').value         = currentStatus;
+    document.getElementById('modal_status').value = currentStatus;
     openModal('updateStatusModal');
   }
 
-  document.querySelectorAll('.modal-overlay').forEach(function (o) {
-    o.addEventListener('click', function (e) { if (e.target === o) o.style.display = 'none'; });
+  document.querySelectorAll('.modal-overlay').forEach(function(o) {
+    o.addEventListener('click', function(e) {
+      if (e.target === o) o.style.display = 'none';
+    });
   });
-  document.addEventListener('keydown', function (e) {
+  document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape')
-      document.querySelectorAll('.modal-overlay').forEach(function (o) { o.style.display = 'none'; });
+      document.querySelectorAll('.modal-overlay').forEach(function(o) {
+        o.style.display = 'none';
+      });
   });
 
   initSortableTable('instoreTable', 3);

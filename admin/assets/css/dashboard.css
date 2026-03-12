@@ -1,10 +1,6 @@
-/* ============================================================
-   CAFFEAN — Dashboard Page Styles  (dashboard.css)
-   Enhanced: Analytics chart, Trending, Recent Orders.
-   Global/shared styles are in admin.css.
-   ============================================================ */
+/* dashboard.css — page-specific styles for dashboard.php */
 
-/* ── Stat Cards (Enhanced) ───────────────────────────────────── */
+/* Stat cards */
 .stat-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -54,12 +50,12 @@
   box-shadow: 0 8px 28px rgba(42, 0, 0, 0.12);
 }
 
-/* Accent bar hidden */
+/* Hide accent bar */
 .stat-card-bar {
   display: none;
 }
 
-/* Stat card icon — no background, icon only */
+/* Stat card icon */
 .stat-card-icon {
   width: 42px;
   height: 42px;
@@ -187,12 +183,12 @@
   opacity: 0.7;
 }
 
-/* Inside the outer frame, add spacing between stat grid and analytics */
+/* Spacing between stat grid and analytics */
 .ins-outer-frame .stat-grid {
   margin-bottom: 20px;
 }
 
-/* ── Analytics + Trending Layout ─────────────────────────────── */
+/* Analytics and trending layout */
 .dash-analytics-grid {
   display: grid;
   grid-template-columns: 3fr 1fr;
@@ -206,7 +202,7 @@
   }
 }
 
-/* ── Shared Panel Styles ─────────────────────────────────────── */
+/* Shared panel styles */
 .dash-panel {
   background: var(--card);
   border-radius: 16px;
@@ -256,7 +252,7 @@
   opacity: 0.7;
 }
 
-/* ── Chart Panel ─────────────────────────────────────────────── */
+/* Chart panel */
 .dash-panel--chart {
   min-height: 340px;
 }
@@ -267,7 +263,7 @@
   position: relative;
 }
 
-/* ── Trending Products Panel ─────────────────────────────────── */
+/* Trending products panel */
 .dash-panel--trending {
   display: flex;
   flex-direction: column;
@@ -302,7 +298,7 @@
   flex-shrink: 0;
 }
 
-/* Trending icon — no background, image/icon only */
+/* Trending item icon */
 .trending-icon {
   width: 38px;
   height: 38px;
@@ -354,7 +350,7 @@
   font-size: 0.85rem;
 }
 
-/* ── Recent Orders Panel ─────────────────────────────────────── */
+/* Recent orders panel */
 .dash-panel--orders {
   margin-bottom: 24px;
 }
@@ -425,7 +421,7 @@
   text-align: center;
 }
 
-/* Center the Order No. column header */
+/* Center order number column header */
 .dash-orders-table thead th.th-order-no {
   text-align: center;
 }
@@ -440,7 +436,7 @@
   color: var(--deep-maroon);
 }
 
-/* Status pills */
+/* Status pill badges */
 .status-pill {
   display: inline-block;
   padding: 4px 12px;
@@ -471,7 +467,7 @@
   color: #c0392b;
 }
 
-/* Type badges — text + icon only, no background */
+/* Order type badges */
 .badge-type {
   display: inline-flex;
   align-items: center;

@@ -1,13 +1,11 @@
-/* ============================================================
-   CAFFEAN — Customers Page Styles  (customers.css)
-   Page-specific overrides and additions for customers.php.
-   Global/shared styles are in admin.css.
-   ============================================================ */
+/* customers.css — page-specific styles for customers.php */
 
-/* ── Search bar extends to full table width ──────────────────── */
-.search-box { max-width: none; }
+/* Extend search bar to full width */
+.search-box {
+  max-width: none;
+}
 
-/* ── Customers stat grid: always 3 columns ──────────────────── */
+/* Stat grid — 3 columns */
 .customers-stat-grid {
   grid-template-columns: repeat(3, 1fr);
 }

@@ -1,9 +1,6 @@
 <?php
 
-/**
- * Caffean Shop — Admin Online Orders (admin/orders.php)
- * Manages delivery and pickup orders (is_kiosk = 0).
- */
+// Admin online orders — manages delivery and pickup orders.
 
 session_start();
 require_once '../php/db_connection.php';
@@ -20,7 +17,7 @@ function fmt_id($prefix, $id, $date_str = null)
   return $prefix . '-' . $year . '-' . str_pad($id, 5, '0', STR_PAD_LEFT);
 }
 
-// Handle status update (PRG pattern)
+// Handle order status update using PRG pattern
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
   $order_id   = (int)$_POST['order_id'];
   $new_status = trim($_POST['status'] ?? '');
@@ -62,7 +59,7 @@ while ($r = mysqli_fetch_assoc($c_res)) {
   $counts['all']       += $r['count'];
 }
 
-// Fetch orders with LEFT JOIN so no orders are dropped if user was deleted
+// Fetch orders — LEFT JOIN preserves orders from deleted users
 $orders_raw = mysqli_query(
   $conn,
   "SELECT o.*,
@@ -82,7 +79,7 @@ while ($o = mysqli_fetch_assoc($orders_raw)) {
   $orders_map[$o['order_id']] = $o;
 }
 
-// Attach line items
+// Attach order line items to each order
 if (!empty($orders_map)) {
   $ids       = implode(',', array_map('intval', array_keys($orders_map)));
   $items_res = mysqli_query(
@@ -97,7 +94,7 @@ if (!empty($orders_map)) {
   }
 }
 
-// Add formatted display ID for JS modal use
+// Add formatted display ID for use in JS modal
 foreach ($orders_map as &$o) {
   $o['fmt_id'] = fmt_id('ON', $o['order_id'], $o['order_date']);
 }

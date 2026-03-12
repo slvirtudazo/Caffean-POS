@@ -1,9 +1,6 @@
 <?php
 
-/**
- * Caffean Shop — Admin Products Management  (products.php)
- * Full CRUD: Add, View, Edit, Delete.
- */
+// Admin products — full CRUD for menu items, prices, and availability.
 
 session_start();
 require_once '../php/db_connection.php';
@@ -21,10 +18,10 @@ function fmt_id($prefix, $id, $date_str = null)
   return $prefix . '-' . $year . '-' . str_pad($id, 5, '0', STR_PAD_LEFT);
 }
 
-// ── POST Handlers (PRG) ──────────────────────────────────────
+// POST handlers using PRG pattern
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
-  /* ── Image upload helper ──────────────────────────────── */
+  // Image upload helper
   function handleProductImageUpload($file_key)
   {
     if (empty($_FILES[$file_key]['name'])) return null;
@@ -72,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $new_image   = handleProductImageUpload('image');
 
     if ($new_image) {
-      // Delete old image if it's a product-uploaded one
+      // Delete old image if it was product-uploaded
       $old = mysqli_fetch_assoc(mysqli_query($conn, "SELECT image_path FROM products WHERE product_id=$product_id"));
       if ($old && $old['image_path'] && strpos($old['image_path'], 'images/products/') === 0) {
         $old_file = __DIR__ . '/../' . $old['image_path'];
@@ -108,13 +105,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
   exit();
 }
 
-// ── Session Flash ─────────────────────────────────────────────
+// Session flash messages
 $flash   = $_SESSION['flash'] ?? null;
 unset($_SESSION['flash']);
 $message = ($flash && $flash['type'] === 'success') ? $flash['msg'] : '';
 $error   = ($flash && $flash['type'] === 'error')   ? $flash['msg'] : '';
 
-// ── Fetch data ───────────────────────────────────────────────
+// Fetch products and categories
 $products_result = mysqli_query(
   $conn,
   "SELECT p.*, c.name AS category_name
@@ -185,11 +182,11 @@ include 'includes/header.php';
         </tr>
       <?php else: ?>
         <?php while ($product = mysqli_fetch_assoc($products_result)):
-              $product['display_image'] = resolveProductImage(
-                  $product['name'],
-                  $product['image_path'] ?? '',
-                  $product['category_id'] ?? 0
-              ); ?>
+          $product['display_image'] = resolveProductImage(
+            $product['name'],
+            $product['image_path'] ?? '',
+            $product['category_id'] ?? 0
+          ); ?>
           <tr>
             <td class="td-id"><?= fmt_id('PR', $product['product_id'], $product['created_at'] ?? null) ?></td>
             <td><?= htmlspecialchars($product['name']) ?></td>
@@ -228,7 +225,7 @@ include 'includes/header.php';
   </div>
 </div>
 
-<!-- ══ VIEW PRODUCT MODAL ════════════════════════════════════ -->
+<!-- View product modal -->
 <div class="modal-overlay" id="viewProductModal" style="display:none;">
   <div class="modal">
     <div class="modal-header">
@@ -275,7 +272,7 @@ include 'includes/header.php';
   </div>
 </div>
 
-<!-- ══ ADD PRODUCT MODAL ════════════════════════════════════ -->
+<!-- Add product modal -->
 <div class="modal-overlay" id="addProductModal" style="display:none;">
   <div class="modal">
     <div class="modal-header">
@@ -286,7 +283,7 @@ include 'includes/header.php';
       <div class="modal-body">
         <input type="hidden" name="action" value="add" />
 
-        <!-- ── Image thumbnail at top ── -->
+        <!-- Image upload thumbnail -->
         <div class="img-thumb-row">
           <div class="img-thumb-wrap" id="add_thumb_wrap"
             onclick="document.getElementById('add_image_input').click()"
@@ -312,10 +309,10 @@ include 'includes/header.php';
             onchange="previewImage(this,'add_img_preview','add_img_placeholder','add_img_remove','add_thumb_wrap')" />
         </div>
 
-        <!-- ── Two-column form grid ── -->
+        <!-- Two-column form layout -->
         <div class="product-form-grid">
 
-          <!-- Left: Name, Category -->
+          <!-- Name and category fields -->
           <div class="product-form-col">
             <div class="form-group">
               <label class="form-label">Product Name</label>
@@ -333,7 +330,7 @@ include 'includes/header.php';
             </div>
           </div>
 
-          <!-- Right: Price, Net Content -->
+          <!-- Price and net content fields -->
           <div class="product-form-col">
             <div class="form-group">
               <label class="form-label">Price (&#8369;)</label>
@@ -347,7 +344,7 @@ include 'includes/header.php';
             </div>
           </div>
 
-          <!-- Full-width: Description -->
+          <!-- Full-width description field -->
           <div class="form-group product-form-full">
             <label class="form-label">Description</label>
             <textarea name="description" class="form-control"
@@ -364,7 +361,7 @@ include 'includes/header.php';
   </div>
 </div>
 
-<!-- ══ EDIT PRODUCT MODAL ═══════════════════════════════════ -->
+<!-- Edit product modal -->
 <div class="modal-overlay" id="editProductModal" style="display:none;">
   <div class="modal">
     <div class="modal-header">
@@ -376,7 +373,7 @@ include 'includes/header.php';
         <input type="hidden" name="action" value="edit" />
         <input type="hidden" name="product_id" id="edit_product_id" />
 
-        <!-- ── Image thumbnail at top ── -->
+        <!-- Image upload thumbnail -->
         <div class="img-thumb-row">
           <div class="img-thumb-wrap" id="edit_thumb_wrap"
             onclick="document.getElementById('edit_image_input').click()"
@@ -402,10 +399,10 @@ include 'includes/header.php';
             onchange="previewImage(this,'edit_img_preview','edit_img_placeholder','edit_img_remove','edit_thumb_wrap')" />
         </div>
 
-        <!-- ── Two-column form grid ── -->
+        <!-- Two-column form layout -->
         <div class="product-form-grid">
 
-          <!-- Left: Name, Category, Description -->
+          <!-- Name, category, and description fields -->
           <div class="product-form-col">
             <div class="form-group">
               <label class="form-label">Product Name</label>
@@ -428,7 +425,7 @@ include 'includes/header.php';
             </div>
           </div>
 
-          <!-- Right: Price, Net Content, Status -->
+          <!-- Price, net content, and status fields -->
           <div class="product-form-col">
             <div class="form-group">
               <label class="form-label">Price (&#8369;)</label>
@@ -459,7 +456,7 @@ include 'includes/header.php';
   </div>
 </div>
 
-<!-- ══ DELETE PRODUCT MODAL ══════════════════════════════════ -->
+<!-- Delete product modal -->
 <div class="modal-overlay" id="deleteProductModal" style="display:none;">
   <div class="modal">
     <div class="modal-header">
@@ -484,7 +481,7 @@ include 'includes/header.php';
 </div>
 
 <script>
-  /* ── Modal helpers ─────────────────────────────────────────── */
+  // Modal helpers
   // Formats integer ID into prefixed display string
   function fmtId(prefix, id, dateStr) {
     var year = dateStr ? new Date(dateStr).getFullYear() : new Date().getFullYear();
@@ -512,7 +509,7 @@ include 'includes/header.php';
       });
   });
 
-  /* ── Image upload helpers ──────────────────────────────────── */
+  // Image upload helpers
   function previewImage(input, previewId, placeholderId, removeId, wrapId) {
     var preview = document.getElementById(previewId);
     var placeholder = document.getElementById(placeholderId);
@@ -544,8 +541,8 @@ include 'includes/header.php';
     if (wrap) wrap.classList.remove('has-image');
   }
 
-  /* ── Product view/edit/delete ──────────────────────────────── */
-  var _baseUrl = '../'; // path from admin/ back to root for images
+  // Product view, edit, and delete handlers
+  var _baseUrl = '../'; // path from admin/ to root for images
 
   function viewProduct(p) {
     document.getElementById('view_product_id').textContent = fmtId('PR', p.product_id, p.created_at);
@@ -558,7 +555,7 @@ include 'includes/header.php';
       '<span class="badge badge-active">Active</span>' :
       '<span class="badge badge-inactive">Hidden</span>';
 
-    // Show product image — prepend base URL for local paths
+    // Prepend base URL for local image paths
     var imgWrap = document.getElementById('view_img_wrap');
     var imgEl = document.getElementById('view_img');
     if (p.display_image) {
@@ -610,11 +607,11 @@ include 'includes/header.php';
     openModal('deleteProductModal');
   }
 
-  /* ── Live search — updates data-search-match, re-renders page ─ */
+  // Live search — updates match state and re-renders the current page
   function filterTable(term) {
     var rows = document.querySelectorAll('#productsTable tbody tr');
     var q = term.toLowerCase();
-    rows.forEach(function (row) {
+    rows.forEach(function(row) {
       if (row.classList.contains('empty-row')) return;
       row.dataset.searchMatch = (!q || row.textContent.toLowerCase().includes(q)) ? 'true' : 'false';
     });
@@ -624,7 +621,7 @@ include 'includes/header.php';
     }
   }
 
-  /* ── Sorting (default desc on ID col 0) + pagination ──────── */
+  // Initialize sorting and pagination
   initSortableTable('productsTable', 0);
   initTablePagination('productsTable', 10);
 </script>

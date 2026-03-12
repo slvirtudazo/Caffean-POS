@@ -1,9 +1,6 @@
 <?php
 
-/**
- * Caffean Shop — Admin Customers Management  (customers.php)
- * Operation: View only (eye icon).
- */
+// Admin customers — view registered customer accounts and order stats.
 
 session_start();
 require_once '../php/db_connection.php';
@@ -20,7 +17,7 @@ function fmt_id($prefix, $id, $date_str = null)
   return $prefix . '-' . $year . '-' . str_pad($id, 5, '0', STR_PAD_LEFT);
 }
 
-// ── Customers with order stats ────────────────────────────────
+// Fetch customers with order totals
 $customers_result = mysqli_query(
   $conn,
   "SELECT u.*,
@@ -40,7 +37,7 @@ $customers_result = mysqli_query(
 
 $total_customers = mysqli_num_rows($customers_result);
 
-// ── Summary stats ─────────────────────────────────────────────
+// Summary stats for active and inactive customers
 $summary = mysqli_fetch_assoc(mysqli_query(
   $conn,
   "SELECT
@@ -53,7 +50,7 @@ $summary = mysqli_fetch_assoc(mysqli_query(
      WHERE u.role = 'customer'"
 ));
 
-// Load all customers into array for JS map
+// Load customers into an array for the JS data map
 $customers_arr = [];
 mysqli_data_seek($customers_result, 0);
 while ($c = mysqli_fetch_assoc($customers_result)) {
@@ -145,7 +142,7 @@ include 'includes/header.php';
   </div>
 </div>
 
-<!-- ══ VIEW CUSTOMER MODAL ═══════════════════════════════════ -->
+<!-- View customer modal -->
 <div class="modal-overlay" id="viewCustomerModal" style="display:none;">
   <div class="modal">
     <div class="modal-header">
@@ -189,7 +186,7 @@ include 'includes/header.php';
 </div>
 
 <script>
-  /* ── Customers data map from PHP ─────────────────────────── */
+  // Customers data map from PHP
   var customersData = <?= json_encode($customers_arr) ?>;
   var customersMap = {};
   customersData.forEach(function(c) {
@@ -243,7 +240,7 @@ include 'includes/header.php';
       });
   });
 
-  /* ── Sorting (default desc on Registered col 3) + search + pagination */
+  // Initialize sorting, search, and pagination
   initSortableTable('customersTable', 3);
   initTableSearch('customersSearch', 'customersTable');
   initTablePagination('customersTable', 10);

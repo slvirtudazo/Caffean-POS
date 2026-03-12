@@ -1,11 +1,8 @@
-/* ============================================================
-   Caffean - Admin Style Sheet  (admin.css)
-   Shared / global styles for all admin module pages.
-   ============================================================ */
+/* admin.css — shared styles for all admin pages */
 
 @import url('https://fonts.googleapis.com/css2?family=Oleo+Script:wght@400;500;600;700&family=EB+Garamond:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&display=swap');
 
-/* ── RESET ─────────────────────────────────────────────────── */
+/* Reset */
 *,
 *::before,
 *::after {
@@ -22,9 +19,9 @@ a {
   text-decoration: none;
 }
 
-/* ── DESIGN TOKENS ─────────────────────────────────────────── */
+/* Design tokens */
 :root {
-  /* Palette */
+  /* Color palette */
   --ivory-cream: #F5F1E8;
   --warm-sand: #E2D9C8;
   --light-beige: #EDE8DC;
@@ -35,23 +32,23 @@ a {
   --text-muted: #7a6a5a;
   --border: rgba(42, 0, 0, 0.08);
 
-  /* Admin accents */
+  /* Admin accent colors */
   --maroon: #3D0000;
   --maroon2: #5a0a0a;
   --maroon-lt: #f5eeee;
 
-  /* Layout */
+  /* Layout dimensions */
   --sidebar-w: 260px;
   --navbar-h: 68px;
   --radius: 14px;
   --radius-sm: 8px;
   --transition: 0.22s ease;
 
-  /* Shadows */
+  /* Shadow levels */
   --shadow-sm: 0 2px 8px rgba(42, 0, 0, 0.07);
   --shadow-md: 0 4px 16px rgba(42, 0, 0, 0.10);
 
-  /* Fonts */
+  /* Font families */
   --font-logo: 'Oleo Script', cursive;
   --font-heading: 'EB Garamond', serif;
   --font-sub: 'Outfit', sans-serif;
@@ -59,7 +56,7 @@ a {
   --font-main: 'Oleo Script', cursive;
   --font-body: 'Quicksand', sans-serif;
 
-  /* Spacing tokens */
+  /* Spacing scale */
   --spacing-xs: 0.5rem;
   --spacing-sm: 1rem;
   --spacing-md: 1.5rem;
@@ -67,13 +64,13 @@ a {
   --spacing-xl: 2.5rem;
   --spacing-xxl: 3rem;
 
-  /* Transition aliases */
+  /* Transition speeds */
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s ease;
   --transition-slow: 0.5s ease;
 }
 
-/* ── BASE ──────────────────────────────────────────────────── */
+/* Base body styles */
 body {
   font-family: var(--font-body);
   background: var(--ivory-cream);
@@ -83,9 +80,7 @@ body {
   flex-direction: column;
 }
 
-/* ================================================================
-   ADMIN NAVBAR
-   ================================================================ */
+/* Navbar */
 .admin-navbar {
   background-color: var(--ivory-cream);
   border-bottom: 1px solid var(--border);
@@ -206,16 +201,14 @@ body {
   -webkit-text-stroke: 0.5px currentColor;
 }
 
-/* ================================================================
-   BODY LAYOUT: sidebar + main
-   ================================================================ */
+/* Body layout — sidebar and main */
 .admin-body {
   display: flex;
   flex: 1;
   min-height: calc(100vh - var(--navbar-h));
 }
 
-/* ── SIDEBAR ────────────────────────────────────────────────── */
+/* Sidebar */
 .admin-sidebar {
   width: var(--sidebar-w);
   background: var(--ivory-cream);
@@ -230,7 +223,7 @@ body {
   flex-shrink: 0;
 }
 
-/* ── SIDEBAR PROFILE ────────────────────────────────────────── */
+/* Sidebar profile section */
 .admin-sidebar-profile {
   display: flex;
   flex-direction: column;
@@ -427,7 +420,7 @@ body {
   color: #fff;
 }
 
-/* ── MAIN CONTENT AREA ─────────────────────────────────────── */
+/* Main content area */
 .admin-wrapper {
   flex: 1;
   padding: 36px 28px;
@@ -461,7 +454,7 @@ body {
   opacity: 0.9;
 }
 
-/* ── STAT GRID ───────────────────────────────────────────────── */
+/* Stat grid */
 .stat-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
@@ -603,7 +596,7 @@ body {
   line-height: 1;
 }
 
-/* ── CARDS ───────────────────────────────────────────────────── */
+/* Cards */
 .card {
   background: var(--card);
   border-radius: var(--radius);
@@ -630,7 +623,7 @@ body {
   color: var(--deep-maroon);
 }
 
-/* ── TABLE ───────────────────────────────────────────────────── */
+/* Table */
 .table-responsive {
   overflow-x: auto;
 }
@@ -709,7 +702,7 @@ body {
   background: rgba(245, 241, 232, 0.4);
 }
 
-/* ── BADGES ──────────────────────────────────────────────────── */
+/* Badges */
 .badge {
   padding: 5px 11px;
   border-radius: 50px;
@@ -743,7 +736,7 @@ body {
   color: #1a73e8;
 }
 
-/* ── BUTTONS ─────────────────────────────────────────────────── */
+/* Buttons */
 .btn-outline {
   background: transparent;
   color: var(--deep-maroon);
@@ -911,7 +904,7 @@ body {
   box-shadow: 0 4px 12px rgba(42, 0, 0, 0.20);
 }
 
-/* ── EMPTY STATE ─────────────────────────────────────────────── */
+/* Empty state */
 .empty-state {
   padding: 56px 28px;
   text-align: center;
@@ -931,7 +924,7 @@ body {
   margin: 0;
 }
 
-/* ── ADMIN TABS ──────────────────────────────────────────────── */
+/* Admin tabs */
 .admin-tabs {
   display: flex;
   gap: 4px;
@@ -974,7 +967,7 @@ body {
   letter-spacing: 0.2px;
 }
 
-/* ── MODALS ──────────────────────────────────────────────────── */
+/* Modals */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -1084,7 +1077,7 @@ body {
   max-height: 90vh;
 }
 
-/* ── FORMS ───────────────────────────────────────────────────── */
+/* Forms */
 .form-group {
   margin-bottom: 20px;
 }
@@ -1157,7 +1150,7 @@ textarea.form-control {
   margin: 0;
 }
 
-/* ── VIEW DETAIL ROWS ────────────────────────────────────── */
+/* View detail rows */
 .view-detail-group {
   display: flex;
   align-items: flex-start;
@@ -1190,7 +1183,7 @@ textarea.form-control {
   word-break: break-word;
 }
 
-/* ── FOOTER ──────────────────────────────────────────────────── */
+/* Footer */
 .admin-simple-footer {
   background: var(--card);
   border-top: 1px solid var(--border);
@@ -1201,7 +1194,7 @@ textarea.form-control {
   text-align: center;
 }
 
-/* ── TOOLBAR (Products page) ─────────────────────────────────── */
+/* Toolbar */
 .toolbar {
   display: flex;
   align-items: center;
@@ -1252,7 +1245,7 @@ textarea.form-control {
   color: var(--dark-brown);
 }
 
-/* ── FLASH MESSAGES ───────────────────────────────────────────── */
+/* Flash messages */
 .flash-success,
 .flash-error {
   display: flex;
@@ -1278,7 +1271,7 @@ textarea.form-control {
   border: 1px solid #f5c6cb;
 }
 
-/* ── UTILITY ─────────────────────────────────────────────────── */
+/* Utility classes */
 .card-count {
   color: var(--deep-maroon);
   font-size: 0.9rem;
@@ -1332,7 +1325,7 @@ textarea.form-control {
   padding: 24px 28px;
 }
 
-/* ── DUAL STAT CARD (Product Status / Total Customers) ──────── */
+/* Dual stat card */
 .stat-dual {
   display: flex;
   flex-direction: column;
@@ -1366,7 +1359,7 @@ textarea.form-control {
   color: var(--text-muted);
 }
 
-/* ── RESPONSIVE ──────────────────────────────────────────────── */
+/* Responsive breakpoints */
 @media (max-width: 1024px) {
   .admin-sidebar {
     width: 210px;
@@ -1401,7 +1394,7 @@ textarea.form-control {
   }
 }
 
-/* ── INSIGHTS PAGE ───────────────────────────────────────────── */
+/* Insights page */
 .ins-body {
   display: flex;
   flex-direction: column;
@@ -1414,12 +1407,23 @@ textarea.form-control {
   gap: 20px;
 }
 
-.ins-row--chart .ins-panel--chart   { flex: 2; }
-.ins-row--chart .ins-panel--summary { flex: 1; }
-.ins-row--bottom .ins-panel--top-items { flex: 2; }
-.ins-row--bottom .ins-panel--donut     { flex: 1; }
+.ins-row--chart .ins-panel--chart {
+  flex: 2;
+}
 
-/* Panel base */
+.ins-row--chart .ins-panel--summary {
+  flex: 1;
+}
+
+.ins-row--bottom .ins-panel--top-items {
+  flex: 2;
+}
+
+.ins-row--bottom .ins-panel--donut {
+  flex: 1;
+}
+
+/* Panel base styles */
 .ins-panel {
   background: var(--card);
   border: 1px solid rgba(42, 0, 0, 0.09);
@@ -1470,7 +1474,9 @@ textarea.form-control {
   border-bottom: 1px solid rgba(42, 0, 0, 0.06);
 }
 
-.ins-summary-item:last-child { border-bottom: none; }
+.ins-summary-item:last-child {
+  border-bottom: none;
+}
 
 .ins-summary-lbl {
   font-family: var(--font-subheading);
@@ -1503,7 +1509,9 @@ textarea.form-control {
   border-bottom: 1px solid rgba(42, 0, 0, 0.06);
 }
 
-.ins-top-item:last-child { border-bottom: none; }
+.ins-top-item:last-child {
+  border-bottom: none;
+}
 
 .ins-top-rank {
   font-family: var(--font-subheading);
@@ -1531,14 +1539,14 @@ textarea.form-control {
   opacity: 0.6;
 }
 
-/* Doughnut */
+/* Doughnut chart */
 .ins-donut-wrap {
   position: relative;
   height: 160px;
   margin-bottom: 16px;
 }
 
-/* Legend */
+/* Chart legend */
 .ins-legend {
   list-style: none;
   margin: 0;
@@ -1580,7 +1588,7 @@ textarea.form-control {
   flex-shrink: 0;
 }
 
-/* ── PROFILE SETTINGS PAGE ───────────────────────────────────── */
+/* Profile settings page */
 .ps-card {
   background: var(--card);
   border: 1px solid rgba(42, 0, 0, 0.09);
@@ -1617,7 +1625,7 @@ textarea.form-control {
   gap: 6px;
 }
 
-/* Allow fields to naturally stretch across both grid columns */
+/* Full-width field spans both grid columns */
 .ps-field.full-width {
   grid-column: 1 / -1;
 }
@@ -1646,7 +1654,7 @@ textarea.form-control {
   box-shadow: 0 0 0 3px rgba(91, 19, 18, 0.08);
 }
 
-/* Password field wrapper with inline toggle button */
+/* Password field with inline visibility toggle */
 .ps-pw-wrap {
   position: relative;
   display: flex;
@@ -1686,14 +1694,14 @@ textarea.form-control {
   padding-top: 16px;
 }
 
-/* Make each card's form stretch to fill remaining card height */
+/* Form fills remaining card height */
 .ps-card form {
   display: flex;
   flex-direction: column;
   flex: 1;
 }
 
-/* Discard button — secondary action */
+/* Discard button */
 .ps-btn-discard {
   background: transparent;
   color: var(--text-muted);
@@ -1719,18 +1727,18 @@ textarea.form-control {
   align-items: stretch;
 }
 
-.ps-settings-row > div {
+.ps-settings-row>div {
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-/* Alert zone above each card */
+/* Alert zone */
 .ps-alert-zone {
   margin-bottom: 4px;
 }
 
-/* Avatar upload widget in Account Information card */
+/* Avatar upload row */
 .ps-avatar-row {
   display: flex;
   align-items: center;
@@ -1740,7 +1748,7 @@ textarea.form-control {
   border-bottom: 1px solid rgba(42, 0, 0, 0.06);
 }
 
-/* Wrap: not overflow:hidden so pencil badge can extend outside circle */
+/* Avatar wrapper — allows pencil badge to extend outside */
 .ps-avatar-wrap {
   position: relative;
   width: 64px;
@@ -1773,7 +1781,7 @@ textarea.form-control {
   justify-content: center;
 }
 
-/* Pencil badge — bottom-right of avatar circle */
+/* Pencil edit badge */
 .ps-avatar-pencil {
   position: absolute;
   bottom: -4px;
@@ -1833,7 +1841,7 @@ textarea.form-control {
   background: var(--burgundy-wine);
 }
 
-/* Outer frame container — wraps dashboard and insights content */
+/* Outer frame for dashboard and insights */
 .ins-outer-frame {
   background: var(--card);
   border: 1px solid rgba(42, 0, 0, 0.1);
@@ -1843,12 +1851,12 @@ textarea.form-control {
   margin-bottom: 24px;
 }
 
-/* Inside the outer frame, add spacing between stat grid and analytics */
+/* Spacing between stat grid and analytics */
 .ins-outer-frame .stat-grid {
   margin-bottom: 20px;
 }
 
-/* Pagination controls — matches customer account .acct-pagination style */
+/* Pagination controls */
 .admin-pagination {
   display: flex;
   align-items: center;
