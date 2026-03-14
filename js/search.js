@@ -1,28 +1,25 @@
-/**
- * Caffean Shop - Search Module
- * Handles the universal search modal overlay and AJAX database queries.
- */
+// Search module — handles the search modal and AJAX queries
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Attach listener to the search icon in the navigation
+document.addEventListener('DOMContentLoaded', function () {
+    // Attach click listener to search icon
     const searchIcon = document.querySelector('.fa-search');
     if (searchIcon) {
-        searchIcon.addEventListener('click', function(e) {
+        searchIcon.addEventListener('click', function (e) {
             e.preventDefault();
             showSearchOverlay();
         });
         searchIcon.parentElement.style.cursor = 'pointer';
     }
 
-    // Close on Escape key
-    document.addEventListener('keydown', function(e) {
+    // Close overlay on Escape key
+    document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') closeSearchOverlay();
     });
 });
 
 function showSearchOverlay() {
     let overlay = document.getElementById('searchOverlay');
-    
+
     if (!overlay) {
         overlay = document.createElement('div');
         overlay.id = 'searchOverlay';
@@ -43,23 +40,23 @@ function showSearchOverlay() {
             </div>
         `;
         document.body.appendChild(overlay);
-        
+
         const searchInput = document.getElementById('searchInput');
         let debounceTimer;
-        
-        // Listen to input with a slight delay to prevent spamming the database
-        searchInput.addEventListener('input', function(e) {
+
+        // Debounce input to avoid excessive requests
+        searchInput.addEventListener('input', function (e) {
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => {
                 searchProductsAjax(e.target.value);
-            }, 300); 
+            }, 300);
         });
-        
-        overlay.addEventListener('click', function(e) {
+
+        overlay.addEventListener('click', function (e) {
             if (e.target === overlay) closeSearchOverlay();
         });
     }
-    
+
     overlay.style.display = 'flex';
     setTimeout(() => {
         overlay.classList.add('active');
@@ -82,20 +79,20 @@ function closeSearchOverlay() {
 function searchProductsAjax(searchTerm) {
     const searchLower = searchTerm.trim();
     const resultsContainer = document.getElementById('searchResults');
-    
+
     if (searchLower === '') {
         resultsContainer.innerHTML = '<div class="search-hint">Start typing to search for products...</div>';
         return;
     }
-    
+
     resultsContainer.innerHTML = '<div class="search-hint"><i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i> Searching...</div>';
-    
-    // Fetch results from the database universally
+
+    // Fetch results from the server
     fetch(`php/search_ajax.php?q=${encodeURIComponent(searchLower)}`)
         .then(response => response.json())
         .then(data => {
             resultsContainer.innerHTML = '';
-            
+
             if (data.length === 0) {
                 resultsContainer.innerHTML = `
                     <div class="no-results">
@@ -106,7 +103,7 @@ function searchProductsAjax(searchTerm) {
                 `;
                 return;
             }
-            
+
             data.forEach(product => {
                 const resultItem = document.createElement('div');
                 resultItem.className = 'search-result-item fade-in';
@@ -130,7 +127,7 @@ function searchProductsAjax(searchTerm) {
 
 function highlightMatch(text, query) {
     if (!query) return text;
-    // Safely highlight without breaking HTML
+    // Escape HTML then highlight match
     const safeText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
     const regex = new RegExp(`(${query})`, 'gi');
     return safeText.replace(regex, '<mark>$1</mark>');

@@ -1,16 +1,13 @@
 <?php
 
-/**
- * Caffean Shop — Update Cart Item AJAX Handler (php/update_cart_item.php)
- * Actions: update_qty | update_option | update_addons | remove
- */
+// Update Cart Item handler — handles quantity, option, addon updates, and item removal.
 ob_start();
 error_reporting(0);
 ini_set('display_errors', 0);
 
 require_once 'db_connection.php';
 
-// Load cart sync utility if available
+// Load the cart sync utility if available.
 if (file_exists(__DIR__ . '/sync_cart.php')) {
     require_once 'sync_cart.php';
 }
@@ -24,16 +21,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
-/* ── Ensure cart exists and is normalised ─────────────────── */
+// Ensure the cart exists and normalize any legacy integer entries.
 if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
 foreach ($_SESSION['cart'] as $pid => &$v) {
     if (!is_array($v)) {
         $v = [
             'quantity'             => (int)$v,
-            'size'                 => 'Short',  // first dropdown option
-            'temperature'          => 'Hot',    // first dropdown option
-            'sugar_level'          => '0%',     // first dropdown option
-            'milk'                 => 'Whole',  // first dropdown option
+            'size'                 => 'Short',  // default: first dropdown option
+            'temperature'          => 'Hot',    // default: first dropdown option
+            'sugar_level'          => '0%',     // default: first dropdown option
+            'milk'                 => 'Whole',  // default: first dropdown option
             'addons'               => [],
             'special_instructions' => ''
         ];
@@ -50,21 +47,21 @@ if (!$pid) {
     exit();
 }
 
-/* ── Execute action ───────────────────────────────────────── */
+// Execute the requested cart action.
 switch ($action) {
 
     case 'update_qty':
-        /* FIX #2: clamp at minimum 1 — never removes via qty update */
+        // Clamp quantity at minimum 1 — never removes via qty update.
         $qty = max(1, intval($_POST['quantity'] ?? 1));
         if (isset($_SESSION['cart'][$pid])) {
             $_SESSION['cart'][$pid]['quantity'] = $qty;
         } else {
             $_SESSION['cart'][$pid] = [
                 'quantity'             => $qty,
-                'size'                 => 'Short',  // first dropdown option
-                'temperature'          => 'Hot',    // first dropdown option
-                'sugar_level'          => '0%',     // first dropdown option
-                'milk'                 => 'Whole',  // first dropdown option
+                'size'                 => 'Short',  // default: first dropdown option
+                'temperature'          => 'Hot',    // default: first dropdown option
+                'sugar_level'          => '0%',     // default: first dropdown option
+                'milk'                 => 'Whole',  // default: first dropdown option
                 'addons'               => [],
                 'special_instructions' => ''
             ];
@@ -99,7 +96,7 @@ switch ($action) {
         exit();
 }
 
-/* ── Recalculate subtotal ─────────────────────────────────── */
+// Recalculate the cart subtotal from current DB prices.
 $subtotal = 0.0;
 $prices   = [];
 
@@ -115,14 +112,14 @@ if (!empty($_SESSION['cart'])) {
     }
 }
 
-// Sync updated cart to DB for logged-in users
+// Sync the updated cart to the database for logged-in users.
 if (isset($_SESSION['user_id']) && function_exists('saveCartToDb')) {
     saveCartToDb($conn, $_SESSION['user_id']);
 }
 
 $cartCount = array_sum(array_column(array_values($_SESSION['cart'] ?: []), 'quantity'));
 
-/* ── Build response ───────────────────────────────────────── */
+// Build and return the JSON response.
 $r['success']    = true;
 $r['subtotal']   = round($subtotal, 2);
 $r['cart_count'] = $cartCount;

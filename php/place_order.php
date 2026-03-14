@@ -1,14 +1,7 @@
 <?php
 
-/**
- * Caffean Shop — Place Order (php/place_order.php)
- * Validates inputs, inserts order with full item customizations, clears the session cart.
- * Returns JSON consumed by checkout.php to render the receipt dialog on success.
- *
- * ROOT CAUSE FIX: mysqli_stmt_bind_param type string was 18 chars for 17 parameters,
- * throwing a PHP 8.x ValueError caught silently by \Throwable on every attempt.
- */
-
+// Place Order handler — validates inputs, inserts the order with item customizations, and clears the session cart.
+// Returns JSON for checkout.php to render the receipt dialog on success.
 ob_start();
 error_reporting(0);
 ini_set('display_errors', 0);
@@ -17,26 +10,32 @@ require_once 'db_connection.php';
 
 header('Content-Type: application/json');
 
-// Disable mysqli auto-throwing (PHP 8.1+ default); all errors handled manually below
+// Disable mysqli auto-throwing; errors are handled manually.
 mysqli_report(MYSQLI_REPORT_OFF);
 
 $r = ['success' => false, 'message' => ''];
 
-// Auth and method guards
+// Reject unauthenticated, non-POST, or empty cart requests.
 if (!isset($_SESSION['user_id'])) {
     $r['message'] = 'Please log in to place an order.';
-    ob_clean(); echo json_encode($r); exit();
+    ob_clean();
+    echo json_encode($r);
+    exit();
 }
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     $r['message'] = 'Invalid request method.';
-    ob_clean(); echo json_encode($r); exit();
+    ob_clean();
+    echo json_encode($r);
+    exit();
 }
 if (empty($_SESSION['cart'])) {
     $r['message'] = 'Your cart is empty.';
-    ob_clean(); echo json_encode($r); exit();
+    ob_clean();
+    echo json_encode($r);
+    exit();
 }
 
-// Sanitize customer inputs
+// Collect and sanitize customer inputs.
 $user_id        = intval($_SESSION['user_id']);
 $full_name      = trim($_POST['name']           ?? '');
 $email          = trim($_POST['email']          ?? '');
@@ -47,29 +46,39 @@ $payment_method = trim($_POST['payment_method'] ?? '');
 $allowed_payments = ['Cash on Delivery', 'GCash', 'Maya', 'Credit/Debit Card', 'GoTyme'];
 $allowed_types    = ['delivery', 'pickup'];
 
-// Validate required customer fields
+// Validate required customer fields.
 if (!$full_name || !$email || !$mobile) {
     $r['message'] = 'Customer information is incomplete.';
-    ob_clean(); echo json_encode($r); exit();
+    ob_clean();
+    echo json_encode($r);
+    exit();
 }
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     $r['message'] = 'Invalid email address.';
-    ob_clean(); echo json_encode($r); exit();
+    ob_clean();
+    echo json_encode($r);
+    exit();
 }
 if (!preg_match('/^09\d{9}$/', $mobile)) {
     $r['message'] = 'Invalid Philippine mobile number.';
-    ob_clean(); echo json_encode($r); exit();
+    ob_clean();
+    echo json_encode($r);
+    exit();
 }
 if (!in_array($order_type, $allowed_types)) {
     $r['message'] = 'Invalid order type.';
-    ob_clean(); echo json_encode($r); exit();
+    ob_clean();
+    echo json_encode($r);
+    exit();
 }
 if (!in_array($payment_method, $allowed_payments)) {
     $r['message'] = 'Invalid payment method.';
-    ob_clean(); echo json_encode($r); exit();
+    ob_clean();
+    echo json_encode($r);
+    exit();
 }
 
-// Build delivery or pickup fields
+// Initialize delivery and pickup fields.
 $delivery_address  = '';
 $house_unit        = '';
 $street_name       = '';
@@ -93,7 +102,9 @@ if ($order_type === 'delivery') {
 
     if (!$house_unit || !$street_name || !$barangay || !$city_municipality || !$province || !$zip_code) {
         $r['message'] = 'Please complete all delivery address fields.';
-        ob_clean(); echo json_encode($r); exit();
+        ob_clean();
+        echo json_encode($r);
+        exit();
     }
     $delivery_address = "$house_unit, $street_name, $barangay, $city_municipality, $province $zip_code";
 } else {
@@ -103,19 +114,24 @@ if ($order_type === 'delivery') {
 
     if (!$pickup_branch || !$pickup_date_val || !$pickup_time_val) {
         $r['message'] = 'Please complete all pickup details.';
-        ob_clean(); echo json_encode($r); exit();
+        ob_clean();
+        echo json_encode($r);
+        exit();
     }
     $delivery_address = "Pickup: $pickup_branch on $pickup_date_val at $pickup_time_val";
 }
 
-// Validate cart products against the DB (active products only)
+// Verify cart products against the database (active only).
 $ids = implode(',', array_map('intval', array_keys($_SESSION['cart'])));
-$res = mysqli_query($conn,
+$res = mysqli_query(
+    $conn,
     "SELECT product_id, name, price FROM products WHERE product_id IN ($ids) AND status = 1"
 );
 if (!$res) {
     $r['message'] = 'Could not verify cart products. Please try again.';
-    ob_clean(); echo json_encode($r); exit();
+    ob_clean();
+    echo json_encode($r);
+    exit();
 }
 
 $valid_products = [];
@@ -125,10 +141,12 @@ while ($p = mysqli_fetch_assoc($res)) {
 
 if (empty($valid_products)) {
     $r['message'] = 'No valid products found in cart.';
-    ob_clean(); echo json_encode($r); exit();
+    ob_clean();
+    echo json_encode($r);
+    exit();
 }
 
-// Calculate verified total from DB prices
+// Calculate the verified order total from DB prices.
 $DELIVERY_FEE = ($order_type === 'delivery') ? 50.00 : 0.00;
 $subtotal     = 0.0;
 foreach ($valid_products as $pid => $p) {
@@ -138,13 +156,14 @@ foreach ($valid_products as $pid => $p) {
 }
 $total = round($subtotal + $DELIVERY_FEE, 2);
 
-// Begin transaction — all inserts are atomic
+// Begin a transaction to ensure all inserts are atomic.
 mysqli_begin_transaction($conn);
 try {
-    // Generate next sequential order number using the established PC- series
+    // Generate the next sequential order number in PC-YYYY-NNNNN format.
     $year     = date('Y');
     $last_row = mysqli_fetch_assoc(
-        mysqli_query($conn,
+        mysqli_query(
+            $conn,
             "SELECT order_number FROM orders
              WHERE order_number LIKE 'PC-{$year}-%'
              ORDER BY order_id DESC LIMIT 1"
@@ -158,10 +177,10 @@ try {
     }
     $order_number = 'PC-' . $year . '-' . str_pad($last_seq + 1, 5, '0', STR_PAD_LEFT);
 
-    // Insert the main order record
-    // FIXED: type string is 17 chars matching exactly 17 placeholders and 17 variables.
-    // Bug was 'sidsssssssssssssss' (18 chars) — one extra 's' threw a PHP 8.x ValueError.
-    $stmt = mysqli_prepare($conn,
+    // Insert the main order record.
+    // 17 type chars matching 17 placeholders and 17 variables.
+    $stmt = mysqli_prepare(
+        $conn,
         "INSERT INTO orders
             (order_number, user_id, total_amount, status, payment_method, delivery_address,
              mobile_number, order_type,
@@ -173,8 +192,9 @@ try {
         throw new \RuntimeException('Order prepare failed: ' . mysqli_error($conn));
     }
 
-    // 17 type chars (s=1, i=2, d=3, s×14=4-17) matching 17 placeholders and 17 variables
-    mysqli_stmt_bind_param($stmt, 'sidssssssssssssss',
+    mysqli_stmt_bind_param(
+        $stmt,
+        'sidssssssssssssss',
         $order_number,     // s  1
         $user_id,          // i  2
         $total,            // d  3
@@ -185,7 +205,7 @@ try {
         $house_unit,       // s  8
         $street_name,      // s  9
         $barangay,         // s 10
-        $city_municipality,// s 11
+        $city_municipality, // s 11
         $province,         // s 12
         $zip_code,         // s 13
         $delivery_notes,   // s 14
@@ -203,9 +223,10 @@ try {
         throw new \RuntimeException('No order_id returned after insert.');
     }
 
-    // Insert each cart item with full customization options
-    // Type string 'iiidssssss' = 10 chars matching 10 placeholders and 10 variables
-    $stmt_items = mysqli_prepare($conn,
+    // Insert each cart item with customization options.
+    // 10 type chars matching 10 placeholders and 10 variables.
+    $stmt_items = mysqli_prepare(
+        $conn,
         "INSERT INTO order_items
             (order_id, product_id, quantity, price_at_time,
              size, temperature, sugar_level, milk_type, addons, special_instructions)
@@ -227,7 +248,9 @@ try {
         $addons = is_array($opts) ? implode(', ', (array)($opts['addons'] ?? [])) : '';
         $notes  = is_array($opts) ? ($opts['special_instructions'] ?? '')      : '';
 
-        mysqli_stmt_bind_param($stmt_items, 'iiidssssss',
+        mysqli_stmt_bind_param(
+            $stmt_items,
+            'iiidssssss',
             $order_id, // i 1
             $pid,      // i 2
             $qty,      // i 3
@@ -253,7 +276,7 @@ try {
 
     mysqli_commit($conn);
 
-    // Clear the session cart after a successful commit
+    // Clear the session cart after a successful commit.
     $_SESSION['cart'] = [];
 
     ob_clean();
@@ -268,7 +291,6 @@ try {
         'total'          => $total,
         'items'          => $items_response,
     ]);
-
 } catch (\Throwable $e) {
     mysqli_rollback($conn);
     error_log('[place_order] ' . $e->getMessage() . ' | user_id=' . $user_id);

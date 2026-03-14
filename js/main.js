@@ -1,15 +1,9 @@
-/**
- * Caffean Shop - Main JavaScript File
- * Handles cart operations, universal favorite management, and notifications.
- */
+// Main JS — handles cart, favorites, and notifications
 
 let cart = JSON.parse(localStorage.getItem('coffeeCart')) || [];
 let currentNotificationTimer = null;
 
-/**
- * Add product to shopping cart
- * FIX #1: On error, strictly prevent any cart update or navigation.
- */
+// Add product to cart
 function addToCart(productId) {
     const formData = new FormData();
     formData.append('product_id', productId);
@@ -30,7 +24,7 @@ function addToCart(productId) {
                 animateCartIcon();
                 trackInteraction(productId, 'add_to_cart');
 
-                // Keep local cart array in sync ONLY on success
+                // Sync local cart on success only
                 const existingItem = cart.find(item => item.id === productId);
                 if (existingItem) {
                     existingItem.quantity += 1;
@@ -40,24 +34,22 @@ function addToCart(productId) {
                 localStorage.setItem('coffeeCart', JSON.stringify(cart));
                 updateCartCount();
 
-                /* Highlight card border when item is in cart */
+                // Highlight card border when in cart
                 const card = document.querySelector(`.product-card[data-product-id="${productId}"]`);
                 if (card) card.classList.add('in-cart');
             } else {
-                // FIX #1: error — show message only, do NOT update cart or navigate
+                // Show error only, do not update cart
                 showNotification(data.message || 'Could not add product to cart.', 'error');
             }
         })
         .catch(error => {
             console.error('Error adding to cart:', error);
-            // FIX #1: catch — show message only, do NOT update cart
+            // Show error only, do not update cart
             showNotification('Error adding product to cart.', 'error');
         });
 }
 
-/**
- * Update cart count display
- */
+// Update cart count badge display
 function updateCartCountDisplay(count) {
     const cartLink = document.querySelector('.nav-icons a[href="cart.php"]');
     if (!cartLink) return;
@@ -69,9 +61,9 @@ function updateCartCountDisplay(count) {
             badge.className = 'cart-badge';
             cartLink.appendChild(badge);
         } else {
-            // Re-trigger pop animation on update
+            // Re-trigger badge pop animation
             badge.style.animation = 'none';
-            badge.offsetHeight; // reflow
+            badge.offsetHeight; // Trigger reflow
             badge.style.animation = '';
         }
         badge.textContent = count;
@@ -87,9 +79,7 @@ function removeFromCart(productId) {
     showNotification('Product removed from cart', 'info');
 }
 
-/**
- * Update qty display, minus-button state, and in-cart highlight for a menu card
- */
+// Update qty display, minus button, and in-cart highlight for a menu card
 function setMenuCardUI(pid, qty) {
     const numEl = document.getElementById('mpf-num-' + pid);
     const minusEl = document.getElementById('mpf-minus-' + pid);
@@ -99,20 +89,17 @@ function setMenuCardUI(pid, qty) {
     if (card) card.classList.toggle('in-cart', qty > 0);
 }
 
-/**
- * Handle qty changes on menu product cards (logged-in users only)
- * Adds, updates, or removes item from session cart via AJAX
- */
+// Handle qty changes on menu product cards via AJAX
 function menuCardQty(pid, delta) {
-    const numEl  = document.getElementById('mpf-num-' + pid);
+    const numEl = document.getElementById('mpf-num-' + pid);
     const current = numEl ? parseInt(numEl.textContent) || 0 : 0;
-    const next    = Math.max(0, current + delta);
+    const next = Math.max(0, current + delta);
 
-    // Get product name from card for notification messages
+    // Get product name for notifications
     const name = document.querySelector(`.product-card[data-product-id="${pid}"] .product-name`)?.textContent?.trim() || 'Product';
 
     if (next === 0) {
-        /* Remove from cart */
+        // Remove from cart
         const fd = new FormData();
         fd.append('action', 'remove');
         fd.append('product_id', pid);
@@ -130,7 +117,7 @@ function menuCardQty(pid, delta) {
             .catch(() => { });
 
     } else if (current === 0) {
-        /* First add */
+        // First add to cart
         const fd = new FormData();
         fd.append('product_id', pid);
         fd.append('quantity', 1);
@@ -153,7 +140,7 @@ function menuCardQty(pid, delta) {
             .catch(() => { });
 
     } else {
-        /* Update quantity — increase or decrease */
+        // Update quantity
         const fd = new FormData();
         fd.append('action', 'update_qty');
         fd.append('product_id', pid);
@@ -181,9 +168,7 @@ function updateQuantity(productId, newQuantity) {
     }
 }
 
-/**
- * Fetch and update cart count badge from server session
- */
+// Fetch and update cart count from server
 function updateCartCount() {
     fetch('php/get_cart_count.php')
         .then(r => r.json())
@@ -195,9 +180,7 @@ function updateCartCount() {
         .catch(() => { });
 }
 
-/**
- * Animate cart icon on add
- */
+// Animate cart icon on add
 function animateCartIcon() {
     const icon = document.querySelector('.nav-icons a[href="cart.php"] .fa-shopping-cart');
     if (!icon) return;
@@ -205,10 +188,7 @@ function animateCartIcon() {
     setTimeout(() => icon.classList.remove('cart-bounce'), 600);
 }
 
-/**
- * Show notification toast — matches kiosk toast style.
- * Creates the element once, reuses it; shows/hides via .show class + CSS transition.
- */
+// Show toast notification
 function showNotification(message, type = 'info') {
     let toast = document.getElementById('notification-toast');
     if (!toast) {
@@ -217,7 +197,7 @@ function showNotification(message, type = 'info') {
         document.body.appendChild(toast);
     }
 
-    // Cancel any pending hide timer
+    // Cancel pending hide timer
     if (currentNotificationTimer) {
         clearTimeout(currentNotificationTimer);
         currentNotificationTimer = null;
@@ -225,7 +205,7 @@ function showNotification(message, type = 'info') {
 
     toast.textContent = message;
 
-    // Force reflow so transition re-triggers on rapid calls
+    // Force reflow for rapid calls
     toast.classList.remove('show');
     void toast.offsetWidth;
     toast.classList.add('show');
@@ -236,21 +216,18 @@ function showNotification(message, type = 'info') {
     }, 2200);
 }
 
-/**
- * Toggle favorite product — persists to DB via favorites.php.
- * Optimistic UI update; reverts on failure.
- */
+// Toggle favorite — updates UI immediately, reverts on failure
 function toggleFavorite(productId, iconEl) {
     const wrapper = iconEl.closest ? iconEl.closest('.favorite-icon') : iconEl.parentElement;
-    const wasFav  = iconEl.classList.contains('fas');
+    const wasFav = iconEl.classList.contains('fas');
 
-    /* Optimistic UI */
+    // Optimistic UI update
     iconEl.classList.replace(wasFav ? 'fas' : 'far', wasFav ? 'far' : 'fas');
     iconEl.style.color = wasFav ? '' : '#c0392b';
     if (wrapper) wrapper.classList.toggle('active', !wasFav);
     showNotification(wasFav ? 'Removed from favorites.' : 'Added to favorites!', wasFav ? 'info' : 'success');
 
-    /* Persist to DB */
+    // Persist to DB
     const fd = new FormData();
     fd.append('action', 'toggle');
     fd.append('product_id', productId);
@@ -258,7 +235,7 @@ function toggleFavorite(productId, iconEl) {
         .then(r => r.json())
         .then(d => {
             if (!d.success) {
-                /* Revert on DB failure */
+                // Revert on failure
                 iconEl.classList.replace(wasFav ? 'far' : 'fas', wasFav ? 'fas' : 'far');
                 iconEl.style.color = wasFav ? '#c0392b' : '';
                 if (wrapper) wrapper.classList.toggle('active', wasFav);
@@ -268,10 +245,7 @@ function toggleFavorite(productId, iconEl) {
         .catch(() => showNotification('Could not update favorites.', 'error'));
 }
 
-/**
- * Batch-check favorited products on page load and mark card buttons.
- * Handles both .fav-card-btn (menu/supplies) and .favorite-icon (legacy).
- */
+// Batch-check favorites on load and mark card buttons
 function loadFavoritesForMenu() {
     if (!window.IS_LOGGED_IN) return;
     const cards = document.querySelectorAll('[data-product-id]');
@@ -289,14 +263,14 @@ function loadFavoritesForMenu() {
                 const pid = card.dataset.productId;
                 if (!favSet.has(pid)) return;
 
-                /* .fav-card-btn — menu and supplies pages */
+                // Menu and supplies favorite button
                 const btn = card.querySelector('.fav-card-btn');
                 if (btn) {
                     btn.classList.add('active');
                     btn.querySelector('i').className = 'fas fa-heart';
                 }
 
-                /* .favorite-icon — legacy pages */
+                // Legacy favorite icon
                 const icon = card.querySelector('.favorite-icon i');
                 if (icon) {
                     icon.classList.replace('far', 'fas');
@@ -306,12 +280,10 @@ function loadFavoritesForMenu() {
                 }
             });
         })
-        .catch(() => {});
+        .catch(() => { });
 }
 
-/**
- * Track user interaction (lightweight analytics)
- */
+// Track user interaction for analytics
 function trackInteraction(productId, action) {
     try {
         const key = 'interactions';
@@ -322,9 +294,9 @@ function trackInteraction(productId, action) {
     } catch (e) { /* fail silently */ }
 }
 
-// Initialise cart count on page load
+// Init on page load
 document.addEventListener('DOMContentLoaded', () => {
-    // Guests never retain cart or interaction data
+    // Clear guest cart and interaction data
     if (!window.IS_LOGGED_IN) {
         localStorage.removeItem('coffeeCart');
         localStorage.removeItem('interactions');
@@ -333,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCartCount();
     loadFavoritesForMenu();
 
-    /* Restore in-cart border highlights from saved cart */
+    // Restore in-cart highlights from saved cart
     cart.forEach(item => {
         if (item.quantity > 0) {
             const card = document.querySelector(`.product-card[data-product-id="${item.id}"]`);
@@ -341,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    /* Init menu card qty selectors from server session cart */
+    // Init menu card qty from server cart
     if (window.serverCart) {
         Object.entries(window.serverCart).forEach(([pid, qty]) => {
             if (qty > 0) setMenuCardUI(parseInt(pid), qty);

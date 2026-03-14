@@ -1,27 +1,24 @@
 <?php
 
-/**
- * Caffean Shop — Add to Cart Handler (php/add_to_cart.php)
- * FIX #1: Output buffering ensures clean JSON — no stray output can corrupt the response.
- * FIX #5: Default options use the FIRST item of each dropdown (Short, Hot, 0%, Whole).
- */
-ob_start();                  // capture any accidental output (warnings, notices, etc.)
-error_reporting(0);          // suppress PHP notices/warnings from reaching the buffer
+// Add to Cart handler — processes POST requests and updates the session cart.
+// Output buffering prevents stray output from corrupting the JSON response.
+ob_start();
+error_reporting(0); // Suppress notices and warnings.
 ini_set('display_errors', 0);
 
 require_once 'db_connection.php';
 
 if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
 
-/* Normalise any legacy integer cart entries */
+// Normalize legacy integer cart entries to the standard array format.
 foreach ($_SESSION['cart'] as $pid => &$v) {
     if (!is_array($v)) {
         $v = [
             'quantity'             => (int)$v,
-            'size'                 => 'Short',  // first dropdown option
-            'temperature'          => 'Hot',    // first dropdown option
-            'sugar_level'          => '0%',     // first dropdown option
-            'milk'                 => 'Whole',  // first dropdown option
+            'size'                 => 'Short',  // default: first dropdown option
+            'temperature'          => 'Hot',    // default: first dropdown option
+            'sugar_level'          => '0%',     // default: first dropdown option
+            'milk'                 => 'Whole',  // default: first dropdown option
             'addons'               => [],
             'special_instructions' => ''
         ];
@@ -49,13 +46,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
             $_SESSION['cart'][$product_id]['quantity'] += $quantity;
             $response['message'] = $product['name'] . ' quantity updated!';
         } else {
-            /* FIX #5: defaults match the first option in each dropdown */
+            // Add new item with default options for each customization field.
             $_SESSION['cart'][$product_id] = [
                 'quantity'             => $quantity,
-                'size'                 => 'Short', // first dropdown option
-                'temperature'          => 'Hot',   // first dropdown option
-                'sugar_level'          => '0%',    // first dropdown option
-                'milk'                 => 'Whole', // first dropdown option
+                'size'                 => 'Short', // default: first dropdown option
+                'temperature'          => 'Hot',   // default: first dropdown option
+                'sugar_level'          => '0%',    // default: first dropdown option
+                'milk'                 => 'Whole', // default: first dropdown option
                 'addons'               => [],
                 'special_instructions' => ''
             ];
@@ -73,15 +70,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'])) {
     $response['message'] = 'Invalid request.';
 }
 
-/* ── AJAX response ─────────────────────────────────────────── */
+// Return JSON for AJAX requests.
 if (isset($_POST['ajax']) && $_POST['ajax'] == '1') {
-    ob_end_clean();             // discard any accidental output before JSON
+    ob_end_clean(); // Discard buffered output before sending JSON.
     header('Content-Type: application/json');
     echo json_encode($response);
     exit();
 }
 
-/* ── Non-AJAX fallback ─────────────────────────────────────── */
+// Non-AJAX fallback: store a flash message and redirect back.
 if ($response['success']) {
     $_SESSION['cart_message'] = $response['message'];
 } else {

@@ -1,12 +1,8 @@
 <?php
 
-/**
- * product_images.php — Central product image resolver
- * Maps each product name to its imgur direct URL.
- * Used as fallback when image_path in DB is empty or a local path.
- */
+// Central product image resolver — maps product names to their direct image URLs.
 
-// Name → imgur direct URL map (all products)
+// Product name to direct image URL map.
 $PRODUCT_IMAGE_MAP = [
     // Hot Coffee
     'Caffe Americano'              => 'https://i.imgur.com/dpLGx8h.jpg',
@@ -79,37 +75,31 @@ $PRODUCT_IMAGE_MAP = [
     'Breville Barista Express'     => 'https://i.imgur.com/F60y2wr.jpg',
     'French Press (Bodum)'         => 'https://i.imgur.com/pKbz9GB.jpg',
     'Hario V60 Dripper (Ceramic)'  => 'https://i.imgur.com/3NMAYcn.jpg',
-    'Temperature Controlled Kettle'=> 'https://i.imgur.com/04JYQ9c.jpg',
+    'Temperature Controlled Kettle' => 'https://i.imgur.com/04JYQ9c.jpg',
 ];
 
-/**
- * Returns the resolved image URL for a product.
- * Priority: imgur map by name → existing image_path → category fallback.
- *
- * @param string $name       Product name
- * @param string $image_path DB image_path value
- * @param int    $cat_id     category_id for fallback
- * @return string            URL or local path to image
- */
-function resolveProductImage($name, $image_path, $cat_id = 0) {
+// Returns the resolved image URL for a product.
+// Priority: name map → external URL → local path → category fallback.
+function resolveProductImage($name, $image_path, $cat_id = 0)
+{
     global $PRODUCT_IMAGE_MAP;
 
-    // Use imgur map if name matches
+    // Use the name map if a match exists.
     if (isset($PRODUCT_IMAGE_MAP[$name])) {
         return $PRODUCT_IMAGE_MAP[$name];
     }
 
-    // Use DB path if it is an external URL
+    // Use the DB path if it is an external URL.
     if (!empty($image_path) && strpos($image_path, 'http') === 0) {
         return $image_path;
     }
 
-    // Use local uploaded path if it exists
+    // Use the local uploaded path if it exists.
     if (!empty($image_path)) {
         return $image_path;
     }
 
-    // Category-based fallback
+    // Fall back to a category-based placeholder image.
     $pastry_cats = [3, 6, 7, 8];
     if (in_array($cat_id, $pastry_cats)) {
         return 'images/pastry.png';

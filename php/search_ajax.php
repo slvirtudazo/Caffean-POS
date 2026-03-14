@@ -1,9 +1,6 @@
 <?php
-/**
- * Caffean Shop - AJAX Search Handler
- * Queries the database for products matching the search term.
- */
 
+// AJAX Search handler — queries active products by name or description.
 require_once 'db_connection.php';
 
 header('Content-Type: application/json');
@@ -15,7 +12,7 @@ if (strlen($query) < 1) {
     exit;
 }
 
-// Search both name and description
+// Match the search term against product name and description.
 $searchTerm = "%{$query}%";
 $sql = "SELECT product_id, name, description, price, category_id 
         FROM products 
@@ -34,4 +31,3 @@ while ($row = mysqli_fetch_assoc($result)) {
 
 mysqli_stmt_close($stmt);
 echo json_encode($products);
-?>

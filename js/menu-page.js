@@ -1,40 +1,31 @@
-/**
- * Menu Page JavaScript
- * Handles filtering interactions and dynamic updates for the menu page
- */
+// Menu page JS — handles filtering and dynamic updates
 
-/**
- * Initialize menu page functionality when DOM is loaded
- */
+// Init menu page on DOM load
 document.addEventListener('DOMContentLoaded', function () {
 
-    // Load and display saved favorites on product cards
+    // Load and display saved favorites
     loadFavoritesForMenu();
 
-    // Setup smooth animations for product cards
+    // Set up product card animations
     setupProductAnimations();
 
-    // Setup mobile filter toggle if needed
+    // Set up mobile filter toggle
     setupMobileFilters();
 
-    // Setup multi-select sort item toggles
+    // Set up sort toggles
     setupSortToggles();
 
-    // Track page view for analytics
+    // Track page view
     trackMenuPageView();
 });
 
-/**
- * Setup sort item toggles.
- * * Rules:
- * - 'price_sort' and 'popular' are mutually exclusive sorts.
- */
+// Set up sort toggles — price and popularity are mutually exclusive
 function setupSortToggles() {
     const sortItems = document.querySelectorAll('.sort-item[data-sort-param]');
 
     sortItems.forEach(function (item) {
         item.addEventListener('click', function () {
-            // Because we're navigating away, let's save scroll pos
+            // Save scroll position before navigation
             if (typeof saveScrollPosition === 'function') {
                 saveScrollPosition();
             }
@@ -46,35 +37,31 @@ function setupSortToggles() {
             const urlParams = new URLSearchParams(window.location.search);
 
             if (isActive) {
-                // Deselect: remove the param entirely
+                // Deselect: remove param
                 urlParams.delete(param);
             } else {
-                // EXCLUSIVITY RULE: Sorting by Price and Popularity/Best Sellers cannot happen simultaneously.
-                // Clear both first to ensure they don't stack.
+                // Clear both sort params to prevent stacking
                 if (param === 'price_sort' || param === 'popular') {
                     urlParams.delete('price_sort');
                     urlParams.delete('popular');
                 }
 
-                // Activate: set the new param
+                // Activate: set new param
                 urlParams.set(param, value);
             }
 
-            // VISUAL FEEDBACK: Instantly dim the clicked item and show a loading cursor 
-            // so the interface feels fast before the PHP page reload completes.
+            // Dim item and show loading cursor while page reloads
             item.style.opacity = '0.5';
             document.body.style.cursor = 'wait';
 
-            // Navigate to the new URL
+            // Navigate to new URL
             const newSearch = urlParams.toString();
             window.location.href = window.location.pathname + (newSearch ? '?' + newSearch : '');
         });
     });
 }
 
-/**
- * Setup intersection observer for product card fade-in animations.
- */
+// Set up fade-in animation for product cards
 function setupProductAnimations() {
     const productCards = document.querySelectorAll('.product-card');
 
@@ -98,9 +85,7 @@ function setupProductAnimations() {
     });
 }
 
-/**
- * Setup mobile filter panel toggle.
- */
+// Set up mobile filter panel toggle
 function setupMobileFilters() {
     if (window.innerWidth <= 768) {
         const filterPanel = document.querySelector('.filter-panel');
@@ -152,9 +137,7 @@ function setupMobileFilters() {
     }
 }
 
-/**
- * Track menu page view for analytics.
- */
+// Track menu page view for analytics
 function trackMenuPageView() {
     const urlParams = new URLSearchParams(window.location.search);
     const category = urlParams.get('category') || 'all';
@@ -169,9 +152,7 @@ function trackMenuPageView() {
     });
 }
 
-/**
- * Update URL parameters without page reload (utility).
- */
+// Update URL parameter without page reload
 function updateURLParameter(param, value) {
     const urlParams = new URLSearchParams(window.location.search);
 
@@ -185,9 +166,7 @@ function updateURLParameter(param, value) {
     window.history.pushState({ path: newUrl }, '', newUrl);
 }
 
-/**
- * Filter products by search term (client-side).
- */
+// Filter products by search term on the client side
 function filterProductsBySearch(searchTerm) {
     const products = document.querySelectorAll('.product-card');
     const searchLower = searchTerm.toLowerCase().trim();
@@ -211,9 +190,7 @@ function filterProductsBySearch(searchTerm) {
     }
 }
 
-/**
- * Smooth scroll to top of products grid.
- */
+// Smooth scroll to top of products grid
 function scrollToProducts() {
     const productsGrid = document.querySelector('.products-grid');
     if (productsGrid) {
@@ -221,9 +198,7 @@ function scrollToProducts() {
     }
 }
 
-/**
- * Show loading state on product grid.
- */
+// Show loading skeleton on product grid
 function showLoadingState() {
     const productsGrid = document.querySelector('.products-grid');
     if (productsGrid) {
@@ -238,9 +213,7 @@ function showLoadingState() {
     }
 }
 
-/**
- * Add keyboard navigation support for filters.
- */
+// Add keyboard navigation for filter items
 function setupKeyboardNavigation() {
     const filterItems = document.querySelectorAll('.category-item, .sort-item');
 
@@ -256,5 +229,5 @@ function setupKeyboardNavigation() {
     });
 }
 
-// Initialize keyboard navigation on load
+// Init keyboard navigation on load
 document.addEventListener('DOMContentLoaded', setupKeyboardNavigation);

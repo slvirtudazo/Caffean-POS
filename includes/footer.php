@@ -1,19 +1,15 @@
 <?php
 
-/**
- * Caffean Shop — Shared Frontend Footer
- * Included by all customer-facing pages.
- * Matching design: CAFFEAN | OUR POLICIES | SOCIAL MEDIA
- */
+// Shared frontend footer — included by all customer-facing pages
 ?>
 
-<!-- ════ FOOTER ════════════════════════════════════════════════ -->
+<!-- Footer -->
 <footer class="footer">
     <div class="container">
 
         <div class="footer-content">
 
-            <!-- ── Brand & Contact ──────────────────────────────── -->
+            <!-- Brand and contact -->
             <div class="footer-section">
                 <span class="footer-brand-name">CAFFEAN</span>
                 <div class="footer-contact">
@@ -22,7 +18,7 @@
                 </div>
             </div>
 
-            <!-- ── Policies ──────────────────────────────────────── -->
+            <!-- Policies -->
             <div class="footer-section">
                 <h3>Our Policies</h3>
                 <ul class="footer-links">
@@ -32,7 +28,7 @@
                 </ul>
             </div>
 
-            <!-- ── Social Media ──────────────────────────────────── -->
+            <!-- Social media -->
             <div class="footer-section">
                 <h3>Social Media</h3>
                 <div class="social-icons">
@@ -58,4 +54,4 @@
 
     </div><!-- /.container -->
 </footer>
-<!-- ════ END FOOTER ══════════════════════════════════════════════ -->
+<!-- End footer -->

@@ -1,15 +1,13 @@
 <?php
 
-/**
- * sync_cart.php — Cart DB sync utility
- * Saves/loads session cart to/from user_carts table for logged-in users.
- */
+// Cart DB sync utility — saves and loads the session cart for logged-in users.
 
-// Save session cart to DB for logged-in user
-function saveCartToDb($conn, $user_id) {
+// Saves the session cart to the database for the given user.
+function saveCartToDb($conn, $user_id)
+{
     if (!$user_id || !$conn) return;
 
-    // Clear current cart rows for this user
+    // Delete existing cart rows for this user.
     $del = mysqli_prepare($conn, "DELETE FROM user_carts WHERE user_id = ?");
     mysqli_stmt_bind_param($del, 'i', $user_id);
     mysqli_stmt_execute($del);
@@ -17,8 +15,9 @@ function saveCartToDb($conn, $user_id) {
 
     if (empty($_SESSION['cart'])) return;
 
-    // Insert each cart item
-    $ins = mysqli_prepare($conn,
+    // Insert each cart item into the database.
+    $ins = mysqli_prepare(
+        $conn,
         "INSERT INTO user_carts
             (user_id, product_id, quantity, size, temperature, sugar_level, milk, addons, special_instructions)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
@@ -35,20 +34,32 @@ function saveCartToDb($conn, $user_id) {
         $addons = json_encode($item['addons']         ?? []);
         $notes  = (string)($item['special_instructions'] ?? '');
 
-        mysqli_stmt_bind_param($ins, 'iiissssss',
-            $uid, $pid_i, $qty, $size, $temp, $sugar, $milk, $addons, $notes
+        mysqli_stmt_bind_param(
+            $ins,
+            'iiissssss',
+            $uid,
+            $pid_i,
+            $qty,
+            $size,
+            $temp,
+            $sugar,
+            $milk,
+            $addons,
+            $notes
         );
         mysqli_stmt_execute($ins);
     }
     mysqli_stmt_close($ins);
 }
 
-// Load cart from DB into session for logged-in user
-// DB items only added if not already in session (session takes priority)
-function loadCartFromDb($conn, $user_id) {
+// Loads the cart from the database into the session for the given user.
+// Session items take priority — DB items are only added if not already present.
+function loadCartFromDb($conn, $user_id)
+{
     if (!$user_id || !$conn) return;
 
-    $sel = mysqli_prepare($conn,
+    $sel = mysqli_prepare(
+        $conn,
         "SELECT uc.product_id, uc.quantity, uc.size, uc.temperature,
                 uc.sugar_level, uc.milk, uc.addons, uc.special_instructions
          FROM user_carts uc

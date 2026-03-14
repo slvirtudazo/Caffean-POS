@@ -1,17 +1,13 @@
 <?php
-/**
- * Caffean — Update Profile Endpoint (php/update_profile.php)
- * Handles two actions via POST field 'action':
- *   'info'     — update full_name, email, mobile_number, optional avatar
- *   'password' — update password only (requires current_password verification)
- * Default (no action) behaves as 'info' for backward compatibility.
- */
 
+// Update Profile handler — updates account info or changes the password based on the action field.
+// action='info' (or default): update name, email, mobile, address, and avatar.
+// action='password': change the password after verifying the current one.
 require_once 'db_connection.php';
 
 header('Content-Type: application/json');
 
-/* Must be logged in */
+// Reject unauthenticated requests.
 if (!isset($_SESSION['user_id'])) {
     echo json_encode(['success' => false, 'message' => 'Not authenticated.']);
     exit();
@@ -20,7 +16,7 @@ if (!isset($_SESSION['user_id'])) {
 $user_id = (int)$_SESSION['user_id'];
 $action  = trim($_POST['action'] ?? 'info');
 
-/* ── PASSWORD CHANGE ─────────────────────────────────────────── */
+// Password change action.
 if ($action === 'password') {
     $current_password = $_POST['current_password'] ?? '';
     $new_password     = $_POST['new_password']     ?? '';
@@ -39,7 +35,7 @@ if ($action === 'password') {
         exit();
     }
 
-    /* Verify current password */
+    // Verify the current password before allowing a change.
     $pw_stmt = mysqli_prepare($conn, "SELECT password FROM users WHERE user_id = ?");
     mysqli_stmt_bind_param($pw_stmt, 'i', $user_id);
     mysqli_stmt_execute($pw_stmt);
@@ -65,7 +61,7 @@ if ($action === 'password') {
     exit();
 }
 
-/* ── ACCOUNT INFO UPDATE (action='info' or default) ─────────── */
+// Account info update (action='info' or default).
 $full_name         = trim($_POST['full_name']         ?? '');
 $email             = trim($_POST['email']             ?? '');
 $mobile_number     = trim($_POST['mobile_number']     ?? '');
@@ -76,7 +72,7 @@ $city_municipality = trim($_POST['city_municipality'] ?? '');
 $province          = trim($_POST['province']          ?? '');
 $zip_code          = trim($_POST['zip_code']          ?? '');
 
-/* Basic validation */
+// Validate required fields.
 if ($full_name === '' || $email === '') {
     echo json_encode(['success' => false, 'message' => 'Full name and email are required.']);
     exit();
@@ -94,7 +90,7 @@ if ($zip_code !== '' && !preg_match('/^\d{4}$/', $zip_code)) {
     exit();
 }
 
-/* Email uniqueness check */
+// Check that the email is not already used by another account.
 $chk = mysqli_prepare($conn, "SELECT user_id FROM users WHERE email = ? AND user_id != ?");
 mysqli_stmt_bind_param($chk, 'si', $email, $user_id);
 mysqli_stmt_execute($chk);
@@ -106,7 +102,7 @@ if (mysqli_stmt_num_rows($chk) > 0) {
 }
 mysqli_stmt_close($chk);
 
-/* Handle optional profile image upload */
+// Handle optional profile image upload.
 $profile_image = null;
 if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
     $allowed_mime = ['image/jpeg', 'image/png', 'image/webp'];
@@ -133,26 +129,45 @@ if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) {
     }
 }
 
-/* Build UPDATE query */
+// Build and execute the UPDATE query based on whether an avatar was uploaded.
 if ($profile_image !== null) {
     $sql  = "UPDATE users SET full_name=?, email=?, mobile_number=?,
              profile_image=?, house_unit=?, street_name=?, barangay=?,
              city_municipality=?, province=?, zip_code=? WHERE user_id=?";
     $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, 'ssssssssssi',
-        $full_name, $email, $mobile_number, $profile_image,
-        $house_unit, $street_name, $barangay,
-        $city_municipality, $province, $zip_code, $user_id
+    mysqli_stmt_bind_param(
+        $stmt,
+        'ssssssssssi',
+        $full_name,
+        $email,
+        $mobile_number,
+        $profile_image,
+        $house_unit,
+        $street_name,
+        $barangay,
+        $city_municipality,
+        $province,
+        $zip_code,
+        $user_id
     );
 } else {
     $sql  = "UPDATE users SET full_name=?, email=?, mobile_number=?,
              house_unit=?, street_name=?, barangay=?,
              city_municipality=?, province=?, zip_code=? WHERE user_id=?";
     $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, 'sssssssssi',
-        $full_name, $email, $mobile_number,
-        $house_unit, $street_name, $barangay,
-        $city_municipality, $province, $zip_code, $user_id
+    mysqli_stmt_bind_param(
+        $stmt,
+        'sssssssssi',
+        $full_name,
+        $email,
+        $mobile_number,
+        $house_unit,
+        $street_name,
+        $barangay,
+        $city_municipality,
+        $province,
+        $zip_code,
+        $user_id
     );
 }
 

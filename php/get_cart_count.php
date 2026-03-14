@@ -1,10 +1,6 @@
 <?php
 
-/**
- * Caffean Shop — Get Cart Count (php/get_cart_count.php)
- * Returns the total quantity of items in the session cart as JSON.
- * Called by main.js updateCartCount() to keep the navbar badge in sync.
- */
+// Returns the total cart item quantity as JSON for the navbar badge counter.
 require_once 'db_connection.php';
 
 header('Content-Type: application/json');
