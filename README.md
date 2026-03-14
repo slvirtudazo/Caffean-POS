@@ -86,9 +86,3 @@ coffee-shop-management-system/
 │
 └── images/                    # Product and UI images
 ```
-
-<hr>
-
-**License**
-
-This project is distributed under the **MIT License**, which permits free use, modification, and distribution of the software with proper attribution. Commercial and non-commercial applications are permitted. The software is provided without warranty of any kind, and the authors assume no liability for damages resulting from its use. For complete license terms, refer to the `LICENSE` file in the project repository.
