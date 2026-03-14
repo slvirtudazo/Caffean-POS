@@ -17,7 +17,7 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="css/about-page.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/about_page.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
 </head>
 
@@ -39,7 +39,7 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="menu.php">Menu</a></li>
-                    <li class="nav-item"><a class="nav-link" href="supplies-page.php">Supplies</a></li>
+                    <li class="nav-item"><a class="nav-link" href="supplies_page.php">Supplies</a></li>
                     <li class="nav-item"><a class="nav-link active" href="about.php">About</a></li>
                 </ul>
             </div>

@@ -35,9 +35,9 @@ $products_result = mysqli_query(
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="css/pastry-page.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/pastry_page.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="css/footer-section.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/footer_section.css?v=<?php echo time(); ?>">
     <style>
         .product-category {
             font-family: var(--font-subheading);
@@ -68,7 +68,7 @@ $products_result = mysqli_query(
                     <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="coffee.php">Coffee</a></li>
                     <li class="nav-item"><a class="nav-link active" href="pastry.php">Pastry</a></li>
-                    <li class="nav-item"><a class="nav-link" href="supplies-page.php">Supplies</a></li>
+                    <li class="nav-item"><a class="nav-link" href="supplies_page.php">Supplies</a></li>
                     <li class="nav-item"><a class="nav-link" href="contact.php">Contact</a></li>
                 </ul>
             </div>

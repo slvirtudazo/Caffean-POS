@@ -104,7 +104,7 @@ if ($category_filter > 0) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="css/menu-page.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/menu_page.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/components.css?v=<?php echo time(); ?>">
 </head>
@@ -126,7 +126,7 @@ if ($category_filter > 0) {
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
                     <li class="nav-item"><a class="nav-link active" href="menu.php">Menu</a></li>
-                    <li class="nav-item"><a class="nav-link" href="supplies-page.php">Supplies</a></li>
+                    <li class="nav-item"><a class="nav-link" href="supplies_page.php">Supplies</a></li>
                     <li class="nav-item"><a class="nav-link" href="about.php">About</a></li>
                 </ul>
             </div>
@@ -481,7 +481,7 @@ if ($category_filter > 0) {
     </script>
     <script src="js/main.js?v=<?php echo time(); ?>"></script>
     <script src="js/search.js?v=<?php echo time(); ?>"></script>
-    <script src="js/menu-page.js?v=<?php echo time(); ?>"></script>
+    <script src="js/menu_page.js?v=<?php echo time(); ?>"></script>
 
     <script>
         /* ── Favorites: toggle on heart button click ─────────── */

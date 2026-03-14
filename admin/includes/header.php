@@ -270,7 +270,7 @@ $page_css_file = $page_css_map[$current_page] ?? null;
     <div class="admin-nav-inner">
       <a href="<?= BASE_URL ?>/admin/dashboard.php" class="admin-brand">
         <img src="<?= BASE_URL ?>/images/coffee_beans_logo.png" alt="Caffean" />
-        <span>Caffean</span>
+        <span>caffean</span>
       </a>
       <div class="nav-right">
         <a href="<?= BASE_URL ?>/" target="_blank" class="btn-ghost">

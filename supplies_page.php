@@ -97,7 +97,7 @@ function buildSupplyUrl($overrides = [], $removals = [])
     }
     foreach ($overrides as $k => $v) $params[$k] = $v;
     foreach ($removals  as $k)      unset($params[$k]);
-    return 'supplies-page.php' . ($params ? '?' . http_build_query($params) : '');
+    return 'supplies_page.php' . ($params ? '?' . http_build_query($params) : '');
 }
 
 // Render a single product card.
@@ -159,13 +159,13 @@ function renderSupplyCard($product, $is_admin, $is_logged_in)
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Caffean - Supplies</title>
+    <title>Caffean - Supplies Page</title>
 
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="css/supplies-page.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/supplies_page.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/components.css?v=<?php echo time(); ?>">
 </head>
@@ -187,7 +187,7 @@ function renderSupplyCard($product, $is_admin, $is_logged_in)
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="menu.php">Menu</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="supplies-page.php">Supplies</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="supplies_page.php">Supplies</a></li>
                     <li class="nav-item"><a class="nav-link" href="about.php">About</a></li>
                 </ul>
             </div>
@@ -308,7 +308,7 @@ function renderSupplyCard($product, $is_admin, $is_logged_in)
                                     </span>
                                 <?php endif; ?>
 
-                                <a href="supplies-page.php" class="btn-clear-active-filters">Clear All <i class="fas fa-times"></i></a>
+                                <a href="supplies_page.php" class="btn-clear-active-filters">Clear All <i class="fas fa-times"></i></a>
                             </div>
                         </div>
                     <?php endif; ?>
@@ -349,7 +349,7 @@ function renderSupplyCard($product, $is_admin, $is_logged_in)
                             <i class="fas fa-box-open"></i>
                             <h3>No products found</h3>
                             <p>Try adjusting your filters or browse all categories</p>
-                            <a href="supplies-page.php" class="btn-primary">View All Supplies</a>
+                            <a href="supplies_page.php" class="btn-primary">View All Supplies</a>
                         </div>
                     <?php endif; ?>
 

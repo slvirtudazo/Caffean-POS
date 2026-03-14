@@ -13,14 +13,14 @@ $is_logged_in  = isset($_SESSION['user_id']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Caffean - Home</title>
+    <title>Caffean - Home Page</title>
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/buttons.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="css/footer-section.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="css/footer_section.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/components.css?v=<?php echo time(); ?>">
 </head>
 
@@ -40,7 +40,7 @@ $is_logged_in  = isset($_SESSION['user_id']);
                 <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link active" href="index.php">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="menu.php">Menu</a></li>
-                    <li class="nav-item"><a class="nav-link" href="supplies-page.php">Supplies</a></li>
+                    <li class="nav-item"><a class="nav-link" href="supplies_page.php">Supplies</a></li>
                     <li class="nav-item"><a class="nav-link" href="about.php">About</a></li>
                 </ul>
             </div>
