@@ -1,14 +1,11 @@
-/**
- * Caffean Shop — Kiosk Stylesheet
- * Self-order kiosk flow styles matching main site theme.
- */
+/* Kiosk self-order flow styles */
 
-/* Lock body scroll on step 1 — fits viewport exactly */
+/* Lock body scroll on step 1 */
 body.kiosk-no-scroll {
     overflow: hidden;
 }
 
-/* ── Step sections ───────────────────────────────────────────── */
+/* Step sections */
 .kiosk-step {
     display: none;
     min-height: calc(100vh - 135px);
@@ -24,7 +21,7 @@ body.kiosk-no-scroll {
     padding-bottom: 0;
 }
 
-/* Step 1 fills exact viewport — no scroll, no overflow */
+/* Step 1: fills exact viewport */
 #step1 {
     height: calc(100vh - 135px);
     overflow: hidden;
@@ -37,7 +34,7 @@ body.kiosk-no-scroll {
     margin: 0;
 }
 
-/* Back button — shared style for steps 1 & 2 (inside dark cart bar) */
+/* Back button */
 .kcb-back-btn {
     background: rgba(255, 255, 255, 0.12);
     border: 1.5px solid rgba(255, 255, 255, 0.35);
@@ -70,7 +67,7 @@ body.kiosk-no-scroll {
     }
 }
 
-/* ── Kiosk navbar overrides ──────────────────────────────────── */
+/* Navbar overrides */
 .navbar {
     padding: calc(var(--spacing-sm) - 2px) 0;
 }
@@ -80,7 +77,7 @@ body.kiosk-no-scroll {
     padding: 0 1.5rem 0 1rem;
 }
 
-/* Match home page brand size exactly */
+/* Brand size */
 .navbar .navbar-brand {
     font-size: 1.65rem;
 }
@@ -90,7 +87,7 @@ body.kiosk-no-scroll {
     height: 30px;
 }
 
-/* ── Common Bar Layout (Progress & Cart) ─────────────────────── */
+/* Bar layout */
 .kiosk-bar-wrapper {
     display: flex;
     align-items: center;
@@ -106,7 +103,7 @@ body.kiosk-no-scroll {
     display: flex;
     align-items: center;
     min-width: 0;
-    /* Allows text truncation if necessary */
+
 }
 
 .k-bar-left {
@@ -123,11 +120,11 @@ body.kiosk-no-scroll {
     justify-content: center;
     max-width: 640px;
     flex: 0 1 auto;
-    /* Take required space, perfectly center aligning content */
+
     width: 100%;
 }
 
-/* ── Progress bar ────────────────────────────────────────────── */
+/* Progress bar */
 .kiosk-progress {
     background: var(--deep-maroon);
     padding: 1rem 0;
@@ -144,7 +141,7 @@ body.kiosk-no-scroll {
     width: 100%;
 }
 
-/* Each step takes equal space, connector line between dots */
+/* Step dots */
 .kp-step {
     display: flex;
     flex-direction: column;
@@ -154,7 +151,7 @@ body.kiosk-no-scroll {
     position: relative;
 }
 
-/* Connector line stops at each circle's edge */
+/* Connector line */
 .kp-step:not(:last-child)::after {
     content: '';
     position: absolute;
@@ -166,12 +163,12 @@ body.kiosk-no-scroll {
     z-index: 0;
 }
 
-/* Done step connector brightens */
+/* Done connector */
 .kp-step.done:not(:last-child)::after {
     background: rgba(255, 255, 255, 0.55);
 }
 
-/* Default dot — inactive */
+/* Inactive dot */
 .kp-dot {
     width: 32px;
     height: 32px;
@@ -190,7 +187,7 @@ body.kiosk-no-scroll {
     transition: all 0.3s ease;
 }
 
-/* Active dot — burgundy fill with white ring */
+/* Active dot */
 .kp-step.active .kp-dot {
     background: var(--burgundy-wine);
     border: 2px solid rgba(255, 255, 255, 0.5);
@@ -199,7 +196,7 @@ body.kiosk-no-scroll {
     box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
 }
 
-/* Done dot — muted light fill */
+/* Done dot */
 .kp-step.done .kp-dot {
     background: rgba(255, 255, 255, 0.55);
     border-color: rgba(255, 255, 255, 0.55);
@@ -207,7 +204,7 @@ body.kiosk-no-scroll {
     font-weight: 700;
 }
 
-/* Default label — inactive, 400 */
+/* Inactive label */
 .kp-lbl {
     font-size: 0.5rem;
     color: rgba(255, 255, 255, 0.4);
@@ -217,19 +214,19 @@ body.kiosk-no-scroll {
     font-weight: 400;
 }
 
-/* Active label — 700 */
+/* Active label */
 .kp-step.active .kp-lbl {
     color: #fff;
     font-weight: 700;
 }
 
-/* Done label — visible but not bold */
+/* Done label */
 .kp-step.done .kp-lbl {
     color: rgba(255, 255, 255, 0.7);
     font-weight: 400;
 }
 
-/* ── Bottom cart bar — visible only on step 2 ────────────────── */
+/* Bottom cart bar */
 .kiosk-cart-bar {
     position: fixed;
     bottom: 0;
@@ -245,7 +242,7 @@ body.kiosk-no-scroll {
         0 -8px 24px rgba(0, 0, 0, 0.22);
 }
 
-/* Mirrors .kiosk-bar-wrapper — same padding already on .kiosk-cart-bar */
+/* Cart bar wrapper */
 .kcb-wrapper {
     display: flex;
     align-items: center;
@@ -254,12 +251,12 @@ body.kiosk-no-scroll {
     gap: 0;
 }
 
-/* Empty spacer — mirrors k-bar-left (flex: 1) */
+/* Left spacer */
 .kcb-bar-left {
     flex: 1;
 }
 
-/* 5-column center — mirrors k-bar-center (max-width 640px, flex 0 1 auto) */
+/* Center column */
 .kcb-bar-center {
     display: flex;
     align-items: center;
@@ -271,7 +268,7 @@ body.kiosk-no-scroll {
     pointer-events: auto;
 }
 
-/* Each column = one progress step slot */
+/* Step slot column */
 .kcb-col {
     flex: 1;
     display: flex;
@@ -279,19 +276,19 @@ body.kiosk-no-scroll {
     justify-content: center;
 }
 
-/* Col 1: left-aligned like the step 1 dot */
+/* First column alignment */
 .kcb-col:first-child {
     justify-content: flex-start;
 }
 
-/* Left cluster: count badge + label */
+/* Left cluster */
 .kcb-left {
     display: flex;
     align-items: center;
     gap: 0.75rem;
 }
 
-/* Right section — mirrors k-bar-right (flex: 1, end) */
+/* Right section */
 .kcb-bar-right {
     flex: 1;
     display: flex;
@@ -302,14 +299,14 @@ body.kiosk-no-scroll {
     pointer-events: auto;
 }
 
-/* Hidden state — fade out simultaneously */
+/* Hidden state */
 .kcb-bar-center.kcb-hidden,
 .kcb-bar-right.kcb-hidden {
     opacity: 0;
     pointer-events: none;
 }
 
-/* Count badge — matches progress dot active style */
+/* Count badge */
 .kcb-count {
     width: 32px;
     height: 32px;
@@ -333,7 +330,7 @@ body.kiosk-no-scroll {
     color: rgba(255, 255, 255, 0.8);
 }
 
-/* Column 3: subtotal — centered within its slot, aligning with step 3 dot */
+/* Subtotal column */
 .kcb-total {
     font-family: var(--font-subheading);
     font-size: 1.1rem;
@@ -342,7 +339,7 @@ body.kiosk-no-scroll {
     text-align: center;
 }
 
-/* Right: Continue to Cart button */
+/* Continue button */
 .kcb-continue-btn {
     background: rgba(255, 255, 255, 0.12);
     border: 1.5px solid rgba(255, 255, 255, 0.35);
@@ -363,14 +360,14 @@ body.kiosk-no-scroll {
     border-color: rgba(255, 255, 255, 0.7);
 }
 
-/* Dimmed and unclickable when cart is empty */
+/* Disabled state */
 .kcb-continue-btn:disabled {
     opacity: 0.38;
     cursor: not-allowed;
     pointer-events: none;
 }
 
-/* ── STEP 1 – Welcome / Order Type ───────────────────────────── */
+/* Step 1: welcome and order type */
 .welcome-section {
     padding: 3rem 1rem;
     text-align: center;
@@ -451,8 +448,8 @@ body.kiosk-no-scroll {
     font-family: var(--font-subheading);
 }
 
-/* ── STEP 2 – Menu Browser ───────────────────────────────────── */
-/* Fixed-height viewport panel — sidebar stays put, only products scroll */
+/* Step 2: menu browser */
+/* Fixed-height menu wrap */
 .kiosk-menu-wrap {
     display: flex;
     height: calc(100vh - 130px - 64px);
@@ -460,7 +457,7 @@ body.kiosk-no-scroll {
     overflow: hidden;
 }
 
-/* Category sidebar — fills fixed-height wrap, scrolls independently */
+/* Category sidebar */
 .kiosk-cat-sidebar {
     width: 280px;
     flex-shrink: 0;
@@ -488,7 +485,7 @@ body.kiosk-no-scroll {
     opacity: 0.6;
 }
 
-/* Filter panel — matches menu .filter-panel */
+/* Filter panel */
 .kiosk-cat-sidebar .filter-panel {
     background: transparent;
     box-shadow: none;
@@ -497,7 +494,7 @@ body.kiosk-no-scroll {
     border-right: 1.5px solid rgba(42, 0, 0, 0.07);
 }
 
-/* Filter sections — matches menu spacing */
+/* Filter sections */
 .kiosk-cat-sidebar .filter-section {
     margin-bottom: 0.5rem;
     padding-bottom: 0;
@@ -513,7 +510,7 @@ body.kiosk-no-scroll {
     border-top: 1px solid rgba(42, 0, 0, 0.07);
 }
 
-/* Section headings — matches menu .filter-title */
+/* Filter section headings */
 .kiosk-cat-sidebar .filter-title {
     font-family: var(--font-subheading);
     font-size: 0.7rem;
@@ -534,14 +531,14 @@ body.kiosk-no-scroll {
     font-size: 0.7rem;
 }
 
-/* Category list — matches menu gap */
+/* Category list */
 .kiosk-cat-sidebar .category-list {
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
 }
 
-/* Category row — matches menu .category-item */
+/* Category item */
 .kiosk-cat-sidebar .category-item {
     display: flex;
     align-items: center;
@@ -577,7 +574,7 @@ body.kiosk-no-scroll {
     pointer-events: none;
 }
 
-/* Category icon — matches menu */
+/* Category icon */
 .kiosk-cat-sidebar .category-icon {
     width: 18px;
     flex-shrink: 0;
@@ -613,14 +610,14 @@ body.kiosk-no-scroll {
     opacity: 0.7;
 }
 
-/* Sort options — matches menu gap */
+/* Sort options */
 .kiosk-cat-sidebar .sort-options {
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
 }
 
-/* Sort item — matches menu .sort-item */
+/* Sort item */
 .kiosk-cat-sidebar .sort-item {
     display: flex;
     align-items: center;
@@ -672,7 +669,7 @@ body.kiosk-no-scroll {
     color: var(--burgundy-wine);
 }
 
-/* Products area — independent scroll, flush with sidebar top */
+/* Products area */
 .kiosk-products-area {
     flex: 1;
     padding: 0 var(--spacing-md) 0;
@@ -681,17 +678,17 @@ body.kiosk-no-scroll {
     overscroll-behavior: contain;
 }
 
-/* Category group — matches menu .menu-cat-group */
+/* Category group */
 .kiosk-cat-group {
     margin-bottom: 1.5rem;
 }
 
-/* Top breathing room when no active filter header is present */
+/* First group top spacing */
 .kiosk-cat-group:first-of-type {
     padding-top: 2rem;
 }
 
-/* Category label — matches menu .menu-cat-label */
+/* Category label */
 .kiosk-cat-label {
     font-family: var(--font-subheading);
     font-size: 0.7rem;
@@ -703,7 +700,7 @@ body.kiosk-no-scroll {
     font-weight: 700;
 }
 
-/* Slide-down animation for active filters bar */
+/* Filter bar slide-down animation */
 @keyframes kioskFilterSlideDown {
     from {
         opacity: 0;
@@ -716,7 +713,7 @@ body.kiosk-no-scroll {
     }
 }
 
-/* Active filters bar — sticky at very top of products scroll container */
+/* Active filters bar */
 .kiosk-active-header {
     display: none;
     position: sticky;
@@ -742,12 +739,12 @@ body.kiosk-no-scroll {
     animation: kioskFilterSlideDown 0.2s ease both;
 }
 
-/* Remove first-group top spacing when active header is already providing it */
-.kiosk-active-header.visible ~ .kiosk-cat-group:first-of-type {
+/* Remove top spacing when filter bar is visible */
+.kiosk-active-header.visible~.kiosk-cat-group:first-of-type {
     padding-top: 0;
 }
 
-/* Active filters row — exact match to .active-filters */
+/* Active filters row */
 .kiosk-active-filters {
     display: flex;
     flex-wrap: wrap;
@@ -758,7 +755,7 @@ body.kiosk-no-scroll {
     min-height: 28px;
 }
 
-/* "ACTIVE FILTERS:" label — exact match to .filter-label */
+/* Active filters label */
 .kiosk-filter-label {
     font-family: var(--font-subheading);
     font-size: 0.7rem;
@@ -770,7 +767,7 @@ body.kiosk-no-scroll {
     white-space: nowrap;
 }
 
-/* Filter chip — exact match to .filter-badge */
+/* Filter chip */
 .kiosk-sort-badge {
     display: inline-flex;
     align-items: center;
@@ -793,7 +790,7 @@ body.kiosk-no-scroll {
     transform: translateY(-1px);
 }
 
-/* Remove icon inside chip — exact match to .filter-badge a */
+/* Chip remove icon */
 .kiosk-sort-badge span {
     display: inline-flex;
     align-items: center;
@@ -813,7 +810,7 @@ body.kiosk-no-scroll {
     background: rgba(91, 19, 18, 0.12);
 }
 
-/* Clear All — exact match to .btn-clear-active-filters */
+/* Clear All button */
 .kiosk-clear-sort {
     display: inline-flex;
     align-items: center;
@@ -866,7 +863,7 @@ body.kiosk-no-scroll {
     box-shadow: 0 6px 22px rgba(42, 0, 0, 0.13);
 }
 
-/* Highlight card when qty > 0 */
+/* In-cart highlight */
 .kiosk-product-card.in-cart {
     border-color: var(--deep-maroon);
     box-shadow: 0 0 0 1px var(--deep-maroon), var(--shadow-sm);
@@ -927,7 +924,7 @@ body.kiosk-no-scroll {
     gap: 0.5rem;
 }
 
-/* Stacked price + net content wrapper */
+/* Price and net wrapper */
 .kiosk-prod-price-wrap {
     display: flex;
     flex-direction: column;
@@ -941,7 +938,7 @@ body.kiosk-no-scroll {
     color: var(--burgundy-wine);
 }
 
-/* Net content label below price */
+/* Net content label */
 .kiosk-prod-net {
     font-family: var(--font-body);
     font-size: 0.6rem;
@@ -950,7 +947,7 @@ body.kiosk-no-scroll {
     letter-spacing: 0.3px;
 }
 
-/* Qty selector — always visible on every product card */
+/* Quantity selector */
 .kpf-qty-row {
     display: flex;
     align-items: center;
@@ -976,7 +973,7 @@ body.kiosk-no-scroll {
     flex-shrink: 0;
 }
 
-/* Active + button — filled dark to signal "add" */
+/* Plus button active state */
 .kpf-qty-btn.kpf-plus {
     background: var(--deep-maroon);
     border-color: var(--deep-maroon);
@@ -988,14 +985,14 @@ body.kiosk-no-scroll {
     border-color: var(--burgundy-wine);
 }
 
-/* Minus button hover (when enabled) */
+/* Minus button hover */
 .kpf-qty-btn:not(.kpf-plus):not(:disabled):hover {
     background: var(--deep-maroon);
     border-color: var(--deep-maroon);
     color: #fff;
 }
 
-/* Minus disabled — qty is 0 */
+/* Minus button disabled */
 .kpf-qty-btn:disabled {
     opacity: 0.28;
     cursor: not-allowed;
@@ -1010,14 +1007,14 @@ body.kiosk-no-scroll {
     text-align: center;
 }
 
-/* ── STEP 3 – Cart Review ────────────────────────────────────── */
+/* Step 3: cart review */
 .kiosk-cart-page {
     max-width: 1060px;
     margin: 0 auto;
     padding: 2rem 1.5rem 3rem;
 }
 
-/* Title — matches online cart-pg-title */
+/* Page title */
 .kiosk-page-title {
     font-family: var(--font-subheading);
     font-size: 42px;
@@ -1030,7 +1027,7 @@ body.kiosk-no-scroll {
     margin-bottom: 44px;
 }
 
-/* Cart item card — matches online ci-card */
+/* Cart item card */
 .k-ci-card {
     background: #fff;
     border-radius: 14px;
@@ -1045,7 +1042,7 @@ body.kiosk-no-scroll {
     box-shadow: 0 4px 18px rgba(42, 0, 0, 0.1);
 }
 
-/* Top row — image + info + delete */
+/* Card top row */
 .k-ci-top {
     display: flex;
     align-items: flex-start;
@@ -1094,7 +1091,7 @@ body.kiosk-no-scroll {
     color: var(--burgundy-wine);
 }
 
-/* Specs preview (size · temp · sugar · milk) — matches online ci-opts-preview */
+/* Options preview */
 .k-ci-opts-preview {
     font-family: var(--font-body);
     font-size: 0.78rem;
@@ -1121,14 +1118,14 @@ body.kiosk-no-scroll {
     background: rgba(207, 15, 15, 0.08);
 }
 
-/* Customize section — matches online ci-customize */
+/* Customize section */
 .k-ci-cust-panel {
     margin-top: 16px;
     padding-top: 16px;
     border-top: 1px solid rgba(42, 0, 0, 0.06);
 }
 
-/* Labels — uppercase matching online cust-lbl */
+/* Customize labels */
 .k-cust-lbl {
     display: block;
     font-family: var(--font-subheading);
@@ -1141,7 +1138,7 @@ body.kiosk-no-scroll {
     padding-top: 10px;
 }
 
-/* Selects and textarea — matches online cust-sel/cust-ta */
+/* Selects and textarea */
 .k-cust-sel,
 .k-cust-ta {
     width: 100%;
@@ -1168,7 +1165,7 @@ body.kiosk-no-scroll {
     resize: none;
 }
 
-/* Add-ons grid — matches online addons-grid / addon-item */
+/* Add-ons grid */
 .k-addons-grid {
     display: flex;
     flex-wrap: wrap;
@@ -1205,7 +1202,7 @@ body.kiosk-no-scroll {
     flex-shrink: 0;
 }
 
-/* Quantity row — pill style matching online */
+/* Quantity row */
 .k-qty-row {
     margin-top: 16px;
     padding-top: 16px;
@@ -1251,15 +1248,15 @@ body.kiosk-no-scroll {
     text-align: center;
 }
 
-/* Cart order summary card — matches online sum-card */
-/* Summary column — sticky on the column, matching step 4's kiosk-co-right pattern */
+/* Summary card */
+/* Sticky summary column */
 .kiosk-sum-col {
     position: sticky;
     top: 168px;
     align-self: start;
 }
 
-/* Single item: row stretches both columns to equal height */
+/* Single item layout */
 .k-single-item {
     align-items: stretch;
 }
@@ -1286,7 +1283,7 @@ body.kiosk-no-scroll {
     flex-direction: column;
 }
 
-/* Scrollable item lines — max 4 items visible (~160px) */
+/* Scrollable item lines */
 .k-sum-lines-wrap {
     overflow-y: auto;
     max-height: 160px;
@@ -1294,18 +1291,21 @@ body.kiosk-no-scroll {
     scrollbar-color: rgba(42, 0, 0, 0.12) transparent;
 }
 
-.k-sum-lines-wrap::-webkit-scrollbar { width: 3px; }
+.k-sum-lines-wrap::-webkit-scrollbar {
+    width: 3px;
+}
+
 .k-sum-lines-wrap::-webkit-scrollbar-thumb {
     background: rgba(42, 0, 0, 0.15);
     border-radius: 4px;
 }
 
-/* Footer block — pushed to bottom in single-item layout */
+/* Footer block */
 .k-sum-footer {
     margin-top: auto;
 }
 
-/* Summary title — uppercase matching online sum-title */
+/* Summary title */
 .kiosk-sum-title {
     font-family: var(--font-subheading);
     font-size: 1rem;
@@ -1342,7 +1342,7 @@ body.kiosk-no-scroll {
     margin-left: 3px;
 }
 
-/* Opts line below item name in summary */
+/* Options line */
 .k-sum-opts {
     display: block;
     font-size: 0.76rem;
@@ -1351,7 +1351,7 @@ body.kiosk-no-scroll {
     margin-top: 1px;
 }
 
-/* Order type row in summary — same typography as product lines */
+/* Order type row */
 .k-sum-ot-row {
     display: flex;
     justify-content: space-between;
@@ -1382,7 +1382,7 @@ body.kiosk-no-scroll {
     margin: 6px 0 10px;
 }
 
-/* Subtotal/fee calc row — matches online sum-calc-row */
+/* Subtotal row */
 .k-sum-calc-row {
     display: flex;
     justify-content: space-between;
@@ -1393,7 +1393,7 @@ body.kiosk-no-scroll {
     padding: 4px 0;
 }
 
-/* Divider and total row */
+/* Divider and total */
 .k-sum-hr {
     border: none;
     border-top: 1px solid rgba(42, 0, 0, 0.08);
@@ -1414,7 +1414,7 @@ body.kiosk-no-scroll {
     padding-top: 20px;
 }
 
-/* Main CTA button — pill style matching online btn-cart-main */
+/* Main CTA button */
 .btn-kiosk-main {
     display: block;
     width: 100%;
@@ -1440,7 +1440,7 @@ body.kiosk-no-scroll {
     box-shadow: var(--shadow-md);
 }
 
-/* Back/secondary button — pill style matching online btn-cart-back */
+/* Back button */
 .btn-kiosk-back {
     display: block;
     width: 100%;
@@ -1464,7 +1464,7 @@ body.kiosk-no-scroll {
     color: var(--deep-maroon);
 }
 
-/* Empty cart state — matches cart.php cart-empty-state */
+/* Empty cart state */
 .cart-empty-state {
     display: flex;
     flex-direction: column;
@@ -1500,7 +1500,7 @@ body.kiosk-no-scroll {
     margin-bottom: 2.2rem;
 }
 
-/* Browse Menu button — outlined pill matching cart.php */
+/* Browse menu button */
 .btn-browse-menu {
     background: transparent;
     color: var(--burgundy-wine);
@@ -1523,14 +1523,14 @@ body.kiosk-no-scroll {
     box-shadow: var(--shadow-md);
 }
 
-/* ── STEP 4 – Checkout ───────────────────────────────────────── */
+/* Step 4: checkout */
 .kiosk-checkout-page {
     max-width: 1060px;
     margin: 0 auto;
     padding: 2rem 1.5rem 4rem;
 }
 
-/* Two-column grid: left | right sticky summary */
+/* Two-column layout */
 .kiosk-co-layout {
     display: grid;
     grid-template-columns: 7fr 5fr;
@@ -1539,7 +1539,7 @@ body.kiosk-no-scroll {
     align-items: stretch;
 }
 
-/* Alert row spans both columns */
+/* Alert row */
 .kiosk-co-alert-row {
     grid-column: 1 / -1;
     margin-bottom: 0.5rem;
@@ -1566,7 +1566,7 @@ body.kiosk-no-scroll {
     flex-direction: column;
 }
 
-/* Section cards — matches online checkout-card */
+/* Section cards */
 .kiosk-co-card {
     background: #fff;
     border-radius: 14px;
@@ -1577,7 +1577,7 @@ body.kiosk-no-scroll {
     flex-direction: column;
 }
 
-/* Card title — uppercase matching online checkout h3 */
+/* Card title */
 .kiosk-co-card-title {
     font-family: var(--font-subheading);
     font-size: 0.9rem;
@@ -1596,7 +1596,7 @@ body.kiosk-no-scroll {
     opacity: 0.8;
 }
 
-/* Optional label text */
+/* Optional label */
 .kiosk-co-optional {
     font-size: 0.78rem;
     color: #aaa;
@@ -1606,7 +1606,7 @@ body.kiosk-no-scroll {
     letter-spacing: 0;
 }
 
-/* Form labels — uppercase matching online form-label */
+/* Form labels */
 .kiosk-co-label {
     font-family: var(--font-subheading);
     font-size: 0.75rem;
@@ -1618,7 +1618,7 @@ body.kiosk-no-scroll {
     margin-bottom: 6px;
 }
 
-/* Inputs — matches online form-control */
+/* Form inputs */
 .kiosk-co-input {
     width: 100%;
     border: 1px solid rgba(42, 0, 0, 0.14);
@@ -1639,8 +1639,8 @@ body.kiosk-no-scroll {
     background: #fff;
 }
 
-/* Order type display — muted read-only */
-/* Order type read-only tiles — matches checkout payment-option style */
+
+/* Order type tiles */
 .k-ot-opts {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1692,7 +1692,7 @@ body.kiosk-no-scroll {
     color: var(--deep-maroon);
 }
 
-/* Payment options — matches online 2×2 grid with horizontal layout */
+/* Payment options */
 .k-pay-opts {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1804,7 +1804,7 @@ body.kiosk-no-scroll {
     padding-top: 14px;
 }
 
-/* ── STEP 5 – Receipt / Confirmation ────────────────────────── */
+/* Step 5: receipt */
 .kiosk-receipt-page {
     max-width: 680px;
     margin: 0 auto;
@@ -1814,12 +1814,12 @@ body.kiosk-no-scroll {
     align-items: center;
 }
 
-/* Receipt card fills full width inside the flex receipt page */
+/* Full-width receipt card */
 .kiosk-receipt-page .kiosk-receipt-card {
     width: 100%;
 }
 
-/* Receipt card — white, clean, matching online receipt-dialog */
+/* Receipt card */
 .kiosk-receipt-card {
     background: #fff;
     border-radius: 20px;
@@ -1827,12 +1827,12 @@ body.kiosk-no-scroll {
     overflow: hidden;
 }
 
-/* Receipt content area */
+/* Receipt content */
 .kiosk-receipt-content {
     padding: 32px 44px 26px;
 }
 
-/* Logo header */
+/* Receipt logo */
 .kiosk-receipt-logo {
     display: flex;
     align-items: center;
@@ -1872,7 +1872,7 @@ body.kiosk-no-scroll {
     margin-bottom: 14px;
 }
 
-/* Order number box with copy button */
+/* Order number box */
 .kiosk-receipt-order-box {
     display: flex;
     align-items: center;
@@ -1923,7 +1923,7 @@ body.kiosk-no-scroll {
     color: var(--deep-maroon);
 }
 
-/* Status + datetime row */
+/* Status and datetime row */
 .kiosk-receipt-status-row {
     display: flex;
     align-items: center;
@@ -1970,7 +1970,7 @@ body.kiosk-no-scroll {
     margin-bottom: 8px;
 }
 
-/* Key-value info rows */
+/* Info rows */
 .kiosk-receipt-info-row {
     display: flex;
     justify-content: space-between;
@@ -1995,7 +1995,7 @@ body.kiosk-no-scroll {
     text-align: right;
 }
 
-/* Item rows with thumbnail */
+/* Receipt item rows */
 .kiosk-receipt-item {
     display: flex;
     align-items: center;
@@ -2089,7 +2089,7 @@ body.kiosk-no-scroll {
     padding: 5px 0 2px;
 }
 
-/* Footer thank-you note */
+/* Footer note */
 .kiosk-receipt-footer-note {
     text-align: center;
     font-family: var(--font-body);
@@ -2105,7 +2105,7 @@ body.kiosk-no-scroll {
     background: rgba(245, 241, 232, 0.3);
 }
 
-/* New Order button */
+/* New order button */
 .btn-kiosk-new-order {
     display: block;
     width: 100%;
@@ -2131,7 +2131,7 @@ body.kiosk-no-scroll {
     transform: translateY(-1px);
 }
 
-/* ── Order Queue Display page ────────────────────────────────── */
+/* Order queue display */
 .queue-page {
     background: var(--deep-maroon);
     min-height: 100vh;
@@ -2257,7 +2257,7 @@ body.kiosk-no-scroll {
     color: rgba(245, 241, 232, 0.4);
 }
 
-/* ── Alert toast ─────────────────────────────────────────────── */
+/* Alert toast */
 .kiosk-toast {
     position: fixed;
     bottom: 80px;
@@ -2284,7 +2284,7 @@ body.kiosk-no-scroll {
     transform: translateX(-50%) translateY(0);
 }
 
-/* ── Table number selection (service type = table) ───────────── */
+/* Table number selection */
 .k-table-number-section {
     margin-top: 1.25rem;
     padding-top: 1.25rem;
@@ -2299,7 +2299,7 @@ body.kiosk-no-scroll {
     font-weight: 500;
 }
 
-/* 5-column grid for 10 tent number chips */
+/* Tent number grid */
 .k-tent-numbers {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -2307,7 +2307,7 @@ body.kiosk-no-scroll {
     margin-bottom: 1rem;
 }
 
-/* Matches k-ot-opt / k-pay-opt card style exactly */
+/* Tent number chip */
 .k-tent-chip {
     display: flex;
     align-items: center;
@@ -2337,7 +2337,7 @@ body.kiosk-no-scroll {
     box-shadow: 0 0 0 3px rgba(42, 0, 0, 0.07);
 }
 
-/* ── Cash receipt (minimal thermal-style) ────────────────────── */
+/* Cash receipt */
 .k-cash-receipt {
     text-align: center;
     padding: 10px 0 0;
@@ -2366,7 +2366,7 @@ body.kiosk-no-scroll {
     letter-spacing: 0.02em;
 }
 
-/* Dashed divider matching receipt PNG style */
+/* Dashed divider */
 .k-cash-divider {
     border: none;
     border-top: 1.5px dashed rgba(42, 0, 0, 0.2);
@@ -2380,7 +2380,7 @@ body.kiosk-no-scroll {
     font-weight: 400;
 }
 
-/* Large bold order number */
+/* Order number */
 .k-cash-order-num {
     font-family: var(--font-heading);
     font-size: 3rem;
@@ -2411,7 +2411,7 @@ body.kiosk-no-scroll {
     margin: 2rem 0 0;
 }
 
-/* ── Responsive ──────────────────────────────────────────────── */
+/* Responsive */
 @media (max-width: 768px) {
     .kiosk-menu-wrap {
         height: auto;
@@ -2483,7 +2483,7 @@ body.kiosk-no-scroll {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    /* Step 4 checkout */
+    /* Step 4: checkout responsive */
     .kiosk-co-layout {
         grid-template-columns: 1fr;
         gap: 1.25rem 0;
@@ -2505,7 +2505,7 @@ body.kiosk-no-scroll {
         padding: 20px;
     }
 
-    /* Step 5 receipt */
+    /* Step 5: receipt responsive */
     .kiosk-receipt-content {
         padding: 28px 22px 22px;
     }
@@ -2519,8 +2519,8 @@ body.kiosk-no-scroll {
     }
 }
 
-/* ── Back warning dialog ──────────────────────────────────────── */
-/* ── Delete Item Dialog — matches admin modal design ─────────── */
+
+/* Delete item dialog */
 .kiosk-dialog-overlay {
     display: none;
     position: fixed;
@@ -2535,7 +2535,7 @@ body.kiosk-no-scroll {
     display: flex;
 }
 
-/* Admin-style modal card */
+/* Modal card */
 .kd-modal {
     background: #fff;
     width: 90%;
@@ -2546,7 +2546,7 @@ body.kiosk-no-scroll {
     animation: fadeInUp 0.22s ease both;
 }
 
-/* Header row: icon + title left, X right */
+/* Modal header */
 .kd-modal-header {
     display: flex;
     align-items: center;
@@ -2590,7 +2590,7 @@ body.kiosk-no-scroll {
     background: rgba(42, 0, 0, 0.06);
 }
 
-/* Body */
+/* Modal body */
 .kd-modal-body {
     padding: 24px 28px;
 }
@@ -2604,7 +2604,7 @@ body.kiosk-no-scroll {
     line-height: 1.6;
 }
 
-/* Footer: buttons right-aligned */
+/* Modal footer */
 .kd-modal-footer {
     display: flex;
     justify-content: flex-end;
@@ -2614,7 +2614,7 @@ body.kiosk-no-scroll {
     background: rgba(245, 241, 232, 0.25);
 }
 
-/* Cancel/destructive button — outlined */
+/* Cancel button */
 .kd-btn-cancel {
     background: transparent;
     color: #9b1c1c;
@@ -2637,7 +2637,7 @@ body.kiosk-no-scroll {
     border-color: #7b1111;
 }
 
-/* Go Back confirm button — maroon (non-destructive warning) */
+/* Go back button */
 .kd-btn-goback {
     background: var(--deep-maroon, #2A0000);
     color: #fff;
@@ -2660,7 +2660,7 @@ body.kiosk-no-scroll {
     box-shadow: 0 4px 12px rgba(42, 0, 0, 0.20);
 }
 
-/* Delete button — filled red */
+/* Delete button */
 .kd-btn-delete {
     background: #DC0000;
     color: #fff;
@@ -2683,26 +2683,26 @@ body.kiosk-no-scroll {
     box-shadow: 0 4px 12px rgba(42, 0, 0, 0.20);
 }
 
-/* ── Extracted inline style classes ─────────────────────────── */
+/* Utility classes */
 
-/* Receipt divider with top margin spacing */
+/* Receipt divider with top spacing */
 .kiosk-receipt-divider--top {
     margin-top: 10px;
 }
 
-/* Receipt divider with compact vertical margin */
+/* Compact receipt divider */
 .kiosk-receipt-divider--compact {
     margin: 8px 0;
 }
 
-/* Inline (auto-width) variant of main CTA button */
+/* Inline CTA variant */
 .btn-kiosk-inline {
     width: auto;
     display: inline-block;
     padding: 0.75rem 2rem;
 }
 
-/* Optional label inside customize panel */
+/* Optional label */
 .k-cust-optional {
     font-size: 0.78rem;
     font-family: var(--font-body);
@@ -2713,17 +2713,17 @@ body.kiosk-no-scroll {
     letter-spacing: 0;
 }
 
-/* Receipt divider top-spaced variant */
+/* Receipt divider with top spacing */
 .kiosk-receipt-divider--top {
     margin-top: 10px;
 }
 
-/* Receipt divider compact variant */
+/* Compact receipt divider */
 .kiosk-receipt-divider--compact {
     margin: 8px 0;
 }
 
-/* Queue order customer name label */
+/* Queue customer name */
 .queue-customer-name {
     font-size: 0.65rem;
     font-family: var(--font-body);

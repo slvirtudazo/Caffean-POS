@@ -1,9 +1,6 @@
-/**
- * Caffean — Cart Page Stylesheet (cart.css)
- * Modern, clean design inspired by minimal e-commerce layouts
- */
+/* Cart page styles */
 
-/* Page section base */
+/* Page section */
 .pg-section {
     display: none;
     padding: 32px 0 80px;
@@ -17,8 +14,15 @@
 }
 
 @keyframes pgFadeIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Page title */
@@ -92,7 +96,7 @@
     box-shadow: var(--shadow-md);
 }
 
-/* Cart item card — clean KIXY-style row */
+/* Cart item card */
 .ci-card {
     background: #fff;
     border-radius: 14px;
@@ -107,7 +111,7 @@
     box-shadow: 0 4px 18px rgba(42, 0, 0, 0.1);
 }
 
-/* Top row: image + info + delete */
+/* Card top row */
 .ci-top {
     display: flex;
     align-items: flex-start;
@@ -251,7 +255,9 @@
     transition: color 0.18s;
 }
 
-.addon-item:hover { color: var(--deep-maroon); }
+.addon-item:hover {
+    color: var(--deep-maroon);
+}
 
 .addon-item input {
     width: 14px;
@@ -345,7 +351,7 @@
     border-bottom: 1px solid rgba(42, 0, 0, 0.07);
 }
 
-/* Scrollable item list in summary */
+/* Scrollable item list */
 .sum-items {
     overflow-y: auto;
     max-height: 200px;
@@ -353,7 +359,10 @@
     scrollbar-color: rgba(42, 0, 0, 0.12) transparent;
 }
 
-.sum-items::-webkit-scrollbar { width: 3px; }
+.sum-items::-webkit-scrollbar {
+    width: 3px;
+}
+
 .sum-items::-webkit-scrollbar-thumb {
     background: rgba(42, 0, 0, 0.15);
     border-radius: 4px;
@@ -368,7 +377,9 @@
     border-bottom: 1px solid rgba(42, 0, 0, 0.04);
 }
 
-.sum-item-line:last-child { border-bottom: none; }
+.sum-item-line:last-child {
+    border-bottom: none;
+}
 
 .sil-name {
     font-family: var(--font-body);
@@ -427,7 +438,7 @@
     padding: 6px 0 2px;
 }
 
-/* Groups totals + buttons so they push down together */
+/* Footer wrapper */
 .sum-footer-wrap {
     margin-top: auto;
     display: flex;
@@ -491,7 +502,9 @@
     color: var(--deep-maroon);
 }
 
-.btn-full { width: 100%; }
+.btn-full {
+    width: 100%;
+}
 
 /* Delete confirmation modal */
 .cart-modal-overlay {
@@ -504,7 +517,9 @@
     z-index: 5000;
 }
 
-.cart-modal-overlay.open { display: flex; }
+.cart-modal-overlay.open {
+    display: flex;
+}
 
 .cart-modal {
     background: #fff;
@@ -547,7 +562,9 @@
     transition: background 0.22s ease;
 }
 
-.cart-modal-close:hover { background: rgba(42, 0, 0, 0.06); }
+.cart-modal-close:hover {
+    background: rgba(42, 0, 0, 0.06);
+}
 
 .cart-modal-body {
     padding: 24px 28px;
@@ -629,7 +646,9 @@
 }
 
 @media (max-width: 768px) {
-    .pg-section { padding: 28px 0 60px; }
+    .pg-section {
+        padding: 28px 0 60px;
+    }
 
     .cart-pg-title {
         font-size: 30px;
@@ -643,7 +662,11 @@
 }
 
 @media (max-width: 480px) {
-    .ci-top { flex-wrap: wrap; }
+    .ci-top {
+        flex-wrap: wrap;
+    }
 
-    .addons-grid { gap: 6px; }
+    .addons-grid {
+        gap: 6px;
+    }
 }

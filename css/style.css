@@ -1,15 +1,11 @@
-/**
- * Caffean Shop - Enhanced Main Stylesheet
- * An elegant, modern coffee shop design with warm color palette
- * Color Scheme: Ivory Cream, Warm Sand, Deep Maroon, Burgundy Wine
- */
+/* Main stylesheet */
 
-/* ===== GOOGLE FONTS IMPORT ===== */
+/* Google Fonts import */
 @import url('https://fonts.googleapis.com/css2?family=Oleo+Script:wght@400;500;600;700&family=EB+Garamond:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&display=swap');
 
-/* ===== CSS VARIABLES FOR CONSISTENT THEMING ===== */
+/* CSS variables */
 :root {
-    /* Primary Color Palette */
+    /* Colors */
     --ivory-cream: #F5F1E8;
     --warm-sand: #E2D9C8;
     --deep-maroon: #2A0000;
@@ -17,27 +13,27 @@
     --light-beige: #EDE8DC;
     --dark-brown: #3C1518;
 
-    /* Typography Hierarchy */
+    /* Fonts */
     --font-main: 'Oleo Script';
     --font-heading: 'EB Garamond', serif;
     --font-subheading: 'Outfit', sans-serif;
     --font-body: 'Quicksand', sans-serif;
 
-    /* Spacing System - 8px base */
+    /* Spacing */
     --spacing-xs: 0.5rem;
-    /* 8px */
-    --spacing-sm: 1rem;
-    /* 16px */
-    --spacing-md: 1.5rem;
-    /* 24px */
-    --spacing-lg: 2rem;
-    /* 32px */
-    --spacing-xl: 2.5rem;
-    /* 48px */
-    --spacing-xxl: 3rem;
-    /* 80px */
 
-    /* Border Radius */
+    --spacing-sm: 1rem;
+
+    --spacing-md: 1.5rem;
+
+    --spacing-lg: 2rem;
+
+    --spacing-xl: 2.5rem;
+
+    --spacing-xxl: 3rem;
+
+
+    /* Border radius */
     --radius-sm: 10px;
     --radius-md: 15px;
     --radius-lg: 20px;
@@ -55,7 +51,7 @@
     --transition-slow: 0.5s ease;
 }
 
-/* ===== RESET & BASE STYLES ===== */
+/* Reset and base */
 * {
     margin: 0;
     padding: 0;
@@ -64,7 +60,7 @@
 
 body {
     font-family: var(--font-body);
-    background-color: #F5F1E8;  /* matches section gradient base — no gap flashes */
+    background-color: #F5F1E8;
     color: var(--dark-brown);
     line-height: 1.6;
     overflow-x: hidden;
@@ -75,7 +71,7 @@ html {
     scroll-behavior: smooth;
 }
 
-/* ===== TYPOGRAPHY ===== */
+/* Typography responsive */
 h1,
 h2,
 h3,
@@ -110,7 +106,7 @@ p {
     line-height: 1.7;
 }
 
-/* ===== NAVIGATION - ENHANCED ===== */
+/* Navbar */
 .navbar {
     background-color: var(--ivory-cream);
     padding: var(--spacing-sm) 0;
@@ -121,7 +117,7 @@ p {
     transition: var(--transition-normal);
 }
 
-/* Enhanced navbar on scroll */
+/* Scrolled navbar */
 .navbar.scrolled {
     box-shadow: var(--shadow-md);
     padding: 0.75rem 0;
@@ -135,7 +131,7 @@ p {
     padding: 0 2.5rem;
 }
 
-/* Brand Logo */
+/* Brand logo */
 .navbar-brand {
     display: flex;
     align-items: center;
@@ -159,7 +155,7 @@ p {
     transform: translateY(-2px);
 }
 
-/* Navigation Menu */
+/* Nav menu */
 .navbar-nav {
     display: flex;
     gap: var(--spacing-xl);
@@ -168,7 +164,7 @@ p {
     padding: 0;
 }
 
-/* Navigation Links - Enhanced Active State */
+/* Nav links */
 .nav-link {
     font-family: var(--font-subheading);
     font-size: 0.90rem;
@@ -207,7 +203,7 @@ p {
     width: 100%;
 }
 
-/* Navigation Icons - Improved Alignment */
+/* Nav icons */
 .nav-icons {
     display: flex;
     gap: 1.30rem;
@@ -226,17 +222,14 @@ p {
     transform: scale(1.1);
 }
 
-/* ===== HERO SECTION — CREAM LUXURY GRADIENT ===== */
+/* Hero section */
 .hero-section {
-    /*
-     * Blob layout — flows INTO Special Offers below:
-     * Strong left-center + top-right corner + bottom-right bleeding downward
-     */
+
     background:
-        radial-gradient(ellipse 55% 60% at 0%   45%,  rgba(91,19,18,0.28)  0%, transparent 68%),
-        radial-gradient(ellipse 45% 50% at 100% 10%,  rgba(42,0,0,0.20)    0%, transparent 65%),
-        radial-gradient(ellipse 40% 45% at 90%  90%,  rgba(91,19,18,0.18)  0%, transparent 62%),
-        radial-gradient(ellipse 30% 35% at 50%  55%,  rgba(42,0,0,0.08)    0%, transparent 58%),
+        radial-gradient(ellipse 55% 60% at 0% 45%, rgba(91, 19, 18, 0.28) 0%, transparent 68%),
+        radial-gradient(ellipse 45% 50% at 100% 10%, rgba(42, 0, 0, 0.20) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 45% at 90% 90%, rgba(91, 19, 18, 0.18) 0%, transparent 62%),
+        radial-gradient(ellipse 30% 35% at 50% 55%, rgba(42, 0, 0, 0.08) 0%, transparent 58%),
         linear-gradient(135deg, #F5F1E8 0%, #EDE8DC 50%, #F0EBE1 100%);
     min-height: calc(100vh - 68px);
     display: flex;
@@ -246,12 +239,12 @@ p {
     overflow: hidden;
 }
 
-/* Remove grain overlay on cream — keep it clean */
+/* No grain overlay */
 .hero-section::before {
     content: none;
 }
 
-/* Maroon ambient glow — right column warmth */
+/* Ambient glow elements */
 .hero-bg-glow {
     position: absolute;
     border-radius: 50%;
@@ -264,7 +257,7 @@ p {
     height: 680px;
     top: -80px;
     right: -160px;
-    background: radial-gradient(circle, rgba(91,19,18,0.12) 0%, rgba(42,0,0,0.06) 45%, transparent 68%);
+    background: radial-gradient(circle, rgba(91, 19, 18, 0.12) 0%, rgba(42, 0, 0, 0.06) 45%, transparent 68%);
 }
 
 .hero-bg-glow--left {
@@ -272,20 +265,20 @@ p {
     height: 380px;
     bottom: -140px;
     left: -70px;
-    background: radial-gradient(circle, rgba(196,154,60,0.06) 0%, transparent 60%);
+    background: radial-gradient(circle, rgba(196, 154, 60, 0.06) 0%, transparent 60%);
 }
 
-/* Thin maroon bottom rule */
+/* Bottom rule */
 .hero-bottom-rule {
     position: absolute;
     bottom: 0;
     left: 4.5rem;
     right: 4.5rem;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(42,0,0,0.12) 30%, rgba(42,0,0,0.12) 70%, transparent);
+    background: linear-gradient(90deg, transparent, rgba(42, 0, 0, 0.12) 30%, rgba(42, 0, 0, 0.12) 70%, transparent);
 }
 
-/* Left content column */
+/* Hero content */
 .hero-content {
     position: relative;
     z-index: 2;
@@ -293,25 +286,25 @@ p {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: flex-start;    /* prevents badge and children from stretching */
+    align-items: flex-start;
 }
 
-/* Hero container — right edge flush, no gap */
-.hero-section > .container {
+/* Hero container */
+.hero-section>.container {
     display: flex;
     align-items: stretch;
     padding-top: 0;
     padding-bottom: 0;
-    padding-right: 0;       /* image must touch the viewport right border */
-    max-width: 100%;        /* full width inside section */
+    padding-right: 0;
+    max-width: 100%;
 }
 
-.hero-section > .container > .row {
+.hero-section>.container>.row {
     width: 100%;
     align-items: stretch;
 }
 
-/* ── Badge / Label ── */
+/* Hero badge */
 .hero-badge {
     display: inline-flex;
     align-items: center;
@@ -322,15 +315,15 @@ p {
     text-transform: uppercase;
     letter-spacing: 3px;
     color: var(--burgundy-wine);
-    background: rgba(91,19,18,0.07);
-    border: 1px solid rgba(91,19,18,0.20);
+    background: rgba(91, 19, 18, 0.07);
+    border: 1px solid rgba(91, 19, 18, 0.20);
     border-radius: 50px;
     padding: 0.35rem 1rem;
     margin-bottom: 1rem;
     animation: heroFadeUp 0.7s ease both;
 }
 
-/* ── Headline ── */
+/* Hero title */
 .hero-title {
     font-family: var(--font-heading);
     font-size: clamp(2.5rem, 4.8vw, 4.5rem);
@@ -342,13 +335,13 @@ p {
     animation: heroFadeUp 0.7s 0.15s ease both;
 }
 
-/* Italic "richest coffee" — burgundy emphasis */
+/* Italic emphasis */
 .hero-title em {
     font-style: italic;
     color: var(--burgundy-wine);
 }
 
-/* ── Descriptor / Subheadline ── */
+/* Hero descriptor */
 .hero-descriptor {
     font-family: var(--font-body);
     font-size: clamp(0.95rem, 1.4vw, 1.07rem);
@@ -360,7 +353,7 @@ p {
     animation: heroFadeUp 0.7s 0.28s ease both;
 }
 
-/* ── CTA Buttons ── */
+/* Hero CTA buttons */
 .hero-cta-wrap {
     display: flex;
     align-items: center;
@@ -370,7 +363,7 @@ p {
     animation: heroFadeUp 0.7s 0.4s ease both;
 }
 
-/* Primary — deep maroon filled */
+/* Primary CTA button */
 .btn-hero {
     background: var(--deep-maroon);
     color: var(--ivory-cream);
@@ -385,7 +378,7 @@ p {
     text-decoration: none;
     display: inline-block;
     letter-spacing: 0.4px;
-    box-shadow: 0 6px 22px rgba(42,0,0,0.22);
+    box-shadow: 0 6px 22px rgba(42, 0, 0, 0.22);
 }
 
 .btn-hero:hover {
@@ -393,14 +386,14 @@ p {
     border-color: var(--burgundy-wine);
     color: var(--ivory-cream);
     transform: translateY(-3px);
-    box-shadow: 0 10px 32px rgba(91,19,18,0.28);
+    box-shadow: 0 10px 32px rgba(91, 19, 18, 0.28);
 }
 
-/* Secondary — maroon outline */
+/* Secondary CTA button */
 .btn-hero-secondary {
     background: transparent;
     color: var(--deep-maroon);
-    border: 2px solid rgba(42,0,0,0.32);
+    border: 2px solid rgba(42, 0, 0, 0.32);
     padding: 0.85rem 2.2rem;
     border-radius: var(--radius-xxl);
     font-family: var(--font-subheading);
@@ -414,13 +407,13 @@ p {
 }
 
 .btn-hero-secondary:hover {
-    background: rgba(42,0,0,0.06);
+    background: rgba(42, 0, 0, 0.06);
     border-color: var(--deep-maroon);
     color: var(--deep-maroon);
     transform: translateY(-3px);
 }
 
-/* ── Stats row ── */
+/* Stats row */
 .hero-stat-row {
     display: flex;
     align-items: center;
@@ -455,53 +448,74 @@ p {
 .hero-stat-divider {
     width: 1px;
     height: 32px;
-    background: rgba(42,0,0,0.14);
+    background: rgba(42, 0, 0, 0.14);
     flex-shrink: 0;
 }
 
-/* ── Right visual column — acts as a spacer; image is on section ── */
+/* Hero visual column */
 .hero-visual {
     position: relative;
     z-index: 1;
     padding: 0;
 }
 
-/* Frame and glow not needed — image is on section */
+/* Frame and glow hidden */
 .hero-img-frame,
 .hero-img-glow {
     display: none;
 }
 
-/* Coffee splash — absolute on .hero-section, right half, full height, no gap */
+/* Hero main image */
 .hero-img-main {
     position: absolute;
     top: 0;
     right: 130px;
-    width: 700px;                 /* right half of the section */
+    width: 700px;
     height: 100%;
     object-fit: cover;
     object-position: center center;
     border-radius: 0;
-    z-index: 20;                /* topmost — above gradient */
-    filter: drop-shadow(-14px 0 30px rgba(42,0,0,0.13));
+    z-index: 20;
+    filter: drop-shadow(-14px 0 30px rgba(42, 0, 0, 0.13));
     animation: heroFloat 3s ease-in-out infinite;
 }
 
 
-/* ── Keyframes ── */
+/* Keyframes */
 @keyframes heroFadeUp {
-    from { opacity: 0; transform: translateY(28px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(28px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @keyframes heroFadeRight {
-    from { opacity: 0; transform: translateX(40px); }
-    to   { opacity: 1; transform: translateX(0); }
+    from {
+        opacity: 0;
+        transform: translateX(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 @keyframes heroFloat {
-    0%, 100% { transform: translateY(0px); }
-    50%       { transform: translateY(-15px); }
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
 }
 
 .btn-secondary {
@@ -525,7 +539,7 @@ p {
     transform: translateY(-2px);
 }
 
-/* ===== SECTION HEADERS - STANDARDIZED ===== */
+/* Section headers */
 .section-header {
     text-align: center;
     margin-bottom: var(--spacing-xl);
@@ -550,7 +564,7 @@ p {
     margin: 0 auto;
 }
 
-/* ===== SPECIAL OFFERS SECTION ===== */
+/* Special offers section */
 .special-offers-section {
     padding-top: 80px;
     padding-bottom: 60px;
@@ -572,16 +586,16 @@ p {
     padding: var(--spacing-xl);
     height: 45vh;
     text-align: center;
-    box-shadow: 0 4px 24px rgba(42,0,0,0.08), 0 1px 4px rgba(42,0,0,0.05);
+    box-shadow: 0 4px 24px rgba(42, 0, 0, 0.08), 0 1px 4px rgba(42, 0, 0, 0.05);
     transition: var(--transition-normal);
-    border: 1px solid rgba(42,0,0,0.07);
+    border: 1px solid rgba(42, 0, 0, 0.07);
     margin-top: var(--spacing-xs);
     margin-bottom: var(--spacing-xxl);
 }
 
 .offer-promo-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 12px 36px rgba(42,0,0,0.13);
+    box-shadow: 0 12px 36px rgba(42, 0, 0, 0.13);
     background: rgba(245, 241, 232, 0.88);
 }
 
@@ -646,16 +660,16 @@ p {
     box-shadow: var(--shadow-lg);
 }
 
-/* ===== WHY CHOOSE US SECTION ===== */
+/* Why choose us section */
 .why-choose-section {
     padding-top: 80px;
     padding-bottom: 80px;
-    /* Exact same gradient as hero section */
+
     background:
-        radial-gradient(ellipse 55% 60% at 0%   45%,  rgba(91,19,18,0.28)  0%, transparent 68%),
-        radial-gradient(ellipse 45% 50% at 100% 10%,  rgba(42,0,0,0.20)    0%, transparent 65%),
-        radial-gradient(ellipse 40% 45% at 90%  90%,  rgba(91,19,18,0.18)  0%, transparent 62%),
-        radial-gradient(ellipse 30% 35% at 50%  55%,  rgba(42,0,0,0.08)    0%, transparent 58%),
+        radial-gradient(ellipse 55% 60% at 0% 45%, rgba(91, 19, 18, 0.28) 0%, transparent 68%),
+        radial-gradient(ellipse 45% 50% at 100% 10%, rgba(42, 0, 0, 0.20) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 45% at 90% 90%, rgba(91, 19, 18, 0.18) 0%, transparent 62%),
+        radial-gradient(ellipse 30% 35% at 50% 55%, rgba(42, 0, 0, 0.08) 0%, transparent 58%),
         linear-gradient(135deg, #F5F1E8 0%, #EDE8DC 50%, #F0EBE1 100%);
 }
 
@@ -675,16 +689,16 @@ p {
     padding: var(--spacing-xl);
     height: 55vh;
     text-align: center;
-    box-shadow: 0 4px 24px rgba(42,0,0,0.08), 0 1px 4px rgba(42,0,0,0.05);
+    box-shadow: 0 4px 24px rgba(42, 0, 0, 0.08), 0 1px 4px rgba(42, 0, 0, 0.05);
     transition: var(--transition-normal);
-    border: 1px solid rgba(42,0,0,0.07);
+    border: 1px solid rgba(42, 0, 0, 0.07);
     margin-top: var(--spacing-xs);
     margin-bottom: 0;
 }
 
 .feature-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 12px 36px rgba(42,0,0,0.13);
+    box-shadow: 0 12px 36px rgba(42, 0, 0, 0.13);
     background: rgba(245, 241, 232, 0.88);
 }
 
@@ -718,7 +732,7 @@ p {
     margin-bottom: var(--spacing-lg);
 }
 
-/* ===== STORE LOCATION SECTION ===== */
+/* Store location section */
 .store-location-section {
     padding-top: 70px;
     padding-bottom: 80px;
@@ -794,7 +808,7 @@ p {
     display: block;
 }
 
-/* ===== ANIMATIONS ===== */
+/* Animations */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -819,10 +833,10 @@ p {
     }
 }
 
-/* ===== RESPONSIVE DESIGN ===== */
+/* Responsive */
 @media (max-width: 992px) {
 
-    /* Navigation */
+    /* Navigation responsive */
     .navbar-nav {
         gap: var(--spacing-md);
         flex-direction: column;
@@ -833,7 +847,7 @@ p {
         margin-top: var(--spacing-md);
     }
 
-    /* Hero Section */
+    /* Hero responsive */
     .hero-section {
         min-height: auto;
         padding: 5rem 0 3rem;
@@ -865,7 +879,7 @@ p {
         display: inline-flex;
     }
 
-    /* Location Content */
+    /* Location responsive */
     .location-content {
         grid-template-columns: 1fr;
     }
@@ -873,17 +887,17 @@ p {
 
 @media (max-width: 768px) {
 
-    /* Spacing Adjustments */
+    /* Spacing adjustments */
     :root {
         --spacing-xxl: 3rem;
     }
 
-    /* Typography */
+    /* Typography responsive */
     .section-title {
         font-size: 2rem;
     }
 
-    /* Grids */
+    /* Grid responsive */
     .offers-grid {
         grid-template-columns: 1fr;
     }
@@ -892,7 +906,7 @@ p {
         grid-template-columns: 1fr;
     }
 
-    /* Hero */
+    /* Hero responsive */
     .hero-visual {
         margin-top: var(--spacing-lg);
     }
@@ -914,14 +928,14 @@ p {
     }
 }
 
-/* ===== UTILITY CLASSES ===== */
+/* Utility classes */
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 var(--spacing-lg);
 }
 
-/* Home page — wider container with adjusted side padding */
+/* Home page wider container */
 body.page-home .container {
     max-width: 1440px;
     padding: 0 4.5rem;
@@ -939,9 +953,7 @@ body.page-home .container {
     margin-bottom: var(--spacing-xl);
 }
 
-/* =========================================================
-   CART NOTIFICATION BADGE
-   ========================================================= */
+/* Cart notification badge */
 .nav-icons a[href="cart.php"] {
     position: relative;
     display: inline-block;
@@ -982,9 +994,7 @@ body.page-home .container {
     }
 }
 
-/* =========================================================
-   DYNAMIC POP-UP NOTIFICATIONS
-   ========================================================= */
+/* Pop-up notifications */
 .notification {
     position: fixed;
     top: 100px;
@@ -1000,7 +1010,7 @@ body.page-home .container {
     pointer-events: auto;
 }
 
-/* Theme colors for different notification types */
+/* Notification types */
 .notification-success {
     background-color: var(--deep-maroon);
 }
@@ -1013,14 +1023,12 @@ body.page-home .container {
     background-color: var(--burgundy-wine);
 }
 
-/* Exiting animation triggered by JS */
+/* Exit animation */
 .notification.slide-out {
     animation: slideOut 0.3s ease-out forwards;
 }
 
-/* =========================================================
-   COMPONENT ANIMATIONS (Badges & Notifications)
-   ========================================================= */
+/* Component animations */
 @keyframes slideIn {
     from {
         transform: translateX(400px);

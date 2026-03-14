@@ -1,10 +1,6 @@
-/**
- * Home Page - Enhanced Best Sellers Section
- * Shows product image, name, description, price, and Add to Cart button
- * Responsive 3-column grid layout with hover effects
- */
+/* Home best sellers section styles */
 
-/* ===== MAIN SECTION CONTAINER ===== */
+/* Section container */
 .home-bestsellers-section {
     padding: var(--spacing-xxl) 0;
     background-color: var(--ivory-cream);
@@ -32,7 +28,7 @@
     opacity: 0.8;
 }
 
-/* ===== PRODUCT GRID ===== */
+/* Product grid */
 .home-bestsellers-section .product-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -43,7 +39,7 @@
     margin-right: auto;
 }
 
-/* ===== PRODUCT CARD ===== */
+/* Product card */
 .home-bestsellers-section .product-card {
     background-color: var(--light-beige);
     border-radius: var(--radius-xl);
@@ -61,7 +57,7 @@
     box-shadow: var(--shadow-lg);
 }
 
-/* ===== PRODUCT IMAGE ===== */
+/* Product image */
 .home-bestsellers-section .product-image-wrapper {
     position: relative;
     width: 100%;
@@ -81,7 +77,7 @@
     transform: scale(1.1);
 }
 
-/* ===== FAVORITE ICON ===== */
+/* Favorite icon */
 .home-bestsellers-section .favorite-icon {
     position: absolute;
     top: var(--spacing-md);
@@ -124,7 +120,7 @@
     color: #c0392b;
 }
 
-/* ===== PRODUCT INFO ===== */
+/* Product info */
 .home-bestsellers-section .product-info {
     padding: var(--spacing-lg);
     display: flex;
@@ -165,7 +161,7 @@
     overflow: hidden;
 }
 
-/* ===== PRODUCT FOOTER (Price & Button) ===== */
+/* Product footer */
 .home-bestsellers-section .product-footer {
     display: flex;
     justify-content: space-between;
@@ -182,7 +178,7 @@
     color: var(--burgundy-wine);
 }
 
-/* ===== ADD TO CART BUTTON ===== */
+/* Add to cart button */
 .home-bestsellers-section .btn-add-cart {
     background-color: var(--burgundy-wine);
     color: var(--ivory-cream);
@@ -215,18 +211,18 @@
     transform: translateY(0);
 }
 
-/* Adding state for button feedback */
+/* Adding state feedback */
 .home-bestsellers-section .btn-add-cart.adding {
     background-color: var(--deep-maroon);
     pointer-events: none;
 }
 
-/* ===== VIEW MENU BUTTON ===== */
+/* View menu button */
 .home-bestsellers-section .view-menu-container {
     text-align: center;
     margin-top: var(--spacing-xl);
     margin-bottom: var(--spacing-xs);
-    /* matched to Special Offers bottom spacing */
+
 }
 
 .home-bestsellers-section .btn-view-menu {
@@ -252,9 +248,9 @@
     box-shadow: var(--shadow-lg);
 }
 
-/* ===== RESPONSIVE DESIGN ===== */
+/* Responsive */
 
-/* Tablet - 2 columns */
+/* Tablet: 2 columns */
 @media (max-width: 1024px) {
     .home-bestsellers-section .product-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -262,7 +258,7 @@
     }
 }
 
-/* Mobile - 1 column */
+/* Mobile: 1 column */
 @media (max-width: 768px) {
     .home-bestsellers-section {
         padding: var(--spacing-xl) 0;
@@ -281,7 +277,7 @@
         height: 240px;
     }
 
-    /* Stack price and button on very small screens */
+    /* Stack price and button on small screens */
     @media (max-width: 400px) {
         .home-bestsellers-section .product-footer {
             flex-direction: column;
@@ -295,7 +291,7 @@
     }
 }
 
-/* Large screens - adjust card max width */
+/* Large screens: max card width */
 @media (min-width: 1400px) {
     .home-bestsellers-section .product-card {
         max-width: 420px;

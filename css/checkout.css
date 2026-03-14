@@ -1,7 +1,4 @@
-/**
- * Caffean — Checkout Page Stylesheet (checkout.css)
- * Clean, modern design inspired by minimal checkout UI
- */
+/* Checkout page styles */
 
 /* Page wrapper */
 .checkout-page {
@@ -10,7 +7,7 @@
     min-height: calc(100vh - 120px);
 }
 
-/* Page title — same typography as cart */
+/* Page title */
 .checkout-title {
     font-family: var(--font-subheading);
     font-size: 42px;
@@ -102,7 +99,7 @@
     max-height: 120px;
 }
 
-/* Order type and payment radio buttons */
+/* Order type and payment options */
 .payment-options {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -145,8 +142,8 @@
     color: var(--deep-maroon, #2a0000);
 }
 
-/* Active/checked radio option */
-.payment-option input[type="radio"]:checked + label {
+/* Active radio option */
+.payment-option input[type="radio"]:checked+label {
     border-color: var(--deep-maroon, #2a0000);
     background: rgba(42, 0, 0, 0.06);
     color: var(--deep-maroon, #2a0000);
@@ -157,16 +154,16 @@
     display: none;
 }
 
-.payment-option input[type="radio"]:checked + label .pay-icon {
+.payment-option input[type="radio"]:checked+label .pay-icon {
     display: none;
 }
 
-/* Shorter order type options */
+/* Order type option sizing */
 .order-type-options .payment-option label {
     padding: 10px 16px;
 }
 
-/* Order summary card — shared */
+/* Order summary card */
 .checkout-card.order-summary {
     display: flex;
     flex-direction: column;
@@ -193,7 +190,10 @@
     scrollbar-color: rgba(42, 0, 0, 0.12) transparent;
 }
 
-.sum-items::-webkit-scrollbar { width: 3px; }
+.sum-items::-webkit-scrollbar {
+    width: 3px;
+}
+
 .sum-items::-webkit-scrollbar-thumb {
     background: rgba(42, 0, 0, 0.14);
     border-radius: 4px;
@@ -208,7 +208,9 @@
     border-bottom: 1px solid rgba(42, 0, 0, 0.04);
 }
 
-.sum-item-line:last-child { border-bottom: none; }
+.sum-item-line:last-child {
+    border-bottom: none;
+}
 
 .sil-name {
     font-family: var(--font-body);
@@ -272,7 +274,7 @@
     padding-top: 14px;
 }
 
-/* Sticky summary on desktop */
+/* Sticky summary */
 .sum-sticky {
     position: sticky;
     top: 88px;
@@ -327,7 +329,7 @@
     color: var(--deep-maroon, #2a0000);
 }
 
-/* Inline alert */
+/* Inline error alert */
 .alert-error {
     background: #fdecea;
     color: #7b1a1a;
@@ -353,7 +355,7 @@
     line-height: 1;
 }
 
-/* Order confirmation receipt — overlay */
+/* Receipt overlay */
 .receipt-overlay {
     position: fixed;
     inset: 0;
@@ -367,9 +369,11 @@
     overflow-y: auto;
 }
 
-.receipt-overlay.open { display: flex; }
+.receipt-overlay.open {
+    display: flex;
+}
 
-/* Receipt dialog wrapper */
+/* Receipt dialog */
 .receipt-dialog {
     background: #fff;
     border-radius: 20px;
@@ -382,17 +386,24 @@
 }
 
 @keyframes receiptSlide {
-    from { opacity: 0; transform: translateY(30px) scale(0.96); }
-    to   { opacity: 1; transform: translateY(0) scale(1); }
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
-/* Capturable receipt content */
+/* Receipt content */
 .receipt-content {
     padding: 32px 44px 26px;
     background: #fff;
 }
 
-/* Shop logo header */
+/* Receipt logo */
 .receipt-logo-wrap {
     display: flex;
     align-items: center;
@@ -432,7 +443,7 @@
     margin-bottom: 14px;
 }
 
-/* Order number box with copy button */
+/* Order number box */
 .receipt-order-box {
     display: flex;
     align-items: center;
@@ -488,7 +499,7 @@
     color: var(--deep-maroon, #2a0000);
 }
 
-/* Status + datetime row */
+/* Status and datetime row */
 .receipt-status-row {
     display: flex;
     align-items: center;
@@ -535,7 +546,7 @@
     margin-bottom: 8px;
 }
 
-/* Key-value info rows */
+/* Info rows */
 .receipt-info-row {
     display: flex;
     justify-content: space-between;
@@ -562,7 +573,7 @@
     text-align: right;
 }
 
-/* Capped width for address and note values to prevent overflow */
+/* Address/note value cap */
 .receipt-info-row .r-val-note {
     max-width: 240px;
     word-break: break-word;
@@ -576,13 +587,13 @@
     text-align: right;
 }
 
-/* Align multiline value rows to top */
+/* Multiline row alignment */
 #r-address-row,
 #r-notes-row {
     align-items: flex-start;
 }
 
-/* Item rows with thumbnail */
+/* Receipt item rows */
 .receipt-item {
     display: flex;
     align-items: center;
@@ -591,7 +602,9 @@
     border-bottom: 1px solid rgba(42, 0, 0, 0.05);
 }
 
-.receipt-item:last-child { border-bottom: none; }
+.receipt-item:last-child {
+    border-bottom: none;
+}
 
 .receipt-item-img {
     width: 52px;
@@ -642,7 +655,7 @@
     margin-top: 2px;
 }
 
-/* Special instructions note per item */
+/* Special instructions */
 .receipt-item-si {
     font-family: var(--font-body);
     font-size: 0.72rem;
@@ -702,7 +715,7 @@
     margin-top: 14px;
 }
 
-/* Receipt dialog action bar (not captured in PNG) */
+/* Receipt action bar */
 .receipt-actions {
     display: flex;
     gap: 10px;
@@ -753,7 +766,7 @@
     border-color: var(--deep-maroon, #2a0000);
 }
 
-/* Address source toggle — Use Default / Enter New */
+/* Address source toggle */
 .addr-source-toggle {
     display: flex;
     gap: 8px;
@@ -790,7 +803,7 @@
     font-size: 0.78rem;
 }
 
-/* Saved address preview card */
+/* Saved address preview */
 .addr-default-preview {
     display: flex;
     align-items: flex-start;
@@ -845,7 +858,9 @@
 }
 
 @media (max-width: 768px) {
-    .checkout-page { padding: 28px 0 60px; }
+    .checkout-page {
+        padding: 28px 0 60px;
+    }
 
     .checkout-title {
         font-size: 30px;
@@ -860,13 +875,29 @@
         padding: 20px;
     }
 
-    .receipt-content { padding: 28px 22px 22px; }
-    .receipt-actions { padding: 14px 20px 20px; }
-    .receipt-order-box { max-width: 100%; }
+    .receipt-content {
+        padding: 28px 22px 22px;
+    }
+
+    .receipt-actions {
+        padding: 14px 20px 20px;
+    }
+
+    .receipt-order-box {
+        max-width: 100%;
+    }
 }
 
 @media (max-width: 480px) {
-    .receipt-actions { flex-direction: column; }
-    .receipt-thank-you { font-size: 1.2rem; }
-    .receipt-content { padding: 24px 16px 20px; }
+    .receipt-actions {
+        flex-direction: column;
+    }
+
+    .receipt-thank-you {
+        font-size: 1.2rem;
+    }
+
+    .receipt-content {
+        padding: 24px 16px 20px;
+    }
 }

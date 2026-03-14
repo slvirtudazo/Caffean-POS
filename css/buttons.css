@@ -1,10 +1,6 @@
-/**
- * Caffean - Standardized Button Styles
- * All buttons standardized to match "Order Now" button design
- * LOGIN and REGISTER buttons excluded from standardization
- */
+/* Standardized button styles */
 
-/* ===== PRIMARY BUTTONS - "ORDER NOW" STYLE ===== */
+/* Primary buttons */
 .btn-primary,
 .btn-order,
 .btn-add-to-cart,
@@ -40,7 +36,7 @@
     text-align: center;
 }
 
-/* All primary button hover effects */
+/* Primary button hover */
 .btn-primary:hover,
 .btn-order:hover,
 .btn-add-to-cart:hover,
@@ -66,8 +62,8 @@
     transform: scale(1.05);
 }
 
-/* ===== BOOTSTRAP BUTTON OVERRIDES ===== */
-/* Apply standard styling to Bootstrap buttons (except login/register) */
+/* Bootstrap button overrides */
+/* Exclude login/register buttons */
 .btn.btn-sm:not(.btn-login):not(.btn-register),
 .btn.btn-primary:not(.btn-login):not(.btn-register),
 .btn.btn-success:not(.btn-login):not(.btn-register),
@@ -95,13 +91,13 @@
     transform: scale(1.05);
 }
 
-/* Small button sizing */
+/* Small button size */
 .btn.btn-sm {
     padding: 0.5rem 1.5rem;
     font-size: 0.875rem;
 }
 
-/* ===== SECONDARY BUTTON STYLE (White background) ===== */
+/* Secondary button */
 .btn-secondary {
     background-color: white;
     color: var(--deep-maroon);
@@ -124,7 +120,7 @@
     transform: scale(1.05);
 }
 
-/* Keep Bootstrap's secondary button style for modals */
+/* Modal secondary button */
 .modal .btn-secondary {
     background-color: #6c757d;
     border-color: #6c757d;
@@ -136,7 +132,7 @@
     border-color: #545b62;
 }
 
-/* ===== QUANTITY BUTTONS ===== */
+/* Quantity buttons */
 .qty-btn {
     width: 36px;
     height: 36px;
@@ -148,25 +144,25 @@
     font-size: 0.875rem;
 }
 
-/* ===== FULL WIDTH VARIATION ===== */
+/* Full-width button */
 .btn-full-width {
     width: 100%;
     display: block;
 }
 
-/* ===== LARGE BUTTON VARIATION ===== */
+/* Large button */
 .btn-large {
     padding: var(--spacing-md) var(--spacing-xl);
     font-size: 1.125rem;
 }
 
-/* ===== SMALL BUTTON VARIATION ===== */
+/* Small button */
 .btn-small {
     padding: var(--spacing-xs) var(--spacing-md);
     font-size: 0.875rem;
 }
 
-/* ===== BUTTON WITH ICON ===== */
+/* Button icon spacing */
 .btn-primary i,
 .btn-order i,
 .btn-add-to-cart i,
@@ -174,7 +170,7 @@
     margin-right: var(--spacing-xs);
 }
 
-/* ===== DISABLED STATE ===== */
+/* Disabled state */
 .btn-primary:disabled,
 .btn-secondary:disabled,
 .btn-order:disabled,
@@ -184,7 +180,7 @@ button:disabled {
     transform: none !important;
 }
 
-/* ===== BUTTON GROUP ===== */
+/* Button group */
 .button-group {
     display: flex;
     gap: var(--spacing-sm);
@@ -197,7 +193,7 @@ button:disabled {
     min-width: 150px;
 }
 
-/* ===== REMOVE BUTTON STYLING ===== */
+/* Remove button */
 .remove-btn {
     background-color: var(--deep-maroon);
     color: var(--ivory-cream);
@@ -216,7 +212,7 @@ button:disabled {
     transform: scale(1.05);
 }
 
-/* ===== CAROUSEL ARROWS ===== */
+/* Carousel arrows */
 .carousel-arrow {
     width: 50px;
     height: 50px;
@@ -238,7 +234,7 @@ button:disabled {
     color: var(--ivory-cream);
 }
 
-/* ===== PAGINATION DOTS ===== */
+/* Pagination dots */
 .pagination-dot {
     width: 45px;
     height: 45px;

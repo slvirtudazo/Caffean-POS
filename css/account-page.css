@@ -1,24 +1,24 @@
-/* Account Page — Caffean */
+/* Account page styles */
 
-/* ── Customer navbar height token ────────────────────────── */
+/* Customer navbar height token */
 :root {
     --acct-navbar-h: 72px;
 }
 
-/* Navbar side padding matches admin (0 40px) */
+/* Navbar side padding */
 body.page-account .navbar .container {
     max-width: 100%;
     padding: 0 40px;
 }
 
-/* ── Page wrapper ─────────────────────────────────────────── */
+/* Page wrapper */
 .acct-page {
     background: var(--ivory-cream);
     min-height: calc(100vh - var(--acct-navbar-h));
     padding: 0;
 }
 
-/* Dashboard flush to screen edges — same as admin-body */
+/* Dashboard layout */
 .acct-dashboard {
     display: flex;
     align-items: flex-start;
@@ -28,7 +28,7 @@ body.page-account .navbar .container {
     padding: 0;
 }
 
-/* ── SIDEBAR ──────────────────────────────────────────────── */
+/* SIDEBAR */
 .acct-sidebar {
     width: 270px;
     flex-shrink: 0;
@@ -36,7 +36,8 @@ body.page-account .navbar .container {
     border-right: 1px solid rgba(42, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
-    padding: 36px 12px 20px 0; /* left=0, outer dashboard 5px aligns with logo */
+    padding: 36px 12px 20px 0;
+    /* left=0, outer dashboard 5px aligns with logo */
     position: sticky;
     top: var(--acct-navbar-h);
     height: calc(100vh - var(--acct-navbar-h));
@@ -130,35 +131,35 @@ body.page-account .navbar .container {
     background: var(--dark-brown);
 }
 
-/* Logout block — pinned to bottom with separator */
+/* Logout block */
 .acct-sidebar-logout {
-  padding-top: 8px;
-  border-top: 1px solid rgba(42, 0, 0, 0.08);
-  margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(42, 0, 0, 0.08);
+    margin-top: 8px;
 }
 
 .acct-logout-link {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 25px 35px;
-  font-family: var(--font-subheading);
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: var(--dark-brown);
-  border-radius: 50px;
-  background: transparent;
-  transition: background 0.18s ease, color 0.18s ease;
-  text-decoration: none;
-  width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 25px 35px;
+    font-family: var(--font-subheading);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--dark-brown);
+    border-radius: 50px;
+    background: transparent;
+    transition: background 0.18s ease, color 0.18s ease;
+    text-decoration: none;
+    width: 100%;
 }
 
 .acct-logout-link:hover {
-  background: rgba(42, 0, 0, 0.05);
-  color: var(--burgundy-wine);
+    background: rgba(42, 0, 0, 0.05);
+    color: var(--burgundy-wine);
 }
 
-/* Icon stroke for misc page elements */
+/* Icon stroke */
 .btn-page i,
 .acct-view-all i,
 .avatar-edit-icon i,
@@ -166,7 +167,7 @@ body.page-account .navbar .container {
     -webkit-text-stroke: 0.5px currentColor;
 }
 
-/* Nav count badge — shows item count beside nav label */
+/* Nav count badge */
 .acct-nav-badge {
     display: inline-flex;
     align-items: center;
@@ -184,7 +185,7 @@ body.page-account .navbar .container {
     line-height: 1;
 }
 
-/* ── MAIN CONTENT ─────────────────────────────────────────── */
+/* MAIN CONTENT */
 .acct-main {
     flex: 1;
     min-width: 0;
@@ -202,7 +203,7 @@ body.page-account .navbar .container {
     overflow: hidden;
 }
 
-/* ── SIDEBAR PROFILE — avatar + name at top of sidebar ───── */
+/* SIDEBAR PROFILE — avatar + name at top of sidebar */
 .acct-sidebar-profile {
     display: flex;
     flex-direction: column;
@@ -230,7 +231,7 @@ body.page-account .navbar .container {
     margin: 0 0 8px 0;
 }
 
-/* ── STATS BAR — above the main card ─────────────────────── */
+/* STATS BAR — above the main card */
 .acct-stats-bar {
     display: flex;
     justify-content: space-around;
@@ -240,7 +241,7 @@ body.page-account .navbar .container {
     border: 1px solid rgba(42, 0, 0, 0.1);
     border-bottom: 1px solid rgba(42, 0, 0, 0.07);
     box-shadow: 0 6px 24px rgba(42, 0, 0, 0.06);
-    margin-bottom: -1px; /* merges seamlessly with the card below */
+    margin-bottom: -1px;
 }
 
 .acct-avatar-wrap {
@@ -332,7 +333,7 @@ body.page-account .navbar .container {
     line-height: 1;
 }
 
-/* ── CARD HEADER ──────────────────────────────────────────── */
+/* CARD HEADER */
 .acct-card-header {
     display: flex;
     justify-content: space-between;
@@ -368,13 +369,13 @@ body.page-account .navbar .container {
     display: none;
 }
 
-/* ── TABLE WRAPPER ────────────────────────────────────────── */
+/* TABLE WRAPPER */
 .table-responsive {
     width: 100%;
     overflow-x: auto;
 }
 
-/* ── SHARED TABLE BASE ────────────────────────────────────── */
+/* SHARED TABLE BASE */
 .acct-orders-table,
 .acct-fav-table {
     width: 100%;
@@ -383,7 +384,7 @@ body.page-account .navbar .container {
     table-layout: fixed;
 }
 
-/* ── TABLE HEADERS — matches admin-table th exactly ──────── */
+/* TABLE HEADERS — matches admin-table th exactly */
 .acct-orders-table th,
 .acct-fav-table th {
     background: rgba(245, 241, 232, 0.5);
@@ -399,7 +400,7 @@ body.page-account .navbar .container {
     white-space: nowrap;
 }
 
-/* ── SORTABLE HEADER — exact match of admin-table th[data-sort] */
+/* Sortable header */
 .acct-orders-table th[data-sort],
 .acct-fav-table th[data-sort] {
     cursor: pointer;
@@ -407,7 +408,7 @@ body.page-account .navbar .container {
     transition: color 0.18s ease, background 0.18s ease;
 }
 
-/* Default ⇅ indicator on all sortable headers */
+/* Default sort indicator */
 .acct-orders-table th[data-sort]::after,
 .acct-fav-table th[data-sort]::after {
     content: ' ⇅';
@@ -415,14 +416,14 @@ body.page-account .navbar .container {
     opacity: 0.45;
 }
 
-/* Hover state — matches admin-table th[data-sort]:hover */
+/* Sort header hover */
 .acct-orders-table th[data-sort]:hover,
 .acct-fav-table th[data-sort]:hover {
     color: var(--deep-maroon);
     background: rgba(245, 241, 232, 0.85);
 }
 
-/* Active sort state — matches admin-table th.sort-asc / sort-desc */
+/* Active sort state */
 .acct-orders-table th[data-sort].sort-asc,
 .acct-orders-table th[data-sort].sort-desc,
 .acct-fav-table th[data-sort].sort-asc,
@@ -431,21 +432,21 @@ body.page-account .navbar .container {
     background: rgba(91, 19, 18, 0.05);
 }
 
-/* ↑ when ascending */
+/* Ascending indicator */
 .acct-orders-table th[data-sort].sort-asc::after,
 .acct-fav-table th[data-sort].sort-asc::after {
     content: ' ↑';
     opacity: 1;
 }
 
-/* ↓ when descending */
+/* Descending indicator */
 .acct-orders-table th[data-sort].sort-desc::after,
 .acct-fav-table th[data-sort].sort-desc::after {
     content: ' ↓';
     opacity: 1;
 }
 
-/* ── TABLE DATA ROWS ──────────────────────────────────────── */
+/* TABLE DATA ROWS */
 .acct-orders-table td,
 .acct-fav-table td {
     padding: 15px 20px;
@@ -462,13 +463,13 @@ body.page-account .navbar .container {
     text-overflow: ellipsis;
 }
 
-/* Remove bottom border on last row */
+/* Remove last row border */
 .acct-orders-table tbody tr:last-child td,
 .acct-fav-table tbody tr:last-child td {
     border-bottom: none;
 }
 
-/* Row hover — matches admin */
+/* Row hover */
 .acct-orders-table tbody tr,
 .acct-fav-table tbody tr {
     transition: background 0.15s ease;
@@ -479,23 +480,43 @@ body.page-account .navbar .container {
     background: rgba(245, 241, 232, 0.4);
 }
 
-/* ── ORDERS TABLE column widths ───────────────────────────── */
+/* ORDERS TABLE column widths */
 .acct-orders-table th:nth-child(1),
-.acct-orders-table td:nth-child(1) { width: 18%; }
-.acct-orders-table th:nth-child(2),
-.acct-orders-table td:nth-child(2) { width: 20%; }
-.acct-orders-table th:nth-child(3),
-.acct-orders-table td:nth-child(3) { width: 8%; }
-.acct-orders-table th:nth-child(4),
-.acct-orders-table td:nth-child(4) { width: 14%; }
-.acct-orders-table th:nth-child(5),
-.acct-orders-table td:nth-child(5) { width: 14%; }
-.acct-orders-table th:nth-child(6),
-.acct-orders-table td:nth-child(6) { width: 12%; }
-.acct-orders-table th:nth-child(7),
-.acct-orders-table td:nth-child(7) { width: 14%; }
+.acct-orders-table td:nth-child(1) {
+    width: 18%;
+}
 
-/* Order ID — bold 700; explicit selector beats .acct-orders-table td */
+.acct-orders-table th:nth-child(2),
+.acct-orders-table td:nth-child(2) {
+    width: 20%;
+}
+
+.acct-orders-table th:nth-child(3),
+.acct-orders-table td:nth-child(3) {
+    width: 8%;
+}
+
+.acct-orders-table th:nth-child(4),
+.acct-orders-table td:nth-child(4) {
+    width: 14%;
+}
+
+.acct-orders-table th:nth-child(5),
+.acct-orders-table td:nth-child(5) {
+    width: 14%;
+}
+
+.acct-orders-table th:nth-child(6),
+.acct-orders-table td:nth-child(6) {
+    width: 12%;
+}
+
+.acct-orders-table th:nth-child(7),
+.acct-orders-table td:nth-child(7) {
+    width: 14%;
+}
+
+/* Order ID — bold */
 .acct-orders-table td.td-id {
     font-weight: 700;
 }
@@ -504,13 +525,13 @@ body.page-account .navbar .container {
     color: var(--deep-maroon);
 }
 
-/* Type column icon spacing */
+/* Type column icon */
 .acct-orders-table td:nth-child(4) i {
     margin-right: 4px;
     vertical-align: middle;
 }
 
-/* ── STATUS BADGES — matches admin .badge ─────────────────── */
+/* STATUS BADGES — matches admin .badge */
 .status-badge {
     display: inline-block;
     padding: 5px 11px;
@@ -543,7 +564,7 @@ body.page-account .navbar .container {
     color: #1a73e8;
 }
 
-/* ── PAGINATION ───────────────────────────────────────────── */
+/* PAGINATION */
 .acct-pagination {
     display: flex;
     justify-content: space-between;
@@ -589,7 +610,7 @@ body.page-account .navbar .container {
     gap: 6px;
 }
 
-/* ── EMPTY STATES ─────────────────────────────────────────── */
+/* EMPTY STATES */
 .acct-empty-state {
     padding: 3rem;
     text-align: center;
@@ -602,7 +623,7 @@ body.page-account .navbar .container {
     display: block;
 }
 
-/* Favorites empty state — exact mirror of cart.php empty state */
+/* Favorites empty state */
 .fav-empty-state {
     display: flex;
     flex-direction: column;
@@ -639,7 +660,7 @@ body.page-account .navbar .container {
     margin-bottom: 2.2rem;
 }
 
-/* Loading state inside fav-body */
+/* Favorites loading state */
 .fav-loading {
     display: flex;
     flex-direction: column;
@@ -658,8 +679,8 @@ body.page-account .navbar .container {
     opacity: 0.5;
 }
 
-/* ── FAVORITES TABLE — balanced equal column widths ──────── */
-/* All 4 columns use consistent width for even spacing    */
+/* FAVORITES TABLE — balanced equal column widths */
+
 .acct-fav-table th,
 .acct-fav-table td {
     text-align: center;
@@ -667,31 +688,39 @@ body.page-account .navbar .container {
 }
 
 .acct-fav-table th:nth-child(1),
-.acct-fav-table td:nth-child(1) { width: 20%; }
+.acct-fav-table td:nth-child(1) {
+    width: 20%;
+}
 
 .acct-fav-table th:nth-child(2),
-.acct-fav-table td:nth-child(2) { width: 40%; }
+.acct-fav-table td:nth-child(2) {
+    width: 40%;
+}
 
 .acct-fav-table th:nth-child(3),
-.acct-fav-table td:nth-child(3) { width: 20%; }
+.acct-fav-table td:nth-child(3) {
+    width: 20%;
+}
 
 .acct-fav-table th:nth-child(4),
-.acct-fav-table td:nth-child(4) { width: 20%; }
+.acct-fav-table td:nth-child(4) {
+    width: 20%;
+}
 
-/* Product name — bold 700 */
+/* Product name — bold */
 .td-fav-name {
     font-weight: 700;
     text-align: center;
 }
 
-/* Price — deep maroon color */
+/* Price */
 .td-fav-price {
     color: var(--deep-maroon);
     font-weight: 600;
     text-align: center;
 }
 
-/* Product image — centered in cell */
+/* Product image */
 .fav-product-img {
     width: 58px;
     height: 58px;
@@ -702,7 +731,7 @@ body.page-account .navbar .container {
     margin: 0 auto;
 }
 
-/* Action buttons wrapper */
+/* Action buttons */
 .fav-td-action {
     display: flex;
     justify-content: center;
@@ -710,7 +739,7 @@ body.page-account .navbar .container {
     gap: 6px;
 }
 
-/* Action buttons — matches menu/supplies add-to-cart / cart remove styles */
+/* Action button styles */
 .fav-btn-cart,
 .fav-btn-remove {
     width: 40px;
@@ -726,7 +755,7 @@ body.page-account .navbar .container {
     transition: background 0.18s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* Cart — blue, matches menu add-to-cart accent */
+/* Cart button */
 .fav-btn-cart {
     background: #3A9AFF;
 }
@@ -737,7 +766,7 @@ body.page-account .navbar .container {
     box-shadow: 0 4px 12px rgba(42, 0, 0, 0.15);
 }
 
-/* Remove — red, matches cart.php cart-modal-btn-delete */
+/* Remove button */
 .fav-btn-remove {
     background: #DC0000;
 }
@@ -748,7 +777,7 @@ body.page-account .navbar .container {
     box-shadow: 0 4px 12px rgba(42, 0, 0, 0.15);
 }
 
-/* ── FAVORITES DELETE MODAL — matches cart.css cart-modal ─── */
+/* FAVORITES DELETE MODAL — matches cart.css cart-modal */
 .cart-modal-overlay {
     position: fixed;
     inset: 0;
@@ -759,7 +788,9 @@ body.page-account .navbar .container {
     z-index: 5000;
 }
 
-.cart-modal-overlay.open { display: flex; }
+.cart-modal-overlay.open {
+    display: flex;
+}
 
 .cart-modal {
     background: #fff;
@@ -802,7 +833,9 @@ body.page-account .navbar .container {
     transition: background 0.22s ease;
 }
 
-.cart-modal-close:hover { background: rgba(42, 0, 0, 0.06); }
+.cart-modal-close:hover {
+    background: rgba(42, 0, 0, 0.06);
+}
 
 .cart-modal-body {
     padding: 24px 28px;
@@ -875,7 +908,7 @@ body.page-account .navbar .container {
     box-shadow: 0 4px 12px rgba(42, 0, 0, 0.20);
 }
 
-/* ── TOAST — matches #notification-toast from components.css ─ */
+/* TOAST — matches #notification-toast from components.css */
 #notification-toast {
     position: fixed;
     bottom: 28px;
@@ -902,7 +935,7 @@ body.page-account .navbar .container {
     transform: translateX(-50%) translateY(0);
 }
 
-/* ── PROFILE SETTINGS — avatar row (matches admin .ps-avatar-*) */
+/* Profile settings avatar row */
 .acct-ps-avatar-row {
     display: flex;
     align-items: center;
@@ -987,7 +1020,7 @@ body.page-account .navbar .container {
     color: var(--text-muted);
 }
 
-/* ── FLASH ALERTS — matches admin .flash-success / .flash-error */
+/* Flash alerts */
 .flash-success,
 .flash-error {
     display: flex;
@@ -1013,7 +1046,7 @@ body.page-account .navbar .container {
     border: 1px solid #f5c6cb;
 }
 
-/* ── PROFILE SETTINGS FORM ────────────────────────────────── */
+/* PROFILE SETTINGS FORM */
 .acct-form-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -1077,12 +1110,14 @@ body.page-account .navbar .container {
     background: var(--burgundy-wine);
 }
 
-/* ── PROFILE SETTINGS TAB — matches admin ps-* layout ──────── */
+/* PROFILE SETTINGS TAB — matches admin ps-* layout */
 .acct-ps-alert-zone {
     margin-bottom: 4px;
 }
 
-.acct-ps-alert-zone:empty { display: none; }
+.acct-ps-alert-zone:empty {
+    display: none;
+}
 
 .acct-ps-row {
     display: flex;
@@ -1091,7 +1126,7 @@ body.page-account .navbar .container {
     padding: 20px 28px 28px;
 }
 
-/* Equal-width columns — both cards visually balanced */
+/* Equal-width columns */
 .acct-ps-col {
     flex: 1;
     min-width: 0;
@@ -1204,9 +1239,11 @@ body.page-account .navbar .container {
     transition: color 0.2s;
 }
 
-.acct-ps-pw-toggle:hover { color: var(--deep-maroon); }
+.acct-ps-pw-toggle:hover {
+    color: var(--deep-maroon);
+}
 
-/* Form action buttons row */
+/* Form action buttons */
 .acct-ps-form-actions {
     display: flex;
     justify-content: flex-end;
@@ -1248,7 +1285,10 @@ body.page-account .navbar .container {
     transition: background 0.18s;
 }
 
-.acct-ps-btn-save:hover { background: var(--burgundy-wine); }
+.acct-ps-btn-save:hover {
+    background: var(--burgundy-wine);
+}
+
 .btn-browse-menu {
     background: transparent;
     color: var(--burgundy-wine);
@@ -1271,7 +1311,7 @@ body.page-account .navbar .container {
     box-shadow: var(--shadow-md);
 }
 
-/* ── INSIGHTS TAB ─────────────────────────────────────────── */
+/* INSIGHTS TAB */
 .ins-body {
     padding: 24px 28px;
     display: flex;
@@ -1285,13 +1325,23 @@ body.page-account .navbar .container {
     gap: 20px;
 }
 
-/* Row 1: chart 2/3, summary 1/3 */
-.ins-row--chart .ins-panel--chart   { flex: 2; }
-.ins-row--chart .ins-panel--summary { flex: 1; }
+/* Chart and summary row */
+.ins-row--chart .ins-panel--chart {
+    flex: 2;
+}
 
-/* Row 2: top items 2/4, each donut 1/4 */
-.ins-row--bottom .ins-panel--top-items { flex: 2; }
-.ins-row--bottom .ins-panel--donut     { flex: 1; }
+.ins-row--chart .ins-panel--summary {
+    flex: 1;
+}
+
+/* Top items and donut row */
+.ins-row--bottom .ins-panel--top-items {
+    flex: 2;
+}
+
+.ins-row--bottom .ins-panel--donut {
+    flex: 1;
+}
 
 /* Panel base */
 .ins-panel {
@@ -1324,7 +1374,7 @@ body.page-account .navbar .container {
     opacity: 0.55;
 }
 
-/* Spending line chart */
+/* Spending chart */
 .ins-chart-wrap {
     position: relative;
     height: 220px;
@@ -1345,7 +1395,9 @@ body.page-account .navbar .container {
     border-bottom: 1px solid rgba(42, 0, 0, 0.06);
 }
 
-.ins-summary-item:last-child { border-bottom: none; }
+.ins-summary-item:last-child {
+    border-bottom: none;
+}
 
 .ins-summary-lbl {
     font-family: var(--font-subheading);
@@ -1361,7 +1413,7 @@ body.page-account .navbar .container {
     color: var(--deep-maroon);
 }
 
-/* Top ordered items list */
+/* Top items list */
 .ins-top-list {
     list-style: none;
     margin: 0;
@@ -1378,7 +1430,9 @@ body.page-account .navbar .container {
     border-bottom: 1px solid rgba(42, 0, 0, 0.06);
 }
 
-.ins-top-item:last-child { border-bottom: none; }
+.ins-top-item:last-child {
+    border-bottom: none;
+}
 
 .ins-top-rank {
     font-family: var(--font-subheading);
@@ -1451,7 +1505,7 @@ body.page-account .navbar .container {
     color: var(--deep-maroon);
 }
 
-/* ── RESPONSIVE ───────────────────────────────────────────── */
+/* RESPONSIVE */
 @media (max-width: 992px) {
     .acct-dashboard {
         flex-direction: column;
@@ -1536,12 +1590,13 @@ body.page-account .navbar .container {
         padding: 16px 20px;
     }
 }
-/* ── ORDER SUB-TABS — matches admin .admin-tabs / .tab ───── */
+
+/* ORDER SUB-TABS — matches admin .admin-tabs / .tab */
 .acct-subtabs {
     display: flex;
     gap: 4px;
     border-bottom: 2px solid rgba(42, 0, 0, 0.06);
-    /* align with card header horizontal padding */
+
     padding: 0 var(--spacing-lg);
     margin: 0;
 }
@@ -1563,7 +1618,7 @@ body.page-account .navbar .container {
     transition: color 0.22s ease;
 }
 
-/* First tab text aligns with "Order History" heading */
+/* First tab alignment */
 .acct-subtab:first-child {
     padding-left: 0;
 }
@@ -1578,7 +1633,7 @@ body.page-account .navbar .container {
     font-weight: 700;
 }
 
-/* Count label — matches admin .tab-count */
+/* Count label */
 .acct-subtab-count {
     font-family: var(--font-body);
     font-size: 0.75rem;
@@ -1588,7 +1643,7 @@ body.page-account .navbar .container {
     letter-spacing: 0.2px;
 }
 
-/* Search toolbar — equal top/bottom spacing, same side padding as table columns */
+/* Search toolbar */
 .acct-subtab-toolbar {
     display: flex;
     align-items: center;

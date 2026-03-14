@@ -1,11 +1,6 @@
-/**
- * Caffean Shop - Components Stylesheet
- * Contains global interactive elements: Notifications, Cart Badges, and Base Animations
- */
+/* Global components: cart badge, toast, animations, and popups */
 
-/* =========================================================
-   CART NOTIFICATION BADGE
-   ========================================================= */
+/* Cart notification badge */
 .nav-icons a[href="cart.php"] {
     position: relative;
     display: inline-block;
@@ -33,10 +28,7 @@
     z-index: 10;
 }
 
-/* =========================================================
-   DYNAMIC POP-UP NOTIFICATIONS
-   Matches kiosk toast: transition-based, small rectangle, deep-maroon
-   ========================================================= */
+/* Toast notification */
 #notification-toast {
     position: fixed;
     bottom: 28px;
@@ -63,9 +55,7 @@
     transform: translateX(-50%) translateY(0);
 }
 
-/* =========================================================
-   ANIMATIONS & TRANSITIONS
-   ========================================================= */
+/* Animations */
 
 @keyframes fadeIn {
     from {
@@ -79,7 +69,7 @@
     }
 }
 
-/* Reusable animation class */
+/* Reusable fade-in class */
 .fade-in {
     animation: fadeIn 0.3s ease;
 }
@@ -100,9 +90,7 @@
     animation: bounce 0.5s ease;
 }
 
-/* =========================================================
-   LOGIN-REQUIRED POPUP
-   ========================================================= */
+/* Login-required popup */
 .login-popup-overlay {
     position: fixed;
     inset: 0;
@@ -189,10 +177,7 @@
     box-shadow: var(--shadow-lg);
 }
 
-/* =========================================================
-   PRODUCT CARD — FAVORITE HEART BUTTON
-   Positioned top-right of .product-card (position: relative)
-   ========================================================= */
+/* Product card favorite button */
 .fav-card-btn {
     position: absolute;
     top: 8px;
@@ -220,7 +205,7 @@
     transform: scale(1.12);
 }
 
-/* Filled/active state — favorited */
+/* Active/favorited state */
 .fav-card-btn.active {
     background: #fff;
     color: #c0392b;
@@ -232,7 +217,15 @@
 }
 
 @keyframes fav-pop {
-    0%   { transform: scale(1); }
-    50%  { transform: scale(1.35); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.35);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }

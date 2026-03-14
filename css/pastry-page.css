@@ -1,18 +1,15 @@
-/**
- * Pastry Page Specific Styles
- * Extends the main style.css with pastry menu page customizations
- */
+/* Pastry page styles */
 
-/* ===== PASTRY MENU SECTION ===== */
-/* Main container for pastry products display */
+/* Menu section */
+
 .menu-section {
     padding: var(--spacing-xxl) 0;
     background-color: var(--warm-sand);
     min-height: calc(100vh - 150px);
 }
 
-/* ===== PRODUCT GRID LAYOUT ===== */
-/* Grid system for displaying pastry products - matches home page */
+/* Product grid */
+
 .product-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -23,8 +20,8 @@
     margin-right: auto;
 }
 
-/* ===== PRODUCT CARD ===== */
-/* Individual product card container - matches home page size */
+/* Product card */
+
 .product-card {
     background-color: var(--light-beige);
     border-radius: var(--radius-lg);
@@ -35,14 +32,14 @@
     max-width: 450px;
 }
 
-/* Hover effect for product cards */
+/* Card hover */
 .product-card:hover {
     transform: translateY(-8px);
     box-shadow: var(--shadow-lg);
 }
 
-/* ===== PRODUCT IMAGE CONTAINER ===== */
-/* Wrapper for product image with fixed aspect ratio */
+/* Product image */
+
 .product-image-wrapper {
     position: relative;
     width: 100%;
@@ -51,7 +48,7 @@
     background-color: var(--warm-sand);
 }
 
-/* Product image styling */
+
 .product-image {
     width: 100%;
     height: 100%;
@@ -59,13 +56,13 @@
     transition: var(--transition-slow);
 }
 
-/* Image zoom effect on hover */
+/* Image zoom on hover */
 .product-card:hover .product-image {
     transform: scale(1.1);
 }
 
-/* ===== FAVORITE ICON ===== */
-/* Heart icon for marking favorites */
+/* Favorite icon */
+
 .favorite-icon {
     position: absolute;
     top: var(--spacing-md);
@@ -82,20 +79,20 @@
     z-index: 10;
 }
 
-/* Favorite icon hover effect */
+/* Favorite icon hover */
 .favorite-icon:hover {
     background-color: var(--burgundy-wine);
     color: white;
     transform: scale(1.1);
 }
 
-/* ===== PRODUCT INFORMATION ===== */
-/* Container for product details */
+/* Product info */
+
 .product-info {
     padding: var(--spacing-lg);
 }
 
-/* Product name/title */
+/* Product name */
 .product-name {
     font-family: var(--font-subheading);
     font-size: 1.5rem;
@@ -104,7 +101,7 @@
     margin-bottom: var(--spacing-sm);
 }
 
-/* Product description text */
+/* Product description */
 .product-description {
     color: var(--dark-brown);
     font-size: 0.95rem;
@@ -113,8 +110,8 @@
     min-height: 60px;
 }
 
-/* ===== PRODUCT FOOTER ===== */
-/* Bottom section with price and order button */
+/* Product footer */
+
 .product-footer {
     display: flex;
     justify-content: space-between;
@@ -122,7 +119,7 @@
     margin-top: var(--spacing-md);
 }
 
-/* Product price display */
+/* Product price */
 .product-price {
     font-family: var(--font-subheading);
     font-size: 1.35rem;
@@ -130,7 +127,7 @@
     color: var(--burgundy-wine);
 }
 
-/* Order button styling */
+/* Order button */
 .btn-order {
     background-color: var(--deep-maroon);
     color: var(--ivory-cream);
@@ -144,14 +141,14 @@
     transition: var(--transition-fast);
 }
 
-/* Order button hover effect */
+/* Order button hover */
 .btn-order:hover {
     background-color: var(--burgundy-wine);
     transform: scale(1.05);
 }
 
-/* ===== PAGINATION CONTROLS ===== */
-/* Container for page navigation */
+/* Pagination controls */
+
 .carousel-controls {
     display: flex;
     justify-content: center;
@@ -161,7 +158,7 @@
     padding-bottom: var(--spacing-xl);
 }
 
-/* Previous/Next arrow buttons */
+/* Arrow buttons */
 .carousel-arrow {
     width: 50px;
     height: 50px;
@@ -177,20 +174,20 @@
     text-decoration: none;
 }
 
-/* Arrow button hover effect */
+/* Arrow hover */
 .carousel-arrow:hover {
     background-color: var(--burgundy-wine);
     transform: scale(1.1);
 }
 
-/* ===== PAGE DOTS ===== */
-/* Container for pagination dots */
+/* Page dots */
+
 .pagination-dots {
     display: flex;
     gap: var(--spacing-sm);
 }
 
-/* Individual page number button */
+/* Page number button */
 .pagination-dot {
     width: 45px;
     height: 45px;
@@ -208,28 +205,28 @@
     text-decoration: none;
 }
 
-/* Active page dot styling */
+/* Active page dot */
 .pagination-dot.active {
     background-color: var(--deep-maroon);
     color: var(--ivory-cream);
 }
 
-/* Page dot hover effect */
+/* Dot hover */
 .pagination-dot:hover {
     background-color: var(--burgundy-wine);
     border-color: var(--burgundy-wine);
     color: var(--ivory-cream);
 }
 
-/* ===== RESPONSIVE DESIGN ===== */
-/* Tablet view - 2 columns */
+/* Responsive */
+/* Tablet: 2 columns */
 @media (max-width: 1024px) {
     .product-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-/* Mobile view - 1 column */
+/* Mobile: 1 column */
 @media (max-width: 768px) {
     .product-grid {
         grid-template-columns: 1fr;

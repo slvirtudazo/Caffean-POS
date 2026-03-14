@@ -1,33 +1,26 @@
-/**
- * Menu Page Specific Styles
- * Product grid with 3 columns matching homepage Best Sellers layout
- *
- * Sticky elements:
- * - .filter-panel               → left sidebar (categories + filters)
- * - .menu-content-sticky-header → right column (active-filters bar)
- */
+/* Menu page styles */
 
-/* Align navbar to full-width content — matches container-fluid main layout */
+/* Full-width navbar */
 body.page-menu .navbar .container {
     max-width: none;
     padding: 0 var(--spacing-md);
 }
 
-/* ===== ROOT TOKEN ===== */
+/* Root tokens */
 :root {
     --navbar-height: 70px;
     --sidebar-width: 280px;
-    /* NEW: Adjust sidebar width centrally */
+
 }
 
-/* ===== MENU MAIN SECTION ===== */
+/* Main section */
 .menu-main-section {
     padding-top: 2rem;
     padding-bottom: 2rem;
     background-color: var(--ivory-cream);
 }
 
-/* Neutralize Bootstrap .row gutters so all spacing is controlled manually */
+/* Neutralize Bootstrap row gutters */
 .menu-main-section .row {
     --bs-gutter-x: 0;
     margin-left: 0;
@@ -35,17 +28,10 @@ body.page-menu .navbar .container {
     align-items: flex-start;
 }
 
-/* =========================================================
-   CUSTOM LAYOUT & SIDEBAR (No longer using Bootstrap cols)
-   ========================================================= */
 
-/*
- * The column itself is now the sticky + scrollable container,
- * mirroring the admin sidebar (.admin-sidebar) exactly.
- * It sticks to the viewport on page scroll and only scrolls
- * its own content when the cursor is pointed at it.
- */
-/* Sidebar — sticky, scrolls its own content independently */
+
+
+/* Sidebar */
 .menu-sidebar {
     width: 280px;
     flex-shrink: 0;
@@ -75,7 +61,7 @@ body.page-menu .navbar .container {
     opacity: 0.6;
 }
 
-/* .filter-panel is now purely visual — no sticky / scroll logic here */
+/* Filter panel — visual only */
 .filter-panel {
     background: transparent;
     box-shadow: none;
@@ -85,7 +71,7 @@ body.page-menu .navbar .container {
     border-right: 1.5px solid rgba(42, 0, 0, 0.07);
 }
 
-/* ===== FILTER SECTIONS ===== */
+/* Filter sections */
 .filter-section {
     margin-bottom: 1.75rem;
     padding-bottom: 0;
@@ -101,7 +87,7 @@ body.page-menu .navbar .container {
     border-top: 1px solid rgba(42, 0, 0, 0.07);
 }
 
-/* ===== FILTER TITLE (Categories, Sort by Price, Best Sellers) ===== */
+/* Filter title */
 .filter-title {
     font-family: var(--font-subheading);
     font-size: 0.7rem;
@@ -122,9 +108,7 @@ body.page-menu .navbar .container {
     font-size: 0.7rem;
 }
 
-/* =========================================================
-   CATEGORY LIST
-   ========================================================= */
+/* Category list */
 .category-list {
     display: flex;
     flex-direction: column;
@@ -208,7 +192,7 @@ body.page-menu .navbar .container {
     opacity: 0.7;
 }
 
-/* ===== SORT OPTIONS ===== */
+/* Sort options */
 .sort-options {
     display: flex;
     flex-direction: column;
@@ -270,10 +254,8 @@ body.page-menu .navbar .container {
     color: var(--burgundy-wine);
 }
 
-/* =========================================================
-   MAIN CONTENT AREA
-   ========================================================= */
-/* Content area — no padding; grid's own padding controls all outer spacing uniformly */
+/* Main content area */
+/* Content area */
 .menu-content {
     padding: 0;
     flex: 1;
@@ -281,10 +263,7 @@ body.page-menu .navbar .container {
     max-width: calc(100% - var(--sidebar-width));
 }
 
-/* =========================================================
-   STICKY HEADER (Active Filters Bar)
-   Glassmorphism: products blur and fade cleanly beneath it.
-   ========================================================= */
+/* Sticky active filters bar */
 .menu-content-sticky-header {
     position: -webkit-sticky;
     position: sticky;
@@ -309,7 +288,7 @@ body.page-menu .navbar .container {
     width: calc(100% + (var(--spacing-md) * 2));
 }
 
-/* ===== ACTIVE FILTERS CONTAINER ===== */
+/* Active filters container */
 .active-filters {
     display: flex;
     flex-wrap: wrap;
@@ -320,33 +299,33 @@ body.page-menu .navbar .container {
     min-height: 28px;
 }
 
-/* "ACTIVE FILTERS:" label */
+/* Active filters label */
 .filter-label {
     font-family: var(--font-subheading);
     font-size: 0.7rem;
-    /* Scaled down for elegance */
+
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
     color: #888;
-    /* Softer neutral gray */
+
     margin-right: 0.25rem;
     white-space: nowrap;
 }
 
-/* Soft Chip Style (Replaces bordered badges) */
+/* Filter badge chip */
 .filter-badge {
     display: inline-flex;
     align-items: center;
     gap: 5px;
     padding: 5px 10px 5px 12px;
     background: rgba(91, 19, 18, 0.08);
-    /* Soft translucent burgundy tint */
+
     color: var(--burgundy-wine);
     border: none;
-    /* Removed heavy borders */
+
     border-radius: 50px;
-    /* Perfect pill shape */
+
     font-family: var(--font-body);
     font-size: 0.7rem;
     font-weight: 600;
@@ -356,11 +335,11 @@ body.page-menu .navbar .container {
 
 .filter-badge:hover {
     background: rgba(91, 19, 18, 0.15);
-    /* Darkens slightly on hover */
+
     transform: translateY(-1px);
 }
 
-/* The 'X' remove icon inside the chip */
+/* Chip remove icon */
 .filter-badge a {
     display: inline-flex;
     align-items: center;
@@ -377,10 +356,10 @@ body.page-menu .navbar .container {
 .filter-badge a:hover {
     opacity: 1;
     background: rgba(91, 19, 18, 0.12);
-    /* Subtle circle hover effect behind the X */
+
 }
 
-/* ===== CLEAR ALL LINK (Demoted to text link) ===== */
+/* Clear All link */
 .btn-clear-active-filters {
     display: inline-flex;
     align-items: center;
@@ -408,9 +387,7 @@ body.page-menu .navbar .container {
     text-decoration-color: var(--deep-maroon);
 }
 
-/* =========================================================
-   SECTION & CATEGORY GROUP LABELS (kiosk-style)
-   ========================================================= */
+/* Category group labels */
 
 .menu-cat-group {
     margin-bottom: 1.5rem;
@@ -428,10 +405,8 @@ body.page-menu .navbar .container {
     margin-bottom: 0.5rem;
 }
 
-/* =========================================================
-   PRODUCTS GRID — 5 columns matching kiosk
-   ========================================================= */
-/* Products grid — outer padding equals inner gap for consistent spacing */
+/* Products grid */
+
 .products-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -440,9 +415,7 @@ body.page-menu .navbar .container {
     margin-bottom: 0;
 }
 
-/* =========================================================
-   PRODUCT CARD — compact kiosk style
-   ========================================================= */
+/* Product card */
 .product-card {
     background: #fff;
     border-radius: var(--radius-md);
@@ -461,13 +434,13 @@ body.page-menu .navbar .container {
     box-shadow: var(--shadow-md);
 }
 
-/* Highlight card when product is in cart */
+/* In-cart highlight */
 .product-card.in-cart {
     border: 1px solid var(--deep-maroon);
     box-shadow: 0 0 0 1px var(--deep-maroon), var(--shadow-sm);
 }
 
-/* Product Image — compact 130px */
+/* Product image */
 .product-image-wrapper {
     width: 100%;
     height: 130px;
@@ -486,7 +459,7 @@ body.page-menu .navbar .container {
     transform: scale(1.05);
 }
 
-/* Product Info */
+/* Product info */
 .product-info {
     padding: 0.85rem;
     display: flex;
@@ -516,7 +489,7 @@ body.page-menu .navbar .container {
     margin-bottom: 0.75rem;
 }
 
-/* Product Footer */
+/* Product footer */
 .product-footer {
     display: flex;
     align-items: center;
@@ -532,14 +505,14 @@ body.page-menu .navbar .container {
     color: var(--burgundy-wine);
 }
 
-/* Stacked wrapper for price + net content */
+/* Price and net wrapper */
 .product-meta {
     display: flex;
     flex-direction: column;
     gap: 0.1rem;
 }
 
-/* Net content label below price */
+/* Net content label */
 .product-net {
     font-family: var(--font-body);
     font-size: 0.65rem;
@@ -548,7 +521,7 @@ body.page-menu .navbar .container {
     letter-spacing: 0.3px;
 }
 
-/* Add button — round circle matching kiosk */
+/* Add button */
 .btn-order {
     background: var(--deep-maroon);
     color: #fff;
@@ -575,7 +548,7 @@ body.page-menu .navbar .container {
     pointer-events: none;
 }
 
-/* Inline qty selector — mirrors kiosk kpf-qty-row */
+/* Inline quantity selector */
 .kpf-qty-row {
     display: flex;
     align-items: center;
@@ -632,9 +605,7 @@ body.page-menu .navbar .container {
     text-align: center;
 }
 
-/* =========================================================
-   EMPTY STATE
-   ========================================================= */
+/* Empty state */
 .empty-state {
     grid-column: 1 / -1;
     text-align: center;
@@ -691,9 +662,7 @@ body.page-menu .navbar .container {
     box-shadow: var(--shadow-lg);
 }
 
-/* =========================================================
-   RESPONSIVE
-   ========================================================= */
+/* Responsive */
 @media (max-width: 1200px) {
     .products-grid {
         grid-template-columns: repeat(4, 1fr);
