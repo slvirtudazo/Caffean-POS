@@ -1,17 +1,16 @@
 <?php
-/**
- * Caffean Shop — Shopping Cart (cart.php)
- */
+
+// Shopping Cart Page
 require_once 'php/db_connection.php';
 require_once 'php/product_images.php';
 
-// Redirect admin away from cart
+// Redirect admin users away from the cart.
 if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
     header('Location: admin/dashboard.php');
     exit();
 }
 
-/* Normalise session cart */
+// Normalize legacy integer cart entries to the standard array format.
 if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
 foreach ($_SESSION['cart'] as $pid => &$v) {
     if (!is_array($v)) {
@@ -28,7 +27,7 @@ foreach ($_SESSION['cart'] as $pid => &$v) {
 }
 unset($v);
 
-/* Fetch cart products */
+// Fetch active cart products from the database.
 $cart_items   = [];
 $subtotal     = 0.0;
 $DELIVERY_FEE = 50.0;
@@ -56,7 +55,7 @@ if (!empty($_SESSION['cart'])) {
     }
 }
 
-/* Logged-in user */
+// Fetch the logged-in user's name and email.
 $user = null;
 if (isset($_SESSION['user_id'])) {
     $st = mysqli_prepare($conn, "SELECT full_name, email FROM users WHERE user_id = ?");
@@ -353,9 +352,9 @@ if (isset($_SESSION['user_id'])) {
         const DELIVERY_FEE = <?= $DELIVERY_FEE ?>;
         let subtotal = <?= $subtotal ?>;
 
-        /* Keep summary card min-height equal to single ci-card */
+        // Keep the summary card height aligned with a single item card.
         function syncSumHeight() {
-            const cards  = document.querySelectorAll('#cart-items-col .ci-card');
+            const cards = document.querySelectorAll('#cart-items-col .ci-card');
             const sumCard = document.getElementById('s1-sum-card');
             if (!sumCard) return;
             sumCard.style.minHeight = cards.length === 1 ? cards[0].offsetHeight + 'px' : '';
@@ -364,31 +363,41 @@ if (isset($_SESSION['user_id'])) {
         document.addEventListener('DOMContentLoaded', syncSumHeight);
         window.addEventListener('resize', syncSumHeight);
 
-        /* Update a single option (size, temperature, etc.) */
+        // Update a single customization option for a cart item.
         function updateOption(pid, field, value) {
             const fd = new FormData();
             fd.append('action', 'update_option');
             fd.append('product_id', pid);
             fd.append('field', field);
             fd.append('value', value);
-            fetch('php/update_cart_item.php', { method: 'POST', body: fd })
+            fetch('php/update_cart_item.php', {
+                    method: 'POST',
+                    body: fd
+                })
                 .then(r => r.json())
-                .then(d => { if (d.success) rebuildOptsSummary(pid, d.item); });
+                .then(d => {
+                    if (d.success) rebuildOptsSummary(pid, d.item);
+                });
         }
 
-        /* Update add-ons for a cart item */
+        // Update add-ons for a cart item.
         function updateAddons(pid) {
             const checked = document.querySelectorAll(`#cust-${pid} .addon-item input:checked`);
             const fd = new FormData();
             fd.append('action', 'update_addons');
             fd.append('product_id', pid);
             checked.forEach(c => fd.append('addons[]', c.value));
-            fetch('php/update_cart_item.php', { method: 'POST', body: fd })
+            fetch('php/update_cart_item.php', {
+                    method: 'POST',
+                    body: fd
+                })
                 .then(r => r.json())
-                .then(d => { if (d.success) rebuildOptsSummary(pid, d.item); });
+                .then(d => {
+                    if (d.success) rebuildOptsSummary(pid, d.item);
+                });
         }
 
-        /* Rebuild the options preview text in item card and summary */
+        // Rebuild the options preview text in the item card.
         function rebuildOptsSummary(pid, item) {
             const el = document.getElementById('opts-' + pid);
             if (el) {
@@ -400,17 +409,20 @@ if (isset($_SESSION['user_id'])) {
             if (s1el) s1el.textContent = [item.size, item.temperature, 'Sugar ' + item.sugar_level].join(' · ');
         }
 
-        /* Change item quantity */
+        // Change a cart item's quantity.
         function changeQty(pid, delta) {
-            const qEl     = document.getElementById('qty-' + pid);
+            const qEl = document.getElementById('qty-' + pid);
             const current = parseInt(qEl.textContent);
             if (current <= 1 && delta < 0) return;
             const qty = current + delta;
-            const fd  = new FormData();
+            const fd = new FormData();
             fd.append('action', 'update_qty');
             fd.append('product_id', pid);
             fd.append('quantity', qty);
-            fetch('php/update_cart_item.php', { method: 'POST', body: fd })
+            fetch('php/update_cart_item.php', {
+                    method: 'POST',
+                    body: fd
+                })
                 .then(r => r.json())
                 .then(d => {
                     if (!d.success) return;
@@ -424,7 +436,7 @@ if (isset($_SESSION['user_id'])) {
                 });
         }
 
-        /* Delete confirmation modal */
+        // Show the delete confirmation modal.
         let _pendingDeletePid = null;
 
         function confirmDeleteItem(pid, name) {
@@ -440,19 +452,25 @@ if (isset($_SESSION['user_id'])) {
 
         document.getElementById('del-modal-confirm').addEventListener('click', function() {
             const pid = _pendingDeletePid;
-            if (pid !== null) { closeDeleteModal(); removeCartItem(pid); }
+            if (pid !== null) {
+                closeDeleteModal();
+                removeCartItem(pid);
+            }
         });
 
         document.getElementById('cart-del-modal').addEventListener('click', function(e) {
             if (e.target === this) closeDeleteModal();
         });
 
-        /* Remove item from cart */
+        // Remove an item from the cart.
         function removeCartItem(pid) {
             const fd = new FormData();
             fd.append('action', 'remove');
             fd.append('product_id', pid);
-            fetch('php/update_cart_item.php', { method: 'POST', body: fd })
+            fetch('php/update_cart_item.php', {
+                    method: 'POST',
+                    body: fd
+                })
                 .then(r => {
                     if (!r.ok) throw new Error('Server error ' + r.status);
                     return r.json();
@@ -470,10 +488,10 @@ if (isset($_SESSION['user_id'])) {
                 .catch(err => console.error('Remove item failed:', err));
         }
 
-        /* Refresh subtotal, fee, and total in summary */
+        // Refresh the subtotal, fee, and total in the order summary.
         function refreshTotals() {
-            setText('s1-sub',   '₱' + fmt(subtotal));
-            setText('s1-ship',  '₱' + fmt(DELIVERY_FEE));
+            setText('s1-sub', '₱' + fmt(subtotal));
+            setText('s1-ship', '₱' + fmt(DELIVERY_FEE));
             setText('s1-total', '₱' + fmt(subtotal + DELIVERY_FEE));
         }
 
@@ -482,11 +500,12 @@ if (isset($_SESSION['user_id'])) {
             if (el) el.textContent = v;
         }
 
-        /* Format number with thousands comma */
+        // Format a number with a thousands comma.
         function fmt(n) {
             return parseFloat(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         }
     </script>
 
 </body>
+
 </html>

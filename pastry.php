@@ -1,8 +1,6 @@
 <?php
 
-/**
- * Caffean Shop - Pastry Menu Page
- */
+// Pastry Menu Page
 require_once 'php/db_connection.php';
 require_once 'php/product_images.php';
 

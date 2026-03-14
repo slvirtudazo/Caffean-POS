@@ -1,10 +1,7 @@
 <?php
 
-/**
- * Caffean Shop — Self-Order Kiosk (kiosk.php)
- * Guest ordering: Dine In / Take Out → Browse → Cart → Checkout → Confirmation
- * No login required. Cart stored in $_SESSION['kiosk_cart'].
- */
+// Self-Order Kiosk — Dine In / Take Out → Browse → Cart → Checkout → Confirmation.
+// No login required. Cart stored in $_SESSION['kiosk_cart'].
 
 require_once 'php/db_connection.php';
 require_once 'php/product_images.php';
@@ -169,7 +166,7 @@ function kioskNetContent($product)
                                 8 => 'fa-burger',
                                 9 => 'fa-plus-circle',
                             ];
-                            /* Name-based fallback for categories beyond ID 9 */
+                            // Name-based fallback for categories beyond ID 9.
                             $cat_icons_by_name = [
                                 'Coffee Beans'      => 'fa-seedling',
                                 'Milk & Creamers'   => 'fa-droplet',
@@ -241,8 +238,9 @@ function kioskNetContent($product)
                                         <div class="kiosk-prod-footer">
                                             <div class="kiosk-prod-price-wrap">
                                                 <span class="kiosk-prod-price">₱<?= number_format($product['price'], 2) ?></span>
-                                                <?php $knet = kioskNetContent($product); if ($knet): ?>
-                                                <span class="kiosk-prod-net"><?= $knet ?></span>
+                                                <?php $knet = kioskNetContent($product);
+                                                if ($knet): ?>
+                                                    <span class="kiosk-prod-net"><?= $knet ?></span>
                                                 <?php endif; ?>
                                             </div>
 
@@ -505,18 +503,18 @@ function kioskNetContent($product)
     <script>
         /* ── State ───────────────────────────────────────────────────── */
         let kioskOrderType = 'dine_in';
-        let kioskServiceType = 'table'; // 'table' | 'counter'
-        let kioskTableNumber = '';      // selected tent table number
+        let kioskServiceType = 'table'; // 'table' or 'counter'
+        let kioskTableNumber = ''; // selected tent table number
         let kioskPayment = 'Pay at the counter (Cash)';
         let kioskCart = {};
-        let kioskCurrentCat = 'all'; // 'all' | category id string
-        let kioskCurrentSort = null; // null | 'low' | 'high' | 'popular'
+        let kioskCurrentCat = 'all'; // 'all' or a category ID string
+        let kioskCurrentSort = null; // null, 'low', 'high', or 'popular'
 
-        /* Step 1 is default — lock body scroll immediately */
+        // Lock body scroll immediately on step 1.
         document.body.classList.add('kiosk-no-scroll');
 
-        /* Show cart bar on step 1 with center/right hidden */
-        document.addEventListener('DOMContentLoaded', function () {
+        // Show the cart bar on step 1 with center and right hidden.
+        document.addEventListener('DOMContentLoaded', function() {
             const cartBar = document.getElementById('kiosk-cart-bar');
             const cartBarCenter = document.querySelector('.kcb-bar-center');
             const kcbBtn = document.getElementById('kcb-btn');
@@ -534,10 +532,10 @@ function kioskNetContent($product)
             document.getElementById('step' + n).classList.add('active');
             currentStep = n;
 
-            /* Lock body scroll on step 1 */
+            // Lock body scroll on step 1.
             document.body.classList.toggle('kiosk-no-scroll', n === 1);
 
-            /* Update progress dots */
+            // Update progress dots.
             for (let i = 1; i <= 5; i++) {
                 const dot = document.getElementById('kp' + i);
                 if (dot) {
@@ -547,7 +545,7 @@ function kioskNetContent($product)
                 }
             }
 
-            /* Show cart bar on steps 1 & 2; fade center/right on step 1 */
+            // Show cart bar on steps 1 and 2; fade center and right on step 1.
             updateCartBar();
             const cartBar = document.getElementById('kiosk-cart-bar');
             const cartBarCenter = document.querySelector('.kcb-bar-center');
@@ -561,19 +559,18 @@ function kioskNetContent($product)
                 behavior: 'smooth'
             });
 
-            /* Render step-specific content */
+            // Render content for the current step.
             if (n === 3) renderCartStep();
             if (n === 4) renderCheckoutSummary();
         }
 
-        /* Go back — free navigation on steps 2-4, cart preserved.
-           Only show abandon dialog when on step 1 with items in cart. */
+        // Go back — free navigation on steps 2–4, cart preserved.
         function goBack() {
             if (currentStep > 1) {
                 goToStep(currentStep - 1);
                 return;
             }
-            /* On step 1 — leaving the kiosk entirely */
+            // On step 1, prompt before leaving the kiosk.
             if (Object.keys(kioskCart).length > 0) {
                 document.getElementById('back-dialog-overlay').classList.add('active');
             } else {
@@ -581,14 +578,14 @@ function kioskNetContent($product)
             }
         }
 
-        /* Confirmed leave — clear cart then exit to home */
+        // Clear the kiosk cart and exit to home.
         function confirmGoBack() {
             closeBackDialog();
             kioskCart = {};
             window.location.href = 'index.php';
         }
 
-        /* Close abandon dialog */
+        // Close the abandon dialog.
         function closeBackDialog() {
             document.getElementById('back-dialog-overlay').classList.remove('active');
         }
@@ -601,30 +598,30 @@ function kioskNetContent($product)
 
         /* ── Step 2: inline card qty selector ───────────────────────── */
 
-        /* Update qty display and minus-button disabled state */
+        // Update quantity display and minus button state.
         function setCardUI(pid, qty) {
             const numEl = document.getElementById('kpf-num-' + pid);
             const minusEl = document.getElementById('kpf-minus-' + pid);
             if (numEl) numEl.textContent = qty;
             if (minusEl) minusEl.disabled = (qty === 0);
 
-            /* Highlight card border when qty > 0 */
+            // Highlight card border when quantity is above 0.
             const card = document.querySelector(`.kiosk-product-card[data-pid="${pid}"]`);
             if (card) card.classList.toggle('in-cart', qty > 0);
         }
 
-        /* Unified handler for both - and + on every card */
+        // Unified handler for both minus and plus buttons on every card.
         function kioskCardQty(pid, delta, name, price, img) {
             const current = kioskCart[pid] ? kioskCart[pid].qty : 0;
             const next = Math.max(0, current + delta);
 
             if (next === 0) {
-                /* Remove from cart */
+                // Remove item from cart.
                 const removedName = kioskCart[pid]?.name || name || 'Product';
                 delete kioskCart[pid];
                 showToast(removedName + ' removed from your cart.');
             } else if (!kioskCart[pid]) {
-                /* First add — create cart entry with defaults */
+                // First add — create a cart entry with default options.
                 kioskCart[pid] = {
                     name,
                     price,
@@ -639,7 +636,7 @@ function kioskNetContent($product)
                 };
                 showToast((name || 'Product') + ' added to your cart.');
             } else {
-                /* Qty update — increase or decrease */
+                // Increase or decrease quantity.
                 kioskCart[pid].qty = next;
                 showToast(delta > 0 ? 'Product quantity increased.' : 'Product quantity decreased.');
             }
@@ -648,7 +645,7 @@ function kioskNetContent($product)
             updateCartBar();
         }
 
-        /* Update add-ons for a kiosk cart item */
+        // Update add-ons for a kiosk cart item.
         function updateKioskAddons(pid, checkbox) {
             if (!kioskCart[pid]) return;
             if (!kioskCart[pid].addons) kioskCart[pid].addons = [];
@@ -660,7 +657,7 @@ function kioskNetContent($product)
             }
         }
 
-        /* Legacy aliases */
+        // Legacy aliases.
         function kioskCardAdd(pid, name, price, img) {
             kioskCardQty(pid, 1, name, price, img);
         }
@@ -669,7 +666,7 @@ function kioskNetContent($product)
             kioskCardQty(pid, 1, name, price, img);
         }
 
-        /* Recalculate totals, update the cart bar, and toggle Continue button */
+        // Recalculate totals, update the cart bar, and toggle the Continue button.
         function updateCartBar() {
             const totalQty = Object.values(kioskCart).reduce((s, i) => s + i.qty, 0);
             const totalAmt = Object.values(kioskCart).reduce((s, i) => s + i.price * i.qty, 0);
@@ -678,7 +675,7 @@ function kioskNetContent($product)
             const btn = document.getElementById('kcb-btn');
             if (countEl) countEl.textContent = totalQty;
             if (totalEl) totalEl.textContent = '₱' + totalAmt.toFixed(2);
-            /* Enable Continue button only when at least one item is in the cart */
+            // Enable the Continue button only when the cart has items.
             if (btn) btn.disabled = (totalQty === 0);
         }
 
@@ -701,7 +698,7 @@ function kioskNetContent($product)
             let subtotal = 0;
             items.forEach(([pid, it]) => subtotal += it.price * it.qty);
 
-            /* Build cart item cards using online ci-card style */
+            // Build cart item cards using the online ci-card style.
             let cardsHtml = '';
             items.forEach(([pid, it]) => {
                 const imgHtml = it.img ?
@@ -710,7 +707,7 @@ function kioskNetContent($product)
                        <div class="k-ci-img-ph" style="display:none;"><i class="fas fa-mug-hot"></i></div>` :
                     `<div class="k-ci-img-ph"><i class="fas fa-mug-hot"></i></div>`;
 
-                /* Build specs preview line — matches online ci-opts-preview */
+                // Build the specs preview line.
                 const specsText = [it.size, it.temp, it.sugar ? `Sugar ${it.sugar}` : null, it.milk ? `${it.milk} Milk` : null]
                     .filter(Boolean).join(' · ');
 
@@ -789,7 +786,7 @@ function kioskNetContent($product)
                 </div>`;
             });
 
-            /* Two-column layout: items left, summary right */
+            // Two-column layout: items left, summary right.
             const singleItem = items.length === 1 ? ' k-single-item' : '';
             wrap.innerHTML = `
             <div class="row g-4${singleItem}">
@@ -827,7 +824,7 @@ function kioskNetContent($product)
             renderSummaryLines();
         }
 
-        /* Refresh just the summary line items in step 3 */
+        // Refresh summary line items in step 3.
         function renderSummaryLines() {
             const el = document.getElementById('k-sum-lines');
             if (!el) return;
@@ -847,7 +844,7 @@ function kioskNetContent($product)
                 </div>`;
             });
             el.innerHTML = html;
-            /* Update both subtotal and total displays */
+            // Update subtotal and total displays.
             document.querySelectorAll('#k-sum-total, #k-sum-subtotal').forEach(el => {
                 el.textContent = '₱' + total.toFixed(2);
             });
@@ -856,7 +853,7 @@ function kioskNetContent($product)
         /* ── Cart item operations ────────────────────────────────────── */
         let deleteTarget = null;
 
-        /* Show delete confirmation dialog */
+        // Show the delete confirmation dialog.
         function confirmDeleteKioskItem(pid) {
             deleteTarget = pid;
             const name = kioskCart[pid]?.name || 'this item';
@@ -865,7 +862,7 @@ function kioskNetContent($product)
             document.getElementById('delete-dialog-overlay').classList.add('active');
         }
 
-        /* Confirm and execute item removal */
+        // Confirm and remove the item.
         function confirmDeleteItem() {
             closeDeleteDialog();
             if (deleteTarget !== null) {
@@ -874,7 +871,7 @@ function kioskNetContent($product)
             }
         }
 
-        /* Close delete dialog */
+        // Close the delete dialog.
         function closeDeleteDialog() {
             document.getElementById('delete-dialog-overlay').classList.remove('active');
         }
@@ -901,7 +898,7 @@ function kioskNetContent($product)
             kioskCart[pid][field] = value;
         }
 
-        /* Activate service type option and toggle table number section */
+        // Activate a service type option and toggle the table number section.
         function selectServiceType(type) {
             kioskServiceType = type;
             document.getElementById('co-svc-table').classList.toggle('active', type === 'table');
@@ -916,18 +913,18 @@ function kioskNetContent($product)
 
         /* ── Step 4: render checkout summary ────────────────────────── */
         function renderCheckoutSummary() {
-            /* Highlight service type tiles */
+            // Highlight the selected service type tile.
             document.getElementById('co-svc-table').classList.toggle('active', kioskServiceType === 'table');
             document.getElementById('co-svc-counter').classList.toggle('active', kioskServiceType === 'counter');
 
-            /* Restore table number section visibility */
+            // Restore table number section visibility.
             const tableSection = document.getElementById('table-number-section');
             if (tableSection) tableSection.style.display = kioskServiceType === 'table' ? 'block' : 'none';
 
-            /* Generate 5 random tent table numbers (1–50) each time step 4 is entered */
+            // Generate 5 random tent table numbers (1–50) on each step 4 entry.
             generateTentNumbers();
 
-            /* Inject order type row into summary */
+            // Inject the order type row into the summary.
             const isDineIn = kioskOrderType === 'dine_in';
             const otLabel = isDineIn ? 'Dine In' : 'Take Out';
             document.getElementById('co-sum-order-type').innerHTML = `
@@ -936,7 +933,7 @@ function kioskNetContent($product)
                     <span class="k-sum-ot-val">${otLabel}</span>
                 </div>`;
 
-            /* Build summary item lines with specs */
+            // Build summary item lines with specs.
             const sumItems = document.getElementById('co-sum-items');
             let total = 0;
             let html = '';
@@ -958,7 +955,7 @@ function kioskNetContent($product)
             document.getElementById('co-sum-total').textContent = '₱' + total.toFixed(2);
         }
 
-        /* Activate payment option */
+        // Activate the selected payment option.
         function selectPayment(el, value) {
             kioskPayment = value;
             document.querySelectorAll('.k-pay-opt').forEach(o => o.classList.remove('active'));
@@ -972,7 +969,7 @@ function kioskNetContent($product)
                 return;
             }
 
-            /* Require table number when serving at table */
+            // Require a table number when serving at a table.
             if (kioskServiceType === 'table') {
                 if (!kioskTableNumber) {
                     showAlert('step4-alert', 'Please select your table number.', 'danger');
@@ -1027,11 +1024,11 @@ function kioskNetContent($product)
             /* Datetime — YYYY/MM/DD HH:MM:SS AM/PM */
             const now = new Date();
             const yyyy = now.getFullYear();
-            const mm   = String(now.getMonth() + 1).padStart(2, '0');
-            const dd   = String(now.getDate()).padStart(2, '0');
-            const hh   = now.getHours();
-            const min  = String(now.getMinutes()).padStart(2, '0');
-            const ss   = String(now.getSeconds()).padStart(2, '0');
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const dd = String(now.getDate()).padStart(2, '0');
+            const hh = now.getHours();
+            const min = String(now.getMinutes()).padStart(2, '0');
+            const ss = String(now.getSeconds()).padStart(2, '0');
             const ampm = hh >= 12 ? 'PM' : 'AM';
             const hr12 = String(hh % 12 || 12).padStart(2, '0');
             const cashDatetime = `${yyyy}/${mm}/${dd} ${hr12}:${min}:${ss} ${ampm}`;
@@ -1070,14 +1067,17 @@ function kioskNetContent($product)
                 `Thank you, ${data.customer_name}!` : 'Thank you for your purchase!';
 
             const dateStr = now.toLocaleDateString('en-PH', {
-                year: 'numeric', month: 'long', day: '2-digit'
+                year: 'numeric',
+                month: 'long',
+                day: '2-digit'
             }) + ' · ' + now.toLocaleTimeString('en-PH', {
-                hour: '2-digit', minute: '2-digit'
+                hour: '2-digit',
+                minute: '2-digit'
             });
             document.getElementById('confirm-datetime').textContent = dateStr;
 
             const name = (data.customer_name && data.customer_name !== 'Guest') ? data.customer_name : '';
-            const mob  = data.mobile || '';
+            const mob = data.mobile || '';
             let custHtml = '';
             if (name || mob) {
                 custHtml = `<div class="kiosk-receipt-section-hd">Customer</div>`;
@@ -1320,7 +1320,9 @@ function kioskNetContent($product)
 
         /* Generate 10 unique random table numbers (1–50) and render as tent chips */
         function generateTentNumbers() {
-            const pool = Array.from({ length: 50 }, (_, i) => i + 1);
+            const pool = Array.from({
+                length: 50
+            }, (_, i) => i + 1);
             const shuffled = pool.sort(() => Math.random() - 0.5).slice(0, 10);
             const row = document.getElementById('tent-numbers-row');
             if (!row) return;

@@ -1,11 +1,7 @@
 <?php
 
-/**
- * Caffean Shop - Supplies Page
- * Displays Coffee Beans, Milk & Creamers, and Brewing Equipment
- * Layout mirrors the Menu page: sticky sidebar + 5-column product grid
- * Supports category filter, price sort, and best sellers sort
- */
+// Supplies Page — displays Coffee Beans, Milk & Creamers, and Brewing Equipment.
+// Supports category filter, price sort, and best sellers sort.
 
 require_once 'php/db_connection.php';
 require_once 'php/product_images.php';
@@ -13,25 +9,25 @@ require_once 'php/product_images.php';
 $is_admin      = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 $is_logged_in  = isset($_SESSION['user_id']);
 
-// Supply category IDs
+// Supply category IDs.
 define('SUPPLY_CAT_IDS', [10, 11, 12]);
 $supply_ids_sql = implode(',', SUPPLY_CAT_IDS);
 
-// Get filter/sort parameters
+// Get filter and sort parameters from the URL.
 $cat_filter   = isset($_GET['category'])   ? intval($_GET['category']) : 0;
 $price_sort   = isset($_GET['price_sort']) ? $_GET['price_sort']       : '';
 $show_popular = isset($_GET['popular'])    && $_GET['popular'] == '1';
 
-// Validate inputs
+// Validate filter and sort inputs.
 if ($cat_filter > 0 && !in_array($cat_filter, SUPPLY_CAT_IDS)) $cat_filter = 0;
 if (!in_array($price_sort, ['low', 'high'])) $price_sort = '';
 
-// Build WHERE clause
+// Build the SQL WHERE clause.
 $where = $cat_filter > 0
     ? "p.status = 1 AND p.category_id = $cat_filter"
     : "p.status = 1 AND p.category_id IN ($supply_ids_sql)";
 
-// Build ORDER BY — price_sort takes precedence over popular
+// Build ORDER BY — price_sort takes precedence over popular.
 $popularity_expr = "(
     COALESCE((SELECT COUNT(*) FROM order_items oi
               JOIN orders o ON oi.order_id = o.order_id
@@ -52,41 +48,48 @@ if ($price_sort === 'low') {
     $order_by = "p.category_id, p.name";
 }
 
-// Fetch products
-$products_result = mysqli_query($conn,
+// Fetch matching supply products.
+$products_result = mysqli_query(
+    $conn,
     "SELECT p.*, c.name AS category_name
      FROM products p
      JOIN categories c ON p.category_id = c.category_id
      WHERE $where
-     ORDER BY $order_by");
+     ORDER BY $order_by"
+);
 
-// Fetch supply categories for sidebar
-$cats_result = mysqli_query($conn,
-    "SELECT * FROM categories WHERE category_id IN ($supply_ids_sql) ORDER BY category_id");
+// Fetch supply categories for the sidebar.
+$cats_result = mysqli_query(
+    $conn,
+    "SELECT * FROM categories WHERE category_id IN ($supply_ids_sql) ORDER BY category_id"
+);
 
-// Per-category counts for sidebar badge
+// Get per-category product counts for sidebar badges.
 $cat_counts = [];
-$count_res = mysqli_query($conn,
+$count_res = mysqli_query(
+    $conn,
     "SELECT category_id, COUNT(*) AS cnt FROM products
      WHERE status = 1 AND category_id IN ($supply_ids_sql)
-     GROUP BY category_id");
+     GROUP BY category_id"
+);
 while ($row = mysqli_fetch_assoc($count_res)) {
     $cat_counts[$row['category_id']] = $row['cnt'];
 }
 $total_supply = array_sum($cat_counts);
 
-// Active filters flag
+// Set active filters flag.
 $has_active_filters = ($cat_filter > 0 || $price_sort !== '' || $show_popular);
 
-// Resolve filtered category name for badge display
+// Resolve the active category name for the badge.
 $cat_name = '';
 if ($cat_filter > 0) {
     $res = mysqli_query($conn, "SELECT name FROM categories WHERE category_id = $cat_filter");
     if ($res) $cat_name = mysqli_fetch_assoc($res)['name'];
 }
 
-// Helper — build URL preserving current params with overrides/removals
-function buildSupplyUrl($overrides = [], $removals = []) {
+// Helper: build a URL preserving current params with overrides and removals.
+function buildSupplyUrl($overrides = [], $removals = [])
+{
     $keys   = ['category', 'price_sort', 'popular'];
     $params = [];
     foreach ($keys as $k) {
@@ -97,22 +100,23 @@ function buildSupplyUrl($overrides = [], $removals = []) {
     return 'supplies-page.php' . ($params ? '?' . http_build_query($params) : '');
 }
 
-// Render one product card
-function renderSupplyCard($product, $is_admin, $is_logged_in) {
+// Render a single product card.
+function renderSupplyCard($product, $is_admin, $is_logged_in)
+{
     $id    = $product['product_id'];
     $name  = htmlspecialchars($product['name']);
     $desc  = htmlspecialchars($product['description']);
     $price = number_format($product['price'], 2);
     $net   = htmlspecialchars($product['net_content'] ?? '');
     $img   = htmlspecialchars(resolveProductImage(
-                 $product['name'],
-                 $product['image_path'] ?? '',
-                 $product['category_id'] ?? 0
-             ));
+        $product['name'],
+        $product['image_path'] ?? '',
+        $product['category_id'] ?? 0
+    ));
 
     echo '<div class="product-card" data-product-id="' . $id . '">';
 
-    // Favorite heart button — top-right corner of card
+    // Favorite heart button on the top-right corner of the card.
     if (!$is_admin) {
         $onclick = $is_logged_in ? "toggleFav(event,$id,this)" : "event.stopPropagation();showLoginRequiredPopup()";
         echo '<button class="fav-card-btn" data-name="' . htmlspecialchars($product['name'], ENT_QUOTES) . '" onclick="' . $onclick . '" title="Save to favorites" aria-label="Save to favorites">';
@@ -133,14 +137,14 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
     echo    '</div>';
     if (!$is_admin) {
         if ($is_logged_in) {
-            // Logged-in: inline qty selector matching menu/kiosk style
+            // Logged-in: inline quantity selector matching menu and kiosk style.
             echo '<div class="kpf-qty-row" id="spf-' . $id . '">';
             echo  '<button class="kpf-qty-btn" disabled id="spf-minus-' . $id . '" onclick="supplyCardQty(' . $id . ', -1)"><i class="fas fa-minus"></i></button>';
             echo  '<span class="kpf-qty-num" id="spf-num-' . $id . '">0</span>';
             echo  '<button class="kpf-qty-btn kpf-plus" onclick="supplyCardQty(' . $id . ', 1)"><i class="fas fa-plus"></i></button>';
             echo '</div>';
         } else {
-            // Guest: single button triggers login popup
+            // Guest: single button triggers the login popup.
             echo '<button class="btn-order" onclick="showLoginRequiredPopup()"><i class="fas fa-plus"></i></button>';
         }
     }
@@ -172,7 +176,7 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
         <div class="container">
             <a class="navbar-brand" href="index.php">
                 <img src="images/coffee_beans_logo.png" alt="Caffean Logo">
-                <span>caffean   </span>
+                <span>caffean </span>
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -222,7 +226,7 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
                             <div class="category-list">
 
                                 <a href="<?php echo buildSupplyUrl([], ['category']); ?>"
-                                   class="category-item <?php echo $cat_filter === 0 ? 'active' : ''; ?>">
+                                    class="category-item <?php echo $cat_filter === 0 ? 'active' : ''; ?>">
                                     <span class="category-icon"><i class="fas fa-th"></i></span>
                                     <span class="category-name">All Categories</span>
                                     <span class="category-count"><?php echo $total_supply; ?></span>
@@ -240,12 +244,12 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
                                     $icon  = $cat_icons[$cid] ?? 'fas fa-box';
                                     $count = $cat_counts[$cid] ?? 0;
                                 ?>
-                                <a href="<?php echo buildSupplyUrl(['category' => $cid], []); ?>"
-                                   class="category-item <?php echo $cat_filter === $cid ? 'active' : ''; ?>">
-                                    <span class="category-icon"><i class="<?php echo $icon; ?>"></i></span>
-                                    <span class="category-name"><?php echo htmlspecialchars($cat['name']); ?></span>
-                                    <span class="category-count"><?php echo $count; ?></span>
-                                </a>
+                                    <a href="<?php echo buildSupplyUrl(['category' => $cid], []); ?>"
+                                        class="category-item <?php echo $cat_filter === $cid ? 'active' : ''; ?>">
+                                        <span class="category-icon"><i class="<?php echo $icon; ?>"></i></span>
+                                        <span class="category-name"><?php echo htmlspecialchars($cat['name']); ?></span>
+                                        <span class="category-count"><?php echo $count; ?></span>
+                                    </a>
                                 <?php endwhile; ?>
 
                             </div>
@@ -257,15 +261,15 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
                             </h3>
                             <div class="sort-options">
                                 <div class="sort-item <?php echo $price_sort === 'low'  ? 'active' : ''; ?>"
-                                     data-sort-param="price_sort" data-sort-value="low">
+                                    data-sort-param="price_sort" data-sort-value="low">
                                     <i class="fas fa-arrow-down"></i> Price: Low to High
                                 </div>
                                 <div class="sort-item <?php echo $price_sort === 'high' ? 'active' : ''; ?>"
-                                     data-sort-param="price_sort" data-sort-value="high">
+                                    data-sort-param="price_sort" data-sort-value="high">
                                     <i class="fas fa-arrow-up"></i> Price: High to Low
                                 </div>
                                 <div class="sort-item <?php echo $show_popular ? 'active' : ''; ?>"
-                                     data-sort-param="popular" data-sort-value="1">
+                                    data-sort-param="popular" data-sort-value="1">
                                     <i class="fas fa-fire"></i> Best Sellers
                                 </div>
                             </div>
@@ -312,7 +316,7 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
                     <?php if (mysqli_num_rows($products_result) > 0): ?>
 
                         <?php
-                        // Grouped view — default (no sort/filter applied)
+                        // Grouped view — default, no sort or filter applied.
                         $use_grouped = ($cat_filter === 0 && $price_sort === '' && !$show_popular);
 
                         if ($use_grouped):
@@ -355,16 +359,16 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
     </section>
 
     <script>
-        // Save scroll position before navigating
+        // Save scroll position before navigating.
         function saveScrollPosition() {
             sessionStorage.setItem('suppliesScrollY', window.scrollY);
             const sidebar = document.querySelector('.supplies-sidebar');
             if (sidebar) sessionStorage.setItem('sidebarScrollY', sidebar.scrollTop);
         }
 
-        // Restore scroll position on page load
+        // Restore scroll position on page load.
         function restoreScrollPosition() {
-            const scrollY  = sessionStorage.getItem('suppliesScrollY');
+            const scrollY = sessionStorage.getItem('suppliesScrollY');
             const sidebarY = sessionStorage.getItem('sidebarScrollY');
             if (scrollY !== null) {
                 window.scrollTo(0, parseInt(scrollY));
@@ -377,10 +381,13 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
             }
         }
 
-        // Category click — freeze item instantly to prevent padding snap-back on hover exit
+        // Category click — freeze item to prevent hover snap-back.
         document.querySelectorAll('.category-item').forEach(item => {
-            item.addEventListener('click', function (e) {
-                if (this.classList.contains('active')) { e.preventDefault(); return; }
+            item.addEventListener('click', function(e) {
+                if (this.classList.contains('active')) {
+                    e.preventDefault();
+                    return;
+                }
                 e.preventDefault();
                 this.style.transition = 'none';
                 this.style.pointerEvents = 'none';
@@ -391,13 +398,13 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
             });
         });
 
-        // Sort item click — mutually exclusive params, then navigate
+        // Sort item click — apply mutually exclusive params and navigate.
         document.querySelectorAll('.sort-item[data-sort-param]').forEach(item => {
-            item.addEventListener('click', function () {
+            item.addEventListener('click', function() {
                 if (typeof saveScrollPosition === 'function') saveScrollPosition();
-                const param     = this.dataset.sortParam;
-                const value     = this.dataset.sortValue;
-                const isActive  = this.classList.contains('active');
+                const param = this.dataset.sortParam;
+                const value = this.dataset.sortValue;
+                const isActive = this.classList.contains('active');
                 const urlParams = new URLSearchParams(window.location.search);
 
                 if (isActive) {
@@ -434,11 +441,11 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
     <script>
         window.IS_LOGGED_IN = <?php echo $is_logged_in ? 'true' : 'false'; ?>;
 
-        /* Show login-required popup */
+        // Show the login-required popup.
         function showLoginRequiredPopup() {
             document.getElementById('login-required-popup').style.display = 'flex';
         }
-        /* Close popup on overlay click */
+        // Close the popup on overlay click.
         function closeLoginPopup(event) {
             if (event.target === document.getElementById('login-required-popup')) {
                 document.getElementById('login-required-popup').style.display = 'none';
@@ -448,7 +455,7 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <?php
-    // Embed per-product quantities from session cart for UI init
+    // Embed per-product cart quantities from the session for UI init.
     $cart_qtys = [];
     if (!empty($_SESSION['cart'])) {
         foreach ($_SESSION['cart'] as $pid => $opts) {
@@ -465,28 +472,31 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
     <script>
         /* ── Supply card qty UI update ────────────────────────── */
         function setSupplyCardUI(pid, qty) {
-            const numEl   = document.getElementById('spf-num-' + pid);
+            const numEl = document.getElementById('spf-num-' + pid);
             const minusEl = document.getElementById('spf-minus-' + pid);
-            if (numEl)   numEl.textContent  = qty;
-            if (minusEl) minusEl.disabled   = qty === 0;
+            if (numEl) numEl.textContent = qty;
+            if (minusEl) minusEl.disabled = qty === 0;
             const card = document.querySelector(`.product-card[data-product-id="${pid}"]`);
             if (card) card.classList.toggle('in-cart', qty > 0);
         }
 
         /* ── Supply card qty changes — add/update/remove via AJAX ─ */
         function supplyCardQty(pid, delta) {
-            const numEl   = document.getElementById('spf-num-' + pid);
+            const numEl = document.getElementById('spf-num-' + pid);
             const current = numEl ? parseInt(numEl.textContent) || 0 : 0;
-            const next    = Math.max(0, current + delta);
+            const next = Math.max(0, current + delta);
 
-            // Get product name from card for notification messages
+            // Get product name for notification messages.
             const name = document.querySelector(`.product-card[data-product-id="${pid}"] .product-name`)?.textContent?.trim() || 'Product';
 
             if (next === 0) {
                 const fd = new FormData();
                 fd.append('action', 'remove');
                 fd.append('product_id', pid);
-                fetch('php/update_cart_item.php', { method: 'POST', body: fd })
+                fetch('php/update_cart_item.php', {
+                        method: 'POST',
+                        body: fd
+                    })
                     .then(r => r.json())
                     .then(data => {
                         if (data.success) {
@@ -501,7 +511,10 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
                 fd.append('product_id', pid);
                 fd.append('quantity', 1);
                 fd.append('ajax', '1');
-                fetch('php/add_to_cart.php', { method: 'POST', body: fd })
+                fetch('php/add_to_cart.php', {
+                        method: 'POST',
+                        body: fd
+                    })
                     .then(r => r.json())
                     .then(data => {
                         if (data.success) {
@@ -519,7 +532,10 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
                 fd.append('action', 'update_qty');
                 fd.append('product_id', pid);
                 fd.append('quantity', next);
-                fetch('php/update_cart_item.php', { method: 'POST', body: fd })
+                fetch('php/update_cart_item.php', {
+                        method: 'POST',
+                        body: fd
+                    })
                     .then(r => r.json())
                     .then(data => {
                         if (data.success) {
@@ -534,15 +550,24 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
         /* ── Toggle favorite on heart button click ────────────── */
         function toggleFav(e, productId, btn) {
             e.stopPropagation();
-            if (!window.IS_LOGGED_IN) { showLoginRequiredPopup(); return; }
+            if (!window.IS_LOGGED_IN) {
+                showLoginRequiredPopup();
+                return;
+            }
 
             const productName = btn.getAttribute('data-name') || 'Product';
             const fd = new FormData();
             fd.append('action', 'toggle');
             fd.append('product_id', productId);
 
-            fetch('favorites.php', { method: 'POST', body: fd })
-                .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+            fetch('favorites.php', {
+                    method: 'POST',
+                    body: fd
+                })
+                .then(r => {
+                    if (!r.ok) throw new Error(r.status);
+                    return r.json();
+                })
                 .then(d => {
                     if (!d.success) throw new Error(d.message || 'failed');
                     const icon = btn.querySelector('i');
@@ -550,7 +575,9 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
                     btn.classList.toggle('active', isNowActive);
                     icon.className = isNowActive ? 'fas fa-heart' : 'far fa-heart';
                     btn.classList.add('pop');
-                    btn.addEventListener('animationend', () => btn.classList.remove('pop'), { once: true });
+                    btn.addEventListener('animationend', () => btn.classList.remove('pop'), {
+                        once: true
+                    });
                     showNotification(
                         isNowActive ? productName + ' added to favorites.' : productName + ' removed from favorites.',
                         isNowActive ? 'success' : 'info'
@@ -560,7 +587,7 @@ function renderSupplyCard($product, $is_admin, $is_logged_in) {
         }
 
         /* ── Restore qty selectors from session cart on page load ─ */
-        /* Initial favorite states loaded by main.js loadFavoritesForMenu() */
+        // Initial favorite states are loaded by main.js loadFavoritesForMenu().
         document.addEventListener('DOMContentLoaded', () => {
             if (window.serverCart) {
                 Object.entries(window.serverCart).forEach(([pid, qty]) => {

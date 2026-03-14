@@ -1,10 +1,6 @@
 <?php
 
-/**
- * Caffean Shop - Menu Page
- * Comprehensive menu displaying all products with filtering by category
- * and sorting by price or popularity (Best Sellers)
- */
+// Menu Page — displays all products with category filter and price or popularity sorting.
 
 require_once 'php/db_connection.php';
 require_once 'php/product_images.php';
@@ -12,26 +8,26 @@ require_once 'php/product_images.php';
 $is_admin      = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 $is_logged_in  = isset($_SESSION['user_id']);
 
-// Get filter parameters from URL
+// Get filter and sort parameters from the URL.
 $category_filter   = isset($_GET['category'])    ? intval($_GET['category'])   : 0;
-$price_sort        = isset($_GET['price_sort'])  ? $_GET['price_sort']         : '';   // 'low' | 'high'
+$price_sort        = isset($_GET['price_sort'])  ? $_GET['price_sort']         : '';   // 'low' or 'high'
 $show_popular      = isset($_GET['popular'])     && $_GET['popular']     == '1';
 
-// Validate price_sort value
+// Validate the price_sort value.
 if (!in_array($price_sort, ['low', 'high'])) $price_sort = '';
 
-// Supply category IDs — excluded from menu (available on supplies page)
+// Supply category IDs — excluded from this menu.
 define('MENU_EXCLUDED_CATS', [10, 11, 12]);
 $excluded_sql = implode(',', MENU_EXCLUDED_CATS);
 
-// Build SQL WHERE clauses
+// Build SQL WHERE clauses.
 $where_clauses = ["p.status = 1", "p.category_id NOT IN ($excluded_sql)"];
 
 if ($category_filter > 0) {
     $where_clauses[] = "p.category_id = $category_filter";
 }
 
-// Build ORDER BY — price_sort takes precedence over popular
+// Build ORDER BY — price_sort takes precedence over popular.
 $popularity_expr = "(
     COALESCE((SELECT COUNT(*) FROM order_items oi
               JOIN orders o ON oi.order_id = o.order_id
@@ -52,7 +48,7 @@ if ($price_sort === 'low') {
     $order_by = "p.category_id, p.name";
 }
 
-// Construct final query
+// Build and run the final query.
 $where_string    = implode(" AND ", $where_clauses);
 $products_query  = "SELECT p.*, c.name as category_name
                     FROM products p
@@ -61,16 +57,14 @@ $products_query  = "SELECT p.*, c.name as category_name
                     ORDER BY $order_by";
 $products_result = mysqli_query($conn, $products_query);
 
-// Fetch categories for sidebar
+// Fetch categories for the sidebar.
 $categories_query  = "SELECT * FROM categories ORDER BY category_id";
 $categories_result = mysqli_query($conn, $categories_query);
 
-// Total product count
+// Get the total product count.
 $total_products = mysqli_num_rows($products_result);
 
-/**
- * Helper: build a URL preserving current params, with overrides and removals.
- */
+// Helper: build a URL preserving current params with overrides and removals.
 function buildFilterUrl($overrides = [], $removals = [])
 {
     $keys   = ['category', 'price_sort', 'popular'];
@@ -91,7 +85,7 @@ function buildFilterUrl($overrides = [], $removals = [])
 
 $has_active_filters = ($category_filter > 0 || $price_sort !== '' || $show_popular);
 
-// Resolve category name
+// Resolve the active category name.
 $cat_name = '';
 if ($category_filter > 0) {
     $res = mysqli_query($conn, "SELECT name FROM categories WHERE category_id = $category_filter");
@@ -202,7 +196,7 @@ if ($category_filter > 0) {
                                 mysqli_data_seek($categories_result, 0);
                                 while ($category = mysqli_fetch_assoc($categories_result)):
                                     $cat_id = $category['category_id'];
-                                    // Skip supply-only categories (shown on supplies page)
+                                    // Skip supply-only categories.
                                     if (in_array($cat_id, MENU_EXCLUDED_CATS)) continue;
                                     $product_count = mysqli_fetch_assoc(
                                         mysqli_query($conn, "SELECT COUNT(*) as count FROM products WHERE category_id = $cat_id AND status = 1")
@@ -249,8 +243,9 @@ if ($category_filter > 0) {
                 <div class="menu-content">
 
                     <?php
-                    // Resolve image for a product using central helper
-                    function getProductImage($product, $image_map) {
+                    // Resolve the product image using the central helper.
+                    function getProductImage($product, $image_map)
+                    {
                         return resolveProductImage(
                             $product['name'],
                             $product['image_path'] ?? '',
@@ -258,17 +253,22 @@ if ($category_filter > 0) {
                         );
                     }
 
-                    // Net content defaults by category (db value takes precedence)
+                    // Net content defaults by category — DB value takes precedence.
                     $net_defaults = [
-                        1 => '12 oz', 2 => '16 oz', 3 => '12 oz',
-                        4 => '16 oz', 5 => '12 oz', 9 => '1 oz',
+                        1 => '12 oz',
+                        2 => '16 oz',
+                        3 => '12 oz',
+                        4 => '16 oz',
+                        5 => '12 oz',
+                        9 => '1 oz',
                     ];
-                    function getNetContent($product, $defaults) {
+                    function getNetContent($product, $defaults)
+                    {
                         if (!empty($product['net_content'])) return htmlspecialchars($product['net_content']);
                         return $defaults[$product['category_id']] ?? '';
                     }
 
-                    // Render a single compact product card
+                    // Render a compact product card.
                     function renderProductCard($product, $img_src, $is_admin, $is_logged_in)
                     {
                         global $net_defaults;
@@ -279,7 +279,7 @@ if ($category_filter > 0) {
                         $net  = getNetContent($product, $net_defaults);
                         echo '<div class="product-card" data-product-id="' . $id . '">';
 
-                        // Favorite heart button — top-right corner of card
+                        // Favorite heart button on the top-right corner of the card.
                         if (!$is_admin) {
                             $onclick = $is_logged_in ? "toggleFav(event,$id,this)" : "event.stopPropagation();showLoginRequiredPopup()";
                             echo '<button class="fav-card-btn" data-name="' . htmlspecialchars($product['name'], ENT_QUOTES) . '" onclick="' . $onclick . '" title="Save to favorites" aria-label="Save to favorites">';
@@ -294,21 +294,21 @@ if ($category_filter > 0) {
                         echo   '<h3 class="product-name">' . $name . '</h3>';
                         echo   '<p class="product-description">' . $desc . '</p>';
                         echo   '<div class="product-footer">';
-                        // Price + net content stacked left
+                        // Price and net content stacked on the left.
                         echo    '<div class="product-meta">';
                         echo     '<span class="product-price">₱' . $price . '</span>';
                         if ($net !== '') echo '<span class="product-net">' . $net . '</span>';
                         echo    '</div>';
                         if (!$is_admin) {
                             if ($is_logged_in) {
-                                // Logged-in: inline qty selector matching kiosk style
+                                // Logged-in: inline quantity selector matching kiosk style.
                                 echo '<div class="kpf-qty-row" id="mpf-' . $id . '">';
                                 echo  '<button class="kpf-qty-btn" disabled id="mpf-minus-' . $id . '" onclick="menuCardQty(' . $id . ', -1)"><i class="fas fa-minus"></i></button>';
                                 echo  '<span class="kpf-qty-num" id="mpf-num-' . $id . '">0</span>';
                                 echo  '<button class="kpf-qty-btn kpf-plus" onclick="menuCardQty(' . $id . ', 1)"><i class="fas fa-plus"></i></button>';
                                 echo '</div>';
                             } else {
-                                // Guest: single button triggers login popup
+                                // Guest: single button triggers the login popup.
                                 echo '<button class="btn-order" onclick="showLoginRequiredPopup()"><i class="fas fa-plus"></i></button>';
                             }
                         }
@@ -320,11 +320,11 @@ if ($category_filter > 0) {
 
                     <?php if ($total_products > 0): ?>
                         <?php
-                        // Grouped view — all categories, no sort override
+                        // Grouped view — all categories, no sort override.
                         $use_grouped = ($category_filter === 0 && $price_sort === '' && !$show_popular);
 
                         if ($use_grouped):
-                            // Collect products into category groups
+                            // Collect products into category groups.
                             $groups = [];
                             mysqli_data_seek($products_result, 0);
                             while ($p = mysqli_fetch_assoc($products_result)) {
@@ -395,13 +395,13 @@ if ($category_filter > 0) {
     </section>
 
     <script>
-        // Save scroll position before navigation
+        // Save scroll position before navigating.
         function saveScrollPosition() {
             sessionStorage.setItem('menuScrollY', window.scrollY);
             sessionStorage.setItem('sidebarScrollY', document.querySelector('.menu-sidebar').scrollTop);
         }
 
-        // Restore scroll position on page load
+        // Restore scroll position on page load.
         function restoreScrollPosition() {
             const scrollY = sessionStorage.getItem('menuScrollY');
             const sidebarScrollY = sessionStorage.getItem('sidebarScrollY');
@@ -417,7 +417,7 @@ if ($category_filter > 0) {
             }
         }
 
-        // Handle category filter clicks
+        // Handle category filter link clicks.
         document.querySelectorAll('.category-item').forEach(item => {
             item.addEventListener('click', function(e) {
                 if (this.classList.contains('active')) {
@@ -435,7 +435,7 @@ if ($category_filter > 0) {
             });
         });
 
-        // Restore position on page load
+        // Restore sidebar scroll position on page load.
         window.addEventListener('load', restoreScrollPosition);
     </script>
 
@@ -451,11 +451,11 @@ if ($category_filter > 0) {
     </div>
 
     <script>
-        /* Show login-required popup */
+        // Show the login-required popup.
         function showLoginRequiredPopup() {
             document.getElementById('login-required-popup').style.display = 'flex';
         }
-        /* Close popup on overlay click */
+        // Close the popup on overlay click.
         function closeLoginPopup(event) {
             if (event.target === document.getElementById('login-required-popup')) {
                 document.getElementById('login-required-popup').style.display = 'none';
@@ -468,7 +468,7 @@ if ($category_filter > 0) {
         window.IS_LOGGED_IN = <?php echo $is_logged_in ? 'true' : 'false'; ?>;
     </script>
     <?php
-    // Embed per-product quantities from session cart for UI init
+    // Embed per-product cart quantities from the session for UI init.
     $cart_qtys = [];
     if (!empty($_SESSION['cart'])) {
         foreach ($_SESSION['cart'] as $pid => $opts) {
@@ -487,15 +487,24 @@ if ($category_filter > 0) {
         /* ── Favorites: toggle on heart button click ─────────── */
         function toggleFav(e, productId, btn) {
             e.stopPropagation();
-            if (!window.IS_LOGGED_IN) { showLoginRequiredPopup(); return; }
+            if (!window.IS_LOGGED_IN) {
+                showLoginRequiredPopup();
+                return;
+            }
 
             const productName = btn.getAttribute('data-name') || 'Product';
             const fd = new FormData();
             fd.append('action', 'toggle');
             fd.append('product_id', productId);
 
-            fetch('favorites.php', { method: 'POST', body: fd })
-                .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+            fetch('favorites.php', {
+                    method: 'POST',
+                    body: fd
+                })
+                .then(r => {
+                    if (!r.ok) throw new Error(r.status);
+                    return r.json();
+                })
                 .then(d => {
                     if (!d.success) throw new Error(d.message || 'failed');
                     const icon = btn.querySelector('i');
@@ -503,7 +512,9 @@ if ($category_filter > 0) {
                     btn.classList.toggle('active', isNowActive);
                     icon.className = isNowActive ? 'fas fa-heart' : 'far fa-heart';
                     btn.classList.add('pop');
-                    btn.addEventListener('animationend', () => btn.classList.remove('pop'), { once: true });
+                    btn.addEventListener('animationend', () => btn.classList.remove('pop'), {
+                        once: true
+                    });
                     showNotification(
                         isNowActive ? productName + ' added to favorites.' : productName + ' removed from favorites.',
                         isNowActive ? 'success' : 'info'
@@ -511,7 +522,7 @@ if ($category_filter > 0) {
                 })
                 .catch(() => showNotification('Could not update favorites.', 'error'));
         }
-        /* Initial favorite states loaded by main.js loadFavoritesForMenu() */
+        // Initial favorite states are loaded by main.js loadFavoritesForMenu().
     </script>
 </body>
 

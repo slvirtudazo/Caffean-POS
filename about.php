@@ -1,8 +1,6 @@
 <?php
 
-/**
- * Caffean Shop - About Page
- */
+// About Page
 require_once 'php/db_connection.php';
 $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 ?>
@@ -66,9 +64,7 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
         </div>
     </nav>
 
-    <!-- ═══════════════════════════════════════════
-         HERO SECTION
-    ═══════════════════════════════════════════ -->
+    <!-- Hero Section -->
     <section class="about-hero">
         <div class="about-hero-bg"></div>
         <div class="container position-relative">
@@ -84,9 +80,7 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════
-         STORY SECTION
-    ═══════════════════════════════════════════ -->
+    <!-- Story Section -->
     <section class="about-story-section">
         <div class="container">
             <div class="row align-items-center g-5">
@@ -119,9 +113,7 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════
-         VALUES SECTION
-    ═══════════════════════════════════════════ -->
+    <!-- Values Section -->
     <section class="about-values-section">
         <div class="container">
             <div class="text-center mb-5 reveal-up">
@@ -169,9 +161,7 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════
-         PROCESS / HIGHLIGHTS SECTION
-    ═══════════════════════════════════════════ -->
+    <!-- Process Section -->
     <section class="about-process-section">
         <div class="container">
             <div class="text-center mb-5 reveal-up">
@@ -203,9 +193,7 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
         </div>
     </section>
 
-    <!-- ═══════════════════════════════════════════
-         CTA BANNER
-    ═══════════════════════════════════════════ -->
+    <!-- CTA Banner -->
     <section class="about-cta-section">
         <div class="container text-center reveal-up">
             <h2 class="about-cta-title">Come Taste What We've Been Brewing</h2>
@@ -215,7 +203,9 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
     </section>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>window.IS_LOGGED_IN = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;</script>
+    <script>
+        window.IS_LOGGED_IN = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+    </script>
     <script src="js/main.js?v=<?php echo time(); ?>"></script>
     <script src="js/search.js?v=<?php echo time(); ?>"></script>
 
@@ -239,7 +229,7 @@ $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 
             revealEls.forEach(el => observer.observe(el));
 
-            // Scroll chevron in hero
+            // Scroll to the story section on chevron click.
             const chevron = document.querySelector('.about-hero-scroll');
             if (chevron) {
                 chevron.addEventListener('click', () => {

@@ -1,5 +1,5 @@
 <?php
-/* Enforce HTTPS connection for security */
+// Redirect to HTTPS if not already secure.
 if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'on') {
     header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
     exit();
@@ -7,10 +7,10 @@ if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'on') {
 require_once 'php/db_connection.php';
 $error   = '';
 $success = '';
-/* Retrieve remembered email from cookie */
+// Get the remembered email from cookie if set.
 $remembered_email = isset($_COOKIE['remember_email'])
     ? htmlspecialchars($_COOKIE['remember_email']) : '';
-/* Process login form submission */
+// Process the login form.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email        = trim($_POST['email'] ?? '');
     $password     = $_POST['password'] ?? '';
@@ -37,7 +37,7 @@ FROM users WHERE email = ?";
                 );
                 mysqli_stmt_fetch($stmt);
                 if ($hashed_pw && password_verify($password, $hashed_pw)) {
-                    /* Set remember me cookie for 30 days */
+                    // Set remember-me cookie for 30 days.
                     if ($remember_me) {
                         setcookie(
                             'remember_email',
@@ -51,18 +51,18 @@ FROM users WHERE email = ?";
                     } else {
                         setcookie('remember_email', '', time() - 3600, '/');
                     }
-                    /* Initialize user session */
+                    // Set session data for the logged-in user.
                     session_regenerate_id(true);
                     $_SESSION['user_id']   = $user_id;
                     $_SESSION['full_name'] = $full_name;
                     $_SESSION['email']     = $db_email;
                     $_SESSION['role']      = $role;
-                    /* Sync cart from database */
+                    // Load cart from DB for the logged-in user.
                     if ($role !== 'admin') {
                         require_once 'php/sync_cart.php';
                         loadCartFromDb($conn, $user_id);
                     }
-                    /* Redirect based on user role */
+                    // Redirect to the appropriate page based on role.
                     header('Location: ' . ($role === 'admin'
                         ? 'admin/dashboard.php' : 'index.php'));
                     exit();
@@ -104,13 +104,13 @@ FROM users WHERE email = ?";
             <h1 class="login-title">Welcome back to Caffean!</h1>
             <p class="login-subtitle">Log in to access your favorites and recent orders</p>
         </div>
-        <!-- Display error messages -->
+        <!-- Display error message. -->
         <?php if ($error): ?>
             <div class="alert alert-danger" role="alert">
                 <i class="bi bi-exclamation-circle me-2"></i><?= htmlspecialchars($error) ?>
             </div>
         <?php endif; ?>
-        <!-- Display success messages -->
+        <!-- Display success message. -->
         <?php if ($success): ?>
             <div class="alert alert-success" role="alert">
                 <i class="bi bi-check-circle me-2"></i><?= htmlspecialchars($success) ?>
@@ -157,7 +157,7 @@ FROM users WHERE email = ?";
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        /* Toggle password visibility */
+        // Toggle password visibility.
         document.getElementById('togglePassword').addEventListener('click', function() {
             const passwordInput = document.getElementById('password');
             const eyeIcon = document.getElementById('eyeIcon');
@@ -174,7 +174,7 @@ FROM users WHERE email = ?";
                 this.setAttribute('aria-label', 'Show password');
             }
         });
-        /* Validate form inputs */
+        // Validate form inputs on submit.
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             let valid = true;
             const email = document.getElementById('email');

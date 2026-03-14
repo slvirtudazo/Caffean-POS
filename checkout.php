@@ -1,31 +1,29 @@
 <?php
-/**
- * Caffean Shop — Checkout Page
- * Collects customer info, order type, address/pickup, and payment method.
- * Shows an order confirmation receipt dialog with save-as-PNG option.
- */
+
+// Checkout Page — collects customer info, order type, address or pickup, and payment method.
+// Shows a receipt dialog with a save-as-PNG option on successful order.
 require_once 'php/db_connection.php';
 require_once 'php/product_images.php';
 
-// Redirect admin away from checkout
+// Redirect admin users away from checkout.
 if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
     header('Location: admin/dashboard.php');
     exit();
 }
 
-// Must be logged in
+// Require authentication.
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
 }
 
-// Cart must not be empty
+// Redirect to cart if it's empty.
 if (empty($_SESSION['cart'])) {
     header('Location: cart.php');
     exit();
 }
 
-/* Normalise session cart */
+// Normalize legacy integer cart entries.
 foreach ($_SESSION['cart'] as $pid => &$v) {
     if (!is_array($v)) {
         $v = [
@@ -43,26 +41,29 @@ unset($v);
 
 $user_id = $_SESSION['user_id'];
 
-// Fetch user info, mobile number, and saved default address
-$user_stmt = mysqli_prepare($conn,
+// Fetch user profile info and saved default address.
+$user_stmt = mysqli_prepare(
+    $conn,
     "SELECT full_name, email, mobile_number, house_unit, street_name, barangay,
             city_municipality, province, zip_code
-     FROM users WHERE user_id = ?");
+     FROM users WHERE user_id = ?"
+);
 mysqli_stmt_bind_param($user_stmt, 'i', $user_id);
 mysqli_stmt_execute($user_stmt);
 $user_info = mysqli_fetch_assoc(mysqli_stmt_get_result($user_stmt));
 mysqli_stmt_close($user_stmt);
 
-// Check if user has a complete enough default address
+// Check if the user has a usable saved default address.
 $has_default_addr = !empty($user_info['house_unit']) && !empty($user_info['city_municipality']);
 
-/* Fetch cart products */
+// Fetch active cart products from the database.
 $cart_items   = [];
 $subtotal     = 0.0;
 $DELIVERY_FEE = 50.0;
 
 $ids = implode(',', array_map('intval', array_keys($_SESSION['cart'])));
-$res = mysqli_query($conn,
+$res = mysqli_query(
+    $conn,
     "SELECT product_id, name, price, image_path FROM products
      WHERE product_id IN ($ids) AND status = 1"
 );
@@ -98,9 +99,9 @@ $min_date = date('Y-m-d');
     <link rel="stylesheet" href="css/buttons.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/search.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/checkout.css?v=<?php echo time(); ?>">
-    <!-- Bootstrap Icons for receipt placeholder -->
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-    <!-- html2canvas for receipt PNG export -->
+
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 
@@ -208,31 +209,31 @@ $min_date = date('Y-m-d');
                         <div id="delivery-fields" class="mt-3">
 
                             <?php if ($has_default_addr): ?>
-                            <!-- Address source toggle — shown only when user has a saved default address -->
-                            <div class="addr-source-toggle mb-3">
-                                <button type="button" class="addr-src-btn active" id="btn-use-default"
-                                    onclick="useDefaultAddress()">Use Default Address
-                                </button>
-                                <button type="button" class="addr-src-btn" id="btn-new-addr"
-                                    onclick="useNewAddress()">Enter New Address
-                                </button>
-                            </div>
-                            <!-- Saved default address preview -->
-                            <div class="addr-default-preview" id="addr-default-preview">
-                                <div class="addr-preview-text">
-                                    <span class="addr-preview-label">Delivering to your saved address</span>
-                                    <span class="addr-preview-detail">
-                                        <?= htmlspecialchars(implode(', ', array_filter([
-                                            $user_info['house_unit'],
-                                            $user_info['street_name'],
-                                            $user_info['barangay'],
-                                            $user_info['city_municipality'],
-                                            $user_info['province'],
-                                            $user_info['zip_code']
-                                        ]))) ?>
-                                    </span>
+
+                                <div class="addr-source-toggle mb-3">
+                                    <button type="button" class="addr-src-btn active" id="btn-use-default"
+                                        onclick="useDefaultAddress()">Use Default Address
+                                    </button>
+                                    <button type="button" class="addr-src-btn" id="btn-new-addr"
+                                        onclick="useNewAddress()">Enter New Address
+                                    </button>
                                 </div>
-                            </div>
+                                <!-- Saved default address preview -->
+                                <div class="addr-default-preview" id="addr-default-preview">
+                                    <div class="addr-preview-text">
+                                        <span class="addr-preview-label">Delivering to your saved address</span>
+                                        <span class="addr-preview-detail">
+                                            <?= htmlspecialchars(implode(', ', array_filter([
+                                                $user_info['house_unit'],
+                                                $user_info['street_name'],
+                                                $user_info['barangay'],
+                                                $user_info['city_municipality'],
+                                                $user_info['province'],
+                                                $user_info['zip_code']
+                                            ]))) ?>
+                                        </span>
+                                    </div>
+                                </div>
                             <?php endif; ?>
 
                             <div class="row g-3" id="addr-form-fields"
@@ -531,74 +532,74 @@ $min_date = date('Y-m-d');
     <script src="js/search.js?v=<?php echo time(); ?>"></script>
     <script>
         const DELIVERY_FEE = <?= $DELIVERY_FEE ?>;
-        const subtotal     = <?= $subtotal ?>;
-        let   orderType    = 'delivery';
+        const subtotal = <?= $subtotal ?>;
+        let orderType = 'delivery';
 
-        /* Saved default address from user profile */
+        // Saved default address from the user profile.
         const defaultAddr = {
-            house_unit:        <?= json_encode($user_info['house_unit']        ?? '') ?>,
-            street_name:       <?= json_encode($user_info['street_name']       ?? '') ?>,
-            barangay:          <?= json_encode($user_info['barangay']          ?? '') ?>,
+            house_unit: <?= json_encode($user_info['house_unit']        ?? '') ?>,
+            street_name: <?= json_encode($user_info['street_name']       ?? '') ?>,
+            barangay: <?= json_encode($user_info['barangay']          ?? '') ?>,
             city_municipality: <?= json_encode($user_info['city_municipality'] ?? '') ?>,
-            province:          <?= json_encode($user_info['province']          ?? '') ?>,
-            zip_code:          <?= json_encode($user_info['zip_code']          ?? '') ?>
+            province: <?= json_encode($user_info['province']          ?? '') ?>,
+            zip_code: <?= json_encode($user_info['zip_code']          ?? '') ?>
         };
 
-        /* Whether using saved default address (true) or entering a new one (false) */
+        // Track whether the user is using their saved address or entering a new one.
         let usingDefaultAddr = <?= $has_default_addr ? 'true' : 'false' ?>;
 
-        /* Pre-fill delivery fields with saved default address */
+        // Pre-fill delivery fields with the saved default address.
         function useDefaultAddress() {
             usingDefaultAddr = true;
             document.getElementById('btn-use-default')?.classList.add('active');
             document.getElementById('btn-new-addr')?.classList.remove('active');
-            document.getElementById('addr-form-fields').style.display    = 'none';
+            document.getElementById('addr-form-fields').style.display = 'none';
             document.getElementById('addr-default-preview').style.display = 'flex';
         }
 
-        /* Show blank delivery fields for a new address */
+        // Show blank delivery fields for a new address.
         function useNewAddress() {
             usingDefaultAddr = false;
             document.getElementById('btn-new-addr')?.classList.add('active');
             document.getElementById('btn-use-default')?.classList.remove('active');
-            document.getElementById('addr-form-fields').style.display    = '';
+            document.getElementById('addr-form-fields').style.display = '';
             document.getElementById('addr-default-preview').style.display = 'none';
         }
 
-        /* PHP cart items passed to JS for receipt rendering */
-        const cartItems = <?= json_encode(array_map(function($i) {
-            return [
-                'name'        => $i['name'],
-                'quantity'    => $i['quantity'],
-                'size'        => $i['size'],
-                'temperature' => $i['temperature'],
-                'sugar_level' => $i['sugar_level'],
-                'item_total'  => $i['item_total'],
-                'image_path'             => $i['image_path'] ?? '',
-                'special_instructions'   => $i['special_instructions'] ?? ''
-            ];
-        }, $cart_items)) ?>;
+        // Pass cart items from PHP to JS for receipt rendering.
+        const cartItems = <?= json_encode(array_map(function ($i) {
+                                return [
+                                    'name'        => $i['name'],
+                                    'quantity'    => $i['quantity'],
+                                    'size'        => $i['size'],
+                                    'temperature' => $i['temperature'],
+                                    'sugar_level' => $i['sugar_level'],
+                                    'item_total'  => $i['item_total'],
+                                    'image_path'             => $i['image_path'] ?? '',
+                                    'special_instructions'   => $i['special_instructions'] ?? ''
+                                ];
+                            }, $cart_items)) ?>;
 
-        /* Format number with commas */
+        // Format a number with commas.
         function fmt(n) {
             return parseFloat(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         }
 
-        /* Toggle delivery/pickup fields and fee */
+        // Toggle delivery or pickup fields and update the fee.
         function switchOrderType(type) {
             orderType = type;
             const isDel = type === 'delivery';
             document.getElementById('delivery-fields').style.display = isDel ? 'block' : 'none';
-            document.getElementById('pickup-fields').style.display   = isDel ? 'none'  : 'block';
-            document.getElementById('co-fee-row').style.display      = isDel ? 'flex'  : 'none';
+            document.getElementById('pickup-fields').style.display = isDel ? 'none' : 'block';
+            document.getElementById('co-fee-row').style.display = isDel ? 'flex' : 'none';
             document.getElementById('co-total').textContent = '₱' + fmt(subtotal + (isDel ? DELIVERY_FEE : 0));
         }
 
-        /* Enforce digits-only input (mobile, ZIP) */
+        // Restrict an input field to digits only.
         function digitsOnly(el) {
             el.addEventListener('keydown', function(e) {
                 const ctrl = e.ctrlKey || e.metaKey;
-                const nav  = [8, 9, 35, 36, 37, 39, 46].includes(e.keyCode);
+                const nav = [8, 9, 35, 36, 37, 39, 46].includes(e.keyCode);
                 if (!ctrl && !nav && !/^\d$/.test(e.key)) e.preventDefault();
             });
             el.addEventListener('input', function() {
@@ -608,54 +609,60 @@ $min_date = date('Y-m-d');
                 e.preventDefault();
                 const pasted = (e.clipboardData || window.clipboardData).getData('text');
                 const digits = pasted.replace(/\D/g, '');
-                const max    = parseInt(this.getAttribute('maxlength') || '99');
-                this.value   = (this.value + digits).slice(0, max);
+                const max = parseInt(this.getAttribute('maxlength') || '99');
+                this.value = (this.value + digits).slice(0, max);
             });
         }
 
         digitsOnly(document.getElementById('co-mobile'));
         digitsOnly(document.getElementById('del-zip'));
 
-        /* Email format validation */
+        // Validate email format.
         function validEmail(v) {
             return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
         }
 
-        /* Place order — validates, submits, shows receipt on success */
+        // Validate, submit the order, and show the receipt on success.
         function placeOrder() {
             clearAlert();
-            const name    = document.getElementById('co-name').value.trim();
-            const email   = document.getElementById('co-email').value.trim();
-            const mobile  = document.getElementById('co-mobile').value.trim();
+            const name = document.getElementById('co-name').value.trim();
+            const email = document.getElementById('co-email').value.trim();
+            const mobile = document.getElementById('co-mobile').value.trim();
             const payment = document.querySelector('input[name="payment_method"]:checked')?.value || '';
 
-            if (!name)              return showAlert('Please enter your full name.');
+            if (!name) return showAlert('Please enter your full name.');
             if (!validEmail(email)) return showAlert('Please enter a valid email address.');
             if (!/^09\d{9}$/.test(mobile))
-                                    return showAlert('Enter a valid PH mobile number (+63 9XX XXX XXXX).');
-            if (!payment)           return showAlert('Please select a payment method.');
+                return showAlert('Enter a valid PH mobile number (+63 9XX XXX XXXX).');
+            if (!payment) return showAlert('Please select a payment method.');
 
-            const data = { name, email, mobile, payment_method: payment, order_type: orderType };
+            const data = {
+                name,
+                email,
+                mobile,
+                payment_method: payment,
+                order_type: orderType
+            };
 
             if (orderType === 'delivery') {
                 let house, street, brgy, city, province, zip;
 
                 if (usingDefaultAddr) {
-                    /* Use saved default address */
-                    house    = defaultAddr.house_unit;
-                    street   = defaultAddr.street_name;
-                    brgy     = defaultAddr.barangay;
-                    city     = defaultAddr.city_municipality;
+                    // Use the saved default address.
+                    house = defaultAddr.house_unit;
+                    street = defaultAddr.street_name;
+                    brgy = defaultAddr.barangay;
+                    city = defaultAddr.city_municipality;
                     province = defaultAddr.province;
-                    zip      = defaultAddr.zip_code;
+                    zip = defaultAddr.zip_code;
                 } else {
-                    /* Use manually entered address */
-                    house    = document.getElementById('del-house').value.trim();
-                    street   = document.getElementById('del-street').value.trim();
-                    brgy     = document.getElementById('del-brgy').value.trim();
-                    city     = document.getElementById('del-city').value.trim();
+                    // Use the manually entered address.
+                    house = document.getElementById('del-house').value.trim();
+                    street = document.getElementById('del-street').value.trim();
+                    brgy = document.getElementById('del-brgy').value.trim();
+                    city = document.getElementById('del-city').value.trim();
                     province = document.getElementById('del-province').value.trim();
-                    zip      = document.getElementById('del-zip').value.trim();
+                    zip = document.getElementById('del-zip').value.trim();
                 }
 
                 if (!house || !street || !brgy || !city || !province || !zip)
@@ -663,125 +670,142 @@ $min_date = date('Y-m-d');
                 if (!/^\d{4}$/.test(zip))
                     return showAlert('Enter a valid 4-digit Philippine ZIP code.');
                 Object.assign(data, {
-                    house_unit: house, street_name: street, barangay: brgy,
-                    city_municipality: city, province, zip_code: zip,
+                    house_unit: house,
+                    street_name: street,
+                    barangay: brgy,
+                    city_municipality: city,
+                    province,
+                    zip_code: zip,
                     delivery_notes: document.getElementById('del-notes').value.trim()
                 });
             } else {
                 const branch = document.getElementById('pick-branch').value;
-                const date   = document.getElementById('pick-date').value;
-                const time   = document.getElementById('pick-time').value;
+                const date = document.getElementById('pick-date').value;
+                const time = document.getElementById('pick-time').value;
                 if (!branch) return showAlert('Please select a pickup branch.');
-                if (!date)   return showAlert('Please select a pickup date.');
-                if (!time)   return showAlert('Please select a pickup time.');
-                Object.assign(data, { pickup_branch: branch, pickup_date: date, pickup_time: time });
+                if (!date) return showAlert('Please select a pickup date.');
+                if (!time) return showAlert('Please select a pickup time.');
+                Object.assign(data, {
+                    pickup_branch: branch,
+                    pickup_date: date,
+                    pickup_time: time
+                });
             }
 
             const btn = document.getElementById('btn-place-order');
-            btn.disabled  = true;
+            btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Placing Order…';
 
             const fd = new FormData();
             Object.entries(data).forEach(([k, v]) => fd.append(k, v));
 
-            fetch('php/place_order.php', { method: 'POST', body: fd })
+            fetch('php/place_order.php', {
+                    method: 'POST',
+                    body: fd
+                })
                 .then(r => r.json())
                 .then(d => {
                     if (d.success) {
-                        /* Show receipt dialog before redirecting */
+                        // Show the receipt dialog before redirecting.
                         buildReceipt(d.order_id, data);
                         document.getElementById('receipt-overlay').classList.add('open');
                     } else {
                         showAlert(d.message || 'Something went wrong. Please try again.');
-                        btn.disabled  = false;
+                        btn.disabled = false;
                         btn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Place Order';
                     }
                 })
                 .catch(() => {
                     showAlert('Network error. Please check your connection and try again.');
-                    btn.disabled  = false;
+                    btn.disabled = false;
                     btn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Place Order';
                 });
         }
 
-        /* Generate randomised order number: ORD-YYYY-XXXXX */
+        // Generate a randomised order number.
         function genOrderNum(orderId) {
-            const year   = new Date().getFullYear();
-            const pad    = String(orderId).padStart(3, '0');
-            const rand   = String(Math.floor(10 + Math.random() * 90));
+            const year = new Date().getFullYear();
+            const pad = String(orderId).padStart(3, '0');
+            const rand = String(Math.floor(10 + Math.random() * 90));
             return 'ORD-' + year + '-' + rand + pad;
         }
 
-        /* Copy order number to clipboard */
+        // Copy the order number to the clipboard.
         let _orderNumStr = '';
+
         function copyOrderNum() {
             if (!_orderNumStr) return;
             navigator.clipboard.writeText(_orderNumStr).then(() => {
                 const btn = document.querySelector('.receipt-copy-btn');
                 btn.innerHTML = '<i class="fas fa-check"></i>';
-                setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i>'; }, 2000);
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-copy"></i>';
+                }, 2000);
             });
         }
 
-        /* Populate receipt dialog with order data */
+        // Populate the receipt dialog with order data.
         function buildReceipt(orderId, data) {
-            const isDel  = data.order_type === 'delivery';
-            const total  = subtotal + (isDel ? DELIVERY_FEE : 0);
-            const now    = new Date();
+            const isDel = data.order_type === 'delivery';
+            const total = subtotal + (isDel ? DELIVERY_FEE : 0);
+            const now = new Date();
 
-            /* Randomised formatted order number */
+            // Set the order number in the receipt.
             _orderNumStr = genOrderNum(orderId);
             document.getElementById('r-order-num').textContent = _orderNumStr;
 
-            /* Datetime */
+            // Set the date and time.
             const dateStr = now.toLocaleDateString('en-PH', {
-                year: 'numeric', month: 'long', day: 'numeric'
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             }) + ' at ' + now.toLocaleTimeString('en-PH', {
-                hour: '2-digit', minute: '2-digit'
+                hour: '2-digit',
+                minute: '2-digit'
             });
             document.getElementById('r-datetime').textContent = dateStr;
 
-            /* Customer */
-            document.getElementById('r-name').textContent   = data.name;
-            document.getElementById('r-email').textContent  = data.email;
+            // Set customer details.
+            document.getElementById('r-name').textContent = data.name;
+            document.getElementById('r-email').textContent = data.email;
             document.getElementById('r-mobile').textContent = data.mobile;
 
-            /* Order details */
-            document.getElementById('r-type').textContent    = isDel ? 'Delivery' : 'Pickup';
+            // Set order type and payment details.
+            document.getElementById('r-type').textContent = isDel ? 'Delivery' : 'Pickup';
             document.getElementById('r-payment').textContent = data.payment_method;
 
             if (isDel) {
-                /* Format address in 3 lines: house+street / barangay+city / province+zip */
+                // Format the address into 3 lines.
                 const addrLines = [
                     [data.house_unit, data.street_name].filter(Boolean).join(', '),
                     [data.barangay, data.city_municipality].filter(Boolean).join(', '),
                     [data.province, data.zip_code].filter(Boolean).join(', ')
                 ].filter(Boolean);
-                document.getElementById('r-address').innerHTML          = addrLines.join('<br>');
-                document.getElementById('r-address-row').style.display  = 'flex';
-                document.getElementById('r-branch-row').style.display   = 'none';
-                document.getElementById('r-pickup-row').style.display   = 'none';
-                /* Delivery notes (optional) */
+                document.getElementById('r-address').innerHTML = addrLines.join('<br>');
+                document.getElementById('r-address-row').style.display = 'flex';
+                document.getElementById('r-branch-row').style.display = 'none';
+                document.getElementById('r-pickup-row').style.display = 'none';
+                // Set delivery notes if provided.
                 const notes = (data.delivery_notes || '').trim();
-                document.getElementById('r-del-notes').textContent       = notes || 'None';
-                document.getElementById('r-notes-row').style.display     = 'flex';
+                document.getElementById('r-del-notes').textContent = notes || 'None';
+                document.getElementById('r-notes-row').style.display = 'flex';
             } else {
-                document.getElementById('r-branch').textContent          = data.pickup_branch;
-                document.getElementById('r-pickup').textContent          = data.pickup_date + ' at ' + data.pickup_time;
-                document.getElementById('r-branch-row').style.display   = 'flex';
-                document.getElementById('r-pickup-row').style.display   = 'flex';
-                document.getElementById('r-address-row').style.display  = 'none';
-                document.getElementById('r-notes-row').style.display    = 'none';
+                document.getElementById('r-branch').textContent = data.pickup_branch;
+                document.getElementById('r-pickup').textContent = data.pickup_date + ' at ' + data.pickup_time;
+                document.getElementById('r-branch-row').style.display = 'flex';
+                document.getElementById('r-pickup-row').style.display = 'flex';
+                document.getElementById('r-address-row').style.display = 'none';
+                document.getElementById('r-notes-row').style.display = 'none';
             }
 
-            /* Items with thumbnails */
+            // Render order items with thumbnails.
             const itemsEl = document.getElementById('r-items');
             itemsEl.innerHTML = cartItems.map(item => {
-                const imgHtml = item.image_path
-                    ? `<img class="receipt-item-img" src="${item.image_path}" alt="${item.name}" crossorigin="anonymous" />`
-                    : `<div class="receipt-item-img-placeholder"><i class="bi bi-cup-hot"></i></div>`;
-                const siNote = item.special_instructions
-                    ? `<div class="receipt-item-si">${item.special_instructions}</div>` : '';
+                const imgHtml = item.image_path ?
+                    `<img class="receipt-item-img" src="${item.image_path}" alt="${item.name}" crossorigin="anonymous" />` :
+                    `<div class="receipt-item-img-placeholder"><i class="bi bi-cup-hot"></i></div>`;
+                const siNote = item.special_instructions ?
+                    `<div class="receipt-item-si">${item.special_instructions}</div>` : '';
                 return `
                 <div class="receipt-item">
                     ${imgHtml}
@@ -795,42 +819,49 @@ $min_date = date('Y-m-d');
                 </div>`;
             }).join('');
 
-            /* Totals */
+            // Set totals.
             document.getElementById('r-subtotal').textContent = '₱' + fmt(subtotal);
             if (isDel) {
-                document.getElementById('r-fee').textContent        = '₱' + fmt(DELIVERY_FEE);
-                document.getElementById('r-fee-row').style.display  = 'flex';
+                document.getElementById('r-fee').textContent = '₱' + fmt(DELIVERY_FEE);
+                document.getElementById('r-fee-row').style.display = 'flex';
             } else {
-                document.getElementById('r-fee-row').style.display  = 'none';
+                document.getElementById('r-fee-row').style.display = 'none';
             }
             document.getElementById('r-total').textContent = '₱' + fmt(total);
         }
 
-        /* Save receipt as PNG using html2canvas */
+        // Save the receipt as a PNG using html2canvas.
         function saveReceiptPng() {
             const el = document.getElementById('receipt-content');
-            html2canvas(el, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }).then(canvas => {
-                const link  = document.createElement('a');
-                link.href   = canvas.toDataURL('image/png');
+            html2canvas(el, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
                 link.download = 'caffean-receipt.png';
                 link.click();
             });
         }
 
-        /* Close receipt dialog and redirect to account page */
+        // Close the receipt dialog and redirect to the account page.
         function closeReceipt() {
             document.getElementById('receipt-overlay').classList.remove('open');
             window.location.href = 'account.php';
         }
 
-        /* Inline alert helper */
+        // Inline alert helper.
         function showAlert(msg) {
             const zone = document.getElementById('s2-alert-zone');
             zone.innerHTML = `<div class="alert-error">
                 <i class="fas fa-exclamation-circle"></i>${msg}
                 <button class="dismiss-btn" onclick="clearAlert()">&#x2715;</button>
             </div>`;
-            zone.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            zone.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest'
+            });
             setTimeout(clearAlert, 6000);
         }
 
@@ -838,19 +869,19 @@ $min_date = date('Y-m-d');
             document.getElementById('s2-alert-zone').innerHTML = '';
         }
 
-        /* Build pickup time slots 8:00 AM – 8:00 PM */
+        // Build pickup time slots from 8:00 AM to 8:00 PM.
         (function buildTimeSlots() {
             const sel = document.getElementById('pick-time');
             if (!sel) return;
             for (let h = 8; h <= 20; h++) {
                 ['00', '30'].forEach(m => {
                     if (h === 20 && m === '30') return;
-                    const val   = `${String(h).padStart(2, '0')}:${m}`;
-                    const ampm  = h < 12 ? 'AM' : 'PM';
-                    const hr12  = h > 12 ? h - 12 : h;
+                    const val = `${String(h).padStart(2, '0')}:${m}`;
+                    const ampm = h < 12 ? 'AM' : 'PM';
+                    const hr12 = h > 12 ? h - 12 : h;
                     const label = `${hr12}:${m} ${ampm}`;
-                    const opt   = document.createElement('option');
-                    opt.value       = val;
+                    const opt = document.createElement('option');
+                    opt.value = val;
                     opt.textContent = label;
                     sel.appendChild(opt);
                 });
@@ -859,4 +890,5 @@ $min_date = date('Y-m-d');
     </script>
 
 </body>
+
 </html>

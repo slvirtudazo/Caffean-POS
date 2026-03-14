@@ -1,10 +1,6 @@
 <?php
 
-/**
- * Caffean Shop — Order Success Page (order_success.php)
- * Shown after a successful checkout.
- */
-
+// Order Success Page — shown after a successful checkout.
 require_once 'php/db_connection.php';
 
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['order_success'])) {
@@ -15,7 +11,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['order_success'])) {
 $order_id = intval($_SESSION['order_success']);
 unset($_SESSION['order_success']);
 
-// Fetch order details
+// Fetch the order details.
 $stmt = mysqli_prepare(
     $conn,
     "SELECT o.order_id, o.total_amount, o.status, o.order_date, o.payment_method, o.delivery_address,
@@ -34,7 +30,7 @@ if (!$order) {
     exit();
 }
 
-// Fetch order items
+// Fetch items for this order.
 $stmt = mysqli_prepare(
     $conn,
     "SELECT p.name, oi.quantity, oi.price_at_time
@@ -226,7 +222,7 @@ while ($row = mysqli_fetch_assoc($items_result)) $items[] = $row;
                 <div class="detail-row"><span class="detail-label">Delivery to</span><span style="max-width:60%;text-align:right;"><?= htmlspecialchars($order['delivery_address']) ?></span></div>
             </div>
 
-            <!-- Items -->
+            <!-- Items Ordered -->
             <div class="order-card text-start">
                 <h3>Items Ordered</h3>
                 <?php foreach ($items as $item): ?>

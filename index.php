@@ -1,12 +1,9 @@
 <?php
 
-/**
- * Caffean Shop - Homepage
- */
-
+// Homepage
 require_once 'php/db_connection.php';
 
-// ── Admin check ───────────────────────────────────────────────
+// Check admin and login status.
 $is_admin      = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 $is_logged_in  = isset($_SESSION['user_id']);
 ?>
@@ -71,7 +68,7 @@ $is_logged_in  = isset($_SESSION['user_id']);
     <section class="hero-section">
         <!-- Ambient depth blobs -->
         <div class="hero-bg-glow hero-bg-glow--right" aria-hidden="true"></div>
-        <div class="hero-bg-glow hero-bg-glow--left"  aria-hidden="true"></div>
+        <div class="hero-bg-glow hero-bg-glow--left" aria-hidden="true"></div>
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6 hero-content">
@@ -230,11 +227,11 @@ $is_logged_in  = isset($_SESSION['user_id']);
     </div>
 
     <script>
-        /* Show the login-required popup */
+        // Show the login-required popup.
         function showLoginRequiredPopup() {
             document.getElementById('login-required-popup').style.display = 'flex';
         }
-        /* Close popup when clicking outside the card */
+        // Close popup when clicking outside the card.
         function closeLoginPopup(event) {
             if (event.target === document.getElementById('login-required-popup')) {
                 document.getElementById('login-required-popup').style.display = 'none';
@@ -243,7 +240,9 @@ $is_logged_in  = isset($_SESSION['user_id']);
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>window.IS_LOGGED_IN = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;</script>
+    <script>
+        window.IS_LOGGED_IN = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+    </script>
     <script src="js/main.js?v=<?php echo time(); ?>"></script>
     <script src="js/search.js?v=<?php echo time(); ?>"></script>
 

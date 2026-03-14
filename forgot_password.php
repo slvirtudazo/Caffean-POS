@@ -1,15 +1,9 @@
 <?php
 
-/**
- * Caffean Shop — Forgot Password Page
- * Allows a registered customer to reset their password directly
- * by verifying their email and setting a new password.
- *
- * NOTE: For production, replace direct reset with a secure
- * email-token flow (e.g. PHPMailer + signed token table).
- */
+// Forgot Password Page — lets registered customers reset their password directly.
+// Note: for production, replace this with a secure email-token flow.
 
-// ── HTTPS enforcement ──────────────────────────────────────────────
+// Redirect to HTTPS if not already secure.
 if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'on') {
     header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
     exit();
@@ -25,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $new_password    = $_POST['new_password']           ?? '';
     $confirm_password = $_POST['confirm_password']       ?? '';
 
-    // ── Validate fields ────────────────────────────────────────────
+    // Validate all fields.
     if (empty($email) || empty($new_password) || empty($confirm_password)) {
         $error = "All fields are required.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -43,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($new_password !== $confirm_password) {
         $error = "Passwords do not match.";
     } else {
-        // ── Check email exists (customers only) ────────────────────
+        // Check if the email belongs to a customer account.
         $stmt = mysqli_prepare(
             $conn,
             "SELECT user_id FROM users WHERE email = ? AND role = 'customer'"
@@ -69,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             mysqli_stmt_close($upd);
         } else {
-            // Generic message — do not reveal whether email exists
+            // Generic message to avoid revealing whether the email exists.
             $error = "If that email is registered, your password has been updated.";
         }
         mysqli_stmt_close($stmt);
@@ -85,9 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Reset Password — Caffean</title>
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="css/forgot_password.css?v=<?php echo time(); ?>">
@@ -194,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ── Show/Hide ─────────────────────────────────────────────────────
+        // Toggle password visibility for a given input field.
         function toggleEye(btnId, fieldId, iconId) {
             document.getElementById(btnId).addEventListener('click', function() {
                 const f = document.getElementById(fieldId);
@@ -208,7 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         toggleEye('toggleNew', 'new_password', 'eyeIcon1');
         toggleEye('toggleConfirm', 'confirm_password', 'eyeIcon2');
 
-        // ── Strength ──────────────────────────────────────────────────────
+        // Check password strength and update the indicator.
         function checkStrength(val) {
             const rules = {
                 'req-len': val.length >= 8,
@@ -264,7 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             txt.className = 'strength-text ' + lv.cls;
         }
 
-        // ── Match ─────────────────────────────────────────────────────────
+        // Check if the two password fields match.
         function checkMatch() {
             const p = document.getElementById('new_password').value;
             const c = document.getElementById('confirm_password');
@@ -282,7 +274,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ok.style.display = match ? 'block' : 'none';
         }
 
-        // ── Submit validation ─────────────────────────────────────────────
+        // Validate all fields before form submission.
         document.getElementById('fpForm').addEventListener('submit', function(e) {
             let valid = true;
             const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

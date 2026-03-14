@@ -1,13 +1,8 @@
 <?php
 
-/**
- * Caffean Shop — Customer Registration Page
- * Features: field validation, password strength check, password_hash(),
- * show/hide password, password match, role-based restriction, HTTPS enforcement.
- * Admin accounts are managed outside this system.
- */
+// Customer Registration Page — validates fields, hashes passwords, and inserts new customer accounts.
 
-// ── HTTPS enforcement ──────────────────────────────────────────────
+// Enforce HTTPS.
 if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'on') {
     header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
     exit();
@@ -27,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $confirm_password = $_POST['confirm_password']      ?? '';
     $role             = $_POST['role']                  ?? '';
 
-    // ── Server-side validation ─────────────────────────────────────
+    // Server-side field validation.
     if (
         empty($first_name) || empty($last_name) || empty($email)
         || empty($password) || empty($confirm_password)
@@ -57,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($role === 'admin') {
         $error = "Admin accounts cannot be registered here. Please contact your system administrator.";
     } else {
-        // ── Check duplicate email ──────────────────────────────────
+        // Check for duplicate email.
         $check = mysqli_prepare(
             $conn,
             "SELECT user_id FROM users WHERE email = ?"
@@ -69,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (mysqli_stmt_num_rows($check) > 0) {
             $error = "This email address is already registered.";
         } else {
-            // ── Hash password & insert ─────────────────────────────
+            // Hash the password and insert the new user.
             $hashed_pw = password_hash(
                 $password,
                 PASSWORD_BCRYPT,
@@ -254,7 +249,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ── Show/Hide passwords ───────────────────────────────────────────
+        // Toggle password visibility.
         function toggleEye(btnId, fieldId, iconId) {
             document.getElementById(btnId).addEventListener('click', function() {
                 const field = document.getElementById(fieldId);
@@ -277,7 +272,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         toggleEye('togglePassword', 'password', 'eyeIcon1');
         toggleEye('toggleConfirm', 'confirm_password', 'eyeIcon2');
 
-        // ── Password strength ─────────────────────────────────────────────
+        // Password strength checker.
         function checkStrength(val) {
             const rules = {
                 'req-len': val.length >= 8,
@@ -339,7 +334,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             txt.className = 'strength-text ' + lv.cls;
         }
 
-        // ── Password match ────────────────────────────────────────────────
+        // Password match checker.
         function checkMatch() {
             const p = document.getElementById('password').value;
             const c = document.getElementById('confirm_password');
@@ -357,7 +352,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ok.style.display = match ? 'block' : 'none';
         }
 
-        // ── Form submit validation ────────────────────────────────────────
+        // Form submit validation.
         document.getElementById('registerForm').addEventListener('submit', function(e) {
             let valid = true;
             const nameRe = /^[a-zA-Z\s\-']{2,50}$/;
@@ -386,7 +381,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else f.classList.remove('is-invalid');
             }
 
-            // ── Role validation ───────────────────────────────────────────
+            // Role validation.
             const role = document.querySelector('input[name="role"]:checked');
             const roleFb = document.getElementById('roleFeedback');
             if (!role) {

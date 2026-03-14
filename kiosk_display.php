@@ -1,15 +1,10 @@
 <?php
 
-/**
- * Caffean Shop — Order Queue Display (kiosk_display.php)
- * Shows kiosk orders currently being served and pending.
- * Intended to be displayed on a screen at the claim counter.
- * Auto-refreshes every 15 seconds.
- */
-
+// Order Queue Display — shows kiosk orders being served and pending at the claim counter.
+// Auto-refreshes every 15 seconds.
 require_once 'php/db_connection.php';
 
-/* Fetch kiosk orders placed in the last 3 hours, pending or processing */
+// Fetch kiosk orders from the last 3 hours that are pending or processing.
 $serving_res = mysqli_query(
     $conn,
     "SELECT order_id, kiosk_order_type, customer_name, status, order_date
@@ -23,7 +18,7 @@ $serving_res = mysqli_query(
 $orders = [];
 while ($row = mysqli_fetch_assoc($serving_res)) $orders[] = $row;
 
-/* Partition into now-serving (processing) and upcoming (pending) */
+// Separate orders into now-serving and upcoming groups.
 $now_serving = array_filter($orders, fn($o) => $o['status'] === 'processing');
 $upcoming    = array_filter($orders, fn($o) => $o['status'] === 'pending');
 ?>
@@ -33,7 +28,7 @@ $upcoming    = array_filter($orders, fn($o) => $o['status'] === 'pending');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="15"> <!-- Auto-refresh every 15s -->
+    <meta http-equiv="refresh" content="15">
     <title>Order Queue — Caffean</title>
     <link rel="icon" type="image/png" href="images/coffee_beans_logo.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -118,7 +113,7 @@ $upcoming    = array_filter($orders, fn($o) => $o['status'] === 'pending');
     </div>
 
     <script>
-        /* Update clock every second without full page reload */
+        // Update the clock every second without a full page reload.
         function updateClock() {
             const now = new Date();
             let h = now.getHours(),

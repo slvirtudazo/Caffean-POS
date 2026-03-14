@@ -1,8 +1,6 @@
 <?php
 
-/**
- * Caffean Shop - Coffee Menu Page
- */
+// Coffee Menu Page
 require_once 'php/db_connection.php';
 require_once 'php/product_images.php';
 
